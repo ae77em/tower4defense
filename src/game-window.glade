@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.18.3 -->
+<interface>
+  <requires lib="gtk+" version="3.12"/>
+  <object class="GtkWindow" id="mainWindow">
+    <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Tower4Defense</property>
+    <property name="window_position">center</property>
+    <child>
+      <object class="GtkLayout" id="layout">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="height">99</property>
+        <child>
+          <object class="GtkButton" id="btnAnimacion">
+            <property name="label" translatable="yes">Animación</property>
+            <property name="width_request">100</property>
+            <property name="height_request">46</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="x">24</property>
+            <property name="y">86</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="btnImagen">
+            <property name="label" translatable="yes">Imagen</property>
+            <property name="width_request">100</property>
+            <property name="height_request">48</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="x">24</property>
+            <property name="y">28</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkImage" id="image">
+            <property name="width_request">100</property>
+            <property name="height_request">68</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="pixbuf">images/Sample_Isometric_Tower_Defense.png</property>
+            <property name="icon_size">6</property>
+          </object>
+          <packing>
+            <property name="x">241</property>
+            <property name="y">51</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="btnImagenYAnimacion">
+            <property name="label" translatable="yes">I &amp; A</property>
+            <property name="width_request">100</property>
+            <property name="height_request">46</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="x">24</property>
+            <property name="y">144</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkImage" id="gif">
+            <property name="width_request">100</property>
+            <property name="height_request">80</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="pixbuf">images/explosion.gif</property>
+          </object>
+          <packing>
+            <property name="x">251</property>
+            <property name="y">161</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
