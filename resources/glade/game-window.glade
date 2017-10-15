@@ -6,6 +6,9 @@
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Tower4Defense</property>
     <property name="window_position">center</property>
+    <property name="default_width">800</property>
+    <property name="default_height">600</property>
+    <property name="icon_name">applications-games</property>
     <child>
       <object class="GtkLayout" id="layout">
         <property name="visible">True</property>
