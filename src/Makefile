@@ -30,7 +30,7 @@ gtk = si
 gtkmm = si
 
 # Descomentar si se quiere ver como se invoca al compilador
-#verbose = si
+verbose = si
 
 
 # CONFIGURACION "AVANZADA"
@@ -46,7 +46,7 @@ CFLAGS += -O0
 CFLAGS += -ggdb -DDEBUG -fno-inline
 
 # Opciones del enlazador.
-#LDFLAGS =
+LDFLAGS = -lSDL2 -lSDL2_image
 
 # Estandar de C a usar
 CSTD = c99

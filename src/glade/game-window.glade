@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.18.3 -->
+<interface>
+  <requires lib="gtk+" version="3.12"/>
+  <object class="GtkGrid" id="mainGrid">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="row_spacing">3</property>
+    <property name="column_spacing">2</property>
+    <child>
+      <object class="GtkButton" id="btnColocarTorre">
+        <property name="label" translatable="yes">Poner torre</property>
+        <property name="width_request">100</property>
+        <property name="height_request">45</property>
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">True</property>
+        <property name="relief">half</property>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">0</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkImage" id="pantallaSDL">
+        <property name="width_request">537</property>
+        <property name="height_request">439</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="stock">gtk-missing-image</property>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">2</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkTextView" id="textview1">
+        <property name="width_request">141</property>
+        <property name="height_request">444</property>
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+      </object>
+      <packing>
+        <property name="left_attach">1</property>
+        <property name="top_attach">2</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkButton" id="btnMarcarZona">
+        <property name="label" translatable="yes">Seleccionar
+zona</property>
+        <property name="width_request">100</property>
+        <property name="height_request">45</property>
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">True</property>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">1</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel" id="lblChat">
+        <property name="width_request">100</property>
+        <property name="height_request">28</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">Chat</property>
+        <property name="ellipsize">end</property>
+        <property name="angle">0.01</property>
+        <property name="lines">0</property>
+        <property name="xalign">0.49000000953674316</property>
+      </object>
+      <packing>
+        <property name="left_attach">1</property>
+        <property name="top_attach">1</property>
+      </packing>
+    </child>
+    <child>
+      <placeholder/>
+    </child>
+  </object>
+</interface>
