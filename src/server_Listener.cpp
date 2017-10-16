@@ -36,6 +36,7 @@ void Listener::run(){
         while (true) {
             int fd = server.accept();
             Socket *client = new Socket(fd);
+            std::cout << "nueva conexion entrante. FD: " << std::to_string(fd) << std::endl;
             ClientRequestHandler *rp = new ClientRequestHandler(*client);
 
             clients.push_back(client);
