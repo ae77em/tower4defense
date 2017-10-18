@@ -45,6 +45,3 @@ nbproject/
 # Miscelaneous
 resources/glade/*~
 src/*~
-
-server
-client
