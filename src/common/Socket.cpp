@@ -1,6 +1,6 @@
-#include "common_Socket.h"
+#include "Socket.h"
 
-#include "common_Exceptions.h"
+#include "Exceptions.h"
 
 #include <stdlib.h>
 #include <stdio.h>

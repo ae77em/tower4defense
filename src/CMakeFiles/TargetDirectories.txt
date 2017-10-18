@@ -1,0 +1,6 @@
+/home/sebastian/Documents/tp4-grupal-7542-2c2017/src/CMakeFiles/package.dir
+/home/sebastian/Documents/tp4-grupal-7542-2c2017/src/CMakeFiles/clientt.dir
+/home/sebastian/Documents/tp4-grupal-7542-2c2017/src/CMakeFiles/rebuild_cache.dir
+/home/sebastian/Documents/tp4-grupal-7542-2c2017/src/CMakeFiles/servert.dir
+/home/sebastian/Documents/tp4-grupal-7542-2c2017/src/CMakeFiles/edit_cache.dir
+/home/sebastian/Documents/tp4-grupal-7542-2c2017/src/CMakeFiles/package_source.dir
