@@ -31,9 +31,17 @@
 *.out
 *.app
 
+#CMake Files
+CMakeFiles
+Makefile
+CMakeCache.txt
+cmake_install.cmake
+
 # Others
 nbproject/
 src/tp
 src/client
 src/server
 *~
+
+
