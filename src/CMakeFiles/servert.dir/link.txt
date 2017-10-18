@@ -1,1 +1,0 @@
-/usr/bin/c++      CMakeFiles/servert.dir/server/main.cpp.o CMakeFiles/servert.dir/server/ClientRequestHandler.cpp.o CMakeFiles/servert.dir/server/Listener.cpp.o CMakeFiles/servert.dir/common/Thread.cpp.o CMakeFiles/servert.dir/common/Socket.cpp.o  -o servert -rdynamic -lpthread 

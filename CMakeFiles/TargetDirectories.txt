@@ -1,0 +1,4 @@
+/home/sebastian/Documents/tp4-grupal-7542-2c2017/CMakeFiles/rebuild_cache.dir
+/home/sebastian/Documents/tp4-grupal-7542-2c2017/CMakeFiles/server.dir
+/home/sebastian/Documents/tp4-grupal-7542-2c2017/CMakeFiles/edit_cache.dir
+/home/sebastian/Documents/tp4-grupal-7542-2c2017/CMakeFiles/client.dir
