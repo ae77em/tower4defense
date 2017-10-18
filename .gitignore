@@ -36,3 +36,15 @@ CMakeFiles
 Makefile
 CMakeCache.txt
 cmake_install.cmake
+
+# Other ides projects
+.idea/
+nbproject/
+*.cbp
+
+# Miscelaneous
+resources/glade/*~
+src/*~
+
+server
+client
