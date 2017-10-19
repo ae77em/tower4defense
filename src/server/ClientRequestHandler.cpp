@@ -8,19 +8,26 @@ ClientRequestHandler::ClientRequestHandler(Socket &c) : client(c) { }
 
 ClientRequestHandler::~ClientRequestHandler() { }
 
+static uint32_t receiveSize(Socket &sock) {
+    uint32_t response;
+
+    int received_bytes = sock.receive(reinterpret_cast<char*>(&response),
+            sizeof(uint32_t));
+
+    if (received_bytes == sizeof(uint32_t))
+        return response;
+    else
+        return 0;
+}
+
 void ClientRequestHandler::run() {
     char aux_request[2048] = {0};
-    uint32_t request_size;
     uint32_t response_size;
     std::string response;
     std::string request;
-    bool is_data_received =
-            client.receive(
-                        reinterpret_cast<char*>(&request_size),
-                        sizeof(uint32_t)
-                    ) == sizeof(uint32_t);
 
-    while (is_data_received) {
+    uint32_t request_size = receiveSize(client);
+    while (request_size != 0) {
         client.receive(aux_request, request_size);
         request = std::string(aux_request);
 
@@ -35,11 +42,7 @@ void ClientRequestHandler::run() {
         client.send(reinterpret_cast<char*>(&response_size), sizeof(uint32_t));
         client.send(response.c_str(), response.length());
 
-        is_data_received =
-            client.receive(
-                        reinterpret_cast<char*>(&request_size),
-                        sizeof(uint32_t)
-                    ) == sizeof(uint32_t);
+        request_size = receiveSize(client);
     }
 }
 
