@@ -1,9 +1,11 @@
-cmake_minimum_required(VERSION 3.0) 
-project(tp4_towerdefense)      
+cmake_minimum_required(VERSION 3.0)
+project(tp4_towerdefense)
 
-file(GLOB CLIENT_SOURCES "src/client/*.cpp" "src/client/*.h" "src/common/*.cpp" "src/common/*.h")
-file(GLOB SERVER_SOURCES "src/server/*.cpp/" "src/server/*.h" "src/common/*.cpp" "src/common/*.h")
- 
+file(GLOB CLIENT_SOURCES "src/client/*.cpp" "src/client/*.h" "src/common/*.cpp"
+        "src/common/*.h")
+file(GLOB SERVER_SOURCES "src/server/*.cpp/" "src/server/*.h" "src/common/*.cpp"
+        "src/common/*.h")
+
 add_executable(client.exe ${CLIENT_SOURCES})
 add_executable(server.exe ${SERVER_SOURCES})
 
@@ -24,5 +26,6 @@ PKG_SEARCH_MODULE(SDL2IMAGE REQUIRED SDL2_image>=2.0.0)
 INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS} ${SDL2IMAGE_INCLUDE_DIRS})
 TARGET_LINK_LIBRARIES(client.exe ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES})
 
-SET(GCC_COVERAGE_COMPILE_FLAGS "-Wall -pedantic -pedantic-errors -O0 -ggdb -DDEBUG -fno-inline -std=c++11")
+SET(GCC_COVERAGE_COMPILE_FLAGS "-Wall -pedantic -pedantic-errors -O0 -ggdb"
+        "-DDEBUG -fno-inline -std=c++11")
 add_definitions(${GCC_COVERAGE_COMPILE_FLAGS})
