@@ -7,7 +7,6 @@
 #endif
 #include <stdio.h>
 
-TextMessage::TextMessage() : TextMessage("") {}
 TextMessage::TextMessage(std::string message) : message(message) {}
 
 void TextMessage::sendThrough(Socket &sock) {
@@ -22,7 +21,7 @@ void TextMessage::sendThrough(Socket &sock) {
     sock.send(message.c_str(), message.size());
 }
 
-void TextMessage::receiveFrom(Socket &sock) {
+TextMessage receiveFrom(Socket &sock) {
     char prefix[11];
     if (sock.receive(prefix, 10) < 10)
         throw std::runtime_error("No se pudo recibir el prefijo completo.");
@@ -35,7 +34,7 @@ void TextMessage::receiveFrom(Socket &sock) {
     char message[len + 1];
     if (sock.receive(message, len) < len)
         throw std::runtime_error("No se pudo recibir la cola completa.");
-    this->message = message;
+    return TextMessage(message);
 }
 
 const std::string& TextMessage::getMessage() {
