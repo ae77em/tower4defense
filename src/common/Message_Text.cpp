@@ -6,6 +6,7 @@
 #endif
 #include <stdio.h>
 
+TextMessage::TextMessage() : TextMessage("") {}
 TextMessage::TextMessage(std::string message) : message(message) {}
 
 void TextMessage::sendThrough(Socket &sock) {
@@ -34,3 +35,6 @@ void TextMessage::receiveFrom(Socket &sock) {
     this->message = message;
 }
 
+const std::string& TextMessage::getMessage() {
+    return message;
+}
