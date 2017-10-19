@@ -1,4 +1,5 @@
 #include "../common/Message_Text.h"
+#include <stdexcept>
 
 // snprintf
 #ifndef _XOPEN_SOURCE
@@ -23,7 +24,8 @@ void TextMessage::sendThrough(Socket &sock) {
 
 void TextMessage::receiveFrom(Socket &sock) {
     char prefix[11];
-    sock.receive(prefix, 10);
+    if (sock.receive(prefix, 10) < 10)
+        throw std::runtime_error("No se pudo recibir el prefijo completo.");
     prefix[10] = '\0';
 
     size_t len;
@@ -31,7 +33,8 @@ void TextMessage::receiveFrom(Socket &sock) {
 
     // Don't forget the all-important terminating null byte.
     char message[len + 1];
-    sock.receive(message, len);
+    if (sock.receive(message, len) < len)
+        throw std::runtime_error("No se pudo recibir la cola completa.");
     this->message = message;
 }
 
