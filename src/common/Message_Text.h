@@ -5,14 +5,13 @@
  * representation of the length of the tail.
  */
 
-#include "../common/Message.h"
 #include "../common/Socket.h"
 #include <string>
 
 #ifndef TEXTMESSAGE_H
 #define TEXTMESSAGE_H
 
-class TextMessage : public Message {
+class TextMessage {
     std::string message;
 
 public:
