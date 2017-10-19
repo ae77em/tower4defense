@@ -5,6 +5,8 @@
 #include <streambuf>
 
 #include "../common/Socket.h"
+#include "../common/Message_Text.h"
+
 /*This source code copyrighted by Lazy Foo' Productions (2004-2015)
 and may not be redistributed without written permission.*/
 
@@ -727,17 +729,12 @@ void interactWithServer(Socket &client, std::string text) {
 
     std::cout << "Send to server: " << text << std::endl;
 
-    uint32_t size = text.length();
-    client.send(reinterpret_cast<char *>(&size), sizeof(uint32_t));
-    client.send(text.c_str(), text.length());
+    TextMessage msg = TextMessage(text);
+    msg.sendThrough(client);
 
-    char aux_response[2048] = {0};
+    TextMessage response = receiveFrom(client);
 
-    client.receive(reinterpret_cast<char *>(&size), sizeof(uint32_t));
-    client.receive(aux_response, size);
-    text = std::__cxx11::string(aux_response);
-
-    std::cout << "Response: " << text << std::endl;
+    std::cout << "Response: " << response.getMessage() << std::endl;
 }
 
 int main(int argc, char *argv[]) {
