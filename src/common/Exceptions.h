@@ -35,7 +35,7 @@ struct accept_exception : public std::exception {
 
 struct recv_exception : public std::exception {
    const char * what() const throw() {
-      return "Error al realizar el send.";
+      return "Error al realizar el receive.";
    }
 };
 
