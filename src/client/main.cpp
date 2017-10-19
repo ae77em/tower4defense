@@ -354,6 +354,7 @@ Dot::Dot() {
 void Dot::handleEvent(SDL_Event &e, std::string &desc) {
     //If a key was pressed
     if (e.type == SDL_KEYDOWN && e.key.repeat == 0) {
+        desc = "aprete boton";
         //Adjust the velocity
         switch (e.key.keysym.sym) {
             case SDLK_UP:
@@ -368,11 +369,13 @@ void Dot::handleEvent(SDL_Event &e, std::string &desc) {
             case SDLK_RIGHT:
                 mVelX += DOT_VEL;
                 break;
+            default:
+                desc = "";
         }
-        desc.assign("key presed");
     }        //If a key was released
     else if (e.type == SDL_KEYUP && e.key.repeat == 0) {
         //Adjust the velocity
+        desc = "solte boton";
         switch (e.key.keysym.sym) {
             case SDLK_UP:
                 mVelY += DOT_VEL;
@@ -386,9 +389,10 @@ void Dot::handleEvent(SDL_Event &e, std::string &desc) {
             case SDLK_RIGHT:
                 mVelX -= DOT_VEL;
                 break;
+            default:
+                desc = "";
         }
     }
-    desc.assign("key leaved");
 }
 
 void Dot::move(Tile *tiles[]) {
@@ -772,6 +776,7 @@ int main(int argc, char *argv[]) {
             //While application is running
             while (!quit) {
                 //Handle events on queue
+                mov_description = "";
                 while (SDL_PollEvent(&e) != 0) {
                     //User requests quit
                     if (e.type == SDL_QUIT) {
@@ -780,7 +785,6 @@ int main(int argc, char *argv[]) {
 
                     //Handle input for the dot
                     dot.handleEvent(e, mov_description);
-                    interactWithServer(client, mov_description);
                 }
 
                 //Move the dot
@@ -801,6 +805,9 @@ int main(int argc, char *argv[]) {
 
                 //Update screen
                 SDL_RenderPresent(gRenderer);
+                if (!mov_description.empty()){
+                    interactWithServer(client, mov_description);
+                }
             }
         }
 
