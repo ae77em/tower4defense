@@ -8,11 +8,11 @@
 #include "Listener.h"
 
 int main(int argc, char *argv[]){
+    if (argc != 2) {
+        cerr << "Cantidad de parámetros incorrecta.";
+        return 0;
+    }
     try {
-        if (argc != 2) {
-            throw std::string("Cantidad de parámetros incorrecta.");
-        }
-       
         uint16_t port = atoi(argv[1]);
 
         Listener listener(port);
