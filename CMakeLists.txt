@@ -1,9 +1,11 @@
-cmake_minimum_required(VERSION 3.0) 
-project(tp4_towerdefense)      
+cmake_minimum_required(VERSION 3.0)
+project(tp4_towerdefense)
 
-file(GLOB CLIENT_SOURCES "src/client/*.cpp" "src/client/*.h" "src/common/*.cpp" "src/common/*.h")
-file(GLOB SERVER_SOURCES "src/server/*.cpp/" "src/server/*.h" "src/common/*.cpp" "src/common/*.h")
- 
+file(GLOB CLIENT_SOURCES "src/client/*.cpp" "src/client/*.h" "src/common/*.cpp"
+        "src/common/*.h")
+file(GLOB SERVER_SOURCES "src/server/*.cpp/" "src/server/*.h" "src/common/*.cpp"
+        "src/common/*.h")
+
 add_executable(client.exe ${CLIENT_SOURCES})
 add_executable(server.exe ${SERVER_SOURCES})
 
@@ -17,5 +19,6 @@ find_package(Threads)
 target_link_libraries (client.exe ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries (server.exe ${CMAKE_THREAD_LIBS_INIT})
 
-SET(GCC_COVERAGE_COMPILE_FLAGS "-Wall -pedantic -pedantic-errors -O0 -ggdb -DDEBUG -fno-inline -std=c++11")
+SET(GCC_COVERAGE_COMPILE_FLAGS "-Wall -pedantic -pedantic-errors -O0 -ggdb"
+        "-DDEBUG -fno-inline -std=c++11")
 add_definitions(${GCC_COVERAGE_COMPILE_FLAGS})
