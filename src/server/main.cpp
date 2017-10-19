@@ -12,27 +12,15 @@ int main(int argc, char *argv[]){
         std::cerr << "Cantidad de parámetros incorrecta.";
         return 0;
     }
-    try {
-        uint16_t port = atoi(argv[1]);
 
-        Listener listener(port);
-        listener.start();
+    uint16_t port = atoi(argv[1]);
+    Listener listener(port);
+    listener.start();
 
-        while (true) {
-            if (std::cin.get() == 'q') {
-                break;
-            }
-        }
+    while (true) if (std::cin.get() == 'q') break;
 
-        listener.shutdown();
-        listener.join();
-    } catch (std::string ex) {
-        std::cerr << ex << std::endl;
-    } catch (std::exception ex) {
-        std::cerr << ex.what() << std::endl;;
-    } catch (...) {
-        std::cerr << "Ocurrió un error desconocido en el servidor.";
-    }
+    listener.shutdown();
+    listener.join();
 
     return EXIT_SUCCESS;
 }
