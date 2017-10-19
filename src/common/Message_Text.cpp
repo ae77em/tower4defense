@@ -16,7 +16,7 @@ void TextMessage::sendThrough(Socket &sock) {
      * null byte
      */
     char prefix[11];
-    snprintf(prefix, 11, "%010ld", message.size());
+    snprintf(prefix, 11, "%010lu", message.size());
 
     sock.send(prefix, 10);
     sock.send(message.c_str(), message.size());
@@ -29,7 +29,7 @@ void TextMessage::receiveFrom(Socket &sock) {
     prefix[10] = '\0';
 
     size_t len;
-    sscanf(prefix, "%010ld", &len);
+    sscanf(prefix, "%010lu", &len);
 
     // Don't forget the all-important terminating null byte.
     char message[len + 1];
