@@ -9,7 +9,7 @@
 
 int main(int argc, char *argv[]){
     if (argc != 2) {
-        cerr << "Cantidad de parámetros incorrecta.";
+        std::cerr << "Cantidad de parámetros incorrecta.";
         return 0;
     }
     try {
