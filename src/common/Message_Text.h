@@ -16,8 +16,7 @@ class TextMessage : public Message {
     std::string message;
 
 public:
-    // Crea un mensaje de texto a traves de move semantics.
-    TextMessage(std::string &&message);
+    TextMessage(std::string message);
     void sendThrough(Socket &sock);
     void receiveFrom(Socket &sock);
 };

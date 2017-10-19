@@ -6,7 +6,7 @@
 #endif
 #include <stdio.h>
 
-TextMessage::TextMessage(std::string &&message) : message(std::move(message)) {}
+TextMessage::TextMessage(std::string message) : message(message) {}
 
 void TextMessage::sendThrough(Socket &sock) {
     /* Supposing the message's length fits in four bytes, the lenght's decimal
