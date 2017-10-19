@@ -37,8 +37,7 @@ TextMessage receiveFrom(Socket &sock) {
         throw std::runtime_error("No se pudo recibir la cola completa.");
     }
 
-    std::string s = message;
-    delete message;
+    std::string s(message);
     return TextMessage(message);
 }
 
