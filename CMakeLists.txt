@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.0)
 project(tp4_towerdefense)
 
-file(GLOB CLIENT_SOURCES "src/client/*.cpp" "src/client/*.h" "src/common/*.cpp"
-        "src/common/*.h")
-file(GLOB SERVER_SOURCES "src/server/*.cpp/" "src/server/*.h" "src/common/*.cpp"
-        "src/common/*.h")
+include_directories("include")
+
+file(GLOB CLIENT_SOURCES "src/client/*.cpp" "src/common/*.cpp")
+file(GLOB SERVER_SOURCES "src/server/*.cpp/" "src/common/*.cpp")
 
 add_executable(client.exe ${CLIENT_SOURCES})
 add_executable(server.exe ${SERVER_SOURCES})

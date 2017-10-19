@@ -1,6 +1,6 @@
 #include "Listener.h"
-#include "../common/Socket.h"
-#include "../common/Exceptions.h"
+#include "Socket.h"
+#include "Exceptions.h"
 
 #include <vector>
 #include <cstring>

@@ -3,7 +3,7 @@
 #include <string>
 #include <cstring>
 #include <iostream>
-#include "../common/Message_Text.h"
+#include "Message_Text.h"
 
 ClientRequestHandler::ClientRequestHandler(Socket &c) : client(c) { }
 

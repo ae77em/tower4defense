@@ -5,7 +5,7 @@
  * representation of the length of the tail.
  */
 
-#include "../common/Socket.h"
+#include "Socket.h"
 #include <string>
 
 #ifndef TEXTMESSAGE_H

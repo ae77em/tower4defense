@@ -4,8 +4,8 @@
 #include <fstream>
 #include <streambuf>
 
-#include "../common/Socket.h"
-#include "../common/Message_Text.h"
+#include "Socket.h"
+#include "Message_Text.h"
 
 /*This source code copyrighted by Lazy Foo' Productions (2004-2015)
 and may not be redistributed without written permission.*/

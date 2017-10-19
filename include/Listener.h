@@ -1,7 +1,7 @@
 #ifndef LISTENER_H
 #define LISTENER_H
 
-#include "../common/Socket.h"
+#include "Socket.h"
 #include "ClientRequestHandler.h"
 
 #include <vector>
@@ -12,16 +12,16 @@ private:
     Socket server;
     std::vector<ClientRequestHandler*> threads;
     std::vector<Socket*> clients;
-    
+
 public:
     explicit Listener(uint16_t port);
     Listener(const Listener& orig);
     virtual ~Listener();
-    
+
     void run();
-    
+
     void shutdown();
-    
+
 private:
     Listener() = delete;
 };

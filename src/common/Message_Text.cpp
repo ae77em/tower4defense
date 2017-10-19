@@ -1,4 +1,4 @@
-#include "../common/Message_Text.h"
+#include "Message_Text.h"
 #include <stdexcept>
 
 // snprintf
