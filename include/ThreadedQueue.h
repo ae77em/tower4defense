@@ -9,16 +9,13 @@
 /* This buffer is first-in-first-out (FIFO), i.e. the elements will pop out
  * from it in the order they were pushed in. */
 class ThreadedQueue {
-    const unsigned int maxsize;
     bool closed;
     std::list<std::string> buffer;
     std::mutex m;
-    std::condition_variable full;
     std::condition_variable empty;
 
 public:
     ThreadedQueue();
-    ThreadedQueue(unsigned int maxsize);
 
     void push(const std::string &x);
     void close();
@@ -28,7 +25,6 @@ public:
 
 private:
     bool isEmpty();
-    bool isFull();
 };
 
 #endif

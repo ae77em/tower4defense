@@ -3,17 +3,10 @@
 
 using namespace std;
 
-ThreadedQueue::ThreadedQueue() : maxsize(10), closed(false) {}
-
-ThreadedQueue::ThreadedQueue(unsigned int maxsize) : maxsize(maxsize),
-        closed(false) {}
+ThreadedQueue::ThreadedQueue() : closed(false) {}
 
 bool ThreadedQueue::isEmpty() {
     return (this->buffer.size() == 0);
-}
-
-bool ThreadedQueue::isFull() {
-    return (this->buffer.size() == this->maxsize);
 }
 
 bool ThreadedQueue::isAtEnd() {
@@ -32,10 +25,6 @@ void ThreadedQueue::push(const string &x) {
 
     if (this->closed) throw;
 
-    // Wait until buffer is not full.
-    if (this->isFull())
-        this->full.wait(lck, [this]{return !this->isFull();});
-
     this->buffer.push_back(x);
     this->empty.notify_one();
 }
@@ -52,7 +41,6 @@ string ThreadedQueue::pop() {
     string res = this->buffer.front();
     this->buffer.pop_front();
 
-    this->full.notify_one();
     return res;
 }
 
