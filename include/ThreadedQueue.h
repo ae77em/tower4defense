@@ -1,6 +1,7 @@
 #include <list>
 #include <mutex>
 #include <condition_variable>
+#include <exception>
 
 #ifndef THREADED_QUEUE_H
 #define THREADED_QUEUE_H
@@ -53,7 +54,8 @@ template<typename T>
 void ThreadedQueue<T>::push(const T &x) {
     unique_lock<mutex> lck{this->m};
 
-    if (this->closed) throw;
+    if (this->closed)
+        throw std::runtime_error("Trying to push into a closed queue.");
 
     this->buffer.push_back(x);
     this->empty.notify_one();
@@ -67,7 +69,8 @@ T ThreadedQueue<T>::pop() {
     if (this->isEmpty())
         this->empty.wait(lck, [this]{return this->closed || !this->isEmpty();});
 
-    if (this->isEmpty()) throw;
+    if (this->isEmpty())
+        throw std::runtime_error("Reached the end of the queue.");
 
     T res = this->buffer.front();
     this->buffer.pop_front();
