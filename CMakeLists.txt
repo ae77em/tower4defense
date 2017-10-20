@@ -5,9 +5,11 @@ include_directories("include")
 
 file(GLOB CLIENT_SOURCES "src/client/*.cpp" "src/common/*.cpp")
 file(GLOB SERVER_SOURCES "src/server/*.cpp/" "src/common/*.cpp")
+file(GLOB TEST_SOURCES "tests/unit/*.cpp" "src/common/*.cpp")
 
 add_executable(client.exe ${CLIENT_SOURCES})
 add_executable(server.exe ${SERVER_SOURCES})
+add_executable(unit.exe ${TEST_SOURCES})
 
 find_package(PkgConfig)
 
@@ -19,6 +21,7 @@ target_link_libraries(client.exe ${GTKMM_LIBRARIES})
 find_package(Threads)
 target_link_libraries(client.exe ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(server.exe ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(unit.exe ${CMAKE_THREAD_LIBS_INIT})
 
 PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
 PKG_SEARCH_MODULE(SDL2IMAGE REQUIRED SDL2_image>=2.0.0)
