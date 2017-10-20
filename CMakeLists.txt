@@ -5,10 +5,11 @@ include_directories("include")
 
 file(GLOB CLIENT_SOURCES "src/client/*.cpp" "src/common/*.cpp")
 file(GLOB SERVER_SOURCES "src/server/*.cpp/" "src/common/*.cpp")
+file(GLOB TEST_SOURCES "tests/unit/*.cpp")
 
 add_executable(client.exe ${CLIENT_SOURCES})
 add_executable(server.exe ${SERVER_SOURCES})
-add_executable(test_suite "tests/catch_main.cpp" "tests/dummy_test.cpp")
+add_executable(unit ${TEST_SOURCES})
 
 find_package(PkgConfig)
 
