@@ -8,6 +8,7 @@ file(GLOB SERVER_SOURCES "src/server/*.cpp/" "src/common/*.cpp")
 
 add_executable(client.exe ${CLIENT_SOURCES})
 add_executable(server.exe ${SERVER_SOURCES})
+add_executable(test_suite "tests/catch_main.cpp" "tests/dummy_test.cpp")
 
 find_package(PkgConfig)
 
