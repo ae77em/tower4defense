@@ -353,9 +353,9 @@ void Dot::move(IsometricTile *tiles[]) {
     //Move the dot left or right
     mBox.x += mVelX;
 
-    //If the dot went too far to the left or right or touched a wall
-    if ((mBox.x < 0) || (mBox.x + DOT_WIDTH > LEVEL_WIDTH) ||
-        touchesWall(mBox, tiles)) {
+    //If the dot went too far to the left or right
+    if ((mBox.x < 0)
+        || (mBox.x + DOT_WIDTH > ((TILES_ROWS + 2) * TILE_WIDTH)) ) {
         //move back
         mBox.x -= mVelX;
     }
@@ -363,9 +363,9 @@ void Dot::move(IsometricTile *tiles[]) {
     //Move the dot up or down
     mBox.y += mVelY;
 
-    //If the dot went too far up or down or touched a wall
-    if ((mBox.y < 0) || (mBox.y + DOT_HEIGHT > LEVEL_HEIGHT) ||
-        touchesWall(mBox, tiles)) {
+    //If the dot went too far up or down
+    if ((mBox.y < 0)
+        || (mBox.y + DOT_HEIGHT > ((TILES_COLUMNS - 2) * TILE_HEIGHT))) {
         //move back
         mBox.y -= mVelY;
     }
@@ -383,11 +383,11 @@ void Dot::setCamera(SDL_Rect &camera) {
     if (camera.y < 0) {
         camera.y = 0;
     }
-    if (camera.x > LEVEL_WIDTH - camera.w) {
-        camera.x = LEVEL_WIDTH - camera.w;
+    if (camera.x > ((TILES_ROWS + 2) * TILE_WIDTH) - camera.w) {
+        camera.x = ((TILES_ROWS + 2) * TILE_WIDTH) - camera.w;
     }
-    if (camera.y > LEVEL_HEIGHT - camera.h) {
-        camera.y = LEVEL_HEIGHT - camera.h;
+    if (camera.y > ((TILES_COLUMNS - 2) * TILE_HEIGHT) - camera.h) {
+        camera.y = ((TILES_COLUMNS - 2) * TILE_HEIGHT) - camera.h;
     }
 }
 
@@ -540,6 +540,7 @@ bool Game::setTiles(IsometricTile *tiles[]) {
 
     //The tile offsets
     int x = 0, y = 0, k = 0;
+    int yoffset = ((TILES_COLUMNS - 1) * TILE_HEIGHT / 2);
 
     //Open the map
     std::ifstream map("lazy.map");
@@ -568,16 +569,7 @@ bool Game::setTiles(IsometricTile *tiles[]) {
 
                 //Move to next tile spot
                 x = (j * TILE_WIDTH / 2) + (i * TILE_WIDTH / 2);
-                y = (i * TILE_HEIGHT / 2) - (j * TILE_HEIGHT / 2);
-
-/*                //If we've gone too far
-                if (x >= LEVEL_WIDTH) {
-                    //Move back
-                    x = 0;
-
-                    //Move to the next row
-                    y += TILE_HEIGHT / 2;
-                }*/
+                y = yoffset + (i * TILE_HEIGHT / 2) - (j * TILE_HEIGHT / 2);
 
                 //If the number is a valid tile number
                 if ((tileType >= 0) && (tileType < TOTAL_TILE_SPRITES)) {
@@ -662,23 +654,6 @@ bool Game::setTiles(IsometricTile *tiles[]) {
 
     //If the map was loaded fine
     return tilesLoaded;
-}
-
-bool touchesWall(SDL_Rect box, IsometricTile *tiles[]) {
-    //Go through the tiles
-    for (int i = 0; i < TOTAL_TILES; ++i) {
-        //If the tile is a wall type tile
-        if ((tiles[i]->getType() >= TILE_CENTER) &&
-            (tiles[i]->getType() <= TILE_TOPLEFT)) {
-            //If the collision box touches the wall tile
-            if (checkCollision(box, tiles[i]->getBox())) {
-                return true;
-            }
-        }
-    }
-
-    //If no wall tiles were touched
-    return false;
 }
 
 void Game::interactWithServer(Socket &client, std::string text) {
