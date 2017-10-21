@@ -12,6 +12,7 @@
 
 #include "Socket.h"
 #include "Message_Text.h"
+#include "Constants.h"
 
 /*This source code copyrighted by Lazy Foo' Productions (2004-2015)
 and may not be redistributed without written permission.*/
@@ -22,34 +23,6 @@ and may not be redistributed without written permission.*/
 #include <cstdio>
 #include <string>
 #include <fstream>
-
-//Screen dimension constants
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
-
-//The dimensions of the level
-const int LEVEL_WIDTH = 1280;
-const int LEVEL_HEIGHT = 960;
-
-//Tile constants
-const int TILE_WIDTH = 80;
-const int TILE_HEIGHT = 80;
-const int TOTAL_TILES = 192;
-const int TOTAL_TILE_SPRITES = 12;
-
-//The different tile sprites
-const int TILE_RED = 0;
-const int TILE_GREEN = 1;
-const int TILE_BLUE = 2;
-const int TILE_CENTER = 3;
-const int TILE_TOP = 4;
-const int TILE_TOPRIGHT = 5;
-const int TILE_RIGHT = 6;
-const int TILE_BOTTOMRIGHT = 7;
-const int TILE_BOTTOM = 8;
-const int TILE_BOTTOMLEFT = 9;
-const int TILE_LEFT = 10;
-const int TILE_TOPLEFT = 11;
 
 //Texture wrapper class
 
@@ -82,7 +55,10 @@ public:
     void setAlpha(Uint8 alpha);
 
     //Renders texture at given point
-    void render(int x, int y, SDL_Rect *clip = NULL, double angle = 0.0,
+    void render(int x,
+                int y,
+                SDL_Rect *clip = NULL,
+                double angle = 0.0,
                 SDL_Point *center = NULL,
                 SDL_RendererFlip flip = SDL_FLIP_NONE);
 
@@ -102,10 +78,10 @@ private:
 
 //The tile
 
-class Tile {
+class IsometricTile {
 public:
     //Initializes position and type
-    Tile(int x, int y, int tileType);
+    IsometricTile(int x, int y, int tileType);
 
     //Shows the tile
     void render(SDL_Rect &camera);
@@ -142,7 +118,7 @@ public:
     void handleEvent(SDL_Event &e, std::string &desc);
 
     //Moves the dot and check collision against tiles
-    void move(Tile *tiles[]);
+    void move(IsometricTile *tiles[]);
 
     //Centers the camera over the dot
     void setCamera(SDL_Rect &camera);
@@ -158,23 +134,11 @@ private:
     int mVelX, mVelY;
 };
 
-//Starts up SDL and creates window
-bool init();
-
-//Loads media
-bool loadMedia(Tile *tiles[]);
-
-//Frees media and shuts down SDL
-void close(Tile *tiles[]);
-
 //Box collision detector
 bool checkCollision(SDL_Rect a, SDL_Rect b);
 
 //Checks collision box against set of tiles
-bool touchesWall(SDL_Rect box, Tile *tiles[]);
-
-//Sets tiles from tile map
-bool setTiles(Tile *tiles[]);
+bool touchesWall(SDL_Rect box, IsometricTile *tiles[]);
 
 //The window we'll be rendering to
 SDL_Window *gWindow = NULL;
@@ -213,8 +177,9 @@ bool LTexture::loadFromFile(std::string path) {
                IMG_GetError());
     } else {
         //Color key image
-        SDL_SetColorKey(loadedSurface, SDL_TRUE,
-                        SDL_MapRGB(loadedSurface->format, 0, 0xFF, 0xFF));
+        SDL_SetColorKey(loadedSurface,
+                        SDL_TRUE,
+                        SDL_MapRGB(loadedSurface->format, 0xFF, 0, 0xFF));
 
         //Create texture from surface pixels
         newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
@@ -261,9 +226,12 @@ void LTexture::setAlpha(Uint8 alpha) {
     SDL_SetTextureAlphaMod(mTexture, alpha);
 }
 
-void
-LTexture::render(int x, int y, SDL_Rect *clip, double angle, SDL_Point *center,
-                 SDL_RendererFlip flip) {
+void LTexture::render(int x,
+                      int y,
+                      SDL_Rect *clip,
+                      double angle,
+                      SDL_Point *center,
+                      SDL_RendererFlip flip) {
     //Set rendering space and render to screen
     SDL_Rect renderQuad = {x, y, mWidth, mHeight};
 
@@ -274,7 +242,12 @@ LTexture::render(int x, int y, SDL_Rect *clip, double angle, SDL_Point *center,
     }
 
     //Render to screen
-    SDL_RenderCopyEx(gRenderer, mTexture, clip, &renderQuad, angle, center,
+    SDL_RenderCopyEx(gRenderer,
+                     mTexture,
+                     clip,
+                     &renderQuad,
+                     angle,
+                     center,
                      flip);
 }
 
@@ -286,7 +259,7 @@ int LTexture::getHeight() {
     return mHeight;
 }
 
-Tile::Tile(int x, int y, int tileType) {
+IsometricTile::IsometricTile(int x, int y, int tileType) {
     //Get the offsets
     mBox.x = x;
     mBox.y = y;
@@ -296,23 +269,27 @@ Tile::Tile(int x, int y, int tileType) {
     mBox.h = TILE_HEIGHT;
 
     //Get the tile type
-    mType = tileType;
+    mType = 0;
 }
 
-void Tile::render(SDL_Rect &camera) {
+void IsometricTile::render(SDL_Rect &camera) {
     //If the tile is on screen
     if (checkCollision(camera, mBox)) {
         //Show the tile
-        gTileTexture.render(mBox.x - camera.x, mBox.y - camera.y,
+        int isox = mBox.x - camera.x;
+        int isoy = mBox.y - camera.y;
+
+        gTileTexture.render(isox,
+                            isoy,
                             &gTileClips[mType]);
     }
 }
 
-int Tile::getType() {
+int IsometricTile::getType() {
     return mType;
 }
 
-SDL_Rect Tile::getBox() {
+SDL_Rect IsometricTile::getBox() {
     return mBox;
 }
 
@@ -372,7 +349,7 @@ void Dot::handleEvent(SDL_Event &e, std::string &desc) {
     }
 }
 
-void Dot::move(Tile *tiles[]) {
+void Dot::move(IsometricTile *tiles[]) {
     //Move the dot left or right
     mBox.x += mVelX;
 
@@ -468,7 +445,7 @@ bool Game::init() {
     return success;
 }
 
-bool Game::loadMedia(Tile *tiles[]) {
+bool Game::loadMedia(IsometricTile *tiles[]) {
     //Loading success flag
     bool success = true;
 
@@ -479,7 +456,7 @@ bool Game::loadMedia(Tile *tiles[]) {
     }
 
     //Load tile texture
-    if (!gTileTexture.loadFromFile("tiles.png")) {
+    if (!gTileTexture.loadFromFile("images/sprites/tile-grass.png")) {
         printf("Failed to load tile set texture!\n");
         success = false;
     }
@@ -493,7 +470,7 @@ bool Game::loadMedia(Tile *tiles[]) {
     return success;
 }
 
-void Game::close(Tile *tiles[]) {
+void Game::close(IsometricTile *tiles[]) {
     //Deallocate tiles
     for (int i = 0; i < TOTAL_TILES; ++i) {
         if (tiles[i] == NULL) {
@@ -557,12 +534,12 @@ bool checkCollision(SDL_Rect a, SDL_Rect b) {
     return true;
 }
 
-bool Game::setTiles(Tile *tiles[]) {
+bool Game::setTiles(IsometricTile *tiles[]) {
     //Success flag
     bool tilesLoaded = true;
 
     //The tile offsets
-    int x = 0, y = 0;
+    int x = 0, y = 0, k = 0;
 
     //Open the map
     std::ifstream map("lazy.map");
@@ -573,51 +550,55 @@ bool Game::setTiles(Tile *tiles[]) {
         tilesLoaded = false;
     } else {
         //Initialize the tiles
-        for (int i = 0; i < TOTAL_TILES; ++i) {
-            //Determines what kind of tile will be made
-            int tileType = -1;
+        for (int i = 0; i < TILES_ROWS; ++i) {
+            for (int j = TILES_COLUMNS - 1; j >= 0; --j) {
+                //Determines what kind of tile will be made
+                int tileType = -1;
 
-            //Read tile from map file
-            map >> tileType;
+                //Read tile from map file
+                map >> tileType;
 
-            //If the was a problem in reading the map
-            if (map.fail()) {
-                //Stop loading map
-                printf("Error loading map: Unexpected end of file!\n");
-                tilesLoaded = false;
-                break;
-            }
+                //If the was a problem in reading the map
+                if (map.fail()) {
+                    //Stop loading map
+                    printf("Error loading map: Unexpected end of file!\n");
+                    tilesLoaded = false;
+                    break;
+                }
 
-            //If the number is a valid tile number
-            if ((tileType >= 0) && (tileType < TOTAL_TILE_SPRITES)) {
-                tiles[i] = new Tile(x, y, tileType);
-            }                //If we don't recognize the tile type
-            else {
-                //Stop loading map
-                printf("Error loading map: Invalid tile type at %d!\n", i);
-                tilesLoaded = false;
-                break;
-            }
+                //Move to next tile spot
+                x = (j * TILE_WIDTH / 2) + (i * TILE_WIDTH / 2);
+                y = (i * TILE_HEIGHT / 2) - (j * TILE_HEIGHT / 2);
 
-            //Move to next tile spot
-            x += TILE_WIDTH;
+/*                //If we've gone too far
+                if (x >= LEVEL_WIDTH) {
+                    //Move back
+                    x = 0;
 
-            //If we've gone too far
-            if (x >= LEVEL_WIDTH) {
-                //Move back
-                x = 0;
+                    //Move to the next row
+                    y += TILE_HEIGHT / 2;
+                }*/
 
-                //Move to the next row
-                y += TILE_HEIGHT;
+                //If the number is a valid tile number
+                if ((tileType >= 0) && (tileType < TOTAL_TILE_SPRITES)) {
+                    k = i * TILES_COLUMNS + j;
+                    tiles[k] = new IsometricTile(x, y, tileType);
+                }                //If we don't recognize the tile type
+                else {
+                    //Stop loading map
+                    printf("Error loading map: Invalid tile type at %d!\n", i);
+                    tilesLoaded = false;
+                    break;
+                }
             }
         }
 
         //Clip the sprite sheet
         if (tilesLoaded) {
-            gTileClips[TILE_RED].x = 0;
-            gTileClips[TILE_RED].y = 0;
-            gTileClips[TILE_RED].w = TILE_WIDTH;
-            gTileClips[TILE_RED].h = TILE_HEIGHT;
+            gTileClips[TILE_GRASS].x = 0;
+            gTileClips[TILE_GRASS].y = 0;
+            gTileClips[TILE_GRASS].w = TILE_WIDTH;
+            gTileClips[TILE_GRASS].h = TILE_HEIGHT;
 
             gTileClips[TILE_GREEN].x = 0;
             gTileClips[TILE_GREEN].y = 80;
@@ -683,7 +664,7 @@ bool Game::setTiles(Tile *tiles[]) {
     return tilesLoaded;
 }
 
-bool touchesWall(SDL_Rect box, Tile *tiles[]) {
+bool touchesWall(SDL_Rect box, IsometricTile *tiles[]) {
     //Go through the tiles
     for (int i = 0; i < TOTAL_TILES; ++i) {
         //If the tile is a wall type tile
@@ -727,7 +708,7 @@ int Game::run(int argc, char *argv[]) {
         printf("Failed to initialize!\n");
     } else {
         //The level tiles
-        Tile *tileSet[TOTAL_TILES];
+        IsometricTile *tileSet[TOTAL_TILES];
 
         //Load media
         if (!loadMedia(tileSet)) {

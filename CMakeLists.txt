@@ -7,7 +7,7 @@ file(GLOB CLIENT_SOURCES "src/client/*.cpp" "src/common/*.cpp")
 file(GLOB SERVER_SOURCES "src/server/*.cpp/" "src/common/*.cpp")
 file(GLOB TEST_SOURCES "tests/unit/*.cpp" "src/common/*.cpp")
 
-add_executable(client.exe ${CLIENT_SOURCES} src/client/Game.cpp src/client/Game.h)
+add_executable(client.exe ${CLIENT_SOURCES} src/client/Game.cpp src/client/Game.h src/client/Constants.h)
 add_executable(server.exe ${SERVER_SOURCES})
 add_executable(unit.exe ${TEST_SOURCES})
 

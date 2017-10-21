@@ -10,17 +10,17 @@
 #include <string>
 #include <SDL_rect.h>
 
-class Tile;
+class IsometricTile;
 
 class Game {
 public:
     int run(int argc, char *argv[]);
     void interactWithServer(Socket &client, std::string text);
     //bool touchesWall(SDL_Rect box, Tile *tiles[]);
-    bool setTiles(Tile *tiles[]);
+    bool setTiles(IsometricTile *tiles[]);
     //bool checkCollision(SDL_Rect a, SDL_Rect b);
-    void close(Tile *tiles[]);
-    bool loadMedia(Tile *tiles[]);
+    void close(IsometricTile *tiles[]);
+    bool loadMedia(IsometricTile *tiles[]);
     bool init();
 };
 
