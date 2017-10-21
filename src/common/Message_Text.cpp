@@ -32,7 +32,7 @@ TextMessage receiveFrom(Socket &sock) {
 
     // Don't forget the all-important terminating null byte.
     char *message = new char[len + 1];
-    if (sock.receive(message, len) < len) {
+    if (sock.receive(message, len) < (int)len) {
         delete message;
         throw std::runtime_error("No se pudo recibir la cola completa.");
     }
