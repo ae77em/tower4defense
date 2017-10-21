@@ -9,11 +9,17 @@
 #include <Socket.h>
 #include <string>
 #include <SDL_rect.h>
-
-class IsometricTile;
+#include <SDL_video.h>
+#include <SDL_system.h>
+#include "Constants.h"
+#include "LTexture.h"
+#include "IsometricTile.h"
 
 class Game {
 public:
+    Game();
+    ~Game();
+
     int run(int argc, char *argv[]);
     void interactWithServer(Socket &client, std::string text);
     //bool touchesWall(SDL_Rect box, Tile *tiles[]);
@@ -22,6 +28,20 @@ public:
     void close(IsometricTile *tiles[]);
     bool loadMedia(IsometricTile *tiles[]);
     bool init();
+
+private:
+    //The window we'll be rendering to
+    SDL_Window *gWindow = NULL;
+
+    //The window renderer
+    SDL_Renderer *gRenderer = NULL;
+
+    LTexture gDotTexture;
+
+    SDL_Rect gTileClips[TOTAL_TILE_SPRITES];
+
+    //Scene textures
+    LTexture gTileTextures[TOTAL_TILE_SPRITES];
 };
 
 #endif //TP4_TOWERDEFENSE_GAME_H

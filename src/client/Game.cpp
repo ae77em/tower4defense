@@ -1,400 +1,16 @@
-//
-// Created by esteban on 20/10/17.
-//
-
 #include "Game.h"
 
 #include <gtkmm.h>
 #include <iostream>
-#include <string>
 #include <fstream>
-#include <streambuf>
-
-#include "Socket.h"
 #include "Message_Text.h"
-#include "Constants.h"
-
-/*This source code copyrighted by Lazy Foo' Productions (2004-2015)
-and may not be redistributed without written permission.*/
-
-//Using SDL, SDL_image, standard IO, strings, and file streams
+#include "Dot.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include <cstdio>
-#include <string>
-#include <fstream>
 
-//Texture wrapper class
+Game::Game(){}
 
-class LTexture {
-public:
-    //Initializes variables
-    LTexture();
-
-    //Deallocates memory
-    ~LTexture();
-
-    //Loads image at specified path
-    bool loadFromFile(std::string path);
-
-#ifdef _SDL_TTF_H
-    //Creates image from font string
-    bool loadFromRenderedText(std::string textureText, SDL_Color textColor);
-#endif
-
-    //Deallocates texture
-    void free();
-
-    //Set color modulation
-    void setColor(Uint8 red, Uint8 green, Uint8 blue);
-
-    //Set blending
-    void setBlendMode(SDL_BlendMode blending);
-
-    //Set alpha modulation
-    void setAlpha(Uint8 alpha);
-
-    //Renders texture at given point
-    void render(int x,
-                int y,
-                SDL_Rect *clip = NULL,
-                double angle = 0.0,
-                SDL_Point *center = NULL,
-                SDL_RendererFlip flip = SDL_FLIP_NONE);
-
-    //Gets image dimensions
-    int getWidth();
-
-    int getHeight();
-
-private:
-    //The actual hardware texture
-    SDL_Texture *mTexture;
-
-    //Image dimensions
-    int mWidth;
-    int mHeight;
-};
-
-//The tile
-
-class IsometricTile {
-public:
-    //Initializes position and type
-    IsometricTile(int x, int y, int tileType);
-
-    //Shows the tile
-    void render(SDL_Rect &camera);
-
-    //Get the tile type
-    int getType();
-
-    //Get the collision box
-    SDL_Rect getBox();
-
-private:
-    //The attributes of the tile
-    SDL_Rect mBox;
-
-    //The tile type
-    int mType;
-};
-
-//The dot that will move around on the screen
-
-class Dot {
-public:
-    //The dimensions of the dot
-    static const int DOT_WIDTH = 20;
-    static const int DOT_HEIGHT = 20;
-
-    //Maximum axis velocity of the dot
-    static const int DOT_VEL = 10;
-
-    //Initializes the variables
-    Dot();
-
-    //Takes key presses and adjusts the dot's velocity
-    void handleEvent(SDL_Event &e, std::string &desc);
-
-    //Moves the dot and check collision against tiles
-    void move(IsometricTile *tiles[]);
-
-    //Centers the camera over the dot
-    void setCamera(SDL_Rect &camera);
-
-    //Shows the dot on the screen
-    void render(SDL_Rect &camera);
-
-private:
-    //Collision box of the dot
-    SDL_Rect mBox;
-
-    //The velocity of the dot
-    int mVelX, mVelY;
-};
-
-//Box collision detector
-bool checkCollision(SDL_Rect a, SDL_Rect b);
-
-//Checks collision box against set of tiles
-bool touchesWall(SDL_Rect box, IsometricTile *tiles[]);
-
-//The window we'll be rendering to
-SDL_Window *gWindow = NULL;
-
-//The window renderer
-SDL_Renderer *gRenderer = NULL;
-
-//Scene textures
-LTexture gDotTexture;
-LTexture gTileTexture;
-SDL_Rect gTileClips[TOTAL_TILE_SPRITES];
-
-LTexture::LTexture() {
-    //Initialize
-    mTexture = NULL;
-    mWidth = 0;
-    mHeight = 0;
-}
-
-LTexture::~LTexture() {
-    //Deallocate
-    free();
-}
-
-bool LTexture::loadFromFile(std::string path) {
-    //Get rid of preexisting texture
-    free();
-
-    //The final texture
-    SDL_Texture *newTexture = NULL;
-
-    //Load image at specified path
-    SDL_Surface *loadedSurface = IMG_Load(path.c_str());
-    if (loadedSurface == NULL) {
-        printf("Unable to load image %s! SDL_image Error: %s\n", path.c_str(),
-               IMG_GetError());
-    } else {
-        //Color key image
-        SDL_SetColorKey(loadedSurface,
-                        SDL_TRUE,
-                        SDL_MapRGB(loadedSurface->format, 0xFF, 0, 0xFF));
-
-        //Create texture from surface pixels
-        newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
-        if (newTexture == NULL) {
-            printf("Unable to create texture from %s! SDL Error: %s\n",
-                   path.c_str(), SDL_GetError());
-        } else {
-            //Get image dimensions
-            mWidth = loadedSurface->w;
-            mHeight = loadedSurface->h;
-        }
-
-        //Get rid of old loaded surface
-        SDL_FreeSurface(loadedSurface);
-    }
-
-    //Return success
-    mTexture = newTexture;
-    return mTexture != NULL;
-}
-
-void LTexture::free() {
-    //Free texture if it exists
-    if (mTexture != NULL) {
-        SDL_DestroyTexture(mTexture);
-        mTexture = NULL;
-        mWidth = 0;
-        mHeight = 0;
-    }
-}
-
-void LTexture::setColor(Uint8 red, Uint8 green, Uint8 blue) {
-    //Modulate texture rgb
-    SDL_SetTextureColorMod(mTexture, red, green, blue);
-}
-
-void LTexture::setBlendMode(SDL_BlendMode blending) {
-    //Set blending function
-    SDL_SetTextureBlendMode(mTexture, blending);
-}
-
-void LTexture::setAlpha(Uint8 alpha) {
-    //Modulate texture alpha
-    SDL_SetTextureAlphaMod(mTexture, alpha);
-}
-
-void LTexture::render(int x,
-                      int y,
-                      SDL_Rect *clip,
-                      double angle,
-                      SDL_Point *center,
-                      SDL_RendererFlip flip) {
-    //Set rendering space and render to screen
-    SDL_Rect renderQuad = {x, y, mWidth, mHeight};
-
-    //Set clip rendering dimensions
-    if (clip != NULL) {
-        renderQuad.w = clip->w;
-        renderQuad.h = clip->h;
-    }
-
-    //Render to screen
-    SDL_RenderCopyEx(gRenderer,
-                     mTexture,
-                     clip,
-                     &renderQuad,
-                     angle,
-                     center,
-                     flip);
-}
-
-int LTexture::getWidth() {
-    return mWidth;
-}
-
-int LTexture::getHeight() {
-    return mHeight;
-}
-
-IsometricTile::IsometricTile(int x, int y, int tileType) {
-    //Get the offsets
-    mBox.x = x;
-    mBox.y = y;
-
-    //Set the collision box
-    mBox.w = TILE_WIDTH;
-    mBox.h = TILE_HEIGHT;
-
-    //Get the tile type
-    mType = 0;
-}
-
-void IsometricTile::render(SDL_Rect &camera) {
-    //If the tile is on screen
-    if (checkCollision(camera, mBox)) {
-        //Show the tile
-        int isox = mBox.x - camera.x;
-        int isoy = mBox.y - camera.y;
-
-        gTileTexture.render(isox,
-                            isoy,
-                            &gTileClips[mType]);
-    }
-}
-
-int IsometricTile::getType() {
-    return mType;
-}
-
-SDL_Rect IsometricTile::getBox() {
-    return mBox;
-}
-
-Dot::Dot() {
-    //Initialize the collision box
-    mBox.x = 0;
-    mBox.y = 0;
-    mBox.w = DOT_WIDTH;
-    mBox.h = DOT_HEIGHT;
-
-    //Initialize the velocity
-    mVelX = 0;
-    mVelY = 0;
-}
-
-void Dot::handleEvent(SDL_Event &e, std::string &desc) {
-    //If a key was pressed
-    if (e.type == SDL_KEYDOWN && e.key.repeat == 0) {
-        desc = "aprete boton";
-        //Adjust the velocity
-        switch (e.key.keysym.sym) {
-            case SDLK_UP:
-                mVelY -= DOT_VEL;
-                break;
-            case SDLK_DOWN:
-                mVelY += DOT_VEL;
-                break;
-            case SDLK_LEFT:
-                mVelX -= DOT_VEL;
-                break;
-            case SDLK_RIGHT:
-                mVelX += DOT_VEL;
-                break;
-            default:
-                desc = "";
-        }
-    }        //If a key was released
-    else if (e.type == SDL_KEYUP && e.key.repeat == 0) {
-        //Adjust the velocity
-        desc = "solte boton";
-        switch (e.key.keysym.sym) {
-            case SDLK_UP:
-                mVelY += DOT_VEL;
-                break;
-            case SDLK_DOWN:
-                mVelY -= DOT_VEL;
-                break;
-            case SDLK_LEFT:
-                mVelX += DOT_VEL;
-                break;
-            case SDLK_RIGHT:
-                mVelX -= DOT_VEL;
-                break;
-            default:
-                desc = "";
-        }
-    }
-}
-
-void Dot::move(IsometricTile *tiles[]) {
-    //Move the dot left or right
-    mBox.x += mVelX;
-
-    //If the dot went too far to the left or right
-    if ((mBox.x < 0)
-        || (mBox.x + DOT_WIDTH > ((TILES_ROWS + 2) * TILE_WIDTH)) ) {
-        //move back
-        mBox.x -= mVelX;
-    }
-
-    //Move the dot up or down
-    mBox.y += mVelY;
-
-    //If the dot went too far up or down
-    if ((mBox.y < 0)
-        || (mBox.y + DOT_HEIGHT > ((TILES_COLUMNS - 2) * TILE_HEIGHT))) {
-        //move back
-        mBox.y -= mVelY;
-    }
-}
-
-void Dot::setCamera(SDL_Rect &camera) {
-    //Center the camera over the dot
-    camera.x = (mBox.x + DOT_WIDTH / 2) - SCREEN_WIDTH / 2;
-    camera.y = (mBox.y + DOT_HEIGHT / 2) - SCREEN_HEIGHT / 2;
-
-    //Keep the camera in bounds
-    if (camera.x < 0) {
-        camera.x = 0;
-    }
-    if (camera.y < 0) {
-        camera.y = 0;
-    }
-    if (camera.x > ((TILES_ROWS + 2) * TILE_WIDTH) - camera.w) {
-        camera.x = ((TILES_ROWS + 2) * TILE_WIDTH) - camera.w;
-    }
-    if (camera.y > ((TILES_COLUMNS - 2) * TILE_HEIGHT) - camera.h) {
-        camera.y = ((TILES_COLUMNS - 2) * TILE_HEIGHT) - camera.h;
-    }
-}
-
-void Dot::render(SDL_Rect &camera) {
-    //Show the dot
-    gDotTexture.render(mBox.x - camera.x, mBox.y - camera.y);
-}
+Game::~Game(){}
 
 bool Game::init() {
     //Initialization flag
@@ -411,7 +27,7 @@ bool Game::init() {
         }
 
         //Create window
-        gWindow = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED,
+        gWindow = SDL_CreateWindow("Tower4Defense", SDL_WINDOWPOS_UNDEFINED,
                                    SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
                                    SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
         if (gWindow == NULL) {
@@ -429,7 +45,7 @@ bool Game::init() {
                 success = false;
             } else {
                 //Initialize renderer color
-                SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+                SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 0xFF);
 
                 //Initialize PNG loading
                 int imgFlags = IMG_INIT_PNG;
@@ -450,15 +66,17 @@ bool Game::loadMedia(IsometricTile *tiles[]) {
     bool success = true;
 
     //Load dot texture
-    if (!gDotTexture.loadFromFile("dot.bmp")) {
+    if (!gDotTexture.loadFromFile("dot.bmp", gRenderer)) {
         printf("Failed to load dot texture!\n");
         success = false;
     }
 
     //Load tile texture
-    if (!gTileTexture.loadFromFile("images/sprites/tile-grass.png")) {
-        printf("Failed to load tile set texture!\n");
-        success = false;
+    for (int i = 0; i < TOTAL_TILE_SPRITES; ++i) {
+        if (!gTileTextures[i].loadFromFile(TILES_IMAGES_PATHS[i], gRenderer)) {
+            printf("Failed to load tile set texture!\n");
+            success = false;
+        }
     }
 
     //Load tile map
@@ -481,7 +99,9 @@ void Game::close(IsometricTile *tiles[]) {
 
     //Free loaded images
     gDotTexture.free();
-    gTileTexture.free();
+    for (int i = 0; i < TOTAL_TILE_SPRITES; ++i) {
+        gTileTextures[i].free();
+    }
 
     //Destroy window
     SDL_DestroyRenderer(gRenderer);
@@ -492,46 +112,6 @@ void Game::close(IsometricTile *tiles[]) {
     //Quit SDL subsystems
     IMG_Quit();
     SDL_Quit();
-}
-
-bool checkCollision(SDL_Rect a, SDL_Rect b) {
-    //The sides of the rectangles
-    int leftA, leftB;
-    int rightA, rightB;
-    int topA, topB;
-    int bottomA, bottomB;
-
-    //Calculate the sides of rect A
-    leftA = a.x;
-    rightA = a.x + a.w;
-    topA = a.y;
-    bottomA = a.y + a.h;
-
-    //Calculate the sides of rect B
-    leftB = b.x;
-    rightB = b.x + b.w;
-    topB = b.y;
-    bottomB = b.y + b.h;
-
-    //If any of the sides from A are outside of B
-    if (bottomA <= topB) {
-        return false;
-    }
-
-    if (topA >= bottomB) {
-        return false;
-    }
-
-    if (rightA <= leftB) {
-        return false;
-    }
-
-    if (leftA >= rightB) {
-        return false;
-    }
-
-    //If none of the sides from A are outside B
-    return true;
 }
 
 bool Game::setTiles(IsometricTile *tiles[]) {
@@ -572,7 +152,7 @@ bool Game::setTiles(IsometricTile *tiles[]) {
                 y = yoffset + (i * TILE_HEIGHT / 2) - (j * TILE_HEIGHT / 2);
 
                 //If the number is a valid tile number
-                if ((tileType >= 0) && (tileType < TOTAL_TILE_SPRITES)) {
+                if ((tileType >= 0) /*&& (tileType < TOTAL_TILE_SPRITES)*/) {
                     k = i * TILES_COLUMNS + j;
                     tiles[k] = new IsometricTile(x, y, tileType);
                 }                //If we don't recognize the tile type
@@ -592,60 +172,10 @@ bool Game::setTiles(IsometricTile *tiles[]) {
             gTileClips[TILE_GRASS].w = TILE_WIDTH;
             gTileClips[TILE_GRASS].h = TILE_HEIGHT;
 
-            gTileClips[TILE_GREEN].x = 0;
-            gTileClips[TILE_GREEN].y = 80;
-            gTileClips[TILE_GREEN].w = TILE_WIDTH;
-            gTileClips[TILE_GREEN].h = TILE_HEIGHT;
-
-            gTileClips[TILE_BLUE].x = 0;
-            gTileClips[TILE_BLUE].y = 160;
-            gTileClips[TILE_BLUE].w = TILE_WIDTH;
-            gTileClips[TILE_BLUE].h = TILE_HEIGHT;
-
-            gTileClips[TILE_TOPLEFT].x = 80;
-            gTileClips[TILE_TOPLEFT].y = 0;
-            gTileClips[TILE_TOPLEFT].w = TILE_WIDTH;
-            gTileClips[TILE_TOPLEFT].h = TILE_HEIGHT;
-
-            gTileClips[TILE_LEFT].x = 80;
-            gTileClips[TILE_LEFT].y = 80;
-            gTileClips[TILE_LEFT].w = TILE_WIDTH;
-            gTileClips[TILE_LEFT].h = TILE_HEIGHT;
-
-            gTileClips[TILE_BOTTOMLEFT].x = 80;
-            gTileClips[TILE_BOTTOMLEFT].y = 160;
-            gTileClips[TILE_BOTTOMLEFT].w = TILE_WIDTH;
-            gTileClips[TILE_BOTTOMLEFT].h = TILE_HEIGHT;
-
-            gTileClips[TILE_TOP].x = 160;
-            gTileClips[TILE_TOP].y = 0;
-            gTileClips[TILE_TOP].w = TILE_WIDTH;
-            gTileClips[TILE_TOP].h = TILE_HEIGHT;
-
-            gTileClips[TILE_CENTER].x = 160;
-            gTileClips[TILE_CENTER].y = 80;
-            gTileClips[TILE_CENTER].w = TILE_WIDTH;
-            gTileClips[TILE_CENTER].h = TILE_HEIGHT;
-
-            gTileClips[TILE_BOTTOM].x = 160;
-            gTileClips[TILE_BOTTOM].y = 160;
-            gTileClips[TILE_BOTTOM].w = TILE_WIDTH;
-            gTileClips[TILE_BOTTOM].h = TILE_HEIGHT;
-
-            gTileClips[TILE_TOPRIGHT].x = 240;
-            gTileClips[TILE_TOPRIGHT].y = 0;
-            gTileClips[TILE_TOPRIGHT].w = TILE_WIDTH;
-            gTileClips[TILE_TOPRIGHT].h = TILE_HEIGHT;
-
-            gTileClips[TILE_RIGHT].x = 240;
-            gTileClips[TILE_RIGHT].y = 80;
-            gTileClips[TILE_RIGHT].w = TILE_WIDTH;
-            gTileClips[TILE_RIGHT].h = TILE_HEIGHT;
-
-            gTileClips[TILE_BOTTOMRIGHT].x = 240;
-            gTileClips[TILE_BOTTOMRIGHT].y = 160;
-            gTileClips[TILE_BOTTOMRIGHT].w = TILE_WIDTH;
-            gTileClips[TILE_BOTTOMRIGHT].h = TILE_HEIGHT;
+            gTileClips[TILE_EARTH_TOWER].x = 0;
+            gTileClips[TILE_EARTH_TOWER].y = 0;
+            gTileClips[TILE_EARTH_TOWER].w = 160;
+            gTileClips[TILE_EARTH_TOWER].h = 194;
         }
     }
 
@@ -713,6 +243,11 @@ int Game::run(int argc, char *argv[]) {
 
                     //Handle input for the dot
                     dot.handleEvent(e, mov_description);
+
+                    //Render level
+                    for (int i = 0; i < TOTAL_TILES; ++i) {
+                        tileSet[i]->handleEvent(e, mov_description);
+                    }
                 }
 
                 //Move the dot
@@ -725,15 +260,15 @@ int Game::run(int argc, char *argv[]) {
 
                 //Render level
                 for (int i = 0; i < TOTAL_TILES; ++i) {
-                    tileSet[i]->render(camera);
+                    tileSet[i]->render(camera, gTileClips, gRenderer, gTileTextures);
                 }
 
                 //Render dot
-                dot.render(camera);
+                dot.render(gDotTexture, camera, gRenderer);
 
                 //Update screen
                 SDL_RenderPresent(gRenderer);
-                if (!mov_description.empty()){
+                if (!mov_description.empty()) {
                     interactWithServer(client, mov_description);
                 }
             }
