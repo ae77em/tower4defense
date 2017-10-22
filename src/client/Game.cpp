@@ -171,15 +171,15 @@ bool Game::setTiles(IsometricTile *tiles[]) {
 
         //Clip the sprite sheet
         if (tilesLoaded) {
-            gTileClips[TILE_GRASS].x = 0;
-            gTileClips[TILE_GRASS].y = 0;
-            gTileClips[TILE_GRASS].w = ISO_TILE_WIDTH;
-            gTileClips[TILE_GRASS].h = ISO_TILE_HEIGHT;
+            gTileClips[GRASS].x = 0;
+            gTileClips[GRASS].y = 0;
+            gTileClips[GRASS].w = ISO_TILE_WIDTH;
+            gTileClips[GRASS].h = ISO_TILE_HEIGHT;
 
-            gTileClips[TILE_EARTH_TOWER].x = 0;
-            gTileClips[TILE_EARTH_TOWER].y = 0;
-            gTileClips[TILE_EARTH_TOWER].w = 160;
-            gTileClips[TILE_EARTH_TOWER].h = 194;
+            gTileClips[EARTH_TOWER].x = 0;
+            gTileClips[EARTH_TOWER].y = 0;
+            gTileClips[EARTH_TOWER].w = ISO_TILE_WIDTH;
+            gTileClips[EARTH_TOWER].h = 194;
         }
 
         //portal

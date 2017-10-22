@@ -81,3 +81,30 @@ Point Utils::getMouseRelativePoint(const SDL_Rect &camera) {
     return point;
 }
 
+SDL_Rect Utils::getBoxByTileType(int type){
+    SDL_Rect toReturn;
+
+    switch (type){
+        case GRASS:
+            toReturn.x = 0;
+            toReturn.y = 0;
+            toReturn.h = ISO_TILE_HEIGHT;
+            toReturn.w = ISO_TILE_WIDTH;
+            break;
+        case EARTH_TOWER:
+            toReturn.x = 0;
+            toReturn.y = 0;
+            toReturn.h = 194;
+            toReturn.w = ISO_TILE_WIDTH;
+            break;
+        default:
+            toReturn.x = 0;
+            toReturn.y = 0;
+            toReturn.h = ISO_TILE_HEIGHT;
+            toReturn.w = ISO_TILE_WIDTH;
+    }
+
+    return toReturn;
+}
+
+
