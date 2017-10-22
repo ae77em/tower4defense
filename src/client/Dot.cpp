@@ -65,8 +65,7 @@ void Dot::move() {
 
     //If the dot went too far to the left or right
     int width = (TILES_ROWS + 2) * ISO_TILE_WIDTH;
-    if ((mBox.x < -width)
-        || (mBox.x + DOT_WIDTH > width)) {
+    if ((mBox.x < -width) || (mBox.x + DOT_WIDTH > width)) {
         //move back
         mBox.x -= mVelX;
     }
@@ -76,17 +75,13 @@ void Dot::move() {
 
     //If the dot went too far up or down
     int height = (TILES_COLUMNS - 2) * ISO_TILE_HEIGHT;
-    if ((mBox.y < -height)
-        || (mBox.y + DOT_HEIGHT > height)) {
+    if ((mBox.y < -height) || (mBox.y + DOT_HEIGHT > height)) {
         //move back
         mBox.y -= mVelY;
     }
 }
 
 void Dot::setCamera(SDL_Rect &camera) {
-
-    Point point = Utils::getMouseRelativePoint(camera);
-
     //Center the camera over the dot
     camera.x = (mBox.x + DOT_WIDTH / 2) - SCREEN_WIDTH / 2;
     camera.y = (mBox.y + DOT_HEIGHT / 2) - SCREEN_HEIGHT / 2;

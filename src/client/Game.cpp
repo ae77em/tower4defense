@@ -183,7 +183,6 @@ bool Game::setTiles(IsometricTile *tiles[]) {
         }
 
         //portal
-
         unsigned int x_i = 0;
         unsigned int y_i = 0;
         for (unsigned int i = 0 ; i < 30 ; ++i) {
@@ -203,16 +202,12 @@ bool Game::setTiles(IsometricTile *tiles[]) {
                 y_i = 1;    
             } else if (i == 19) {
                 y_i = 2;    
-            } 
-            
-            
+            }
         }
-
 
         x_i = 0;
         y_i = 0;
         for (unsigned int i = 0 ; i < 30 ; ++i) {
-
             if (x_i < 15) {
                 ++x_i;
             } else {

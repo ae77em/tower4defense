@@ -2,6 +2,8 @@
 #include "Utils.h"
 #include "Constants.h"
 
+#include <iostream>
+
 bool Utils::checkCollision(SDL_Rect a, SDL_Rect b) {
     //The sides of the rectangles
     int leftA, leftB;
@@ -50,8 +52,22 @@ Point Utils::mapToScreen(int i, int j) {
 }
 
 Point Utils::screenToMap(int x, int y) {
-    int i = (x / (ISO_TILE_WIDTH / 2) + y / (ISO_TILE_HEIGHT / 2)) /2;
+
+    std::cout
+            << "mouse x: "
+            << std::to_string(x)
+            << "; mouse y: "
+            << std::to_string(y);
+
+    int i = (x / (ISO_TILE_WIDTH / 2) + y / (ISO_TILE_HEIGHT / 2)) / 2;
     int j = (y / (ISO_TILE_HEIGHT / 2) - (x / (ISO_TILE_WIDTH / 2))) /2;
+
+    std::cout
+            << "-> screen i: "
+            << std::to_string(i)
+            << "; screen j: "
+            << std::to_string(j)
+            << std::endl;
 
     return Point(i, j);
 }
