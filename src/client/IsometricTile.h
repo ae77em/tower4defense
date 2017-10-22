@@ -39,10 +39,10 @@ public:
 
 private:
     //The attributes of the tile
-    SDL_Rect mBox;
+    SDL_Rect containerBoxAttributes;
 
     //The tile type
-    int mType;
+    int type;
 };
 
 

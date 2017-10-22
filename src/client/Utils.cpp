@@ -44,45 +44,25 @@ bool Utils::checkCollision(SDL_Rect a, SDL_Rect b) {
     return true;
 }
 
-Point Utils::mapToScreen(int i, int j) {
-    int x = (i - j) * ISO_TILE_WIDTH / 2;
-    int y = (i + j) * ISO_TILE_HEIGHT / 2;
+Point Utils::mapToScreen(int i, int j, int h_offset, int w_offset) {
+    int x = (i - j) * (ISO_TILE_WIDTH + w_offset)/ 2;
+    int y = (i + j) * (ISO_TILE_HEIGHT + h_offset) / 2;
 
     return Point(x,y);
 }
 
 Point Utils::screenToMap(int x, int y) {
-
-    std::cout
-            << "mouse x: "
-            << std::to_string(x)
-            << "; mouse y: "
-            << std::to_string(y);
-
-
     double x_d = static_cast<double>  (x);
     double y_d = static_cast<double>  (y);
 
-    double d_i = (   (  x_d  / (ISO_TILE_WIDTH  / 2)   )  + ( y_d / (ISO_TILE_HEIGHT / 2)     )    ) / 2;
-    double d_j = (   (  y_d  / (ISO_TILE_HEIGHT / 2)   )  - ( x_d / (ISO_TILE_WIDTH  / 2)     )    ) / 2;
+    double yByIsoTileHeightHalf = y_d / ISO_TILE_HEIGHT_HALF;
+    double xByIsoTileWithHalf = x_d / ISO_TILE_WIDTH_HALF;
+
+    double d_i = (yByIsoTileHeightHalf + xByIsoTileWithHalf) / 2;
+    double d_j = (yByIsoTileHeightHalf - xByIsoTileWithHalf) / 2;
 
     int i = int(d_i + 0.5) - 1;
     int j = int(d_j + 0.5);
-
-    std::cout
-            << "-> screen i: "
-            << std::to_string(d_i)
-            << "; screen j: "
-            << std::to_string(d_j)
-            << std::endl;
-
-
-    std::cout
-            << "-> screen i: "
-            << std::to_string(i)
-            << "; screen j: "
-            << std::to_string(j)
-            << std::endl;
 
     return Point(i, j);
 }
