@@ -1,7 +1,5 @@
 #include "Socket.h"
 
-#include "Exceptions.h"
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -13,14 +11,18 @@
 #include <memory.h>
 #include <iostream>
 #include <string>
-#include <exception>
+#include <stdexcept>
 
 Socket::Socket() {
     this->socket = ::socket(AF_INET, SOCK_STREAM, 0);
+    const int en = errno;
 
-    if (this->socket == -1) {
-        throw newsocket_exception();
-    }
+    // TODO: este error seria mas util con el output de strerror en lugar del
+    // codigo de error. strerror no es thread safe y strerror_r viene en dos
+    // versiones, la disponibilidad de las mismas variando con el sistema
+    // operativo y el compilador usado.
+    if (this->socket == -1) throw std::runtime_error("No se pudo crear"
+            " el socket. errno: " + std::to_string(en));
 }
 
 Socket::Socket(int socket) {
@@ -43,18 +45,19 @@ void Socket::bind(unsigned short port) {
     bind_result = ::bind(this->socket,
             (struct sockaddr *) &addr,
             (socklen_t)sizeof (struct sockaddr));
+    const int en = errno;
 
-    if (bind_result < 0) {
-        throw bind_exception();
-    }
+    if (bind_result < 0) throw std::runtime_error("No se pudo bindear"
+            " el socket en el puerto " + std::to_string(port) + ". errno: "
+            + std::to_string(en));
 }
 
 void Socket::listen(unsigned short n) {
     int listen_status = ::listen(this->socket, n);
+    const int en = errno;
 
-    if (listen_status < 0) {
-        throw listen_exception();
-    }
+    if (listen_status < 0) throw std::runtime_error("No se pudo escuchar"
+            " del socket. errno: " + std::to_string(en));
 }
 
 void Socket::listen() {
@@ -65,7 +68,10 @@ void Socket::connect(const char* host_name, unsigned short port) {
     struct hostent *he;
 
     if ((he = ::gethostbyname(host_name)) == NULL) {
-        throw gethost_exception();
+        extern h_errno;
+        const int en = h_errno;
+        throw std::runtime_error("No se pudo obtener la direccion del host "
+                + std::string(host_name) + ", errno: " + std::to_string(en));
     } else {
         struct sockaddr_in their_addr;
         int conn_status;
@@ -79,10 +85,11 @@ void Socket::connect(const char* host_name, unsigned short port) {
                 this->socket,
                 (struct sockaddr *) &their_addr,
                 sizeof (struct sockaddr));
+        const int en = errno;
 
-        if (conn_status == -1) {
-            throw connect_exception();
-        }
+        if (conn_status == -1) throw std::runtime_error("No se pudo conectar"
+                " el socket. errno: " + std::to_string(en) + " host: "
+                + std::string(host_name) + " port: " + std::to_string(port));
     }
 }
 
@@ -90,10 +97,10 @@ int Socket::accept() {
     int newsockfd;
 
     newsockfd = ::accept(this->socket, NULL, NULL);
+    const int en = errno;
 
-    if (newsockfd < 0) {
-        throw accept_exception();
-    }
+    if (newsockfd < 0) throw std::runtime_error("No se pudo aceptar del socket."
+            " errno: " + std::to_string(en));
 
     return newsockfd;
 }
@@ -108,11 +115,15 @@ void Socket::send(const char* buffer, size_t length) {
                 &buffer[sent],
                 length - sent,
                 MSG_NOSIGNAL);
+        const int en = errno;
 
         if (s == 0) {
             is_open_socket = false;
         } else if (s < 0) {
-            throw send_exception();
+            throw std::runtime_error("Fallo la escritura al socket. errno: "
+                    + std::to_string(en) + " se intentaron enviar "
+                    + std::to_string(length) + " bytes, se enviaron "
+                    + std::to_string(sent) + " bytes exitosamente");
         } else {
             sent += s;
         }
@@ -129,11 +140,15 @@ int Socket::receive(char* buffer, size_t length) {
                 &buffer[received],
                 length - received,
                 MSG_NOSIGNAL);
+        const int en = errno;
 
         if (r == 0) {
             is_open_socket = false;
         } else if (r < 0) {
-            throw recv_exception();
+            throw std::runtime_error("Fallo la lectura del socket. errno: "
+                    + std::to_string(en) + " se intentaron leer "
+                    + std::to_string(length) + " bytes, se leyeron "
+                    + std::to_string(received) + " bytes exitosamente");
         } else {
             received += r;
         }
