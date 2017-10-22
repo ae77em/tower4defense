@@ -2,7 +2,7 @@
 #include "Constants.h"
 #include "Utils.h"
 
-IsometricTile::IsometricTile(int x, int y, int tileType) {
+IsometricTile::IsometricTile(int x, int y) {
     //Get the offsets
     mBox.x = x;
     mBox.y = y;
@@ -32,6 +32,21 @@ void IsometricTile::render(SDL_Rect &camera,
                                     isoy,
                                     &gTileClips[mType]);
     //}
+}
+
+
+void IsometricTile::render_sprite(SDL_Rect &camera,
+                           SDL_Rect *gTileClips,
+                           SDL_Renderer *gRenderer,
+                           LTexture *gTileTextures) {
+
+    Point screenPoint = Utils::map_to_screen(mBox.x, mBox.y);
+
+        int isox = screenPoint.x - camera.x;
+        int isoy = screenPoint.y - camera.y;
+
+    gTileTextures->render_sprite(gRenderer, isox, isoy, gTileClips);
+
 }
 
 void IsometricTile::handleEvent(SDL_Event &e, std::string &desc) {

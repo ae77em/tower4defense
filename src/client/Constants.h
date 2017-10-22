@@ -31,6 +31,7 @@ enum LTileSprite {
     BUTTON_SPRITE_MOUSE_DOWN = 1
 };
 
+
 const std::vector<std::string> TILES_IMAGES_PATHS({
     "images/sprites/tile-grass.png",
     "images/sprites/tower-earth-alone.png"
