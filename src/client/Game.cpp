@@ -245,33 +245,11 @@ int Game::run(int argc, char *argv[]) {
                     //Handle input for the dot
                     dot.handleEvent(e, mov_description);
 
-                    //Handle mouse events
-                    if (e.type == SDL_MOUSEBUTTONDOWN) {
-                        int mousePosX, mousePosY;
-
-                        SDL_GetMouseState(&mousePosX, &mousePosY);
-
-                        Point point = Utils::screen_to_map(mousePosX,
-                                                           mousePosY);
-                        std::cout
-                                << "mapa x: "
-                                << std::to_string(point.x)
-                                << std::endl;
-
-                        std::cout
-                                << "mapa y: "
-                                << std::to_string(point.y)
-                                << std::endl;
-
-                        if (point.isPositive()) {
-                            int tilePos = point.x * TILES_COLUMNS + point.y;
-                            tileSet[tilePos]->handleEvent(e, mov_description);
-                        }
-                    }
+                    handleMouseEvents(tileSet, camera, mov_description, e);
                 }
 
                 //Move the dot
-                dot.move(tileSet);
+                dot.move();
                 dot.setCamera(camera);
 
                 //Clear screen
@@ -300,4 +278,19 @@ int Game::run(int argc, char *argv[]) {
 
     return 0;
 }
+
+void Game::handleMouseEvents(IsometricTile *const *tileSet,
+                        const SDL_Rect &camera,
+                        std::string &mov_description,
+                        SDL_Event &e) const {
+    if (e.type == SDL_MOUSEBUTTONDOWN) {
+        Point point = Utils::getMouseRelativePoint(camera);
+
+        if (point.isPositive()) {
+            int tilePos = point.x * TILES_COLUMNS + point.y;
+            tileSet[tilePos]->handleEvent(e, mov_description);
+        }
+    }
+}
+
 

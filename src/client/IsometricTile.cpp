@@ -22,7 +22,7 @@ void IsometricTile::render(SDL_Rect &camera,
     //If the tile is on screen
     //if (Utils::checkCollision(camera, mBox)) {
         //Show the tile
-        Point screenPoint = Utils::map_to_screen(mBox.x, mBox.y);
+        Point screenPoint = Utils::mapToScreen(mBox.x, mBox.y);
 
         int isox = screenPoint.x - camera.x;
         int isoy = screenPoint.y - camera.y;
