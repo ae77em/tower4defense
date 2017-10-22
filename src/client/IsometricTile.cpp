@@ -1,3 +1,4 @@
+#include <iostream>
 #include "IsometricTile.h"
 #include "Constants.h"
 #include "Utils.h"
@@ -19,19 +20,22 @@ void IsometricTile::render(SDL_Rect &camera,
                            SDL_Rect *gTileClips,
                            SDL_Renderer *gRenderer,
                            LTexture *gTileTextures) {
-    //If the tile is on screen
-    //if (Utils::checkCollision(camera, mBox)) {
-        //Show the tile
-        Point screenPoint = Utils::mapToScreen(mBox.x, mBox.y);
+    Point screenPoint = Utils::mapToScreen(mBox.x, mBox.y);
 
-        int isox = screenPoint.x - camera.x;
-        int isoy = screenPoint.y - camera.y;
+    int offset = 0;
+    if (mType == 1){
+        mBox.h = 194;
+        offset = 194 - 80;
+        std::cout << "altura box: " << mBox.h << std::endl;
+    }
 
-        gTileTextures[mType].render(gRenderer,
-                                    isox,
-                                    isoy,
-                                    &gTileClips[mType]);
-    //}
+    int isox = screenPoint.x - camera.x;
+    int isoy = screenPoint.y - camera.y - offset;
+
+    gTileTextures[mType].render(gRenderer,
+                                isox,
+                                isoy,
+                                &gTileClips[mType]);
 }
 
 
