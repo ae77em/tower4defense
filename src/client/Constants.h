@@ -15,11 +15,13 @@ const int SCREEN_HEIGHT = 480;
 //Tile constants
 const int ISO_TILE_WIDTH = 160;
 const int ISO_TILE_HEIGHT = 80;
+const int ISO_TILE_WIDTH_HALF = ISO_TILE_WIDTH / 2;
+const int ISO_TILE_HEIGHT_HALF = ISO_TILE_HEIGHT / 2;
 const int SQUARE_TILE_WIDTH = 80; // width of the tile without iso perspective
 const int SQUARE_TILE_HEIGHT = 80; // height of the tile without iso perspective
-const int TOTAL_TILES = 192;
 const int TILES_ROWS = 12;
 const int TILES_COLUMNS = 16;
+const int TOTAL_TILES = TILES_ROWS * TILES_COLUMNS;
 const int TOTAL_TILE_SPRITES = 2;
 
 //The different tile sprites

@@ -4,15 +4,15 @@
 
 IsometricTile::IsometricTile(int x, int y) {
     //Get the offsets
-    mBox.x = x;
-    mBox.y = y;
+    containerBoxAttributes.x = x;
+    containerBoxAttributes.y = y;
 
     //Set the collision box
-    mBox.w = ISO_TILE_WIDTH;
-    mBox.h = ISO_TILE_HEIGHT;
+    containerBoxAttributes.w = ISO_TILE_WIDTH;
+    containerBoxAttributes.h = ISO_TILE_HEIGHT;
 
     //Get the tile type
-    mType = 0;
+    type = 0;
 }
 
 void IsometricTile::render(SDL_Rect &camera,
@@ -20,17 +20,23 @@ void IsometricTile::render(SDL_Rect &camera,
                            SDL_Renderer *gRenderer,
                            LTexture *gTileTextures) {
     //If the tile is on screen
-    //if (Utils::checkCollision(camera, mBox)) {
+    //if (Utils::checkCollision(camera, containerBoxAttributes)) {
         //Show the tile
-        Point screenPoint = Utils::mapToScreen(mBox.x, mBox.y);
+
+        Point screenPoint = Utils::mapToScreen(
+                containerBoxAttributes.x,
+                containerBoxAttributes.y,
+                ISO_TILE_HEIGHT - containerBoxAttributes.h,
+                ISO_TILE_WIDTH - containerBoxAttributes.w
+        );
 
         int isox = screenPoint.x - camera.x;
         int isoy = screenPoint.y - camera.y;
 
-        gTileTextures[mType].render(gRenderer,
+        gTileTextures[type].render(gRenderer,
                                     isox,
                                     isoy,
-                                    &gTileClips[mType]);
+                                    &gTileClips[type]);
     //}
 }
 
@@ -40,7 +46,7 @@ void IsometricTile::render_sprite(SDL_Rect &camera,
                            SDL_Renderer *gRenderer,
                            LTexture *gTileTextures) {
 
-    Point screenPoint = Utils::mapToScreen(mBox.x, mBox.y);
+    Point screenPoint = Utils::mapToScreen(containerBoxAttributes.x, containerBoxAttributes.y);
 
         int isox = screenPoint.x - camera.x;
         int isoy = screenPoint.y - camera.y;
@@ -49,20 +55,25 @@ void IsometricTile::render_sprite(SDL_Rect &camera,
 
 }
 
-void IsometricTile::handleEvent(SDL_Event &e, std::string &desc) {
+void IsometricTile::handleEvent(SDL_Event &e,
+                                std::string &desc) {
     //If mouse event happened
     if (e.type == SDL_MOUSEBUTTONDOWN) {
-        mType = (mType == BUTTON_SPRITE_MOUSE_DOWN)
+        type = (type == BUTTON_SPRITE_MOUSE_DOWN)
                             ? BUTTON_SPRITE_DEFAULT
                             : BUTTON_SPRITE_MOUSE_DOWN;
+
+        containerBoxAttributes.h = (type == BUTTON_SPRITE_MOUSE_DOWN) ? 160 :
+                                   194;
+
         desc.append("cambio tile...");
     }
 }
 
 int IsometricTile::getType() {
-    return mType;
+    return type;
 }
 
 SDL_Rect IsometricTile::getBox() {
-    return mBox;
+    return containerBoxAttributes;
 }
