@@ -14,6 +14,7 @@
 #include "Constants.h"
 #include "LTexture.h"
 #include "IsometricTile.h"
+#include "Point.h"
 
 class Game {
 public:
@@ -48,6 +49,11 @@ private:
 
     //Scene textures
     LTexture gTileTextures[TOTAL_TILE_SPRITES];
+
+    void handleMouseEvents(IsometricTile *const *tileSet,
+                           const SDL_Rect &camera,
+                           std::string &mov_description,
+                           SDL_Event &e) const;
 };
 
 #endif //TP4_TOWERDEFENSE_GAME_H

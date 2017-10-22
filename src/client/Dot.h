@@ -22,7 +22,7 @@ public:
     void handleEvent(SDL_Event &e, std::string &desc);
 
     //Moves the dot and check collision against tiles
-    void move(IsometricTile *tiles[]);
+    void move();
 
     //Centers the camera over the dot
     void setCamera(SDL_Rect &camera);

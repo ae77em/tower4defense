@@ -1,3 +1,4 @@
+#include <SDL_mouse.h>
 #include "Utils.h"
 #include "Constants.h"
 
@@ -41,16 +42,31 @@ bool Utils::checkCollision(SDL_Rect a, SDL_Rect b) {
     return true;
 }
 
-Point Utils::map_to_screen(int i, int j) {
+Point Utils::mapToScreen(int i, int j) {
     int x = (i - j) * ISO_TILE_WIDTH / 2;
     int y = (i + j) * ISO_TILE_HEIGHT / 2;
 
     return Point(x,y);
 }
 
-Point Utils::screen_to_map(int x, int y) {
+Point Utils::screenToMap(int x, int y) {
     int i = (x / (ISO_TILE_WIDTH / 2) + y / (ISO_TILE_HEIGHT / 2)) /2;
     int j = (y / (ISO_TILE_HEIGHT / 2) - (x / (ISO_TILE_WIDTH / 2))) /2;
 
     return Point(i, j);
 }
+
+Point Utils::getMouseRelativePoint(const SDL_Rect &camera) {
+    int mousePosX, mousePosY;
+
+    SDL_GetMouseState(&mousePosX, &mousePosY);
+
+    mousePosX += camera.x;
+    mousePosY += camera.y;
+
+    Point point = Utils::screenToMap(mousePosX,
+                                     mousePosY);
+
+    return point;
+}
+

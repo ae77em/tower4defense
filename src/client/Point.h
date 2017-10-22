@@ -6,7 +6,7 @@
 #define TP4_TOWERDEFENSE_POINT_H
 
 
-class Point {
+struct Point {
 public:
     Point(int x, int y){
         this->x = x;
@@ -22,6 +22,5 @@ public:
     int x;
     int y;
 };
-
 
 #endif //TP4_TOWERDEFENSE_POINT_H

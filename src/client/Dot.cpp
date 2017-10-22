@@ -1,5 +1,7 @@
 #include "Dot.h"
 #include "Constants.h"
+#include "Point.h"
+#include "Utils.h"
 
 Dot::Dot() {
     //Initialize the collision box
@@ -57,7 +59,7 @@ void Dot::handleEvent(SDL_Event &e, std::string &desc) {
     }
 }
 
-void Dot::move(IsometricTile *tiles[]) {
+void Dot::move() {
     //Move the dot left or right
     mBox.x += mVelX;
 
@@ -82,6 +84,9 @@ void Dot::move(IsometricTile *tiles[]) {
 }
 
 void Dot::setCamera(SDL_Rect &camera) {
+
+    Point point = Utils::getMouseRelativePoint(camera);
+
     //Center the camera over the dot
     camera.x = (mBox.x + DOT_WIDTH / 2) - SCREEN_WIDTH / 2;
     camera.y = (mBox.y + DOT_HEIGHT / 2) - SCREEN_HEIGHT / 2;

@@ -12,8 +12,9 @@
 class Utils {
 public:
     static bool checkCollision(SDL_Rect a, SDL_Rect b);
-    static Point map_to_screen(int i, int j);
-    static Point screen_to_map(int x, int y);
+    static Point mapToScreen(int i, int j);
+    static Point screenToMap(int x, int y);
+    static Point getMouseRelativePoint(const SDL_Rect &camera);
 };
 
 
