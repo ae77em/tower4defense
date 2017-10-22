@@ -59,8 +59,23 @@ Point Utils::screenToMap(int x, int y) {
             << "; mouse y: "
             << std::to_string(y);
 
-    int i = (x / (ISO_TILE_WIDTH / 2) + y / (ISO_TILE_HEIGHT / 2)) / 2;
-    int j = (y / (ISO_TILE_HEIGHT / 2) - (x / (ISO_TILE_WIDTH / 2))) /2;
+
+    double x_d = static_cast<double>  (x);
+    double y_d = static_cast<double>  (y);
+
+    double d_i = (   (  x_d  / (ISO_TILE_WIDTH  / 2)   )  + ( y_d / (ISO_TILE_HEIGHT / 2)     )    ) / 2;
+    double d_j = (   (  y_d  / (ISO_TILE_HEIGHT / 2)   )  - ( x_d / (ISO_TILE_WIDTH  / 2)     )    ) / 2;
+
+    int i = int(d_i + 0.5) - 1;
+    int j = int(d_j + 0.5);
+
+    std::cout
+            << "-> screen i: "
+            << std::to_string(d_i)
+            << "; screen j: "
+            << std::to_string(d_j)
+            << std::endl;
+
 
     std::cout
             << "-> screen i: "
