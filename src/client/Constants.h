@@ -25,10 +25,12 @@ const int TOTAL_TILES = TILES_ROWS * TILES_COLUMNS;
 const int TOTAL_TILE_SPRITES = 2;
 
 //The different tile sprites
-const int TILE_GRASS = 0;
-const int TILE_EARTH_TOWER = 1;
+enum TileType {
+    GRASS = 0,
+    EARTH_TOWER = 1
+};
 
-enum LTileSprite {
+enum LTileSpriteMouseEvent {
     BUTTON_SPRITE_DEFAULT = 0,
     BUTTON_SPRITE_MOUSE_DOWN = 1
 };

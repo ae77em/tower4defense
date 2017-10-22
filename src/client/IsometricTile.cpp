@@ -20,14 +20,12 @@ void IsometricTile::render(SDL_Rect &camera,
                            SDL_Rect *gTileClips,
                            SDL_Renderer *gRenderer,
                            LTexture *gTileTextures) {
+
     Point screenPoint = Utils::mapToScreen(containerBoxAttributes.x, containerBoxAttributes.y);
 
-    int offset = 0;
-    if (type == 1){
-        containerBoxAttributes.h = 194;
-        offset = 194 - 80;
-        std::cout << "altura box: " << containerBoxAttributes.h << std::endl;
-    }
+    SDL_Rect aux = Utils::getBoxByTileType(type);
+
+    int offset = aux.h - ISO_TILE_HEIGHT;
 
     int isox = screenPoint.x - camera.x;
     int isoy = screenPoint.y - camera.y - offset;
