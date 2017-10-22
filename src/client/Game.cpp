@@ -81,6 +81,9 @@ bool Game::loadMedia(IsometricTile *tiles[]) {
         }
     }
 
+    gSpriteSheetTexturePortalBlue.loadFromFile("images/sprites/portal-blue.png", gRenderer);
+    gSpriteSheetTexturePortalRed.loadFromFile("images/sprites/portal-red.png", gRenderer);
+
     //Load tile map
     if (!setTiles(tiles)) {
         printf("Failed to load tile set!\n");
@@ -155,7 +158,7 @@ bool Game::setTiles(IsometricTile *tiles[]) {
                 //If the number is a valid tile number
                 if ((tileType >= 0) /*&& (tileType < TOTAL_TILE_SPRITES)*/) {
                     k = i * TILES_COLUMNS + j;
-                    tiles[k] = new IsometricTile(x, y, tileType);
+                    tiles[k] = new IsometricTile(x, y);
                 }                //If we don't recognize the tile type
                 else {
                     //Stop loading map
@@ -177,6 +180,52 @@ bool Game::setTiles(IsometricTile *tiles[]) {
             gTileClips[TILE_EARTH_TOWER].y = 0;
             gTileClips[TILE_EARTH_TOWER].w = 160;
             gTileClips[TILE_EARTH_TOWER].h = 194;
+        }
+
+        //portal
+
+        unsigned int x_i = 0;
+        unsigned int y_i = 0;
+        for (unsigned int i = 0 ; i < 30 ; ++i) {
+            gSpriteClipsPortalRed[i].x = x_i*136;
+            gSpriteClipsPortalRed[i].y = y_i*185;
+            gSpriteClipsPortalRed[i].w = 136;
+            gSpriteClipsPortalRed[i].h = 185;
+
+            if (x_i < 10) {
+                ++x_i;
+            } else if (x_i == 10){
+                x_i = 0;
+            } 
+            
+
+            if (i == 9) {
+                y_i = 1;    
+            } else if (i == 19) {
+                y_i = 2;    
+            } 
+            
+            
+        }
+
+
+        x_i = 0;
+        y_i = 0;
+        for (unsigned int i = 0 ; i < 30 ; ++i) {
+
+            if (x_i < 15) {
+                ++x_i;
+            } else {
+                x_i = 0;
+            } 
+
+            if (i > 15) {
+                y_i = 1;    
+            }             
+            gSpriteClipsPortalBlue[i].x = x_i*136;
+            gSpriteClipsPortalBlue[i].y = y_i*185;
+            gSpriteClipsPortalBlue[i].w = 136;
+            gSpriteClipsPortalBlue[i].h = 185;
         }
     }
 
@@ -216,6 +265,9 @@ int Game::run(int argc, char *argv[]) {
         //The level tiles
         IsometricTile *tileSet[TOTAL_TILES];
 
+        IsometricTile portalBlue(0,0);
+        IsometricTile portalRed(5,5);
+
         //Load media
         if (!loadMedia(tileSet)) {
             printf("Failed to load media!\n");
@@ -231,6 +283,8 @@ int Game::run(int argc, char *argv[]) {
 
             //Level camera
             SDL_Rect camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+
+            int frame = 0;
 
             //While application is running
             while (!quit) {
@@ -264,10 +318,24 @@ int Game::run(int argc, char *argv[]) {
                 //Render dot
                 dot.render(gDotTexture, camera, gRenderer);
 
+                //Portales
+                SDL_Rect* currentClip = &gSpriteClipsPortalRed[frame];
+                portalBlue.render_sprite(camera, currentClip, gRenderer, &gSpriteSheetTexturePortalBlue);
+
+                currentClip = &gSpriteClipsPortalBlue[frame];
+                portalRed.render_sprite(camera, currentClip, gRenderer, &gSpriteSheetTexturePortalRed);
+
                 //Update screen
                 SDL_RenderPresent(gRenderer);
+
+                ++frame;
                 if (!mov_description.empty()) {
                     interactWithServer(client, mov_description);
+                }
+
+                //(agregado por el portal)
+                if (frame == 30) {
+                    frame = 0;
                 }
             }
         }

@@ -12,10 +12,15 @@
 class IsometricTile {
 public:
     //Initializes position and type
-    IsometricTile(int x, int y, int tileType);
+    IsometricTile(int x, int y);
 
     //Shows the tile
     void render(SDL_Rect &camera,
+                SDL_Rect *gTileClips,
+                SDL_Renderer *gRenderer,
+                LTexture *gTileTextures);
+
+     void render_sprite(SDL_Rect &camera,
                 SDL_Rect *gTileClips,
                 SDL_Renderer *gRenderer,
                 LTexture *gTileTextures);

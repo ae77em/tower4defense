@@ -41,6 +41,12 @@ private:
 
     SDL_Rect gTileClips[TOTAL_TILE_SPRITES];
 
+    SDL_Rect gSpriteClipsPortalBlue[30];
+    LTexture gSpriteSheetTexturePortalBlue;
+    
+    SDL_Rect gSpriteClipsPortalRed[30];
+    LTexture gSpriteSheetTexturePortalRed;
+
     //Scene textures
     LTexture gTileTextures[TOTAL_TILE_SPRITES];
 

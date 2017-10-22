@@ -1,6 +1,5 @@
 #include "Listener.h"
 #include "Socket.h"
-#include "Exceptions.h"
 
 #include <vector>
 #include <cstring>
@@ -44,7 +43,7 @@ void Listener::run(){
 
             rp->start();
         }
-    } catch (accept_exception ex) {
+    } catch (std::exception) {
         /* Catcheo la excepción que se lanza cuando fuerzo la salida del accept
          * que queda sin recibir ningún request. No hago nada...
          */
