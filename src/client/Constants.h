@@ -2,6 +2,7 @@
 #define TP4_TOWERDEFENSE_CONSTANTS_H
 
 #include <vector>
+#include <string>
 
 //Screen dimension constants
 const int SCREEN_WIDTH = 640;
@@ -12,8 +13,10 @@ const int SCREEN_HEIGHT = 480;
 //int LEVEL_HEIGHT = 960;
 
 //Tile constants
-const int TILE_WIDTH = 160;
-const int TILE_HEIGHT = 80;
+const int ISO_TILE_WIDTH = 160;
+const int ISO_TILE_HEIGHT = 80;
+const int SQUARE_TILE_WIDTH = 80; // width of the tile without iso perspective
+const int SQUARE_TILE_HEIGHT = 80; // height of the tile without iso perspective
 const int TOTAL_TILES = 192;
 const int TILES_ROWS = 12;
 const int TILES_COLUMNS = 16;

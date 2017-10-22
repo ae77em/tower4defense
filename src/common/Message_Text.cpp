@@ -31,14 +31,17 @@ TextMessage receiveFrom(Socket &sock) {
     sscanf(prefix, "%010lu", &len);
 
     // Don't forget the all-important terminating null byte.
-    char *message = new char[len + 1];
+    char *message = new char[4096];
     if (sock.receive(message, len) < (int)len) {
         delete message;
         throw std::runtime_error("No se pudo recibir la cola completa.");
     }
 
+    message[len] = '\0';
+
     std::string s(message);
-    return TextMessage(message);
+
+    return TextMessage(s);
 }
 
 const std::string& TextMessage::getMessage() {

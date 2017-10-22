@@ -5,6 +5,8 @@
 #include <fstream>
 #include "Message_Text.h"
 #include "Dot.h"
+#include "Point.h"
+#include "Utils.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
@@ -120,7 +122,6 @@ bool Game::setTiles(IsometricTile *tiles[]) {
 
     //The tile offsets
     int x = 0, y = 0, k = 0;
-    int yoffset = ((TILES_COLUMNS - 1) * TILE_HEIGHT / 2);
 
     //Open the map
     std::ifstream map("lazy.map");
@@ -131,8 +132,8 @@ bool Game::setTiles(IsometricTile *tiles[]) {
         tilesLoaded = false;
     } else {
         //Initialize the tiles
-        for (int i = 0; i < TILES_ROWS; ++i) {
-            for (int j = TILES_COLUMNS - 1; j >= 0; --j) {
+        for (int j = 0; j < TILES_COLUMNS; ++j) {
+            for (int i = 0; i < TILES_ROWS; ++i) {
                 //Determines what kind of tile will be made
                 int tileType = -1;
 
@@ -148,8 +149,8 @@ bool Game::setTiles(IsometricTile *tiles[]) {
                 }
 
                 //Move to next tile spot
-                x = (j * TILE_WIDTH / 2) + (i * TILE_WIDTH / 2);
-                y = yoffset + (i * TILE_HEIGHT / 2) - (j * TILE_HEIGHT / 2);
+                x = i;
+                y = j;
 
                 //If the number is a valid tile number
                 if ((tileType >= 0) /*&& (tileType < TOTAL_TILE_SPRITES)*/) {
@@ -169,8 +170,8 @@ bool Game::setTiles(IsometricTile *tiles[]) {
         if (tilesLoaded) {
             gTileClips[TILE_GRASS].x = 0;
             gTileClips[TILE_GRASS].y = 0;
-            gTileClips[TILE_GRASS].w = TILE_WIDTH;
-            gTileClips[TILE_GRASS].h = TILE_HEIGHT;
+            gTileClips[TILE_GRASS].w = ISO_TILE_WIDTH;
+            gTileClips[TILE_GRASS].h = ISO_TILE_HEIGHT;
 
             gTileClips[TILE_EARTH_TOWER].x = 0;
             gTileClips[TILE_EARTH_TOWER].y = 0;
@@ -244,9 +245,28 @@ int Game::run(int argc, char *argv[]) {
                     //Handle input for the dot
                     dot.handleEvent(e, mov_description);
 
-                    //Render level
-                    for (int i = 0; i < TOTAL_TILES; ++i) {
-                        tileSet[i]->handleEvent(e, mov_description);
+                    //Handle mouse events
+                    if (e.type == SDL_MOUSEBUTTONDOWN) {
+                        int mousePosX, mousePosY;
+
+                        SDL_GetMouseState(&mousePosX, &mousePosY);
+
+                        Point point = Utils::screen_to_map(mousePosX,
+                                                           mousePosY);
+                        std::cout
+                                << "mapa x: "
+                                << std::to_string(point.x)
+                                << std::endl;
+
+                        std::cout
+                                << "mapa y: "
+                                << std::to_string(point.y)
+                                << std::endl;
+
+                        if (point.isPositive()) {
+                            int tilePos = point.x * TILES_COLUMNS + point.y;
+                            tileSet[tilePos]->handleEvent(e, mov_description);
+                        }
                     }
                 }
 

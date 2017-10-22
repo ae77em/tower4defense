@@ -62,8 +62,9 @@ void Dot::move(IsometricTile *tiles[]) {
     mBox.x += mVelX;
 
     //If the dot went too far to the left or right
-    if ((mBox.x < 0)
-        || (mBox.x + DOT_WIDTH > ((TILES_ROWS + 2) * TILE_WIDTH))) {
+    int width = (TILES_ROWS + 2) * ISO_TILE_WIDTH;
+    if ((mBox.x < -width)
+        || (mBox.x + DOT_WIDTH > width)) {
         //move back
         mBox.x -= mVelX;
     }
@@ -72,8 +73,9 @@ void Dot::move(IsometricTile *tiles[]) {
     mBox.y += mVelY;
 
     //If the dot went too far up or down
-    if ((mBox.y < 0)
-        || (mBox.y + DOT_HEIGHT > ((TILES_COLUMNS - 2) * TILE_HEIGHT))) {
+    int height = (TILES_COLUMNS - 2) * ISO_TILE_HEIGHT;
+    if ((mBox.y < -height)
+        || (mBox.y + DOT_HEIGHT > height)) {
         //move back
         mBox.y -= mVelY;
     }
@@ -84,18 +86,21 @@ void Dot::setCamera(SDL_Rect &camera) {
     camera.x = (mBox.x + DOT_WIDTH / 2) - SCREEN_WIDTH / 2;
     camera.y = (mBox.y + DOT_HEIGHT / 2) - SCREEN_HEIGHT / 2;
 
+    int max_y_pos = ((TILES_COLUMNS - 2) * ISO_TILE_HEIGHT) - camera.h;
+    int max_x_pos = ((TILES_ROWS + 2) * ISO_TILE_WIDTH) - camera.w;
+
     //Keep the camera in bounds
-    if (camera.x < 0) {
-        camera.x = 0;
+    if (camera.x < -max_x_pos) {
+        camera.x = -max_x_pos;
     }
-    if (camera.y < 0) {
-        camera.y = 0;
+    if (camera.y < -max_y_pos) {
+        camera.y = -max_y_pos;
     }
-    if (camera.x > ((TILES_ROWS + 2) * TILE_WIDTH) - camera.w) {
-        camera.x = ((TILES_ROWS + 2) * TILE_WIDTH) - camera.w;
+    if (camera.x > max_x_pos) {
+        camera.x = max_x_pos;
     }
-    if (camera.y > ((TILES_COLUMNS - 2) * TILE_HEIGHT) - camera.h) {
-        camera.y = ((TILES_COLUMNS - 2) * TILE_HEIGHT) - camera.h;
+    if (camera.y > max_y_pos) {
+        camera.y = max_y_pos;
     }
 }
 
