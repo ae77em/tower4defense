@@ -42,6 +42,9 @@ cmake_install.cmake
 nbproject/
 *.cbp
 
+# vim backup files
+*.swp
+
 # Miscelaneous
 resources/glade/*~
 src/*~
