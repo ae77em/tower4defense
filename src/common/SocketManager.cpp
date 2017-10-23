@@ -2,6 +2,7 @@
 #include "SocketManager.h"
 #include <thread>
 #include <iostream>
+#include "Message_Text.h"
 
 #define TRON
 #include "tron.h"
@@ -18,7 +19,10 @@ struct SocketManagerWriter {
     Socket &socket;
     SocketManagerWriter(Socket &socket) : socket(socket) {}
     void run() {
-         TRACE("writer reached\n");
+        TRACE("writer reached\n");
+
+        TextMessage message("hola");
+        message.sendThrough(socket);
     }
 };
 
