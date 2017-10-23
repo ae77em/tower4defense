@@ -3,7 +3,7 @@
 
 #include <SDL_rect.h>
 #include "LTexture.h"
-#include "IsometricTile.h"
+#include "Tile.h"
 
 //The dot that will move around on the screen
 class Dot {

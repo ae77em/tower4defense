@@ -1,9 +1,9 @@
 #include <iostream>
-#include "IsometricTile.h"
+#include "Tile.h"
 #include "Constants.h"
 #include "Utils.h"
 
-IsometricTile::IsometricTile(int x, int y) {
+Tile::Tile(int x, int y) {
     //Get the offsets
     containerBoxAttributes.x = x;
     containerBoxAttributes.y = y;
@@ -16,7 +16,7 @@ IsometricTile::IsometricTile(int x, int y) {
     type = 0;
 }
 
-void IsometricTile::render(SDL_Rect &camera,
+void Tile::render(SDL_Rect &camera,
                            SDL_Rect *gTileClips,
                            SDL_Renderer *gRenderer,
                            LTexture *gTileTextures) {
@@ -37,10 +37,10 @@ void IsometricTile::render(SDL_Rect &camera,
 }
 
 
-void IsometricTile::render_sprite(SDL_Rect &camera,
-                           SDL_Rect *gTileClips,
-                           SDL_Renderer *gRenderer,
-                           LTexture *gTileTextures) {
+void Tile::renderSprite(SDL_Rect &camera,
+                        SDL_Rect *gTileClips,
+                        SDL_Renderer *gRenderer,
+                        LTexture *gTileTextures) {
 
     Point screenPoint = Utils::mapToScreen(containerBoxAttributes.x, containerBoxAttributes.y);
 
@@ -51,7 +51,7 @@ void IsometricTile::render_sprite(SDL_Rect &camera,
 
 }
 
-void IsometricTile::handleEvent(SDL_Event &e, std::string &desc) {
+void Tile::handleEvent(SDL_Event &e, std::string &desc) {
     //If mouse event happened
     if (e.type == SDL_MOUSEBUTTONDOWN) {
         type = (type == BUTTON_SPRITE_MOUSE_DOWN)
@@ -61,10 +61,10 @@ void IsometricTile::handleEvent(SDL_Event &e, std::string &desc) {
     }
 }
 
-int IsometricTile::getType() {
+int Tile::getType() {
     return type;
 }
 
-SDL_Rect IsometricTile::getBox() {
+SDL_Rect Tile::getBox() {
     return containerBoxAttributes;
 }

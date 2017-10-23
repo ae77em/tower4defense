@@ -13,8 +13,9 @@
 #include <SDL_system.h>
 #include "Constants.h"
 #include "LTexture.h"
-#include "IsometricTile.h"
+#include "Tile.h"
 #include "Point.h"
+#include "Timer.h"
 
 class Game {
 public:
@@ -24,10 +25,10 @@ public:
     int run(int argc, char *argv[]);
     void interactWithServer(Socket &client, std::string text);
     //bool touchesWall(SDL_Rect box, Tile *tiles[]);
-    bool setTiles(IsometricTile *tiles[]);
+    bool setTiles(Tile *tiles[]);
     //bool checkCollision(SDL_Rect a, SDL_Rect b);
-    void close(IsometricTile *tiles[]);
-    bool loadMedia(IsometricTile *tiles[]);
+    void close(Tile *tiles[]);
+    bool loadMedia(Tile *tiles[]);
     bool init();
 
 private:
@@ -50,10 +51,19 @@ private:
     //Scene textures
     LTexture gTileTextures[TOTAL_TILE_SPRITES];
 
-    void handleMouseEvents(IsometricTile *const *tileSet,
+    LTimer stepTimer;
+    int startTime;
+
+    void handleMouseEvents(Tile *const *tileSet,
                            const SDL_Rect &camera,
                            std::string &mov_description,
                            SDL_Event &e) const;
+
+    void animateRedPortal();
+
+    void animatePortal();
+
+    void animatePortal(SDL_Rect &camera, Tile &portalBlue);
 };
 
 #endif //TP4_TOWERDEFENSE_GAME_H

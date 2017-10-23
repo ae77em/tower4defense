@@ -9,10 +9,10 @@
 
 
 //The tile
-class IsometricTile {
+class Tile {
 public:
     //Initializes position and type
-    IsometricTile(int x, int y);
+    Tile(int x, int y);
 
     //Shows the tile
     void render(SDL_Rect &camera,
@@ -20,10 +20,10 @@ public:
                 SDL_Renderer *gRenderer,
                 LTexture *gTileTextures);
 
-     void render_sprite(SDL_Rect &camera,
-                SDL_Rect *gTileClips,
-                SDL_Renderer *gRenderer,
-                LTexture *gTileTextures);
+    void renderSprite(SDL_Rect &camera,
+                      SDL_Rect *gTileClips,
+                      SDL_Renderer *gRenderer,
+                      LTexture *gTileTextures);
 
     //Takes mouse events
     void handleEvent(SDL_Event &e, std::string &desc);

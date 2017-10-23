@@ -7,10 +7,13 @@
 #include "Dot.h"
 #include "Point.h"
 #include "Utils.h"
+#include "Timer.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
-Game::Game(){}
+Game::Game(){
+    startTime = stepTimer.getTicks();
+}
 
 Game::~Game(){}
 
@@ -31,7 +34,8 @@ bool Game::init() {
         //Create window
         gWindow = SDL_CreateWindow("Tower4Defense", SDL_WINDOWPOS_UNDEFINED,
                                    SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
-                                   SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+                                   SCREEN_HEIGHT, SDL_WINDOW_SHOWN |
+                                           SDL_WINDOW_RESIZABLE);
         if (gWindow == NULL) {
             printf("Window could not be created! SDL Error: %s\n",
                    SDL_GetError());
@@ -47,7 +51,7 @@ bool Game::init() {
                 success = false;
             } else {
                 //Initialize renderer color
-                SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 0xFF);
+                SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 
                 //Initialize PNG loading
                 int imgFlags = IMG_INIT_PNG;
@@ -63,7 +67,7 @@ bool Game::init() {
     return success;
 }
 
-bool Game::loadMedia(IsometricTile *tiles[]) {
+bool Game::loadMedia(Tile *tiles[]) {
     //Loading success flag
     bool success = true;
 
@@ -81,7 +85,8 @@ bool Game::loadMedia(IsometricTile *tiles[]) {
         }
     }
 
-    gSpriteSheetTexturePortalBlue.loadFromFile("images/sprites/portal-blue.png", gRenderer);
+    gSpriteSheetTexturePortalBlue.loadFromFile("images/sprites/portal-blue2"
+                                                       ".png", gRenderer);
     gSpriteSheetTexturePortalRed.loadFromFile("images/sprites/portal-red.png", gRenderer);
 
     //Load tile map
@@ -93,7 +98,7 @@ bool Game::loadMedia(IsometricTile *tiles[]) {
     return success;
 }
 
-void Game::close(IsometricTile *tiles[]) {
+void Game::close(Tile *tiles[]) {
     //Deallocate tiles
     for (int i = 0; i < TOTAL_TILES; ++i) {
         if (tiles[i] == NULL) {
@@ -119,7 +124,7 @@ void Game::close(IsometricTile *tiles[]) {
     SDL_Quit();
 }
 
-bool Game::setTiles(IsometricTile *tiles[]) {
+bool Game::setTiles(Tile *tiles[]) {
     //Success flag
     bool tilesLoaded = true;
 
@@ -158,7 +163,7 @@ bool Game::setTiles(IsometricTile *tiles[]) {
                 //If the number is a valid tile number
                 if ((tileType >= 0) /*&& (tileType < TOTAL_TILE_SPRITES)*/) {
                     k = i * TILES_COLUMNS + j;
-                    tiles[k] = new IsometricTile(x, y);
+                    tiles[k] = new Tile(x, y);
                 }                //If we don't recognize the tile type
                 else {
                     //Stop loading map
@@ -182,12 +187,17 @@ bool Game::setTiles(IsometricTile *tiles[]) {
             gTileClips[EARTH_TOWER].h = 194;
         }
 
-        //portal
         unsigned int x_i = 0;
         unsigned int y_i = 0;
-        for (unsigned int i = 0 ; i < 30 ; ++i) {
-            gSpriteClipsPortalRed[i].x = x_i*136;
-            gSpriteClipsPortalRed[i].y = y_i*185;
+
+        for (int i = 0; i < 30; ++i){
+            gSpriteClipsPortalBlue[i].x = i * 136;
+            gSpriteClipsPortalBlue[i].y = 0;
+            gSpriteClipsPortalBlue[i].w = 136;
+            gSpriteClipsPortalBlue[i].h = 181;
+
+            gSpriteClipsPortalRed[i].x = x_i * 136;
+            gSpriteClipsPortalRed[i].y = y_i * 185;
             gSpriteClipsPortalRed[i].w = 136;
             gSpriteClipsPortalRed[i].h = 185;
 
@@ -195,32 +205,14 @@ bool Game::setTiles(IsometricTile *tiles[]) {
                 ++x_i;
             } else if (x_i == 10){
                 x_i = 0;
-            } 
-            
+            }
+
 
             if (i == 9) {
-                y_i = 1;    
+                y_i = 1;
             } else if (i == 19) {
-                y_i = 2;    
+                y_i = 2;
             }
-        }
-
-        x_i = 0;
-        y_i = 0;
-        for (unsigned int i = 0 ; i < 30 ; ++i) {
-            if (x_i < 15) {
-                ++x_i;
-            } else {
-                x_i = 0;
-            } 
-
-            if (i > 15) {
-                y_i = 1;    
-            }             
-            gSpriteClipsPortalBlue[i].x = x_i*136;
-            gSpriteClipsPortalBlue[i].y = y_i*185;
-            gSpriteClipsPortalBlue[i].w = 136;
-            gSpriteClipsPortalBlue[i].h = 185;
         }
     }
 
@@ -229,6 +221,63 @@ bool Game::setTiles(IsometricTile *tiles[]) {
 
     //If the map was loaded fine
     return tilesLoaded;
+}
+
+void Game::animatePortal(SDL_Rect &camera, Tile &portalBlue) {
+    //unsigned int x_i;
+    //unsigned int y_i;
+
+    //x_i = 0;
+    //y_i = 0;
+    int animationLength = 30;
+    int animationRate = 15;
+
+    int frameToDraw = ((stepTimer.getTicks() - startTime) * animationRate / 1000) %
+            animationLength;
+
+    SDL_Rect* currentClip = &gSpriteClipsPortalRed[frameToDraw];
+    portalBlue.renderSprite(camera, currentClip, gRenderer,
+                            &gSpriteSheetTexturePortalBlue);
+
+    stepTimer.start();
+
+
+    /*for (unsigned int i = 0 ; i < 30 ; ++i) {
+            if (x_i < 15) {
+                ++x_i;
+            } else {
+                x_i = 0;
+            }
+
+            if (i > 15) {
+                y_i = 1;
+            }*/
+
+        //}
+}
+
+void Game::animateRedPortal() {
+    unsigned int x_i = 0;
+    unsigned int y_i = 0;
+    for (unsigned int i = 0 ; i < 30 ; ++i) {
+        gSpriteClipsPortalRed[i].x = x_i * 136;
+        gSpriteClipsPortalRed[i].y = y_i * 185;
+        gSpriteClipsPortalRed[i].w = 136;
+        gSpriteClipsPortalRed[i].h = 185;
+
+        if (x_i < 10) {
+            ++x_i;
+        } else if (x_i == 10){
+            x_i = 0;
+        }
+
+
+        if (i == 9) {
+            y_i = 1;
+        } else if (i == 19) {
+            y_i = 2;
+        }
+    }
 }
 
 void Game::interactWithServer(Socket &client, std::string text) {
@@ -258,10 +307,15 @@ int Game::run(int argc, char *argv[]) {
         printf("Failed to initialize!\n");
     } else {
         //The level tiles
-        IsometricTile *tileSet[TOTAL_TILES];
+        Tile *tileSet[TOTAL_TILES];
 
-        IsometricTile portalBlue(0,0);
-        IsometricTile portalRed(5,5);
+        Tile portalBlue(0,0);
+        Tile portalRed(5,5);
+
+        //int animationLength = 30;
+        //int animationRate = 15;
+
+        int frameToDraw = 0;
 
         //Load media
         if (!loadMedia(tileSet)) {
@@ -279,7 +333,7 @@ int Game::run(int argc, char *argv[]) {
             //Level camera
             SDL_Rect camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
 
-            int frame = 0;
+            //int frame = 0;
 
             //While application is running
             while (!quit) {
@@ -302,7 +356,7 @@ int Game::run(int argc, char *argv[]) {
                 dot.setCamera(camera);
 
                 //Clear screen
-                SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+                SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 0xFF);
                 SDL_RenderClear(gRenderer);
 
                 //Render level
@@ -313,25 +367,28 @@ int Game::run(int argc, char *argv[]) {
                 //Render dot
                 dot.render(gDotTexture, camera, gRenderer);
 
-                //Portales
-                SDL_Rect* currentClip = &gSpriteClipsPortalRed[frame];
-                portalBlue.render_sprite(camera, currentClip, gRenderer, &gSpriteSheetTexturePortalBlue);
+                frameToDraw = (SDL_GetTicks() / 75) % 30;
 
-                currentClip = &gSpriteClipsPortalBlue[frame];
-                portalRed.render_sprite(camera, currentClip, gRenderer, &gSpriteSheetTexturePortalRed);
+                SDL_Rect* currentClip = &gSpriteClipsPortalBlue[frameToDraw];
+                portalBlue.renderSprite(camera, currentClip, gRenderer,
+                                        &gSpriteSheetTexturePortalBlue);
+
+                currentClip = &gSpriteClipsPortalRed[frameToDraw];
+                portalRed.renderSprite(camera, currentClip, gRenderer,
+                                       &gSpriteSheetTexturePortalRed);
 
                 //Update screen
                 SDL_RenderPresent(gRenderer);
 
-                ++frame;
+                //++frame;
                 if (!mov_description.empty()) {
                     interactWithServer(client, mov_description);
                 }
 
                 //(agregado por el portal)
-                if (frame == 30) {
+                /*if (frame == 30) {
                     frame = 0;
-                }
+                }*/
             }
         }
 
@@ -342,7 +399,7 @@ int Game::run(int argc, char *argv[]) {
     return 0;
 }
 
-void Game::handleMouseEvents(IsometricTile *const *tileSet,
+void Game::handleMouseEvents(Tile *const *tileSet,
                         const SDL_Rect &camera,
                         std::string &mov_description,
                         SDL_Event &e) const {
