@@ -17,7 +17,12 @@ struct SocketManagerWriter {
 };
 
 SocketManager::SocketManager(Socket &&socket) : socket(std::move(socket)),
-        reader(), writer() {}
+        reader(), writer() {
+    reader = std::thread(&SocketManagerReader::run,
+            SocketManagerReader(socket));
+    writer = std::thread(&SocketManagerWriter::run,
+            SocketManagerWriter(socket));
+}
 
 SocketManager::~SocketManager() {
     socket.shutdown();
