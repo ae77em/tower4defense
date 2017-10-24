@@ -1,12 +1,8 @@
 #include "Socket.h"
 #include "SocketManager.h"
 #include <thread>
-#include <iostream>
 #include "Message_Text.h"
 #include "ThreadedQueue.h"
-
-#define TRON
-#include "tron.h"
 
 struct SocketManagerReader {
     Socket &socket;
@@ -16,8 +12,6 @@ struct SocketManagerReader {
             : socket(socket), queue(queue) {}
 
     void run() {
-        TRACE("reader reached\n");
-
         while (true) {
             try {
                 TextMessage message = receiveFrom(socket);
@@ -38,8 +32,6 @@ struct SocketManagerWriter {
             : socket(socket), queue(queue) {}
 
     void run() {
-        TRACE("writer reached\n");
-
         while (! queue.isAtEnd()) {
             TextMessage message = queue.pop();
             message.sendThrough(socket);
@@ -49,9 +41,6 @@ struct SocketManagerWriter {
 
 SocketManager::SocketManager(Socket &&socket) : socket(std::move(socket)),
         reader(), writer(), reader_queue(), writer_queue() {
-    TRACE("SocketManager constructor, socket fd: "
-            + std::to_string(this->socket.get_socket()) + "\n");
-
     reader = std::thread(&SocketManagerReader::run,
             SocketManagerReader(this->socket, reader_queue));
     writer = std::thread(&SocketManagerWriter::run,

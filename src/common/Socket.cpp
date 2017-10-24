@@ -9,12 +9,8 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <memory.h>
-#include <iostream>
 #include <string>
 #include <stdexcept>
-
-#define TRON
-#include "tron.h"
 
 Socket::Socket() {
     this->socket = ::socket(AF_INET, SOCK_STREAM, 0);
@@ -38,7 +34,6 @@ Socket::Socket(Socket &&other) {
 }
 
 Socket::~Socket() {
-    TRACE("cerrando socket fd: " + std::to_string(socket) + "\n");
     close();
 }
 
