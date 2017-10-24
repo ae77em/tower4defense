@@ -17,6 +17,16 @@ struct SocketManagerReader {
 
     void run() {
         TRACE("reader reached\n");
+
+        while (true) {
+            try {
+                TextMessage message = receiveFrom(socket);
+                queue.push(message);
+            } catch (std::exception) {
+                queue.close();
+                break;
+            }
+        }
     }
 };
 
