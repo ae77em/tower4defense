@@ -9,7 +9,6 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <memory.h>
-#include <iostream>
 #include <string>
 #include <stdexcept>
 
@@ -27,6 +26,11 @@ Socket::Socket() {
 
 Socket::Socket(int socket) {
     this->socket = socket;
+}
+
+Socket::Socket(Socket &&other) {
+    this->socket = other.socket;
+    other.socket = -1;
 }
 
 Socket::~Socket() {
@@ -120,7 +124,8 @@ void Socket::send(const char* buffer, size_t length) {
         if (s == 0) {
             is_open_socket = false;
         } else if (s < 0) {
-            throw std::runtime_error("Fallo la escritura al socket. errno: "
+            throw std::runtime_error("Fallo la escritura al socket."
+                   " fd: " + std::to_string(get_socket()) + " errno: "
                     + std::to_string(en) + " se intentaron enviar "
                     + std::to_string(length) + " bytes, se enviaron "
                     + std::to_string(sent) + " bytes exitosamente");
