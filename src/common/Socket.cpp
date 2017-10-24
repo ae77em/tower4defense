@@ -13,6 +13,9 @@
 #include <string>
 #include <stdexcept>
 
+#define TRON
+#include "tron.h"
+
 Socket::Socket() {
     this->socket = ::socket(AF_INET, SOCK_STREAM, 0);
     const int en = errno;
@@ -29,7 +32,13 @@ Socket::Socket(int socket) {
     this->socket = socket;
 }
 
+Socket::Socket(Socket &&other) {
+    this->socket = other.socket;
+    other.socket = -1;
+}
+
 Socket::~Socket() {
+    TRACE("cerrando socket fd: " + std::to_string(socket) + "\n");
     close();
 }
 
