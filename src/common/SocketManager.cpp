@@ -49,9 +49,11 @@ SocketManager::SocketManager(Socket &&socket) : socket(std::move(socket)),
 }
 
 SocketManager::~SocketManager() {
-    reader.join();
+    writer_queue.close();
     writer.join();
+
     socket.shutdown();
+    reader.join();
 }
 
 

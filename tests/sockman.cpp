@@ -11,6 +11,4 @@ int main(int argc, char **argv) {
     ThreadedQueue<TextMessage> &q = server.sendQueue();
     q.push(TextMessage("hola"));
     q.push(TextMessage("mundo!"));
-
-    q.close();
 }
