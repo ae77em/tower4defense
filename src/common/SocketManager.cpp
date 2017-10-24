@@ -28,10 +28,13 @@ struct SocketManagerWriter {
 
 SocketManager::SocketManager(Socket &&socket) : socket(std::move(socket)),
         reader(), writer() {
+    TRACE("SocketManager constructor, socket fd: "
+            + std::to_string(this->socket.get_socket()) + "\n");
+
     reader = std::thread(&SocketManagerReader::run,
-            SocketManagerReader(socket));
+            SocketManagerReader(this->socket));
     writer = std::thread(&SocketManagerWriter::run,
-            SocketManagerWriter(socket));
+            SocketManagerWriter(this->socket));
 }
 
 SocketManager::~SocketManager() {
