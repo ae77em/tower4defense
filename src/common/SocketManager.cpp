@@ -30,8 +30,10 @@ struct SocketManagerWriter {
     void run() {
         TRACE("writer reached\n");
 
-        TextMessage message("hola");
-        message.sendThrough(socket);
+        while (! queue.isAtEnd()) {
+            TextMessage message = queue.pop();
+            message.sendThrough(socket);
+        }
     }
 };
 
