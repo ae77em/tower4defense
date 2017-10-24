@@ -1,10 +1,12 @@
 # Dependencias
 
-El proyecto utiliza SDL v2, con el paquete SDL_image, gtkmm v3, glade 3 y cmake.
+Para sus graficos, el proyecto utiliza SDL v2, con el paquete SDL_image.
+
+Para la serializacion de objetos a json, el proyecto utiliza jsoncpp.
 
 En un entorno derivado de Debian, las dependencias pueden adquirirse con:
 
-sudo apt install libsdl2-dev libsdl2-image-dev libgtkmm-3.0-dev glade cmake
+sudo apt install cmake libsdl2-dev libsdl2-image-dev libjsoncpp-dev
 
 # Compilacion
 
