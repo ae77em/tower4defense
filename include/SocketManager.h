@@ -1,5 +1,7 @@
 #include <thread>
 #include "Socket.h"
+#include "ThreadedQueue.h"
+#include "Message_Text.h"
 
 #ifndef SOCKETMAN_H
 #define SOCKETMAN_H
@@ -10,6 +12,7 @@
 class SocketManager {
     Socket socket;
     std::thread reader, writer;
+    ThreadedQueue<TextMessage> reader_queue, writer_queue;
 
     public:
     explicit SocketManager(Socket &&socket);
@@ -17,6 +20,9 @@ class SocketManager {
 
     SocketManager(const SocketManager &other) = delete;
     SocketManager& operator=(const SocketManager &other) = delete;
+
+    ThreadedQueue<TextMessage>& sendQueue();
+    ThreadedQueue<TextMessage>& receiveQueue();
 };
 
 #endif
