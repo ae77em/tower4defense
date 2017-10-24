@@ -14,12 +14,17 @@ void ClientRequestHandler::run() {
     try { msg = receiveFrom(client); } catch (std::exception) { return; }
     while (true) {
         std::cout << "SERVER RECIBIÓ: ";
-        std::cout << msg.getMessage() << std::endl;
+        std::cout << msg.getMessage();
+        std::cout << "' desde el cliente ";
+        std::cout << std::to_string(client.get_socket());
+        std::cout << std::endl;
 
         std::string response;
         response.assign("Recibí pedido '");
         response.append(msg.getMessage());
-        response.append("' correcamente :).");
+        response.append("' desde el cliente ");
+        response.append(std::to_string(client.get_socket()));
+        response.append(" correctamente :).");
 
         TextMessage r(response);
         r.sendThrough(client);

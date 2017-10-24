@@ -1,0 +1,8 @@
+#ifndef TP4_TOWERDEFENSE_CONSTANTS_H
+#define TP4_TOWERDEFENSE_CONSTANTS_H
+
+
+typedef uint32_t message_lenght_t;
+
+
+#endif //TP4_TOWERDEFENSE_CONSTANTS_H
