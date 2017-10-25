@@ -47,12 +47,16 @@ SocketManager::SocketManager(Socket &&socket) : socket(std::move(socket)),
             SocketManagerWriter(this->socket, writer_queue));
 }
 
-SocketManager::~SocketManager() {
+void SocketManager::shutdown() {
     writer_queue.close();
-    writer.join();
+    if (writer.joinable()) writer.join();
 
     socket.shutdown();
-    reader.join();
+    if (reader.joinable()) reader.join();
+}
+
+SocketManager::~SocketManager() {
+    shutdown();
 }
 
 
