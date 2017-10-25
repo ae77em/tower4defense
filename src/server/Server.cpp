@@ -14,8 +14,7 @@ void Server::notifyAll(std::string message) {
     m.lock();
     TextMessage msg(message);
     for (Socket *client : clients){
-        msg.sendThrough(*client);
-        //client->send(message.c_str(),message.length());
+        msg.sendTo(*client);
     }
     m.unlock();
 }

@@ -11,22 +11,27 @@ ClientRequestHandler::~ClientRequestHandler() { }
 
 void ClientRequestHandler::run() {
     TextMessage msg("");
-    try { msg = receiveFrom(clientSocket); } catch (std::exception) { return; }
+    try { msg = msg.receiveFrom(clientSocket); } catch (std::exception) { return; }
     while (true) {
         std::cout << "SERVER RECIBIÓ: ";
-        std::cout << msg.getMessage() << std::endl;
+        std::cout << msg.getMessage();
+        std::cout << "' desde el cliente ";
+        std::cout << std::to_string(clientSocket.get_socket());
+        std::cout << std::endl;
 
         std::string response = msg.getMessage();
         response.assign("Recibí pedido '");
-        response.append(response);
-        response.append("' correcamente :).");
+        response.append(msg.getMessage());
+        response.append("' desde el cliente ");
+        response.append(std::to_string(clientSocket.get_socket()));
+        response.append(" correctamente :).");
 
         /*TextMessage r(response);
         r.sendThrough(client);*/
 
         server.notifyAll(response);
 
-        try { msg = receiveFrom(clientSocket); } catch (std::exception) { return; }
+        try { msg = msg.receiveFrom(clientSocket); } catch (std::exception) { return; }
     }
 }
 

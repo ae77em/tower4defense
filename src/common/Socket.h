@@ -21,8 +21,6 @@ public:
      */
     explicit Socket(int socket);
 
-    explicit Socket(Socket &&other);
-
     /*
      * Apaga y cierra la conexión.
      */

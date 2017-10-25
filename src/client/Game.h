@@ -1,10 +1,7 @@
-//
-// Created by esteban on 20/10/17.
-//
-
 #ifndef TP4_TOWERDEFENSE_GAME_H
 #define TP4_TOWERDEFENSE_GAME_H
 
+static const int MAX_SERVER_NOTIFICATIONS_PER_FRAME = 50;
 
 #include "../common/Socket.h"
 #include <string>
@@ -16,21 +13,10 @@
 #include "Tile.h"
 #include "Point.h"
 #include "Timer.h"
+#include "IntermediateBuffer.h"
+#include "../common/Thread.h"
 
-class Game {
-public:
-    Game();
-    ~Game();
-
-    int run(int argc, char *argv[]);
-    void interactWithServer(Socket &client, std::string text);
-    //bool touchesWall(SDL_Rect box, Tile *tiles[]);
-    bool setTiles(Tile *tiles[]);
-    //bool checkCollision(SDL_Rect a, SDL_Rect b);
-    void close(Tile *tiles[]);
-    bool loadMedia(Tile *tiles[]);
-    bool init();
-
+class Game : public Thread {
 private:
     //The window we'll be rendering to
     SDL_Window *gWindow = NULL;
@@ -44,26 +30,37 @@ private:
 
     SDL_Rect gSpriteClipsPortalBlue[30];
     LTexture gSpriteSheetTexturePortalBlue;
-    
+
     SDL_Rect gSpriteClipsPortalRed[30];
     LTexture gSpriteSheetTexturePortalRed;
 
     //Scene textures
     LTexture gTileTextures[TOTAL_TILE_SPRITES];
 
-    LTimer stepTimer;
-    int startTime;
+    IntermediateBuffer &dataFromServer;
+    IntermediateBuffer &dataToServer;
 
+    int currentEventDispatched;
+
+public:
+    Game(IntermediateBuffer &in, IntermediateBuffer &out);
+    ~Game();
+
+    void run();
+    void interactWithServer(Socket &client, std::string text);
+    bool setTiles(Tile *tiles[]);
+    void close(Tile *tiles[]);
+    bool loadMedia(Tile *tiles[]);
+    bool init();
+
+private:
     void handleMouseEvents(Tile *const *tileSet,
                            const SDL_Rect &camera,
                            std::string &mov_description,
                            SDL_Event &e) const;
+    void loadServerNotifications(std::string notification);
 
-    void animateRedPortal();
-
-    void animatePortal();
-
-    void animatePortal(SDL_Rect &camera, Tile &portalBlue);
+    void handleServerNotifications(Tile *pTile[], SDL_Rect rect);
 };
 
 #endif //TP4_TOWERDEFENSE_GAME_H
