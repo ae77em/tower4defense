@@ -32,7 +32,7 @@ find_package(Threads)
 target_link_libraries(client.exe ${CMAKE_THREAD_LIBS_INIT} )
 target_link_libraries(server.exe ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(unit.exe ${CMAKE_THREAD_LIBS_INIT})
-target_link_libraries(integration_sockman.exe ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(integration_sockman.exe ${CMAKE_THREAD_LIBS_INIT} ${JSONCPP_LIBRARIES})
 
 
 PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)

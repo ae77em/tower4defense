@@ -58,12 +58,6 @@ private:
                            const SDL_Rect &camera,
                            std::string &mov_description,
                            SDL_Event &e) const;
-
-    void animateRedPortal();
-
-    void animatePortal();
-
-    void animatePortal(SDL_Rect &camera, Tile &portalBlue);
 };
 
 #endif //TP4_TOWERDEFENSE_GAME_H

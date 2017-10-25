@@ -1,5 +1,6 @@
-//
-// Created by esteban on 24/10/17.
-//
-
+#include <jsoncpp/json/json.h>
 #include "Match.h"
+
+void Match::updateMatch(Json::Value action) {
+
+}

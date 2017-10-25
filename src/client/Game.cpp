@@ -223,63 +223,6 @@ bool Game::setTiles(Tile *tiles[]) {
     return tilesLoaded;
 }
 
-void Game::animatePortal(SDL_Rect &camera, Tile &portalBlue) {
-    //unsigned int x_i;
-    //unsigned int y_i;
-
-    //x_i = 0;
-    //y_i = 0;
-    int animationLength = 30;
-    int animationRate = 15;
-
-    int frameToDraw = ((stepTimer.getTicks() - startTime) * animationRate / 1000) %
-            animationLength;
-
-    SDL_Rect* currentClip = &gSpriteClipsPortalRed[frameToDraw];
-    portalBlue.renderSprite(camera, currentClip, gRenderer,
-                            &gSpriteSheetTexturePortalBlue);
-
-    stepTimer.start();
-
-
-    /*for (unsigned int i = 0 ; i < 30 ; ++i) {
-            if (x_i < 15) {
-                ++x_i;
-            } else {
-                x_i = 0;
-            }
-
-            if (i > 15) {
-                y_i = 1;
-            }*/
-
-        //}
-}
-
-void Game::animateRedPortal() {
-    unsigned int x_i = 0;
-    unsigned int y_i = 0;
-    for (unsigned int i = 0 ; i < 30 ; ++i) {
-        gSpriteClipsPortalRed[i].x = x_i * 136;
-        gSpriteClipsPortalRed[i].y = y_i * 185;
-        gSpriteClipsPortalRed[i].w = 136;
-        gSpriteClipsPortalRed[i].h = 185;
-
-        if (x_i < 10) {
-            ++x_i;
-        } else if (x_i == 10){
-            x_i = 0;
-        }
-
-
-        if (i == 9) {
-            y_i = 1;
-        } else if (i == 19) {
-            y_i = 2;
-        }
-    }
-}
-
 void Game::interactWithServer(Socket &client, std::string text) {
 
     std::cout << "Send to server: " << text << std::endl;
@@ -288,6 +231,8 @@ void Game::interactWithServer(Socket &client, std::string text) {
     msg.sendThrough(client);
 
     TextMessage response = receiveFrom(client);
+
+
 
     std::cout << "Response: " << response.getMessage() << std::endl;
 }
