@@ -5,14 +5,13 @@ include_directories("include")
 
 file(GLOB CLIENT_SOURCES "src/client/*.h"  "src/client/*.cpp" "src/common/*.h" "src/common/*.cpp")
 file(GLOB SERVER_SOURCES "src/server/*.h"  "src/server/*.cpp" "src/common/*.h" "src/common/*.cpp")
-file(GLOB TEST_SOURCES "tests/unit/*.cpp" "src/common/*.cpp")
-file(GLOB SOCKMAN_SOURCES "tests/sockman.cpp" "src/common/*.cpp")
+file(GLOB TEST_SOURCES "tests/unit/*.cpp" "src/common/*.h" "src/common/*.cpp")
+file(GLOB SOCKMAN_SOURCES "tests/sockman.cpp" "src/common/*.h" "src/common/*.cpp")
 
 add_executable(client.exe ${CLIENT_SOURCES})
 add_executable(server.exe ${SERVER_SOURCES})
 add_executable(unit.exe ${TEST_SOURCES})
 add_executable(integration_sockman.exe ${SOCKMAN_SOURCES})
-
 
 find_package(PkgConfig)
 
