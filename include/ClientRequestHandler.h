@@ -6,11 +6,10 @@
 
 class ClientRequestHandler : public Thread {
 private:
-    char op;
-    Socket &client;
+    Socket client;
 
 public:
-    explicit ClientRequestHandler(Socket &client);
+    explicit ClientRequestHandler(Socket &&client);
     virtual ~ClientRequestHandler();
 
     void run();
