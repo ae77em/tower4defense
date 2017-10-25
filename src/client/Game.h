@@ -6,7 +6,7 @@
 #define TP4_TOWERDEFENSE_GAME_H
 
 
-#include <Socket.h>
+#include "../common/Socket.h"
 #include <string>
 #include <SDL_rect.h>
 #include <SDL_video.h>

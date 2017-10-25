@@ -3,7 +3,7 @@
 #include <gtkmm.h>
 #include <iostream>
 #include <fstream>
-#include "Message_Text.h"
+#include "../common/TextMessage.h"
 #include "Dot.h"
 #include "Point.h"
 #include "Utils.h"

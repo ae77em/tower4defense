@@ -1,13 +1,13 @@
 #include "Listener.h"
-#include "Socket.h"
+#include "../common/Socket.h"
 
 #include <vector>
 #include <cstring>
 #include <iostream>
 
 Listener::Listener(uint16_t port) {
-    server.bind(port);
-    server.listen();
+    serverSocket.bind(port);
+    serverSocket.listen();
 }
 
 Listener::Listener(const Listener& orig) { }
@@ -27,16 +27,21 @@ void Listener::shutdown(){
         delete threads[i];
     }
 
-    server.shutdown();
+    serverSocket.shutdown();
 }
 
 void Listener::run(){
     try {
+        Server server;
+
         while (true) {
-            int fd = server.accept();
+            int fd = serverSocket.accept();
             Socket *client = new Socket(fd);
             std::cout << "nueva conexion entrante. FD: " << std::to_string(fd) << std::endl;
-            ClientRequestHandler *rp = new ClientRequestHandler(*client);
+
+            server.addClient(*client);
+
+            ClientRequestHandler *rp = new ClientRequestHandler(*client, server);
 
             clients.push_back(client);
             threads.push_back(rp);
