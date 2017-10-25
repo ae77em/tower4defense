@@ -7,7 +7,7 @@
 
 void T::agregarTorre(unsigned x, unsigned y) {
     torres.emplace_back(x, y);
-    notificar(TextMessage("nueva torre en " + std::to_string(x) + " "
+    notificar(TextMessage("nueva torre en " + std::to_string(x) + ","
             + std::to_string(y)));
 }
 
