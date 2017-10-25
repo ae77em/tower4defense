@@ -5,7 +5,7 @@
 #include <iostream>
 #include "TextMessage.h"
 
-ClientRequestHandler::ClientRequestHandler(Socket &c) : client(c) { }
+ClientRequestHandler::ClientRequestHandler(Socket &&c) : client(c) { }
 
 ClientRequestHandler::~ClientRequestHandler() { }
 
