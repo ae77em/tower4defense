@@ -11,6 +11,9 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
+#include "SocketManager.h"
+#include <thread>
+
 Game::Game(){
     startTime = stepTimer.getTicks();
 }
@@ -223,27 +226,21 @@ bool Game::setTiles(Tile *tiles[]) {
     return tilesLoaded;
 }
 
-void Game::interactWithServer(Socket &client, std::string text) {
-
-    std::cout << "Send to server: " << text << std::endl;
-
-    TextMessage msg = TextMessage(text);
-    msg.sendThrough(client);
-
-    TextMessage response = receiveFrom(client);
-
-
-
-    std::cout << "Response: " << response.getMessage() << std::endl;
-}
-
 int Game::run(int argc, char *argv[]) {
 
-    Socket client;
     std::string host = std::string(argv[1]);
     uint16_t port = atoi(argv[2]);
 
+    Socket client;
     client.connect(host.c_str(), port);
+    SocketManager sockman(std::move(client));
+
+    /* Lanzar un thread que maneje los mensajes del servidor */
+    std::thread server_handler( [&sockman]() {
+        auto &q = sockman.receiveQueue();
+        while (! q.isAtEnd())
+            std::cout << q.pop().getMessage() << std::endl;
+    });
 
     std::string mov_description;
 
@@ -327,7 +324,7 @@ int Game::run(int argc, char *argv[]) {
 
                 //++frame;
                 if (!mov_description.empty()) {
-                    interactWithServer(client, mov_description);
+                    sockman.sendQueue().push(TextMessage(mov_description));
                 }
 
                 //(agregado por el portal)
@@ -341,6 +338,8 @@ int Game::run(int argc, char *argv[]) {
         close(tileSet);
     }
 
+    sockman.shutdown();
+    server_handler.join();
     return 0;
 }
 
