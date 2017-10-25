@@ -16,7 +16,7 @@ void Message::cleanup() {
     this->data.clear();
 }
 
-bool Message::hydrate(std::string messageData) {
+bool Message::deserialize(std::string messageData) {
     message_lenght_t messageLength;
     Json::Reader reader;
     std::string jsonString;
@@ -37,8 +37,8 @@ bool Message::hydrate(std::string messageData) {
     return parseOk;
 }
 
-bool Message::hydrate(char *messageData) {
-    return hydrate(std::string(messageData));
+bool Message::deserialize(char *messageData) {
+    return deserialize(std::string(messageData));
 }
 
 std::string Message::serialize() {

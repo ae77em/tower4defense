@@ -1,5 +1,5 @@
-#ifndef PROTOCOLO_H
-#define PROTOCOLO_H
+#ifndef TP4_TOWERDEFENSE_PROTOCOL_H
+#define TP4_TOWERDEFENSE_PROTOCOL_H
 
 #include <cstddef>
 #include <string>
