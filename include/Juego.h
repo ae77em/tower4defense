@@ -22,6 +22,9 @@ class T {
 public:
     void agregarTorre(unsigned x, unsigned y);
     void subscribirCliente(Queue &q);
+
+private:
+    void notificar(const TextMessage &msg);
 };
 
 #undef T
