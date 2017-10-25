@@ -1,4 +1,4 @@
-#include "Message_Text.h"
+#include "TextMessage.h"
 #include <stdexcept>
 
 // snprintf
@@ -7,9 +7,11 @@
 #endif
 #include <stdio.h>
 
+TextMessage::TextMessage() {}
+
 TextMessage::TextMessage(std::string message) : message(message) {}
 
-void TextMessage::sendThrough(Socket &sock) {
+void TextMessage::sendTo(Socket &sock) {
     /* Supposing the message's length fits in four bytes, the lenght's decimal
      * representation fits in ten bytes, not including the terminating
      * null byte
@@ -21,7 +23,7 @@ void TextMessage::sendThrough(Socket &sock) {
     sock.send(message.c_str(), message.size());
 }
 
-TextMessage receiveFrom(Socket &sock) {
+TextMessage TextMessage::receiveFrom(Socket &sock) {
     char prefix[11];
     if (sock.receive(prefix, 10) < 10)
         throw std::runtime_error("No se pudo recibir el prefijo completo.");

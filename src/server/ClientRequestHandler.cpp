@@ -3,7 +3,7 @@
 #include <string>
 #include <cstring>
 #include <iostream>
-#include "Message_Text.h"
+#include "TextMessage.h"
 
 ClientRequestHandler::ClientRequestHandler(Socket &c) : client(c) { }
 
@@ -11,7 +11,7 @@ ClientRequestHandler::~ClientRequestHandler() { }
 
 void ClientRequestHandler::run() {
     TextMessage msg("");
-    try { msg = receiveFrom(client); } catch (std::exception) { return; }
+    try { msg = msg.receiveFrom(client); } catch (std::exception) { return; }
     while (true) {
         std::cout << "SERVER RECIBIÓ: ";
         std::cout << msg.getMessage();
@@ -27,9 +27,9 @@ void ClientRequestHandler::run() {
         response.append(" correctamente :).");
 
         TextMessage r(response);
-        r.sendThrough(client);
+        r.sendTo(client);
 
-        try { msg = receiveFrom(client); } catch (std::exception) { return; }
+        try { msg = msg.receiveFrom(client); } catch (std::exception) { return; }
     }
 }
 
