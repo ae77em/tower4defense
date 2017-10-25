@@ -16,6 +16,7 @@ class SocketManager {
 
     public:
     explicit SocketManager(Socket &&socket);
+    void shutdown();
     ~SocketManager();
 
     SocketManager(const SocketManager &other) = delete;
