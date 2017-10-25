@@ -4,32 +4,34 @@
 #include <cstring>
 #include <iostream>
 #include "Message_Text.h"
+#include "ThreadedQueue.h"
+#include "SocketManager.h"
 
-ClientRequestHandler::ClientRequestHandler(Socket &c) : client(c) { }
+#define T ClientRequestHandler
+#define M TextMessage
+#define Q ThreadedQueue
 
-ClientRequestHandler::~ClientRequestHandler() { }
+T::T(Socket &&c) : client(std::move(c)) { }
 
-void ClientRequestHandler::run() {
-    TextMessage msg("");
-    try { msg = receiveFrom(client); } catch (std::exception) { return; }
-    while (true) {
+T::~T() { }
+
+void T::run() {
+    SocketManager manager(std::move(client));
+    Q<M> &queue = manager.receiveQueue();
+
+    while (! queue.isAtEnd()) {
+        M message = queue.pop();
+
         std::cout << "SERVER RECIBIÓ: ";
-        std::cout << msg.getMessage();
-        std::cout << "' desde el cliente ";
-        std::cout << std::to_string(client.get_socket());
-        std::cout << std::endl;
+        std::cout << message.getMessage() << std::endl;
 
         std::string response;
         response.assign("Recibí pedido '");
-        response.append(msg.getMessage());
-        response.append("' desde el cliente ");
-        response.append(std::to_string(client.get_socket()));
-        response.append(" correctamente :).");
+        response.append(message.getMessage());
+        response.append("' correctamente");
 
-        TextMessage r(response);
-        r.sendThrough(client);
-
-        try { msg = receiveFrom(client); } catch (std::exception) { return; }
+        M r(response);
+        manager.sendQueue().push(response);
     }
 }
 
