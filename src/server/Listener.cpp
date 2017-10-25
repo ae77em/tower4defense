@@ -15,13 +15,7 @@ Listener::Listener(const Listener& orig) { }
 Listener::~Listener() { }
 
 void Listener::shutdown(){
-    int size = clients.size();
-    for (int i = 0; i < size; ++i){
-        clients[i]->shutdown();
-        delete clients[i];
-    }
-
-    size = threads.size();
+    int size = threads.size();
     for (int i = 0; i < size; ++i){
         threads[i]->join();
         delete threads[i];
@@ -33,12 +27,9 @@ void Listener::shutdown(){
 void Listener::run(){
     try {
         while (true) {
-            int fd = server.accept();
-            Socket *client = new Socket(fd);
-            std::cout << "nueva conexion entrante. FD: " << std::to_string(fd) << std::endl;
-            ClientRequestHandler *rp = new ClientRequestHandler(*client);
+            ClientRequestHandler *rp =
+                    new ClientRequestHandler(Socket(server.accept()));
 
-            clients.push_back(client);
             threads.push_back(rp);
 
             rp->start();
