@@ -13,4 +13,15 @@ TEST_CASE("Game model communicates with client", "[juego]") {
         juego.agregarTorre(1, 0);
         REQUIRE(q.pop().getMessage() == "nueva torre en 1,0");
     }
+
+    SECTION("building a tower notifies all clients") {
+        ThreadedQueue<TextMessage> q1, q2;
+
+        juego.subscribirCliente(q1);
+        juego.subscribirCliente(q2);
+
+        juego.agregarTorre(1, 0);
+        REQUIRE(q1.pop().getMessage() == "nueva torre en 1,0");
+        REQUIRE(q2.pop().getMessage() == "nueva torre en 1,0");
+    }
 }
