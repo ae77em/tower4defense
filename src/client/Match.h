@@ -1,0 +1,10 @@
+#ifndef TP4_TOWERDEFENSE_MATCH_H
+#define TP4_TOWERDEFENSE_MATCH_H
+
+
+class Match {
+
+};
+
+
+#endif //TP4_TOWERDEFENSE_MATCH_H
