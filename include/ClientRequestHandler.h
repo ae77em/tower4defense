@@ -3,13 +3,15 @@
 
 #include "Thread.h"
 #include "Socket.h"
+#include "Juego.h"
 
 class ClientRequestHandler : public Thread {
 private:
     Socket client;
+    Juego &juego;
 
 public:
-    explicit ClientRequestHandler(Socket &&client);
+    explicit ClientRequestHandler(Socket &&client, Juego &juego);
     virtual ~ClientRequestHandler();
 
     void run();

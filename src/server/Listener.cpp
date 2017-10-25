@@ -25,10 +25,11 @@ void Listener::shutdown(){
 }
 
 void Listener::run(){
+    Juego juego;
     try {
         while (true) {
-            ClientRequestHandler *rp =
-                    new ClientRequestHandler(Socket(server.accept()));
+            ClientRequestHandler *rp = new ClientRequestHandler(
+                    Socket(server.accept()), juego);
 
             threads.push_back(rp);
 

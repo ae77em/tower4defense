@@ -11,27 +11,23 @@
 #define M TextMessage
 #define Q ThreadedQueue
 
-T::T(Socket &&c) : client(std::move(c)) { }
+T::T(Socket &&c, Juego &juego) : client(std::move(c)), juego(juego) { }
 
 T::~T() { }
 
 void T::run() {
     SocketManager manager(std::move(client));
-    Q<M> &queue = manager.receiveQueue();
+    juego.subscribirCliente(manager.sendQueue());
 
+    Q<M> &queue = manager.receiveQueue();
     while (! queue.isAtEnd()) {
         M message = queue.pop();
 
         std::cout << "SERVER RECIBIÓ: ";
         std::cout << message.getMessage() << std::endl;
 
-        std::string response;
-        response.assign("Recibí pedido '");
-        response.append(message.getMessage());
-        response.append("' correctamente");
-
-        M r(response);
-        manager.sendQueue().push(response);
+        if (message.getMessage() == "cambio tile...")
+            juego.agregarTorre(1, 2);
     }
 }
 
