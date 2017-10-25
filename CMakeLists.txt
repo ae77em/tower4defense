@@ -8,7 +8,6 @@ file(GLOB SERVER_SOURCES "src/server/*.h"  "src/server/*.cpp" "src/common/*.h" "
 file(GLOB TEST_SOURCES "tests/unit/*.cpp" "src/common/*.cpp")
 file(GLOB SOCKMAN_SOURCES "tests/sockman.cpp" "src/common/*.cpp")
 
-
 add_executable(client.exe ${CLIENT_SOURCES})
 add_executable(server.exe ${SERVER_SOURCES})
 add_executable(unit.exe ${TEST_SOURCES})
@@ -22,8 +21,15 @@ link_directories(${GTKMM_LIBRARY_DIRS} )
 include_directories(${GTKMM_INCLUDE_DIRS})
 target_link_libraries(client.exe ${GTKMM_LIBRARIES})
 
+pkg_check_modules(JSONCPP jsoncpp)
+link_libraries(${JSONCPP_LIBRARIES})
+target_link_libraries(client.exe ${JSONCPP_LIBRARIES})
+target_link_libraries(server.exe ${JSONCPP_LIBRARIES})
+target_link_libraries(unit.exe ${JSONCPP_LIBRARIES})
+target_link_libraries(integration_sockman.exe ${JSONCPP_LIBRARIES})
+
 find_package(Threads)
-target_link_libraries(client.exe ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(client.exe ${CMAKE_THREAD_LIBS_INIT} )
 target_link_libraries(server.exe ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(unit.exe ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(integration_sockman.exe ${CMAKE_THREAD_LIBS_INIT})
