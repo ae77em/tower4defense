@@ -3,7 +3,7 @@
 #include "Constants.h"
 #include "Utils.h"
 
-Tile::saslacTile(int x, int y) {
+Tile::Tile(int x, int y) {
     //Get the offsets
     containerBoxAttributes.x = x;
     containerBoxAttributes.y = y;
