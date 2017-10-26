@@ -6,7 +6,7 @@
 #include <mutex>
 #include <condition_variable>
 
-class IntermediateBuffer {
+class SharedBuffer {
 private:
     std::mutex m;
     std::condition_variable cv;
@@ -14,39 +14,39 @@ private:
     bool isClientProcessesEnded = false;
     
 public:
-    IntermediateBuffer();
-    IntermediateBuffer(const IntermediateBuffer& orig);
-    virtual ~IntermediateBuffer();
+    SharedBuffer();
+    SharedBuffer(const SharedBuffer& orig);
+    virtual ~SharedBuffer();
 
     /*
-     * Return the next registry stored in the buffer.
+     * Retorna el siguiente registro alojado en el buffer.
      */
     std::string getNextData();
 
     /*
-     * Add a new string registry to the buffer.
+     * Agrega un registro al buffer.
      */
     void addData(const std::string &s);
 
     /*
-     * Return true if is not empty or have some client
-     * consuming the buffer.
+     * Retorna true si el buffer está cargado o hay algún cliente
+     * consumiendolo.
      */
     bool isProcessingYet() const;
 
     /*
-     * Return true if has data in the buffer.
+     * Retorna true si el buffer tiene data.
      */
     bool hasData() const;
 
     /*
-     * Return true if has no more data and the client processes
-     * ended.
+     * Retorna true si no hay más datos en el buffer y no hay nadie
+     * utilizándolo.
      */
     bool isEnded() const;
 
     /*
-     * Set the status of ending of the client processes.
+     * Cambia el estado de procesamiento del cliente.
      */
     void setClientProcessEnded(bool ended);
 };

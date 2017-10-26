@@ -1,11 +1,11 @@
-#include "ClientSender.h"
+#include "Sender.h"
 #include "../common/TextMessage.h"
 
-ClientSender::ClientSender(Socket &s, IntermediateBuffer &b) : server(s), buffer(b) {}
+Sender::Sender(Socket &s, SharedBuffer &b) : server(s), buffer(b) {}
 
-ClientSender::~ClientSender(){}
+Sender::~Sender(){}
 
-void ClientSender::run(){
+void Sender::run(){
     try {
         std::string dataToSend;
 

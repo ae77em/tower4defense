@@ -13,7 +13,7 @@ static const int MAX_SERVER_NOTIFICATIONS_PER_FRAME = 50;
 #include "Tile.h"
 #include "Point.h"
 #include "Timer.h"
-#include "IntermediateBuffer.h"
+#include "SharedBuffer.h"
 #include "../common/Thread.h"
 
 class Game : public Thread {
@@ -37,13 +37,13 @@ private:
     //Scene textures
     LTexture gTileTextures[TOTAL_TILE_SPRITES];
 
-    IntermediateBuffer &dataFromServer;
-    IntermediateBuffer &dataToServer;
+    SharedBuffer &dataFromServer;
+    SharedBuffer &dataToServer;
 
     int currentEventDispatched;
 
 public:
-    Game(IntermediateBuffer &in, IntermediateBuffer &out);
+    Game(SharedBuffer &in, SharedBuffer &out);
     ~Game();
 
     void run();

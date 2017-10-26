@@ -1,13 +1,13 @@
-#include "IntermediateBuffer.h"
+#include "SharedBuffer.h"
 
 #include <iostream>
 #include <string>
 
-IntermediateBuffer::IntermediateBuffer() {}
+SharedBuffer::SharedBuffer() {}
 
-IntermediateBuffer::~IntermediateBuffer() {}
+SharedBuffer::~SharedBuffer() {}
 
-std::string IntermediateBuffer::getNextData() {
+std::string SharedBuffer::getNextData() {
     std::string result = "";
 
     std::unique_lock<std::mutex> lck(m);
@@ -27,7 +27,7 @@ std::string IntermediateBuffer::getNextData() {
     return result;
 }
 
-void IntermediateBuffer::addData(const std::string &s) {
+void SharedBuffer::addData(const std::string &s) {
     std::unique_lock<std::mutex> lck(m);
 
     buffer.push(s);
@@ -36,19 +36,19 @@ void IntermediateBuffer::addData(const std::string &s) {
     lck.unlock();
 }
 
-bool IntermediateBuffer::isProcessingYet() const {
+bool SharedBuffer::isProcessingYet() const {
     return !isClientProcessesEnded || !buffer.empty();
 }
 
-bool IntermediateBuffer::isEnded() const {
+bool SharedBuffer::isEnded() const {
     return isClientProcessesEnded && buffer.empty();
 }
 
-bool IntermediateBuffer::hasData() const {
+bool SharedBuffer::hasData() const {
     return !buffer.empty();
 }
 
-void IntermediateBuffer::setClientProcessEnded(bool ended) {
+void SharedBuffer::setClientProcessEnded(bool ended) {
     std::unique_lock<std::mutex> lck(m);
 
     isClientProcessesEnded = ended;

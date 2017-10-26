@@ -9,7 +9,7 @@
 #include <SDL2/SDL_image.h>
 #include "../common/MessageFactory.h"
 
-Game::Game(IntermediateBuffer &in, IntermediateBuffer &out) : dataFromServer(in), dataToServer(out) {}
+Game::Game(SharedBuffer &in, SharedBuffer &out) : dataFromServer(in), dataToServer(out) {}
 
 Game::~Game() {}
 

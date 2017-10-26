@@ -1,19 +1,19 @@
 #ifndef TP4_TOWERDEFENSE_LISTENER_H
 #define TP4_TOWERDEFENSE_LISTENER_H
 
-#include "IntermediateBuffer.h"
+#include "SharedBuffer.h"
 #include "../common/Thread.h"
 #include "../common/Socket.h"
 
-class ClientListener : public Thread {
+class Listener : public Thread {
 private:
     Socket &server;
-    IntermediateBuffer &buffer;
+    SharedBuffer &buffer;
 
 public:
-    ClientListener(Socket &server, IntermediateBuffer &b);
+    Listener(Socket &server, SharedBuffer &b);
 
-    virtual ~ClientListener();
+    virtual ~Listener();
 
     void run();
 

@@ -1,14 +1,14 @@
 #include "Game.h"
-#include "ClientListener.h"
-#include "ClientSender.h"
+#include "Listener.h"
+#include "Sender.h"
 
 int main(int argc, char *argv[]) {
 
     std::string host = std::string(argv[1]);
     uint16_t port = atoi(argv[2]);
 
-    IntermediateBuffer in;
-    IntermediateBuffer out;
+    SharedBuffer in;
+    SharedBuffer out;
 
     Game game(in, out);
 
@@ -16,8 +16,8 @@ int main(int argc, char *argv[]) {
 
     server.connect(host.c_str(), port);
 
-    ClientListener listener(server, in);
-    ClientSender sender(server, out);
+    Listener listener(server, in);
+    Sender sender(server, out);
 
     game.start();
     listener.start();

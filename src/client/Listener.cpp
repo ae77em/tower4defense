@@ -1,11 +1,11 @@
-#include "ClientListener.h"
+#include "Listener.h"
 #include "../common/TextMessage.h"
 
-ClientListener::ClientListener(Socket &s, IntermediateBuffer &b) : server(s), buffer(b) { }
+Listener::Listener(Socket &s, SharedBuffer &b) : server(s), buffer(b) { }
 
-ClientListener::~ClientListener() {}
+Listener::~Listener() {}
 
-void ClientListener::run(){
+void Listener::run(){
     try {
         std::string dataFromServer;
         TextMessage message("");

@@ -1,19 +1,19 @@
 #ifndef TP4_TOWERDEFENSE_CLIENTSENDER_H
 #define TP4_TOWERDEFENSE_CLIENTSENDER_H
 
-#include "IntermediateBuffer.h"
+#include "SharedBuffer.h"
 #include "../common/Socket.h"
 #include "../common/Thread.h"
 
-class ClientSender : public Thread {
+class Sender : public Thread {
 private:
     Socket server;
-    IntermediateBuffer &buffer;
+    SharedBuffer &buffer;
 
 public:
-    ClientSender(Socket &server, IntermediateBuffer &b);
+    Sender(Socket &server, SharedBuffer &b);
 
-    virtual ~ClientSender();
+    virtual ~Sender();
 
     void run();
 };
