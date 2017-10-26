@@ -1,5 +1,5 @@
 #include "catch.h"
-#include "ThreadedQueue.h"
+#include "../../src/common/ThreadedQueue.h"
 #include <thread>
 #include <string>
 

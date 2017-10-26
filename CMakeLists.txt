@@ -1,21 +1,17 @@
 cmake_minimum_required(VERSION 3.0)
 project(tp4_towerdefense)
 
-include_directories("include")
-
 file(GLOB CLIENT_SOURCES "src/client/*.cpp" "src/common/*.cpp")
 file(GLOB SERVER_SOURCES "src/server/*.cpp/" "src/common/*.cpp")
 file(GLOB EDITOR_SOURCES "src/editor/*.cpp" "src/common/*.cpp")
 file(GLOB TEST_SOURCES "tests/unit/*.cpp" "src/common/*.cpp")
 file(GLOB SOCKMAN_SOURCES "tests/sockman.cpp" "src/common/*.cpp")
 
-
 add_executable(client.exe ${CLIENT_SOURCES})
 add_executable(server.exe ${SERVER_SOURCES})
 add_executable(editor.exe ${EDITOR_SOURCES})
 add_executable(unit.exe ${TEST_SOURCES})
 add_executable(integration_sockman.exe ${SOCKMAN_SOURCES})
-
 
 find_package(PkgConfig)
 
@@ -30,6 +26,7 @@ target_link_libraries(client.exe ${JSONCPP_LIBRARIES})
 target_link_libraries(server.exe ${JSONCPP_LIBRARIES})
 target_link_libraries(editor.exe ${JSONCPP_LIBRARIES})
 target_link_libraries(unit.exe ${JSONCPP_LIBRARIES})
+target_link_libraries(integration_sockman.exe ${JSONCPP_LIBRARIES})
 
 find_package(Threads)
 target_link_libraries(client.exe ${CMAKE_THREAD_LIBS_INIT} )

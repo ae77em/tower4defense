@@ -6,8 +6,8 @@
 /* "Interface" (kind of) to implement a serializable class. */
 class Serializable {
 	public:
-		Serializable();
-		virtual ~Serializable();
+		Serializable() {}
+		virtual ~Serializable() {}
 
 		virtual std::string serialize() = 0;
 		virtual bool deserialize(std::string obj_serial) = 0;

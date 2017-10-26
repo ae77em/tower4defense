@@ -2,7 +2,7 @@
 #define TP4_TOWERDEFENSE_CLIENTSENDER_H
 
 
-#include <Thread.h>
+#include "../common/Thread.h"
 
 class ClientSender : public Thread {
 

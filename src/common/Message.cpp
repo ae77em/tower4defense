@@ -1,8 +1,7 @@
 #include "Message.h"
+
 #include <netdb.h>
 #include <cstring>
-#include <string>
-
 #include <iostream>
 
 Message::Message() {

@@ -1,8 +1,8 @@
 #include "Socket.h"
-#include "SocketManager.h"
+#include "../common/SocketManager.h"
 #include <thread>
-#include "Message_Text.h"
-#include "ThreadedQueue.h"
+#include "TextMessage.h"
+#include "../common/ThreadedQueue.h"
 
 struct SocketManagerReader {
     Socket &socket;
@@ -14,8 +14,8 @@ struct SocketManagerReader {
     void run() {
         while (true) {
             try {
-                TextMessage message = receiveFrom(socket);
-                queue.push(message);
+                TextMessage message("");
+                queue.push(message.receiveFrom(socket));
             } catch (std::exception) {
                 queue.close();
                 break;
@@ -34,7 +34,7 @@ struct SocketManagerWriter {
     void run() {
         while (! queue.isAtEnd()) {
             TextMessage message = queue.pop();
-            message.sendThrough(socket);
+            message.sendTo(socket);
         }
     }
 };

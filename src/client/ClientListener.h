@@ -6,7 +6,7 @@
 #define TP4_TOWERDEFENSE_LISTENER_H
 
 
-#include <Thread.h>
+#include "../common/Thread.h"
 
 class ClientListener : public Thread {
 

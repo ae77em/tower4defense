@@ -3,19 +3,15 @@
 #include <gtkmm.h>
 #include <iostream>
 #include <fstream>
-#include "Message_Text.h"
 #include "Dot.h"
-#include "Point.h"
 #include "Utils.h"
-#include "Timer.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include "../common/MessageFactory.h"
 
-Game::Game(){
-    startTime = stepTimer.getTicks();
-}
+Game::Game(SharedBuffer &in, SharedBuffer &out) : dataFromServer(in), dataToServer(out) {}
 
-Game::~Game(){}
+Game::~Game() {}
 
 bool Game::init() {
     //Initialization flag
@@ -35,7 +31,7 @@ bool Game::init() {
         gWindow = SDL_CreateWindow("Tower4Defense", SDL_WINDOWPOS_UNDEFINED,
                                    SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
                                    SCREEN_HEIGHT, SDL_WINDOW_SHOWN |
-                                           SDL_WINDOW_RESIZABLE);
+                                                  SDL_WINDOW_RESIZABLE);
         if (gWindow == NULL) {
             printf("Window could not be created! SDL Error: %s\n",
                    SDL_GetError());
@@ -190,7 +186,7 @@ bool Game::setTiles(Tile *tiles[]) {
         unsigned int x_i = 0;
         unsigned int y_i = 0;
 
-        for (int i = 0; i < 30; ++i){
+        for (int i = 0; i < 30; ++i) {
             gSpriteClipsPortalBlue[i].x = i * 136;
             gSpriteClipsPortalBlue[i].y = 0;
             gSpriteClipsPortalBlue[i].w = 136;
@@ -203,7 +199,7 @@ bool Game::setTiles(Tile *tiles[]) {
 
             if (x_i < 10) {
                 ++x_i;
-            } else if (x_i == 10){
+            } else if (x_i == 10) {
                 x_i = 0;
             }
 
@@ -223,28 +219,47 @@ bool Game::setTiles(Tile *tiles[]) {
     return tilesLoaded;
 }
 
-void Game::interactWithServer(Socket &client, std::string text) {
+void Game::handleMouseEvents(Tile *const *tileSet,
+                             const SDL_Rect &camera,
+                             std::string &mov_description,
+                             SDL_Event &e) const {
+    if (e.type == SDL_MOUSEBUTTONDOWN) {
+        Point point = Utils::getMouseRelativePoint(camera);
 
-    std::cout << "Send to server: " << text << std::endl;
-
-    TextMessage msg = TextMessage(text);
-    msg.sendThrough(client);
-
-    TextMessage response = receiveFrom(client);
-
-
-
-    std::cout << "Response: " << response.getMessage() << std::endl;
+        if (point.isPositive()) {
+            /* Si hice click y tengo algún evento marcado para disparar
+             * (por ejemplo, marqué un lugar para poner una torre, o quiero
+             * poner una torre) manejo dicho evento. */
+            switch (currentEventDispatched) {
+                case GAME_EVENT_PUT_TOWER: {
+                    std::cout << "voy a mandar un pedido para poner una torre..." << std::endl;
+                    std::string request;
+                    request = MessageFactory::getPutTowerRequest(point.x, point.y);
+                    dataToServer.addData(request);
+                    break;
+                }
+                default:
+                    int tilePos = point.x * TILES_COLUMNS + point.y;
+                    tileSet[tilePos]->handleEvent(e, mov_description);
+            }
+        }
+    }
 }
 
-int Game::run(int argc, char *argv[]) {
+void Game::handleServerNotifications(Tile *tiles[], SDL_Rect camera) {
+    int transactionsCounter = 0;
+    std::string notification;
 
-    Socket client;
-    std::string host = std::string(argv[1]);
-    uint16_t port = atoi(argv[2]);
+    while (dataFromServer.hasData() && transactionsCounter < MAX_SERVER_NOTIFICATIONS_PER_FRAME){
+        notification = dataFromServer.getNextData();
 
-    client.connect(host.c_str(), port);
+        std::cout << "notification: " << notification << std::endl;
+    }
+}
 
+
+
+void Game::run() {
     std::string mov_description;
 
     //Start up SDL and create window
@@ -254,11 +269,8 @@ int Game::run(int argc, char *argv[]) {
         //The level tiles
         Tile *tileSet[TOTAL_TILES];
 
-        Tile portalBlue(0,0);
-        Tile portalRed(5,5);
-
-        //int animationLength = 30;
-        //int animationRate = 15;
+        Tile portalBlue(0, 0);
+        Tile portalRed(5, 5);
 
         int frameToDraw = 0;
 
@@ -293,8 +305,12 @@ int Game::run(int argc, char *argv[]) {
                     //Handle input for the dot
                     dot.handleEvent(e, mov_description);
 
+                    currentEventDispatched = 1;
                     handleMouseEvents(tileSet, camera, mov_description, e);
+                    currentEventDispatched = 0;
                 }
+
+                handleServerNotifications(tileSet, camera);
 
                 //Move the dot
                 dot.move();
@@ -314,7 +330,7 @@ int Game::run(int argc, char *argv[]) {
 
                 frameToDraw = (SDL_GetTicks() / 75) % 30;
 
-                SDL_Rect* currentClip = &gSpriteClipsPortalBlue[frameToDraw];
+                SDL_Rect *currentClip = &gSpriteClipsPortalBlue[frameToDraw];
                 portalBlue.renderSprite(camera, currentClip, gRenderer,
                                         &gSpriteSheetTexturePortalBlue);
 
@@ -324,38 +340,13 @@ int Game::run(int argc, char *argv[]) {
 
                 //Update screen
                 SDL_RenderPresent(gRenderer);
-
-                //++frame;
-                if (!mov_description.empty()) {
-                    interactWithServer(client, mov_description);
-                }
-
-                //(agregado por el portal)
-                /*if (frame == 30) {
-                    frame = 0;
-                }*/
             }
         }
 
         //Free resources and close SDL
         close(tileSet);
     }
-
-    return 0;
 }
 
-void Game::handleMouseEvents(Tile *const *tileSet,
-                        const SDL_Rect &camera,
-                        std::string &mov_description,
-                        SDL_Event &e) const {
-    if (e.type == SDL_MOUSEBUTTONDOWN) {
-        Point point = Utils::getMouseRelativePoint(camera);
-
-        if (point.isPositive()) {
-            int tilePos = point.x * TILES_COLUMNS + point.y;
-            tileSet[tilePos]->handleEvent(e, mov_description);
-        }
-    }
-}
 
 

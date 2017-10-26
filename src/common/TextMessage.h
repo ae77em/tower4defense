@@ -16,10 +16,11 @@ class TextMessage {
 
 public:
     TextMessage(std::string message);
-    void sendThrough(Socket &sock);
+    void sendTo(Socket &sock);
+    TextMessage receiveFrom(Socket &sock);
 
     const std::string& getMessage();
 };
 
-TextMessage receiveFrom(Socket &sock);
+
 #endif

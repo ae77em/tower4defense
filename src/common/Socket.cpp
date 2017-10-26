@@ -28,11 +28,6 @@ Socket::Socket(int socket) {
     this->socket = socket;
 }
 
-Socket::Socket(Socket &&other) {
-    this->socket = other.socket;
-    other.socket = -1;
-}
-
 Socket::~Socket() {
     close();
 }

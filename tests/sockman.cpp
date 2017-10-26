@@ -1,5 +1,5 @@
-#include "SocketManager.h"
-#include "Socket.h"
+#include "../src/common/SocketManager.h"
+#include "../src/common/Socket.h"
 #include <cstdlib>
 
 int main(int argc, char **argv) {
