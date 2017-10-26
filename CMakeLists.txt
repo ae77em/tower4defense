@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 project(tp4_towerdefense)
 
-include_directories("include")
-
 file(GLOB CLIENT_SOURCES "src/client/*.h"  "src/client/*.cpp" "src/common/*.h" "src/common/*.cpp")
 file(GLOB SERVER_SOURCES "src/server/*.h"  "src/server/*.cpp" "src/common/*.h" "src/common/*.cpp")
 file(GLOB TEST_SOURCES "tests/unit/*.cpp" "src/common/*.h" "src/common/*.cpp")

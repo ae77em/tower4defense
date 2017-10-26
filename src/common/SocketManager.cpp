@@ -1,8 +1,8 @@
 #include "Socket.h"
-#include "SocketManager.h"
+#include "../common/SocketManager.h"
 #include <thread>
 #include "TextMessage.h"
-#include "ThreadedQueue.h"
+#include "../common/ThreadedQueue.h"
 
 struct SocketManagerReader {
     Socket &socket;

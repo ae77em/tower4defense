@@ -4,8 +4,8 @@
 #include <cstring>
 #include <iostream>
 #include "../common/TextMessage.h"
-#include "ThreadedQueue.h"
-#include "SocketManager.h"
+#include "../common/ThreadedQueue.h"
+#include "../common/SocketManager.h"
 
 
 ClientRequestHandler::ClientRequestHandler(Socket &c, Server &s)

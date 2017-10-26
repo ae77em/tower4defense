@@ -5,9 +5,9 @@
 #include <mutex>
 #include <vector>
 #include "../common/Socket.h"
-#include "ThreadedQueue.h"
+#include "../common/ThreadedQueue.h"
 #include "../common/TextMessage.h"
-#include "SocketManager.h"
+#include "../common/SocketManager.h"
 
 class Server {
 
