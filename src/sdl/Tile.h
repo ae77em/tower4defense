@@ -5,7 +5,7 @@
 #include <SDL_rect.h>
 #include <SDL_system.h>
 #include <SDL_events.h>
-#include "LTexture.h"
+#include "../sdl/LTexture.h"
 
 
 //The tile

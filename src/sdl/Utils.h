@@ -2,7 +2,7 @@
 #define TP4_TOWERDEFENSE_UTILS_H
 
 #include <SDL_rect.h>
-#include "Point.h"
+#include "../common/Point.h"
 
 class Utils {
 public:

@@ -1,6 +1,6 @@
 #include <SDL_mouse.h>
 #include "Utils.h"
-#include "Constants.h"
+#include "../sdl/Constants.h"
 
 #include <iostream>
 
