@@ -3,35 +3,33 @@
 #include <string>
 #include <cstring>
 #include <iostream>
-#include "Message_Text.h"
+#include "../common/TextMessage.h"
 #include "ThreadedQueue.h"
 #include "SocketManager.h"
 
-#define T ClientRequestHandler
-#define M TextMessage
-#define Q ThreadedQueue
 
-T::T(Socket &&c) : client(std::move(c)) { }
+ClientRequestHandler::ClientRequestHandler(Socket &c, Server &s)
+        : client(std::move(c)), server(s) {}
 
-T::~T() { }
+ClientRequestHandler::~ClientRequestHandler() { }
 
-void T::run() {
-    SocketManager manager(std::move(client));
-    Q<M> &queue = manager.receiveQueue();
+void ClientRequestHandler::run() {
+    server.addClient(client.sendQueue());
 
+    ThreadedQueue<TextMessage> &queue = client.receiveQueue();
     while (! queue.isAtEnd()) {
-        M message = queue.pop();
+        TextMessage msg = queue.pop();
 
         std::cout << "SERVER RECIBIÓ: ";
-        std::cout << message.getMessage() << std::endl;
+        std::cout << msg.getMessage();
+        std::cout << std::endl;
 
-        std::string response;
+        std::string response = msg.getMessage();
         response.assign("Recibí pedido '");
-        response.append(message.getMessage());
-        response.append("' correctamente");
+        response.append(msg.getMessage());
+        response.append(" correctamente :).");
 
-        M r(response);
-        manager.sendQueue().push(response);
+        server.notifyAll(response);
     }
 }
 

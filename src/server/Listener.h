@@ -1,7 +1,7 @@
 #ifndef LISTENER_H
 #define LISTENER_H
 
-#include "Socket.h"
+#include "../common/Socket.h"
 #include "ClientRequestHandler.h"
 
 #include <vector>
@@ -9,7 +9,7 @@
 
 class Listener : public Thread {
 private:
-    Socket server;
+    Socket serverSocket;
     std::vector<ClientRequestHandler*> threads;
 
 public:

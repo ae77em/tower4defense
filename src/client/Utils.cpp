@@ -85,13 +85,13 @@ SDL_Rect Utils::getBoxByTileType(int type){
     SDL_Rect toReturn;
 
     switch (type){
-        case GRASS:
+        case static_cast<int>(TileType::GRASS):
             toReturn.x = 0;
             toReturn.y = 0;
             toReturn.h = ISO_TILE_HEIGHT;
             toReturn.w = ISO_TILE_WIDTH;
             break;
-        case EARTH_TOWER:
+        case static_cast<int>(TileType::EARTH_TOWER):
             toReturn.x = 0;
             toReturn.y = 0;
             toReturn.h = 194;
