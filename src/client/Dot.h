@@ -2,7 +2,7 @@
 #define TP4_TOWERDEFENSE_DOT_H
 
 #include <SDL_rect.h>
-#include "LTexture.h"
+#include "../sdl/LTexture.h"
 #include "Tile.h"
 
 //The dot that will move around on the screen
