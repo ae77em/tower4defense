@@ -32,5 +32,7 @@ int main(int argc, char *argv[]) {
         throw std::runtime_error("Could not initialize SDL_image. Error: "
                 + std::string(IMG_GetError()));
 
+    SDL_RenderPresent(gRenderer);
+
     while (true) if (std::cin.get() == 'q') break;
 }
