@@ -3,7 +3,7 @@
 
 #include <SDL_rect.h>
 #include "../sdl/LTexture.h"
-#include "Tile.h"
+#include "../sdl/Tile.h"
 
 //The dot that will move around on the screen
 class Dot {

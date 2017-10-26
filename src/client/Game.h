@@ -8,10 +8,10 @@ static const int MAX_SERVER_NOTIFICATIONS_PER_FRAME = 50;
 #include <SDL_rect.h>
 #include <SDL_video.h>
 #include <SDL_system.h>
-#include "Constants.h"
+#include "../sdl/Constants.h"
 #include "../sdl/LTexture.h"
-#include "Tile.h"
-#include "Point.h"
+#include "../sdl/Tile.h"
+#include "../common/Point.h"
 #include "Timer.h"
 #include "SharedBuffer.h"
 #include "../common/Thread.h"

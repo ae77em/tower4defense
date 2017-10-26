@@ -1,7 +1,7 @@
 #include "Dot.h"
-#include "Constants.h"
-#include "Point.h"
-#include "Utils.h"
+#include "../sdl/Constants.h"
+#include "../common/Point.h"
+#include "../sdl/Utils.h"
 
 Dot::Dot() {
     //Initialize the collision box

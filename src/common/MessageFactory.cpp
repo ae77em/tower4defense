@@ -1,7 +1,7 @@
 #include "MessageFactory.h"
 #include "Message.h"
 #include "Constants.h"
-#include "../client/Point.h"
+#include "../common/Point.h"
 
 std::string MessageFactory::getPutTowerRequest(int x, int y) {
     Json::Value root;

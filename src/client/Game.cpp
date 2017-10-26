@@ -4,7 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include "Dot.h"
-#include "Utils.h"
+#include "../sdl/Utils.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "../common/MessageFactory.h"
