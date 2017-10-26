@@ -1,7 +1,7 @@
 #include <thread>
-#include "../src/common/Socket.h"
+#include "Socket.h"
 #include "ThreadedQueue.h"
-#include "../src/common/TextMessage.h"
+#include "TextMessage.h"
 
 #ifndef SOCKETMAN_H
 #define SOCKETMAN_H

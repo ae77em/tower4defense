@@ -8,7 +8,7 @@
 class ClientRequestHandler : public Thread {
 private:
     char op;
-    Socket &clientSocket;
+    SocketManager client;
     Server &server;
 
 public:

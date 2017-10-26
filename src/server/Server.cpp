@@ -6,15 +6,15 @@ Server::Server(){}
 
 Server::~Server() {}
 
-void Server::addClient(Socket &client){
-    clients.push_back(&client);
+void Server::addClient(ThreadedQueue<TextMessage> &queue) {
+    clients.push_back(queue);
 }
 
 void Server::notifyAll(std::string message) {
     m.lock();
     TextMessage msg(message);
-    for (Socket *client : clients){
-        msg.sendTo(*client);
+    for (auto &client : clients) {
+        client.get().push(msg);
     }
     m.unlock();
 }

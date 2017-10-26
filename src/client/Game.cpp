@@ -257,8 +257,6 @@ void Game::handleServerNotifications(Tile *tiles[], SDL_Rect camera) {
     }
 }
 
-
-
 void Game::run() {
     std::string mov_description;
 
