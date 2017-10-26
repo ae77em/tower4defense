@@ -8,19 +8,16 @@ int main(int argc, char *argv[]) {
     const int SCREEN_WIDTH = 800;
     const int SCREEN_HEIGHT = 600;
 
-    SDL_Window *gWindow = NULL;
-    SDL_Renderer *gRenderer = NULL;
-
 // SDL initialization
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
         throw std::runtime_error("SDL init failed");
 
-    gWindow = SDL_CreateWindow("Tower4Defense", SDL_WINDOWPOS_UNDEFINED,
-        SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT,
-        SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+    SDL_Window *gWindow = SDL_CreateWindow("Tower4Defense",
+        SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
+        SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     if (!gWindow) throw std::runtime_error("Could not create window");
 
-    gRenderer = SDL_CreateRenderer(gWindow, -1,
+    SDL_Renderer *gRenderer = SDL_CreateRenderer(gWindow, -1,
             SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (!gRenderer) throw std::runtime_error("Could not create renderer");
 
@@ -33,6 +30,7 @@ int main(int argc, char *argv[]) {
         throw std::runtime_error("Could not initialize SDL_image. Error: "
                 + std::string(IMG_GetError()));
 
+// Draw the map
     LTexture tile;
     tile.loadFromFile("images/sprites/tile-grass.png", gRenderer);
     tile.render(gRenderer, 100, 100);
