@@ -2,6 +2,7 @@
 #include <SDL2/SDL_image.h>
 #include <stdexcept>
 #include <iostream>
+#include "../sdl/LTexture.h"
 
 int main(int argc, char *argv[]) {
     const int SCREEN_WIDTH = 800;
@@ -31,6 +32,10 @@ int main(int argc, char *argv[]) {
     if (! IMG_Init(imgFlags) || ! imgFlags )
         throw std::runtime_error("Could not initialize SDL_image. Error: "
                 + std::string(IMG_GetError()));
+
+    LTexture tile;
+    tile.loadFromFile("images/sprites/tile-grass.png", gRenderer);
+    tile.render(gRenderer, 100, 100);
 
     SDL_RenderPresent(gRenderer);
 
