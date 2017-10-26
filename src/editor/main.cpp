@@ -3,6 +3,8 @@
 #include <stdexcept>
 #include <iostream>
 #include "../sdl/LTexture.h"
+#include "../common/Point.h"
+#include "../sdl/Utils.h"
 
 int main(int argc, char *argv[]) {
     const int SCREEN_WIDTH = 800;
@@ -33,7 +35,12 @@ int main(int argc, char *argv[]) {
 // Draw the map
     LTexture tile;
     tile.loadFromFile("images/sprites/tile-grass.png", gRenderer);
-    tile.render(gRenderer, 100, 100);
+
+    for (int i = 0; i < 10; ++i)
+        for (int j = 0; j < 10; j++) {
+            Point pos = Utils::mapToScreen(i, j);
+            tile.render(gRenderer, pos.x, pos.y);
+        }
 
     SDL_RenderPresent(gRenderer);
 
