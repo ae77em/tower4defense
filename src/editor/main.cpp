@@ -52,4 +52,7 @@ int main(int argc, char *argv[]) {
             if(e.type == SDL_QUIT) quit = true;
         }
     }
+    SDL_DestroyWindow(gWindow);
+    SDL_DestroyRenderer(gRenderer);
+    SDL_Quit();
 }
