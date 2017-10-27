@@ -1,7 +1,6 @@
 #include "Message.h"
 #include "Protocol.h"
 
-#include <netdb.h>
 #include <cstring>
 #include <iostream>
 

@@ -16,7 +16,6 @@ public:
     virtual ~Listener();
 
     void run();
-
 };
 
 

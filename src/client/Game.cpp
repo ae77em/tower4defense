@@ -1,6 +1,5 @@
 #include "Game.h"
 
-#include <gtkmm.h>
 #include <iostream>
 #include <fstream>
 #include "Dot.h"
@@ -13,9 +12,7 @@
 
 Game::Game(SharedBuffer &in, SharedBuffer &out) : dataFromServer(in), dataToServer(out) {}
 
-Game::~Game() {
-
-}
+Game::~Game() { }
 
 bool Game::init() {
     //Initialization flag
