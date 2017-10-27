@@ -1,6 +1,5 @@
 #include "Protocol.h"
 #include <string>
-#include "Constants.h"
 
 std::string Protocol::notificationToString(int notificationType) {
     std::string toReturn = "Notification";

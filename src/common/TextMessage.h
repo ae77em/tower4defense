@@ -11,6 +11,8 @@
 #ifndef TEXTMESSAGE_H
 #define TEXTMESSAGE_H
 
+static const int MESSAGE_PREFIX_LENGTH = 11;
+
 class TextMessage {
     std::string message;
 

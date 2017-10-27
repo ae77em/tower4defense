@@ -25,8 +25,13 @@ public:
                       SDL_Renderer *gRenderer,
                       LTexture *gTileTextures);
 
-    //Takes mouse events
+    /* Maneja los eventos sobre los tiles.
+     * */
     void handleEvent(SDL_Event &e, std::string &desc);
+
+    /* Maneja las notificaciones del server.
+     * */
+    void handleServerNotification(int opCode);
 
     //Get the tile type
     int getType();

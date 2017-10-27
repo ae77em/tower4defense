@@ -1,28 +1,39 @@
+#include <iostream>
 #include "MessageFactory.h"
 #include "Message.h"
-#include "Constants.h"
+#include "Protocol.h"
 #include "../common/Point.h"
 
 std::string MessageFactory::getPutTowerRequest(int x, int y) {
-    Json::Value root;
-    Json::Value operation(Json::ValueType::intValue);
-    Json::Value xCoord(Json::ValueType::intValue);
-    Json::Value yCoord(Json::ValueType::intValue);
-
-    operation = CLIENT_REQUEST_PUT_TOWER;
-    xCoord = x;
-    yCoord = y;
-
-    root.append(operation);
-    root.append(xCoord);
-    root.append(yCoord);
-
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
     Message message;
+
+    root[OPERATION_KEY] = CLIENT_REQUEST_PUT_TOWER;
+    root["xCoord"] = x;
+    root["yCoord"] = y;
+
     message.setData(root);
 
-    return message.serialize();
+    toReturn = message.serialize();
+
+    return toReturn;
 }
 
-std::string MessageFactory::getPutTowerNotification() {
-    return std::__cxx11::string();
+std::string MessageFactory::getPutTowerNotification(Json::Value &root) {
+    std::string toReturn;
+    Message message;
+
+    Json::Value responseRoot(root);
+
+    responseRoot[OPERATION_KEY] = SERVER_NOTIFICATION_PUT_TOWER;
+
+    message.setData(responseRoot);
+    toReturn = message.serialize();
+
+    return toReturn;
+}
+
+int MessageFactory::getOperation(Json::Value &root){
+    return root[OPERATION_KEY].asInt();
 }

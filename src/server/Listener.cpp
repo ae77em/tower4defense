@@ -31,8 +31,10 @@ void Listener::run(){
         while (true) {
             int fd = serverSocket.accept();
             Socket *client = new Socket(fd);
-            std::cout << "nueva conexion entrante. FD: " << std::to_string(fd)
-                    << std::endl;
+
+            std::cout   << "nueva conexion entrante. FD: "
+                        << std::to_string(fd)
+                        << std::endl;
 
             // ClientRequestHandler se encarga de agregar el cliente al server
             ClientRequestHandler *rp = new ClientRequestHandler(*client, server);

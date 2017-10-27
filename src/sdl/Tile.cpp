@@ -2,6 +2,7 @@
 #include "Tile.h"
 #include "Constants.h"
 #include "Utils.h"
+#include "../common/Protocol.h"
 
 Tile::Tile(int x, int y) {
     //Get the offsets
@@ -58,6 +59,19 @@ void Tile::handleEvent(SDL_Event &e, std::string &desc) {
                                     ? LTileSpriteMouseEvent::BUTTON_SPRITE_DEFAULT
                                     : LTileSpriteMouseEvent::BUTTON_SPRITE_MOUSE_DOWN);
         desc.append("cambio tile...");
+    }
+}
+
+void Tile::handleServerNotification(int opCode) {
+    //If mouse event happened
+    switch (opCode){
+        case SERVER_NOTIFICATION_PUT_TOWER: {
+            type = type == BUTTON_SPRITE_MOUSE_DOWN
+                                ? BUTTON_SPRITE_DEFAULT
+                                : BUTTON_SPRITE_MOUSE_DOWN;
+        }
+        default:
+            std::cout << "no se reconoció la notificación...";
     }
 }
 

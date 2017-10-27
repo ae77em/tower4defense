@@ -27,6 +27,9 @@ int main(int argc, char *argv[]) {
     listener.join();
     sender.join();
 
+    server.shutdown();
+    server.close();
+
     return 0;
 }
 

@@ -8,10 +8,14 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "../common/MessageFactory.h"
+#include "../common/Message.h"
+#include "../common/Protocol.h"
 
 Game::Game(SharedBuffer &in, SharedBuffer &out) : dataFromServer(in), dataToServer(out) {}
 
-Game::~Game() {}
+Game::~Game() {
+
+}
 
 bool Game::init() {
     //Initialization flag
@@ -219,8 +223,7 @@ bool Game::setTiles(Tile *tiles[]) {
     return tilesLoaded;
 }
 
-void Game::handleMouseEvents(Tile *const *tileSet,
-                             const SDL_Rect &camera,
+void Game::handleMouseEvents(const SDL_Rect &camera,
                              std::string &mov_description,
                              SDL_Event &e) const {
     if (e.type == SDL_MOUSEBUTTONDOWN) {
@@ -232,7 +235,6 @@ void Game::handleMouseEvents(Tile *const *tileSet,
              * poner una torre) manejo dicho evento. */
             switch (currentEventDispatched) {
                 case GAME_EVENT_PUT_TOWER: {
-                    std::cout << "voy a mandar un pedido para poner una torre..." << std::endl;
                     std::string request;
                     request = MessageFactory::getPutTowerRequest(point.x, point.y);
                     dataToServer.addData(request);
@@ -246,12 +248,32 @@ void Game::handleMouseEvents(Tile *const *tileSet,
     }
 }
 
-void Game::handleServerNotifications(Tile *tiles[], SDL_Rect camera) {
+void Game::handleServerNotifications(SDL_Rect camera) {
     int transactionsCounter = 0;
     std::string notification;
 
     while (dataFromServer.hasData() && transactionsCounter < MAX_SERVER_NOTIFICATIONS_PER_FRAME){
         notification = dataFromServer.getNextData();
+
+        Message message;
+        std::string response;
+
+        message.deserialize(notification);
+        Json::Value &root = message.getData();
+
+        int op = root[OPERATION_KEY].asInt();
+
+        switch(op){
+            case SERVER_NOTIFICATION_PUT_TOWER:{
+                int x = root["xCoord"].asInt();
+                int y = root["yCoord"].asInt();
+                int tilePos = x * TILES_COLUMNS + y;
+                tileSet[tilePos]->handleServerNotification(SERVER_NOTIFICATION_PUT_TOWER);
+                break;
+            }
+            default:
+                response = "no reconocida";
+        }
 
         std::cout << "notification: " << notification << std::endl;
     }
@@ -264,8 +286,6 @@ void Game::run() {
     if (!init()) {
         printf("Failed to initialize!\n");
     } else {
-        //The level tiles
-        Tile *tileSet[TOTAL_TILES];
 
         Tile portalBlue(0, 0);
         Tile portalRed(5, 5);
@@ -304,11 +324,11 @@ void Game::run() {
                     dot.handleEvent(e, mov_description);
 
                     currentEventDispatched = 1;
-                    handleMouseEvents(tileSet, camera, mov_description, e);
+                    handleMouseEvents(camera, mov_description, e);
                     currentEventDispatched = 0;
                 }
 
-                handleServerNotifications(tileSet, camera);
+                handleServerNotifications(camera);
 
                 //Move the dot
                 dot.move();

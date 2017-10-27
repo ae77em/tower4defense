@@ -1,7 +1,3 @@
-//
-// Created by esteban on 21/10/17.
-//
-
 #ifndef TP4_TOWERDEFENSE_POINT_H
 #define TP4_TOWERDEFENSE_POINT_H
 

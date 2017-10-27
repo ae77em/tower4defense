@@ -7,10 +7,6 @@
 #include <sstream>
 #include "Serializable.h"
 
-//#include "Configuracion.h"
-
-typedef uint32_t message_lenght_t;
-
 class Message : public Serializable {
 private:
     Json::Value data;

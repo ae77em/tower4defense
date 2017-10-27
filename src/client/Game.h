@@ -24,6 +24,9 @@ private:
     //The window renderer
     SDL_Renderer *gRenderer = NULL;
 
+    //The level tiles
+    Tile *tileSet[TOTAL_TILES];
+
     LTexture gDotTexture;
 
     SDL_Rect gTileClips[TOTAL_TILE_SPRITES];
@@ -54,13 +57,12 @@ public:
     bool init();
 
 private:
-    void handleMouseEvents(Tile *const *tileSet,
-                           const SDL_Rect &camera,
+    void handleMouseEvents(const SDL_Rect &camera,
                            std::string &mov_description,
                            SDL_Event &e) const;
     void loadServerNotifications(std::string notification);
 
-    void handleServerNotifications(Tile *pTile[], SDL_Rect rect);
+    void handleServerNotifications(SDL_Rect rect);
 };
 
 #endif //TP4_TOWERDEFENSE_GAME_H

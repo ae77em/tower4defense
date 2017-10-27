@@ -15,19 +15,14 @@ void ClientRequestHandler::run() {
     server.addClient(client.sendQueue());
 
     ThreadedQueue<TextMessage> &queue = client.receiveQueue();
-    while (! queue.isAtEnd()) {
+    while (!queue.isAtEnd()) {
         TextMessage msg = queue.pop();
 
         std::cout << "SERVER RECIBIÓ: ";
         std::cout << msg.getMessage();
         std::cout << std::endl;
 
-        std::string response = msg.getMessage();
-        response.assign("Recibí pedido '");
-        response.append(msg.getMessage());
-        response.append(" correctamente :).");
-
-        server.notifyAll(response);
+        server.processAndNotifyAll(msg.getMessage());
     }
 }
 

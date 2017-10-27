@@ -4,6 +4,7 @@
 
 #include <mutex>
 #include <vector>
+#include <jsoncpp/json/json.h>
 #include "../common/Socket.h"
 #include "../common/ThreadedQueue.h"
 #include "../common/TextMessage.h"
@@ -18,8 +19,34 @@ private:
 public:
     Server();
     ~Server();
+
+    /*
+     * Notifica a todos los clientes el mensaje pasado por parámetro.
+     * Este método activa el mutex, y lo libera al terminar.
+     * messsage: mensaje que se debe enviar a los clientes.
+     * */
     void notifyAll(std::string message);
+
+    /*
+     * Agrega un cliente asociado al server.
+     * messsage: mensaje que se debe enviar a los clientes.
+     * */
     void addClient(ThreadedQueue<TextMessage> &queue);
+
+    /*
+     * Procesa el request que recibe y envía la respuesta a todos los clientes
+     * asociados.
+     * Este método activa el mutex, y lo libera al terminar.
+     * request: pedido a procesar, enviado por alguno de los clientes.
+     * */
+    void processAndNotifyAll(std::string request);
+
+private:
+    /*
+     * Método de servicio para realizar las notificaciones sin lockear.
+     * Se consume desde métodos que necesitan notificar y ya activaron el lock.
+     */
+    void notifyAllWithoutLock(string message);
 };
 
 

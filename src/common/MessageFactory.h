@@ -1,7 +1,10 @@
 #ifndef TP4_TOWERDEFENSE_MESSAGEFACTORY_H
 #define TP4_TOWERDEFENSE_MESSAGEFACTORY_H
 
+static const char *const OPERATION_KEY = "operation";
+
 #include <string>
+#include <jsoncpp/json/json.h>
 
 class MessageFactory {
 public:
@@ -16,7 +19,12 @@ public:
      * Retorna la notificación enviada por el server para poner una torre en el escenario.
      * Es un json string.
      */
-    static std::string getPutTowerNotification();
+    static std::string getPutTowerNotification(Json::Value &root);
+
+    /*
+     * Retorna la operación asociada al request que se hace con el Json.
+     */
+    static int getOperation(Json::Value &root);
 };
 
 
