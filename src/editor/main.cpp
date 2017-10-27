@@ -43,6 +43,13 @@ int main(int argc, char *argv[]) {
             tile.render(gRenderer, pos.x, pos.y);
         }
 
+    LTexture tower;
+    tower.loadFromFile("images/sprites/tower-earth-alone.png", gRenderer);
+    {
+        Point pos = Utils::mapToScreen(5, 5);
+        tower.render(gRenderer, pos.x, pos.y);
+    }
+
     SDL_RenderPresent(gRenderer);
 
     bool quit = false;
