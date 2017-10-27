@@ -1,7 +1,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <stdexcept>
-#include <iostream>
 #include "../sdl/LTexture.h"
 #include "../common/Point.h"
 #include "../sdl/Utils.h"
@@ -44,5 +43,11 @@ int main(int argc, char *argv[]) {
 
     SDL_RenderPresent(gRenderer);
 
-    while (true) if (std::cin.get() == 'q') break;
+    bool quit = false;
+    while (!quit) {
+        SDL_Event e;
+        while(SDL_PollEvent( &e ) != 0) {
+            if(e.type == SDL_QUIT) quit = true;
+        }
+    }
 }
