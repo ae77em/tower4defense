@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include "../sdl/Constants.h"
 #include "../sdl/Utils.h"
+#include "../common/modelo/Mapa.h"
 
 Screen::Screen() {
     window = SDL_CreateWindow("Tower4Defense", SDL_WINDOWPOS_UNDEFINED,
@@ -61,4 +62,18 @@ void Screen::handleEvent(SDL_Event &e) {
 void Screen::clear() {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
     SDL_RenderClear(renderer);
+}
+
+void Screen::put(Mapa &map) {
+    Point dimensions = map.dimensiones();
+    for (int x = 0; x < dimensions.x; ++x)
+        for (int y = 0; y < dimensions.y; ++y)
+            if (map.casilla(x, y) != '#') putTile(x, y);
+
+    for (int x = 0; x < dimensions.x; ++x)
+        for (int y = 0; y < dimensions.y; ++y)
+            switch (map.casilla(x, y)) {
+                case '*': putTower(x, y);
+                          break;
+            }
 }

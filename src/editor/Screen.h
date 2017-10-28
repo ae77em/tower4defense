@@ -6,6 +6,7 @@
 #include "../sdl/LTexture.h"
 #include "../sdl/Dot.h"
 #include "../sdl/Constants.h"
+#include "../common/modelo/Mapa.h"
 
 class Screen {
     SDL_Renderer *renderer;
@@ -14,13 +15,15 @@ class Screen {
     Dot dot;
     SDL_Rect camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
 
+    void putTower(unsigned x, unsigned y);
+    void putTile(unsigned x, unsigned y);
+
 public:
     Screen();
     ~Screen();
 
     void draw();
-    void putTower(unsigned x, unsigned y);
-    void putTile(unsigned x, unsigned y);
+    void put(Mapa &map);
     void handleEvent(SDL_Event &e);
     void clear();
 };

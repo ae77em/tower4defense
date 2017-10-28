@@ -3,7 +3,8 @@ project(tp4_towerdefense)
 
 file(GLOB CLIENT_SOURCES "src/client/*.cpp" "src/common/*.cpp" "src/sdl/*.cpp")
 file(GLOB SERVER_SOURCES "src/server/*.cpp/" "src/common/*.cpp")
-file(GLOB EDITOR_SOURCES "src/editor/*.cpp" "src/common/*.cpp" "src/sdl/*.cpp")
+file(GLOB EDITOR_SOURCES "src/editor/*.cpp" "src/common/**/*.cpp"
+        "src/sdl/*.cpp")
 file(GLOB TEST_SOURCES "tests/unit/*.cpp" "src/common/**/*.cpp")
 file(GLOB SOCKMAN_SOURCES "tests/sockman.cpp" "src/common/*.cpp")
 
