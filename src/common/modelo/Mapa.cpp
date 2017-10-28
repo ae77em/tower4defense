@@ -19,3 +19,12 @@ char Mapa::casilla(unsigned x, unsigned y) {
 Point Mapa::dimensiones() {
     return Point(extension_x, extension_y);
 }
+
+void Mapa::setCasilla(char value, unsigned x, unsigned y) {
+    if (x >= extension_x || y >= extension_y)
+        throw std::runtime_error("out of bounds access: " + std::to_string(x)
+                + "," + std::to_string(y) + " on "
+                + std::to_string(extension_x) + " x "
+                + std::to_string(extension_y) + " map");
+    casillas[x + y * extension_x] = value;
+}

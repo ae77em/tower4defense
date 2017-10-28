@@ -25,3 +25,12 @@ TEST_CASE("Creacion de mapa", "[map-new]") {
         CHECK(m.dimensiones().y == 10);
     }
 }
+
+TEST_CASE("Modificacion de mapa", "[map-set]") {
+    Mapa m(10, 10);
+
+    SECTION("") {
+        m.setCasilla('!', 1, 1);
+        REQUIRE(m.casilla(1, 1) == '!');
+    }
+}
