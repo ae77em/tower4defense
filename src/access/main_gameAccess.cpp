@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
     //Load the GtkBuilder file and instantiate its widgets:
     auto refBuilder = Gtk::Builder::create();
     try {
-        refBuilder->add_from_file("resources/glade/game-window.glade");
+        refBuilder->add_from_file("resources/glade/game-access.glade");
     }
     catch (const Glib::FileError &ex) {
         std::cerr << "FileError: " << ex.what() << std::endl;

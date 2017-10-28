@@ -47,6 +47,10 @@ public:
     std::string getCreateMatchRequest(int clientId, int mapId);
 
     std::string getCreateMatchNotification(Json::Value &root);
+
+    std::string getMapsRequest(int clientId);
+
+    std::string getMapsNotification(Json::Value &root);
 };
 
 

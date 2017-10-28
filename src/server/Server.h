@@ -43,7 +43,7 @@ public:
      * Este método activa el mutex, y lo libera al terminar.
      * request: pedido a procesar, enviado por alguno de los clientes.
      * */
-    void processAndNotifyAll(std::string request);
+    void processAndNotify(std::string request);
 
 private:
     /*

@@ -12,6 +12,36 @@ int MessageFactory::getOperation(Json::Value &root){
  * NON-GAMING REQUESTS
  * ****************************************************************************
  * */
+std::string MessageFactory::getMapsRequest(int clientId){
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = CLIENT_REQUEST_NEW_MATCH;
+    root["clientId"] = clientId;
+
+    message.setData(root);
+
+    toReturn = message.serialize();
+
+    return toReturn;
+}
+
+std::string MessageFactory::getMapsNotification(Json::Value &root) {
+    std::string toReturn;
+    Message message;
+
+    Json::Value responseRoot(root);
+
+    responseRoot[OPERATION_KEY] = SERVER_NOTIFICATION_NEW_MATCH;
+
+    message.setData(responseRoot);
+    toReturn = message.serialize();
+
+    return toReturn;
+}
+
+
 std::string MessageFactory::getCreateMatchRequest(int clientId, int mapId){
     std::string toReturn;
     Json::Value root(Json::objectValue);

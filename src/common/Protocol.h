@@ -11,7 +11,9 @@ enum ClientRequestsNonPlaying {
     CLIENT_REQUEST_ACCESS_GAME_MENU = 0,
     CLIENT_REQUEST_ACCESS_CONFIGURATION_MENU = 1,
     CLIENT_REQUEST_NEW_MATCH = 2,
-    CLIENT_REQUEST_ENTER_EXISTING_MATCH = 3
+    CLIENT_REQUEST_ENTER_EXISTING_MATCH = 3,
+    CLIENT_REQUEST_GET_MAPS = 4,
+    CLIENT_REQUEST_GET_MATCHES = 5
 };
 
 /* Códigos de de requests para acciones del juego propiamente dicho,

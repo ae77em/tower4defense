@@ -23,7 +23,7 @@ void Server::notifyAll(std::string message) {
     m.unlock();
 }
 
-void Server::processAndNotifyAll(std::string request){
+void Server::processAndNotify(std::string request){
     m.lock();
 
     Message message;
@@ -48,10 +48,16 @@ void Server::processAndNotifyAll(std::string request){
             response = request;
             break;
         }
+        /* this responses are individual */
         case CLIENT_REQUEST_ENTER_EXISTING_MATCH:{
             response = request;
             break;
         }
+        case CLIENT_REQUEST_GET_MAPS:{
+            response = request;
+            break;
+        }
+
         /* gaming requests: */
         case CLIENT_REQUEST_PUT_TOWER:{
             response = MessageFactory::getPutTowerNotification(root);

@@ -22,7 +22,7 @@ void ClientRequestHandler::run() {
         std::cout << msg.getMessage();
         std::cout << std::endl;
 
-        server.processAndNotifyAll(msg.getMessage());
+        server.processAndNotify(msg.getMessage());
     }
 }
 
