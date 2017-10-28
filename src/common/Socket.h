@@ -85,16 +85,16 @@ public:
     /*
      * Se utiliza para cerrar el envío de datos en forma ordenada.
      */
-    void shutdown_send();
+    void shutdownSend();
 
     /*
      * Se retorna el fd del socket.
      */
-    int get_socket();
+    int getSocket();
 
     /*
      * Se modifica y retorna el fd del socket.
      */
-    int set_socket(int s);
+    int setSocket(int s);
 };
 #endif

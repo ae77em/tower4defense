@@ -35,8 +35,30 @@ void Server::processAndNotifyAll(std::string request){
     int op = root[OPERATION_KEY].asInt();
 
     switch(op){
+        /* non-gaming requests: */
+        case CLIENT_REQUEST_ACCESS_GAME_MENU:{
+            response = request;
+            break;
+        }
+        case CLIENT_REQUEST_ACCESS_CONFIGURATION_MENU:{
+            response = request;
+            break;
+        }
+        case CLIENT_REQUEST_NEW_MATCH:{
+            response = request;
+            break;
+        }
+        case CLIENT_REQUEST_ENTER_EXISTING_MATCH:{
+            response = request;
+            break;
+        }
+        /* gaming requests: */
         case CLIENT_REQUEST_PUT_TOWER:{
             response = MessageFactory::getPutTowerNotification(root);
+            break;
+        }
+        case CLIENT_REQUEST_MARK_TILE:{
+            response = MessageFactory::getMarkTileNotification(root);
             break;
         }
         default:

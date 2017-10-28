@@ -55,7 +55,7 @@ void Tile::renderSprite(SDL_Rect &camera,
 void Tile::handleEvent(SDL_Event &e, std::string &desc) {
     //If mouse event happened
     if (e.type == SDL_MOUSEBUTTONDOWN) {
-        type = static_cast<int>((type == static_cast<int>(LTileSpriteMouseEvent::BUTTON_SPRITE_MOUSE_DOWN))
+        type = ((type == LTileSpriteMouseEvent::BUTTON_SPRITE_MOUSE_DOWN)
                                     ? LTileSpriteMouseEvent::BUTTON_SPRITE_DEFAULT
                                     : LTileSpriteMouseEvent::BUTTON_SPRITE_MOUSE_DOWN);
         desc.append("cambio tile...");

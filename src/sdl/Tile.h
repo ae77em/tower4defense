@@ -48,6 +48,9 @@ private:
 
     //The tile type
     int type;
+
+    //Game-event dispatched from the tile
+    int gameEvent;
 };
 
 

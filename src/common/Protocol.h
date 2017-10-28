@@ -10,20 +10,30 @@
 enum ClientRequestsNonPlaying {
     CLIENT_REQUEST_ACCESS_GAME_MENU = 0,
     CLIENT_REQUEST_ACCESS_CONFIGURATION_MENU = 1,
-    CLIENT_REQUEST_CREATE_NEW_GAME = 2,
-    CLIENT_REQUEST_ENTER_EXISTING_GAME = 3
+    CLIENT_REQUEST_NEW_MATCH = 2,
+    CLIENT_REQUEST_ENTER_EXISTING_MATCH = 3
 };
 
 /* Códigos de de requests para acciones del juego propiamente dicho,
  * i.e. poner torre, marcar lugar...y no sé si hay otra.
  * */
 enum ClientRequestsPlaying {
-    CLIENT_REQUEST_PUT_TOWER = 100
+    CLIENT_REQUEST_PUT_TOWER = 100,
+    CLIENT_REQUEST_MARK_TILE = 101
 };
 
-enum ServerNotifications {
-    SERVER_NOTIFICATION_PUT_TOWER = 200
+enum ServerNonPlayingNotifications {
+    SERVER_NOTIFICATION_ACCESS_GAME_MENU = 200,
+    SERVER_NOTIFICATION_ACCESS_CONFIGURATION_MENU = 201,
+    SERVER_NOTIFICATION_NEW_MATCH = 202,
+    SERVER_NOTIFICATION_ENTER_EXISTING_GAME = 203
 };
+
+enum ServerPlayingNotifications {
+    SERVER_NOTIFICATION_PUT_TOWER = 200,
+    SERVER_NOTIFICATION_MARK_TILE = 201
+};
+
 
 class Protocol {
 public:

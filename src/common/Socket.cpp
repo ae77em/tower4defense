@@ -120,7 +120,7 @@ void Socket::send(const char* buffer, size_t length) {
             is_open_socket = false;
         } else if (s < 0) {
             throw std::runtime_error("Fallo la escritura al socket."
-                   " fd: " + std::to_string(get_socket()) + " errno: "
+                   " fd: " + std::to_string(getSocket()) + " errno: "
                     + std::to_string(en) + " se intentaron enviar "
                     + std::to_string(length) + " bytes, se enviaron "
                     + std::to_string(sent) + " bytes exitosamente");
@@ -169,15 +169,15 @@ void Socket::close() {
     }
 }
 
-void Socket::shutdown_send() {
+void Socket::shutdownSend() {
     ::shutdown(this->socket, SHUT_WR);
 }
 
-int Socket::get_socket() {
+int Socket::getSocket() {
     return this->socket;
 }
 
-int Socket::set_socket(int s) {
+int Socket::setSocket(int s) {
     this->socket = s;
     return this->socket;
 }

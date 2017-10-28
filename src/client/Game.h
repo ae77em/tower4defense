@@ -43,10 +43,11 @@ private:
     SharedBuffer &dataFromServer;
     SharedBuffer &dataToServer;
 
-    int currentEventDispatched;
+    int eventDispatched;
+    int clientId;
 
 public:
-    Game(SharedBuffer &in, SharedBuffer &out);
+    Game(SharedBuffer &in, SharedBuffer &out, int clientId);
     ~Game();
 
     void run();
@@ -63,6 +64,11 @@ private:
     void loadServerNotifications(std::string notification);
 
     void handleServerNotifications(SDL_Rect rect);
+
+    enum GameEvents {
+        GAME_EVENT_PUT_TOWER = 1,
+        GAME_EVENT_QUIT_TOWER = 2
+    };
 };
 
 #endif //TP4_TOWERDEFENSE_GAME_H

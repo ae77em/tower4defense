@@ -10,14 +10,14 @@ int main(int argc, char *argv[]) {
     SharedBuffer in;
     SharedBuffer out;
 
-    Game game(in, out);
+    Socket client;
 
-    Socket server;
+    client.connect(host.c_str(), port);
 
-    server.connect(host.c_str(), port);
+    Game game(in, out, client.getSocket());
 
-    Listener listener(server, in);
-    Sender sender(server, out);
+    Listener listener(client, in);
+    Sender sender(client, out);
 
     game.start();
     listener.start();
@@ -27,8 +27,8 @@ int main(int argc, char *argv[]) {
     listener.join();
     sender.join();
 
-    server.shutdown();
-    server.close();
+    client.shutdown();
+    client.close();
 
     return 0;
 }

@@ -3,24 +3,17 @@
 #include "AccessGameHandler.h"
 
 Gtk::Window *pWindow = nullptr;
-Gtk::Image *pImage = nullptr;
-Gtk::Image *pGif = nullptr;
+
 
 std::vector<GameWindowHandler*> gameWindowHandlers;
 
-static void on_btnImagenYAnimacion_clicked() {
-    if (pWindow) {
-        std::cout << "imagen y animacion" << std::endl;
-    }
+static void on_cmbMapas_changed(Gtk::ComboBoxText* combo){
+    std::cout << "Elemento elegido: " << combo->get_active_text() << std::endl;
 }
 
-static void on_btnImagen_clicked() {
+static void on_btnCrearPartida_clicked() {
     if (pWindow) {
-        if (pImage->is_visible()) {
-            pImage->hide();
-        } else {
-            pImage->show();
-        }
+
     }
 }
 
@@ -57,28 +50,29 @@ int main(int argc, char **argv) {
     refBuilder->get_widget("mainWindow", pWindow);
     if (pWindow) {
         //Get the GtkBuilder-instantiated Button, and connect a signal handler:
-        Gtk::Button *pBtnImagen = nullptr;
-        refBuilder->get_widget("btnImagen", pBtnImagen);
+        Gtk::Button *pBtnCrearPartida = nullptr;
+        refBuilder->get_widget("btnCrearPartida", pBtnCrearPartida);
+
+        if (pBtnCrearPartida) {
+            pBtnCrearPartida->signal_clicked().connect(sigc::ptr_fun(on_btnCrearPartida_clicked));
+        }
+
 
         Gtk::Button *pbtnJugar = nullptr;
         refBuilder->get_widget("btnJugar", pbtnJugar);
 
-        Gtk::Button *pBtnImagenYAnimacion = nullptr;
-        refBuilder->get_widget("btnImagenYAnimacion", pBtnImagenYAnimacion);
-
-        if (pBtnImagen) {
-            refBuilder->get_widget("image", pImage);
-            pBtnImagen->signal_clicked().connect(sigc::ptr_fun(on_btnImagen_clicked));
-        }
-
         if (pbtnJugar) {
-            refBuilder->get_widget("gif", pGif);
-            pGif->get_animation();
             pbtnJugar->signal_clicked().connect(sigc::ptr_fun(on_btnJugar_clicked));
         }
 
-        if (pBtnImagenYAnimacion) {
-            pBtnImagenYAnimacion->signal_clicked().connect(sigc::ptr_fun(on_btnImagenYAnimacion_clicked));
+
+        Gtk::ComboBoxText *pcmbMapas = nullptr;
+        refBuilder->get_widget("cmbMapas", pcmbMapas );
+
+        if (pcmbMapas) {
+            pcmbMapas->append("mapa1");
+            pcmbMapas->append("mapa2");
+            pcmbMapas->signal_changed().connect(sigc::bind(sigc::ptr_fun(on_cmbMapas_changed), pcmbMapas));
         }
 
         app->run(*pWindow);

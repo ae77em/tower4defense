@@ -17,7 +17,7 @@
         <child>
           <object class="GtkButton" id="btnJugar">
             <property name="label" translatable="yes">Jugar!!</property>
-            <property name="width_request">100</property>
+            <property name="width_request">109</property>
             <property name="height_request">46</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
@@ -31,8 +31,8 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="btnImagen">
-            <property name="label" translatable="yes">Imagen</property>
+          <object class="GtkButton" id="btnCrearPartida">
+            <property name="label" translatable="yes">Crear Partida</property>
             <property name="width_request">100</property>
             <property name="height_request">48</property>
             <property name="visible">True</property>
@@ -45,44 +45,27 @@
           </packing>
         </child>
         <child>
-          <object class="GtkImage" id="image">
+          <object class="GtkComboBoxText" id="cmbPartidas">
             <property name="width_request">100</property>
-            <property name="height_request">68</property>
+            <property name="height_request">40</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="pixbuf">../../images/tower-ice.gif</property>
-            <property name="icon_size">6</property>
           </object>
           <packing>
-            <property name="x">241</property>
-            <property name="y">51</property>
+            <property name="x">163</property>
+            <property name="y">90</property>
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="btnImagenYAnimacion">
-            <property name="label" translatable="yes">I &amp; A</property>
+          <object class="GtkComboBoxText" id="cmbMapas">
             <property name="width_request">100</property>
-            <property name="height_request">46</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-          </object>
-          <packing>
-            <property name="x">24</property>
-            <property name="y">144</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkImage" id="gif">
-            <property name="width_request">100</property>
-            <property name="height_request">80</property>
+            <property name="height_request">40</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="pixbuf">../../images/explosion.gif</property>
           </object>
           <packing>
-            <property name="x">251</property>
-            <property name="y">161</property>
+            <property name="x">164</property>
+            <property name="y">26</property>
           </packing>
         </child>
       </object>

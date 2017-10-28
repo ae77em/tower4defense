@@ -5,6 +5,8 @@
 #include <mutex>
 #include <vector>
 #include <jsoncpp/json/json.h>
+#include <unordered_map>
+#include <set>
 #include "../common/Socket.h"
 #include "../common/ThreadedQueue.h"
 #include "../common/TextMessage.h"
@@ -13,11 +15,13 @@
 class Server {
 
 private:
+    std::set<std::string> maps;
     std::mutex m;
     std::vector<std::reference_wrapper<ThreadedQueue<TextMessage>>> clients;
 
 public:
     Server();
+
     ~Server();
 
     /*

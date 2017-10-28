@@ -35,11 +35,6 @@ enum LTileSpriteMouseEvent {
     BUTTON_SPRITE_MOUSE_DOWN = 1
 };
 
-enum GameEvents {
-    GAME_EVENT_PUT_TOWER = 1
-};
-
-
 const std::vector<std::string> TILES_IMAGES_PATHS({
     "images/sprites/tile-grass.png",
     "images/sprites/tower-earth-alone.png"

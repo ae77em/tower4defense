@@ -10,7 +10,8 @@
 #include "../common/Message.h"
 #include "../common/Protocol.h"
 
-Game::Game(SharedBuffer &in, SharedBuffer &out) : dataFromServer(in), dataToServer(out) {}
+Game::Game(SharedBuffer &in, SharedBuffer &out, int cId)
+        : dataFromServer(in), dataToServer(out), clientId(cId) {}
 
 Game::~Game() { }
 
@@ -230,10 +231,10 @@ void Game::handleMouseEvents(const SDL_Rect &camera,
             /* Si hice click y tengo algún evento marcado para disparar
              * (por ejemplo, marqué un lugar para poner una torre, o quiero
              * poner una torre) manejo dicho evento. */
-            switch (currentEventDispatched) {
+            switch (eventDispatched) {
                 case GAME_EVENT_PUT_TOWER: {
                     std::string request;
-                    request = MessageFactory::getPutTowerRequest(point.x, point.y);
+                    request = MessageFactory::getPutTowerRequest(clientId, point.x, point.y, true);
                     dataToServer.addData(request);
                     break;
                 }
@@ -320,9 +321,9 @@ void Game::run() {
                     //Handle input for the dot
                     dot.handleEvent(e, mov_description);
 
-                    currentEventDispatched = 1;
+                    eventDispatched = 1;
                     handleMouseEvents(camera, mov_description, e);
-                    currentEventDispatched = 0;
+                    eventDispatched = 0;
                 }
 
                 handleServerNotifications(camera);
