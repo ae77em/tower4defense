@@ -44,6 +44,19 @@ void Screen::putTower(unsigned x, unsigned y) {
     Point pos = Utils::mapToScreen(x, y); 
     pos.x -= camera.x;
     pos.y -= camera.y;
+
+    /* Correccion de la posicion de la base
+     *
+     *   .    t   ^       ^
+     *  . .  ttt  |tile   |tower
+     * .   . t t  |       |
+     *  . .  t t  |       |
+     *   .   t t  v       |
+     *       t t  ^d      |
+     *       ttt  |       v
+     */
+    pos.y -= tower.getHeight() - tile.getHeight();
+
     tower.render(renderer, pos.x, pos.y); 
 }
 
