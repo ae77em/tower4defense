@@ -2,10 +2,14 @@ cmake_minimum_required(VERSION 3.0)
 project(tp4_towerdefense)
 
 file(GLOB CLIENT_SOURCES "src/client/*.cpp" "src/common/*.cpp" "src/sdl/*.cpp")
-file(GLOB SERVER_SOURCES "src/server/*.cpp/" "src/common/*.cpp")
+file(GLOB SERVER_SOURCES "src/server/*.cpp/" "src/common/*.cpp" "src/common/*.h")
 file(GLOB EDITOR_SOURCES "src/editor/*.cpp" "src/common/*.cpp" "src/sdl/*.cpp")
+<<<<<<< HEAD
 file(GLOB GAMEACCESS_SOURCES "src/access/*.cpp" "src/common/*.cpp")
+file(GLOB TEST_SOURCES "tests/unit/*.cpp" "src/common/*.cpp")
+=======
 file(GLOB TEST_SOURCES "tests/unit/*.cpp" "src/common/**/*.cpp")
+>>>>>>> mapa
 file(GLOB SOCKMAN_SOURCES "tests/sockman.cpp" "src/common/*.cpp")
 
 add_executable(client.exe ${CLIENT_SOURCES})
