@@ -34,6 +34,8 @@ public:
             S salida
      */
     char casilla(unsigned x, unsigned y);
+
+    void setCasilla(char value, unsigned x, unsigned y);
     Point dimensiones();
 };
 
