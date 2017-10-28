@@ -7,4 +7,11 @@ TEST_CASE("Creacion de mapa", "[map-new]") {
         Mapa mapa(10, 10);
         REQUIRE(mapa.casilla(0, 0) == '.');
     }
+
+    SECTION("acceso fuera de rango causa excepcion") {
+        Mapa mapa(10, 10);
+
+        REQUIRE_NOTHROW(mapa.casilla(9, 9) == '.');
+        REQUIRE_THROWS( mapa.casilla(10, 10) );
+    }
 }
