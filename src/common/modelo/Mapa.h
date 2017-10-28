@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include "../Point.h"
 
 /* Representa el terrento del juego, independiente de su representacion
  * visual o de las criaturas que se encuentren en el.
@@ -33,6 +34,7 @@ public:
             S salida
      */
     char casilla(unsigned x, unsigned y);
+    Point dimensiones();
 };
 
 #endif

@@ -14,4 +14,14 @@ TEST_CASE("Creacion de mapa", "[map-new]") {
         REQUIRE_NOTHROW(mapa.casilla(9, 9) == '.');
         REQUIRE_THROWS( mapa.casilla(10, 10) );
     }
+
+    SECTION("dimensiones correctas") {
+        Mapa m(0, 0);
+        CHECK(m.dimensiones().x == 0);
+        CHECK(m.dimensiones().y == 0);
+
+        m = Mapa(10, 10);
+        CHECK(m.dimensiones().x == 10);
+        CHECK(m.dimensiones().y == 10);
+    }
 }

@@ -15,3 +15,7 @@ char Mapa::casilla(unsigned x, unsigned y) {
                 + std::to_string(extension_y) + " map");
     return casillas[x + y * extension_x];
 }
+
+Point Mapa::dimensiones() {
+    return Point(extension_x, extension_y);
+}
