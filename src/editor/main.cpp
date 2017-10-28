@@ -7,21 +7,24 @@ int main(int argc, char *argv[]) {
     
     Screen screen;
 
-    for (int i = 0; i < 10; ++i) for (int j = 0; j < 10; j++)
-        screen.putTile(i, j);
-
-    screen.draw();
-
     bool quit = false;
     while (!quit) {
+        screen.clear();
+
         SDL_Event e;
         while(SDL_PollEvent( &e ) != 0) {
             if (e.type == SDL_QUIT) quit = true;
             else if (e.type == SDL_MOUSEBUTTONDOWN) {
                 screen.putTower(5, 5);
-                screen.draw();
+            } else if (e.type == SDL_KEYDOWN || e.type == SDL_KEYUP) {
+                screen.handleEvent(e);
             }
         }
+
+        for (int i = 0; i < 10; ++i) for (int j = 0; j < 10; j++)
+            screen.putTile(i, j);
+
+        screen.draw();
     }
 
     SDL_Quit();

@@ -34,15 +34,31 @@ Screen::~Screen() {
 }
 
 void Screen::draw() {
+    dot.move();
+    dot.setCamera(camera);
     SDL_RenderPresent(renderer);
 }
 
 void Screen::putTower(unsigned x, unsigned y) {
     Point pos = Utils::mapToScreen(x, y); 
+    pos.x -= camera.x;
+    pos.y -= camera.y;
     tower.render(renderer, pos.x, pos.y); 
 }
 
 void Screen::putTile(unsigned x, unsigned y) {
     Point pos = Utils::mapToScreen(x, y); 
+    pos.x -= camera.x;
+    pos.y -= camera.y;
     tile.render(renderer, pos.x, pos.y); 
+}
+
+void Screen::handleEvent(SDL_Event &e) {
+    std::string s;
+    dot.handleEvent(e, s);
+}
+
+void Screen::clear() {
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
+    SDL_RenderClear(renderer);
 }
