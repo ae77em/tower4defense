@@ -3,16 +3,16 @@
 
 #include "../common/Thread.h"
 #include "../common/Socket.h"
-#include "Server.h"
+#include "GameServer.h"
 
 class ClientRequestHandler : public Thread {
 private:
     char op;
     SocketManager client;
-    Server &server;
+    GameServer &server;
 
 public:
-    explicit ClientRequestHandler(Socket &client, Server &s);
+    explicit ClientRequestHandler(Socket &client, GameServer &s);
     virtual ~ClientRequestHandler();
 
     void run();

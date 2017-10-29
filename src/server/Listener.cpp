@@ -26,7 +26,7 @@ void Listener::shutdown(){
 
 void Listener::run(){
     try {
-        Server server;
+        GameServer server;
 
         while (true) {
             int fd = serverSocket.accept();

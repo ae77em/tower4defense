@@ -4,8 +4,12 @@
 #include "../common/Thread.h"
 
 class GameWindowHandler : public Thread {
+private:
+    const std::string &host;
+    const uint16_t &port;
+
 public:
-    GameWindowHandler();
+    GameWindowHandler(const std::string &host, const uint16_t &port);
     virtual ~GameWindowHandler();
 
     void run();

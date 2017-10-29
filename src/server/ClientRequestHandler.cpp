@@ -7,7 +7,7 @@
 #include "../common/ThreadedQueue.h"
 #include "../common/SocketManager.h"
 
-ClientRequestHandler::ClientRequestHandler(Socket &c, Server &s) : client(std::move(c)), server(s) {}
+ClientRequestHandler::ClientRequestHandler(Socket &c, GameServer &s) : client(std::move(c)), server(s) {}
 
 ClientRequestHandler::~ClientRequestHandler() { }
 

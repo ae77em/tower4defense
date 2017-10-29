@@ -30,7 +30,7 @@ public:
 
     /*
      * Retorna true si el buffer está cargado o hay algún cliente
-     * consumiendolo.
+     * consumiéndolo.
      */
     bool isProcessingYet() const;
 

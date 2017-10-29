@@ -3,7 +3,6 @@
 #include "Sender.h"
 
 int main(int argc, char *argv[]) {
-
     std::string host = std::string(argv[1]);
     uint16_t port = atoi(argv[2]);
 

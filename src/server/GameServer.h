@@ -12,7 +12,7 @@
 #include "../common/TextMessage.h"
 #include "../common/SocketManager.h"
 
-class Server {
+class GameServer {
 
 private:
     std::set<std::string> maps;
@@ -20,9 +20,9 @@ private:
     std::vector<std::reference_wrapper<ThreadedQueue<TextMessage>>> clients;
 
 public:
-    Server();
+    GameServer();
 
-    ~Server();
+    ~GameServer();
 
     /*
      * Notifica a todos los clientes el mensaje pasado por parámetro.

@@ -1,4 +1,4 @@
-#include "Server.h"
+#include "GameServer.h"
 #include "../common/Socket.h"
 #include "../common/TextMessage.h"
 #include "../common/Message.h"
@@ -6,15 +6,15 @@
 #include "../sdl/Constants.h"
 #include "../common/Protocol.h"
 
-Server::Server(){}
+GameServer::GameServer(){}
 
-Server::~Server() {}
+GameServer::~GameServer() {}
 
-void Server::addClient(ThreadedQueue<TextMessage> &queue) {
+void GameServer::addClient(ThreadedQueue<TextMessage> &queue) {
     clients.push_back(queue);
 }
 
-void Server::notifyAll(std::string message) {
+void GameServer::notifyAll(std::string message) {
     m.lock();
     TextMessage msg(message);
     for (auto &client : clients) {
@@ -23,7 +23,7 @@ void Server::notifyAll(std::string message) {
     m.unlock();
 }
 
-void Server::processAndNotify(std::string request){
+void GameServer::processAndNotify(std::string request){
     m.lock();
 
     Message message;
@@ -49,15 +49,18 @@ void Server::processAndNotify(std::string request){
             break;
         }
         /* this responses are individual */
-        case CLIENT_REQUEST_ENTER_EXISTING_MATCH:{
+        case CLIENT_REQUEST_ENTER_MATCH:{
             response = request;
             break;
         }
         case CLIENT_REQUEST_GET_MAPS:{
+            response = MessageFactory::getMapsNotification();
+            break;
+        }
+        case CLIENT_REQUEST_GET_MATCHES:{
             response = request;
             break;
         }
-
         /* gaming requests: */
         case CLIENT_REQUEST_PUT_TOWER:{
             response = MessageFactory::getPutTowerNotification(root);
@@ -76,7 +79,7 @@ void Server::processAndNotify(std::string request){
     m.unlock();
 }
 
-void Server::notifyAllWithoutLock(std::string message){
+void GameServer::notifyAllWithoutLock(std::string message){
     TextMessage msg(message);
     for (auto &client : clients) {
         client.get().push(msg);
