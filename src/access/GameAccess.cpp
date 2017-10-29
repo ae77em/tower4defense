@@ -1,25 +1,56 @@
 #include "GameAccess.h"
+#include "../common/MessageFactory.h"
+#include "../common/Socket.h"
+#include "../common/TextMessage.h"
 #include <gtkmm.h>
 #include <iostream>
 
+GameAccess::GameAccess(const Socket &c, const std::string &h, const uint16_t &p) : client(c), host(h), port(p) { }
+
+GameAccess::~GameAccess(){}
 
 void GameAccess::on_cmbMapas_changed(){
-    std::cout << "Elemento elegido: " << pcmbMapas->get_active_text() << std::endl;
+    setCreateMatchButtonEnableStatus();
 }
 
-void GameAccess::on_btnCrearPartida_clicked(Glib::ustring s) {
-    std::cout << "string: " << s << std::endl;
+void GameAccess::on_entryMatchName_changed(){
+    setCreateMatchButtonEnableStatus();
 }
 
-void GameAccess::on_btnJugar_clicked(Glib::ustring s) {
-    std::cout << "string: " << s << std::endl;
-/*
+void GameAccess::setCreateMatchButtonEnableStatus() {
+    bool mustSetSensitive = mustCreateMatchBeEnabled();
+    pBtnCrearPartida->set_sensitive(mustSetSensitive);
+}
+
+bool GameAccess::mustCreateMatchBeEnabled() {
+    std::string map = cmbMapsText->get_active_text();
+    return (map.compare(STR_NONE) != 0) && !(entryMatchName->get_text().empty());
+}
+
+void GameAccess::on_cmbMatches_changed(){
+    std::string match = cmbMatchesText->get_active_text();
+
+    if (match.compare(STR_NONE) != 0){
+        pbtnJugar->set_sensitive(true);
+    } else {
+        pbtnJugar->set_sensitive(false);
+    }
+}
+
+void GameAccess::on_btnCrearPartida_clicked() {
+    std::string mapName = cmbMapsText->get_active_text();
+    std::string matchName = entryMatchName->get_text();
+    
+    std::string request =  MessageFactory::getNewMatchRequest(mapName, matchName);
+
+    TextMessage textMessage(request);
+    textMessage.sendTo(const_cast<Socket &>(client));
+}
+
+void GameAccess::on_btnJugar_clicked() {
     GameWindowHandler *gwh = new GameWindowHandler(host, port);
-
     gameWindowHandlers.push_back(gwh);
-
     gwh->start();
-*/
 }
 
 void GameAccess::run() {
@@ -47,44 +78,11 @@ void GameAccess::run() {
     //Get the GtkBuilder-instantiated Dialog:
     refBuilder->get_widget("mainWindow", pWindow);
     if (pWindow) {
-        //Get the GtkBuilder-instantiated Button, and connect a signal handler:
-        refBuilder->get_widget("btnCrearPartida", pBtnCrearPartida);
-
-        if (pBtnCrearPartida) {
-            //pBtnCrearPartida->signal_clicked().connect(sigc::ptr_fun(on_btnCrearPartida_clicked));
-            pBtnCrearPartida->signal_clicked()
-                    .connect(
-                            sigc::bind<Glib::ustring>(
-                                    sigc::mem_fun(*this, &GameAccess::on_btnCrearPartida_clicked), "button 1")
-                    );
-        }
-
-
-        refBuilder->get_widget("btnJugar", pbtnJugar);
-
-        if (pbtnJugar) {
-            //pbtnJugar->signal_clicked().connect(sigc::ptr_fun(on_btnJugar_clicked));
-            pbtnJugar->signal_clicked()
-                    .connect(
-                            sigc::bind<Glib::ustring>(
-                                    sigc::mem_fun(*this, &GameAccess::on_btnJugar_clicked), "button 1")
-                    );
-        }
-
-
-        refBuilder->get_widget("cmbMapas", pcmbMapas);
-
-        if (pcmbMapas) {
-            pcmbMapas->append("aa");
-            //pcmbMapas->signal_changed().connect(bind(sigc::ptr_fun(on_cmbMapas_changed), pcmbMapas));
-            pcmbMapas->signal_changed()
-
-                    .connect(
-                            sigc::mem_fun(*this,
-                                          &GameAccess::on_cmbMapas_changed
-                            )
-                    );
-        }
+        initButtonCreateMatch(refBuilder);
+        initButtonPlay(refBuilder);
+        initComboMaps(refBuilder);
+        initEntryMatchName(refBuilder);
+        initComboMatches(refBuilder);
 
         app->run(*pWindow);
     }
@@ -97,15 +95,105 @@ void GameAccess::run() {
     }
 }
 
-void GameAccess::setMaps(const std::vector<std::string> &maps) {
-    pcmbMapas->clear();
-    for (std::string map : maps){
-        pcmbMapas->append("bb");
-    }
-    pcmbMapas->queue_draw();
-
+void GameAccess::initButtonCreateMatch(Glib::RefPtr<Gtk::Builder> &refBuilder) {
+    refBuilder->get_widget("btnCrearPartida", pBtnCrearPartida);
+    pBtnCrearPartida->set_sensitive(false);
+    if (pBtnCrearPartida) {
+            pBtnCrearPartida->signal_clicked()
+                    .connect(
+                            sigc::mem_fun(*this, &GameAccess::on_btnCrearPartida_clicked)
+                    );
+        }
 }
+
+void GameAccess::initButtonPlay(Glib::RefPtr<Gtk::Builder> &refBuilder) {
+    refBuilder->get_widget("btnJugar", pbtnJugar);
+    pbtnJugar->set_sensitive(false);
+    if (pbtnJugar) {
+            pbtnJugar->signal_clicked()
+                    .connect(
+                            sigc::mem_fun(*this, &GameAccess::on_btnJugar_clicked)
+                    );
+        }
+}
+
+void GameAccess::initComboMaps(Glib::RefPtr<Gtk::Builder> &refBuilder) {
+    refBuilder->get_widget("cmbMapas", cmbMapsText);
+    cmbMapsText->append(STR_NONE);
+    cmbMapsText->signal_changed()
+                .connect(
+                        sigc::mem_fun(*this, &GameAccess::on_cmbMapas_changed)
+                );
+}
+
+void GameAccess::initEntryMatchName(Glib::RefPtr<Gtk::Builder> &refBuilder) {
+    refBuilder->get_widget("entryNombrePartida", entryMatchName);
+    entryMatchName->signal_changed()
+            .connect(
+                    sigc::mem_fun(*this, &GameAccess::on_entryMatchName_changed)
+            );
+}
+
+void GameAccess::initComboMatches(Glib::RefPtr<Gtk::Builder> &refBuilder) {
+    refBuilder->get_widget("cmbPartidas", cmbMatchesText);
+    cmbMatchesText->append(STR_NONE);
+    cmbMatchesText->signal_changed()
+            .connect(
+                    sigc::mem_fun(*this, &GameAccess::on_cmbMatches_changed)
+            );
+}
+
+void GameAccess::addMapsToCombo(const std::vector<std::string> &maps) {
+    for (std::string map : maps){
+        cmbMapsText->append(map);
+    }
+}
+
+void GameAccess::addMatchToCombo(const std::string &mapName, const std::string &matchName) {
+    cmbMatchesText->append(mapName, matchName);
+}
+
+
+void GameAccess::addMap(std::string map) {
+    /*Gtk::TreeModel::Row row = *(cmbMapsModel->append());
+    //row[cmbMapsColumns.getId()] = 0;
+    row[cmbMapsColumns.getValue()] = map;*/
+}
+
+void GameAccess::dropMap(std::string map) {
+    /*Gtk::TreeModel::Children children = cmbMapsModel->children();
+    Gtk::TreeModel::Row row;
+
+    Gtk::TreeModel::Children::iterator iter;
+
+    for (iter = children.begin(); iter != children.end(); ++iter) {
+        row = *iter;
+
+        if (row[cmbMapsColumns.getValue()] == map) {
+            cmbMapsModel->erase(row);
+            break;
+        }
+    }
+
+*/    //updateHeader();
+}
+
+void GameAccess::updateHeader() {
+    /*Gtk::TreeViewColumn *col = m_TreeView.get_column(0);
+
+    std::string encabezado = "Nivel " + std::to_string(nivel);
+
+    encabezado += " ( " + std::to_string(jugConectados);
+    encabezado += "/" + std::to_string(jugNecesarios) + " )";
+
+    col->set_title(encabezado);
+    col->set_alignment(0.5);*/
+}
+
 
 bool GameAccess::isCmbMapsLoaded(){
-    return pcmbMapas != nullptr;
+    return cmbMapsText != nullptr;
 }
+
+
+

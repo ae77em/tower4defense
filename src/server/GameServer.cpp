@@ -34,6 +34,8 @@ void GameServer::processAndNotify(std::string request){
 
     int op = root[OPERATION_KEY].asInt();
 
+    bool isGlobalNotification = true;
+
     switch(op){
         /* non-gaming requests: */
         case CLIENT_REQUEST_ACCESS_GAME_MENU:{
@@ -45,7 +47,7 @@ void GameServer::processAndNotify(std::string request){
             break;
         }
         case CLIENT_REQUEST_NEW_MATCH:{
-            response = request;
+            response = MessageFactory::getNewMatchNotification(root, matches);
             break;
         }
         /* this responses are individual */
@@ -54,11 +56,11 @@ void GameServer::processAndNotify(std::string request){
             break;
         }
         case CLIENT_REQUEST_GET_MAPS:{
-            response = MessageFactory::getMapsNotification();
+            response = MessageFactory::getExistingMapsNotification();
             break;
         }
         case CLIENT_REQUEST_GET_MATCHES:{
-            response = request;
+            response = MessageFactory::getExistingMatchesNotification(matches);;
             break;
         }
         /* gaming requests: */
@@ -74,7 +76,16 @@ void GameServer::processAndNotify(std::string request){
             response = request;
     }
 
-    notifyAllWithoutLock(response);
+    if (isGlobalNotification){
+        notifyAllWithoutLock(response);
+    } else {
+        /* acá se disparan las notificaciones individuales,
+         * por ejemplo, cuando no se puede crear un match o
+         * no se puede unir a un match...ver cómo utilizar
+         * el mecanismos con socketmanager para obtener el
+         * cliente que hace el request en este caso.
+         * */
+    }
 
     m.unlock();
 }

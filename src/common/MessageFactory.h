@@ -5,6 +5,7 @@ static const char *const OPERATION_KEY = "operation";
 
 #include <string>
 #include <jsoncpp/json/json.h>
+#include <set>
 
 class MessageFactory {
 public:
@@ -44,17 +45,21 @@ public:
      */
     static std::string getMarkTileNotification(Json::Value &root);
 
-    std::string getCreateMatchRequest(int clientId, int mapId);
+    static std::string getCreateMatchRequest(int clientId, std::string mapName);
 
-    std::string getCreateMatchNotification(Json::Value &root);
+    static std::string getCreateMatchNotification(Json::Value &root);
 
-    static std::string getMapsRequest(int clientId);
+    static std::string getExistingMapsRequest(int clientId);
 
-    static std::string getMapsNotification();
+    static std::string getExistingMapsNotification();
 
-    static std::string getMatchesRequest(int id);
+    static std::string getExistingMatchesRequest(int clientId);
 
-    std::string getMatchesNotification();
+    static std::string getExistingMatchesNotification(std::set<std::string> &matches);
+
+    static std::string getNewMatchNotification(Json::Value &root, std::set<std::string> &matches);
+
+    static std::string getNewMatchRequest(std::string &mapName, std::string &matchName);
 };
 
 

@@ -15,7 +15,7 @@
 class GameServer {
 
 private:
-    std::set<std::string> maps;
+    std::set<std::string> matches;
     std::mutex m;
     std::vector<std::reference_wrapper<ThreadedQueue<TextMessage>>> clients;
 
@@ -33,7 +33,7 @@ public:
 
     /*
      * Agrega un cliente asociado al server.
-     * messsage: mensaje que se debe enviar a los clientes.
+     * queue: cola encargada de manejar el envío y recepción de datos.
      * */
     void addClient(ThreadedQueue<TextMessage> &queue);
 

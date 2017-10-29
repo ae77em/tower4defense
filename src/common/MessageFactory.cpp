@@ -12,7 +12,7 @@ int MessageFactory::getOperation(Json::Value &root){
  * NON-GAMING REQUESTS
  * ****************************************************************************
  * */
-std::string MessageFactory::getMapsRequest(int clientId){
+std::string MessageFactory::getExistingMapsRequest(int clientId){
     std::string toReturn;
     Json::Value root(Json::objectValue);
     Message message;
@@ -27,7 +27,7 @@ std::string MessageFactory::getMapsRequest(int clientId){
     return toReturn;
 }
 
-std::string MessageFactory::getMapsNotification() {
+std::string MessageFactory::getExistingMapsNotification() {
     std::string toReturn;
     Message message;
 
@@ -45,22 +45,48 @@ std::string MessageFactory::getMapsNotification() {
     return toReturn;
 }
 
-std::string MessageFactory::getMatchesRequest(int id) {
-    return std::__cxx11::string();
+std::string MessageFactory::getExistingMatchesRequest(int clientId) {
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = CLIENT_REQUEST_GET_MATCHES;
+    root["clientId"] = clientId;
+
+    message.setData(root);
+
+    toReturn = message.serialize();
+
+    return toReturn;
 }
 
-std::string MessageFactory::getMatchesNotification() {
-    return std::__cxx11::string();
+std::string MessageFactory::getExistingMatchesNotification(std::set<std::string> &matches) {
+    std::string toReturn;
+    Message message;
+
+    Json::Value responseRoot(Json::objectValue);
+
+    responseRoot[OPERATION_KEY] = SERVER_NOTIFICATION_GET_MATCHES;
+    responseRoot["matches"] = Json::arrayValue;
+
+    for (const std::string &match : matches) {
+        responseRoot["matches"].append(match);
+    }
+
+    message.setData(responseRoot);
+    toReturn = message.serialize();
+
+    return toReturn;
 }
 
-std::string MessageFactory::getCreateMatchRequest(int clientId, int mapId){
+std::string MessageFactory::getCreateMatchRequest(int clientId, std::string mapName){
     std::string toReturn;
     Json::Value root(Json::objectValue);
     Message message;
 
     root[OPERATION_KEY] = CLIENT_REQUEST_NEW_MATCH;
     root["clientId"] = clientId;
-    root["mapId"] = mapId;
+    root["mapName"] = mapName;
 
     message.setData(root);
 
@@ -144,6 +170,54 @@ std::string MessageFactory::getMarkTileNotification(Json::Value &root) {
     Json::Value responseRoot(root);
 
     responseRoot[OPERATION_KEY] = SERVER_NOTIFICATION_MARK_TILE;
+
+    message.setData(responseRoot);
+    toReturn = message.serialize();
+
+    return toReturn;
+}
+
+std::string MessageFactory::getNewMatchRequest(std::string &mapName, std::string &matchName) {
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = CLIENT_REQUEST_NEW_MATCH;
+    root["mapName"] = mapName;
+    root["matchName"] = matchName;
+
+    message.setData(root);
+
+    toReturn = message.serialize();
+
+    return toReturn;
+}
+
+std::string MessageFactory::getNewMatchNotification(Json::Value &root, std::set<std::string> &matches) {
+    std::string toReturn;
+    Message message;
+
+    Json::Value responseRoot(root);
+
+    std::string mapName = root["mapName"].asString();
+    std::string matchName = root["matchName"].asString();
+
+    std::string composedMatchName;
+    composedMatchName.assign(mapName);
+    composedMatchName.append(" ");
+    composedMatchName.append(matchName);
+
+    if (matches.find(matchName) == matches.end()) {
+        matches.insert(matchName);
+        responseRoot[OPERATION_KEY] = SERVER_NOTIFICATION_NEW_MATCH;
+        responseRoot["mapName"] = mapName;
+        responseRoot["matchName"] = matchName;
+    } else {
+        responseRoot[OPERATION_KEY] = SERVER_NOTIFICATION_NEW_MATCH_ERROR;
+        responseRoot["mapName"] = mapName;
+        responseRoot["matchName"] = matchName;
+        responseRoot["errorDesc"] = "La partida no se puede crear ya que existe otra con ese nombre.";
+    }
 
     message.setData(responseRoot);
     toReturn = message.serialize();

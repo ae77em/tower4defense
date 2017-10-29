@@ -33,7 +33,14 @@ void Listener::run(){
                         maps.push_back(map.asString());
                     }
 
-                    gameAccess.setMaps(maps);
+                    gameAccess.addMapsToCombo(maps);
+                    break;
+                }
+                case SERVER_NOTIFICATION_NEW_MATCH:{
+                    std::string mapName = root["mapName"].asString();
+                    std::string matchName = root["matchName"].asString();
+
+                    gameAccess.addMatchToCombo(mapName, matchName);
                     break;
                 }
                 default:

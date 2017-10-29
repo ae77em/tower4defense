@@ -8,7 +8,6 @@
 #include "../common/MessageFactory.h"
 
 int main(int argc, char **argv) {
-    GameAccess gameAccess;
     SharedBuffer toReceive;
     SharedBuffer toSend;
     std::string host;
@@ -21,26 +20,30 @@ int main(int argc, char **argv) {
 
     client.connect(host.c_str(), port);
 
-    std::string mapsRequest = MessageFactory::getMapsRequest(client.getSocket());
-    //std::string matchesRequest = MessageFactory::getMatchesRequest(client.getSocket());
-
-    toSend.addData(mapsRequest);
-    //toSend.addData(matchesRequest);
-
+    GameAccess gameAccess(client, host, port);
     Listener listener(client, gameAccess);
     Sender sender(client, toSend);
 
     gameAccess.start();
 
     time_t start = time(0);
-    // wait for  2 seconds
-    while (difftime( time(0), start) < 2 ){}
+    // wait for 1 second, while the window is setted
+    while (difftime(time(0), start) < 1 ){}
 
     listener.start();
+    // sends the initial requests, and inmediatly finishes him
     sender.start();
 
-    listener.join();
+    std::string mapsRequest = MessageFactory::getExistingMapsRequest(client.getSocket());
+    toSend.addData(mapsRequest);
+
+    std::string matchesRequest = MessageFactory::getExistingMatchesRequest(client.getSocket());
+    toSend.addData(matchesRequest);
+
+    toSend.setClientProcessEnded(true);
     sender.join();
+
+    listener.join();
     gameAccess.join();
 
     client.shutdown();
