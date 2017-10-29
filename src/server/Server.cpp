@@ -16,16 +16,45 @@ unsigned int Server::getAmountGames(){
     return games.size();
 }
 
+void Server::createGameAndNotifyAll(int clientId){
+    mutexPlayers.lock();
+
+    ServerPlayer * sp = players[clientId];
+
+    int gameId = createGame();
+
+    sp->setGameId(gameId);
+
+    addPlayerToGame(gameId,sp);
+
+    notifyAllCreationGame(gameId,clientId);
+
+    mutexPlayers.lock();
+}
+
+void Server::notifyAllCreationGame(int gameId,int clientIdWhoCreatedGame){
+    std::string message = MessageFactory::getCreateMatchNotification( gameId, clientIdWhoCreatedGame );
+
+    for(int i=0; i < players.size(); i++){
+        players[i]->sendData(message);
+    }
+}
+
+void Server::addPlayerToGame(int idGame,ServerPlayer* sp){
+    games.at(idGame)->addPlayer(sp);
+}
+
+
 //crea el juego y retorna el id del mismo, EL ID ES EL INDICE DENTRO DEL VECTOR
-unsigned int Server::CreateGame(){
+unsigned int Server::createGame(){
     games.push_back(new ServerGame);
 
     return games.size() - 1;
 }
 
 void Server::createAndRunPlayer(Socket s){
-    ClientRequestHandler *rp = new ClientRequestHandler(s,queueMessagesClient);
-    ServerPlayer* serverPlayer = new ServerPlayer(rp,s.getSocket());
+    ClientRequestHandler *crh = new ClientRequestHandler(s,queueMessagesClient);
+    ServerPlayer* serverPlayer = new ServerPlayer(crh,s.getSocket());
 
     mutexPlayers.lock();
 
@@ -72,7 +101,7 @@ void Server::run() {
                     break;
                 }
                 case CLIENT_REQUEST_NEW_MATCH:{
-                    createGame(clientId);
+                    createGameAndNotifyAll(clientId);
                     break;
                 }
                     /* this responses are individual */

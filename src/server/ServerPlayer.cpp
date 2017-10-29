@@ -19,3 +19,7 @@ void ServerPlayer::sendData(std::string data){
 void ServerPlayer::launchRequesHandler(){
     this->clientRequestHandler->start();
 }
+
+void ServerPlayer::setGameId(int gameId){
+    this->gameId = gameId;
+}

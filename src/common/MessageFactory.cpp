@@ -23,6 +23,25 @@ std::string MessageFactory::getClientIdNotification(int clientId){
     return toReturn;
 }
 
+std::string MessageFactory::getCreateMatchNotification(int gameId,int clientIdWhoCreatedGame){
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = SERVER_NOTIFICATION_NEW_MATCH;
+    //por el momento id el cliente con su ID, deberia de tener un nombre
+    //sino que se  va a mostar en los combos
+    root["clientIdWhoCreatedGame"] = clientIdWhoCreatedGame;
+    root["mgameIdapId"] = gameId;
+
+    message.setData(root);
+
+    toReturn = message.serialize();
+
+    return toReturn;
+}
+
+
 std::string MessageFactory::getGamesNotification(int clientId,std::string games){
     std::string toReturn;
     Json::Value root(Json::objectValue);

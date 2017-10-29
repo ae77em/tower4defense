@@ -14,6 +14,8 @@ public:
     static std::string getGamesRequest(int clientId);
     static std::string getGamesNotification(int clientId,std::string games);
 
+    static std::string getCreateMatchNotification(int gameId,int clientIdWhoCreatedGame);
+
 
 
         /*

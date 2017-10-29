@@ -20,6 +20,7 @@
 
 class ClientRequestHandler;
 class ServerPlayer;
+class ServerGame;
 
 
 class Server : public Thread {
@@ -43,7 +44,12 @@ public:
 
     std::string getGamesList();
 
-    void createGame(int clientId);
+    void createGameAndNotifyAll(int clientId);
+    unsigned int createGame();
+    void notifyAllCreationGame(int gameId,int clientIdWhoCreatedGame);
+
+    void addPlayerToGame(int idGame,ServerPlayer* sp);
+
     void sendGamesListToClient(int clientId);
     void setQueueRequestClient(ThreadedQueue<Message> &queue);
     void createAndRunPlayer(Socket s);
