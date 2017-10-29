@@ -3,19 +3,21 @@
 
 #include "../common/Thread.h"
 #include "../common/Socket.h"
-#include "GameServer.h"
+#include "../common/Message.h"
+#include "Server.h"
 
 class ClientRequestHandler : public Thread {
 private:
     char op;
-    SocketManager client;
-    GameServer &server;
+    Socket& client;
+    ThreadedQueue<Message>& queueSharedMessage;
 
 public:
-    explicit ClientRequestHandler(Socket &client, GameServer &s);
+    explicit ClientRequestHandler(Socket &client, ThreadedQueue<Message> &th);
     virtual ~ClientRequestHandler();
 
     void run();
+    void sendData(std::string data);
 
 private:
     ClientRequestHandler() = delete;

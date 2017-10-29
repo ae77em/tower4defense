@@ -9,20 +9,47 @@
 #include <set>
 #include "../common/Socket.h"
 #include "../common/ThreadedQueue.h"
+#include "../common/Thread.h"
 #include "../common/TextMessage.h"
 #include "../common/SocketManager.h"
 
-class GameServer {
+#include "ServerPlayer.h"
+#include "ClientRequestHandler.h"
+#include "../common/Message.h"
+#include "ServerGame.h"
+
+class ClientRequestHandler;
+class ServerPlayer;
+
+
+class Server : public Thread {
 
 private:
     std::set<std::string> maps;
     std::mutex m;
-    std::vector<std::reference_wrapper<ThreadedQueue<TextMessage>>> clients;
+
+    std::mutex& mutexPlayers;
+    //std::vector<std::reference_wrapper<ThreadedQueue<TextMessage>>> clients;
+    ThreadedQueue<Message>& queueMessagesClient;
+    std::map<unsigned int,ServerPlayer*> players;
+    std::vector<ServerGame*> games;
 
 public:
-    GameServer();
+    Server(std::mutex& m,ThreadedQueue<Message>& tq);
 
-    ~GameServer();
+    ~Server();
+
+    void run();
+
+    std::string getGamesList();
+
+    void createGame(int clientId);
+    void sendGamesListToClient(int clientId);
+    void setQueueRequestClient(ThreadedQueue<Message> &queue);
+    void createAndRunPlayer(Socket s);
+
+    unsigned int CreateGame();
+    unsigned int getAmountGames();
 
     /*
      * Notifica a todos los clientes el mensaje pasado por parámetro.

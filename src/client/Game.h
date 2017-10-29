@@ -13,7 +13,7 @@ static const int MAX_SERVER_NOTIFICATIONS_PER_FRAME = 50;
 #include "../sdl/Tile.h"
 #include "../common/Point.h"
 #include "Timer.h"
-#include "../common/SharedBuffer.h"
+#include "SharedBuffer.h"
 #include "../common/Thread.h"
 
 class Game : public Thread {

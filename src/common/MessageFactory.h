@@ -8,9 +8,17 @@ static const char *const OPERATION_KEY = "operation";
 
 class MessageFactory {
 public:
-    /*
-     * Retorna la operación asociada al request que se hace con el Json.
-     */
+    static std::string getClientIdNotification(int clientId);
+    static std::string getClientIdRequest(std::string message);
+
+    static std::string getGamesRequest(int clientId);
+    static std::string getGamesNotification(int clientId,std::string games);
+
+
+
+        /*
+         * Retorna la operación asociada al request que se hace con el Json.
+         */
     static int getOperation(Json::Value &root);
 
     /*
@@ -48,13 +56,9 @@ public:
 
     std::string getCreateMatchNotification(Json::Value &root);
 
-    static std::string getMapsRequest(int clientId);
+    std::string getMapsRequest(int clientId);
 
-    static std::string getMapsNotification();
-
-    static std::string getMatchesRequest(int id);
-
-    std::string getMatchesNotification();
+    std::string getMapsNotification(Json::Value &root);
 };
 
 

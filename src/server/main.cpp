@@ -14,13 +14,17 @@ int main(int argc, char *argv[]){
     }
 
     uint16_t port = atoi(argv[1]);
-    Listener listener(port);
+
+    std::mutex mPlayers;
+    Listener listener(port,mPlayers);
     listener.start();
 
     while (true) if (std::cin.get() == 'q') break;
 
     listener.shutdown();
     listener.join();
+
+    std::cout << "MainServer: se termino todo, jajaja" << std::endl;
 
     return EXIT_SUCCESS;
 }

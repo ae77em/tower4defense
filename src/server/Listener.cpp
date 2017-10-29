@@ -5,12 +5,12 @@
 #include <cstring>
 #include <iostream>
 
-Listener::Listener(uint16_t port) {
+Listener::Listener(uint16_t port, std::mutex& aMutexPlayers):mutexPlayers(aMutexPlayers) {
     serverSocket.bind(port);
     serverSocket.listen();
 }
 
-Listener::Listener(const Listener& orig) { }
+Listener::Listener(const Listener& orig, std::mutex& aMutexPlayers):mutexPlayers(aMutexPlayers) { }
 
 Listener::~Listener() { }
 
@@ -25,10 +25,17 @@ void Listener::shutdown(){
 }
 
 void Listener::run(){
-    try {
-        GameServer server;
+    //todos los ClientRequestHandler cargaran sus mensajes en esta cola y el servidor estara
+    //esperando a tomarlos
+    ThreadedQueue<Message> threadedQueue;
+    Server server(mutexPlayers,threadedQueue);
 
-        while (true) {
+    try {
+        server.start();
+
+       while (true) {
+            std::cout   << "Listener escuchando esperando conexion: "<< std::endl;
+
             int fd = serverSocket.accept();
             Socket *client = new Socket(fd);
 
@@ -36,16 +43,17 @@ void Listener::run(){
                         << std::to_string(fd)
                         << std::endl;
 
-            // ClientRequestHandler se encarga de agregar el cliente al server
-            ClientRequestHandler *rp = new ClientRequestHandler(*client, server);
+            // ClientRequestHandler se encarga solamente de tomar los request del client
 
-            threads.push_back(rp);
-
-            rp->start();
+           server.createAndRunPlayer(*client);
         }
     } catch (std::exception) {
-        /* Catcheo la excepción que se lanza cuando fuerzo la salida del accept
-         * que queda sin recibir ningún request. No hago nada...
-         */
+        std::cout<< "Listener: Cachenado excepcion, se corto accept"<< std::endl;
     }
+    std::cout   << "Listener: Esperando finalizacion de todas las comunicaciones"<< std::endl;
+
+    threadedQueue.close();
+    server.join();
+
+    std::cout   << "Listener: Comunicaciones finalizadas, listener terminando su hilo"<< std::endl;
 }

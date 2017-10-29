@@ -2,6 +2,7 @@
 #define LISTENER_H
 
 #include "../common/Socket.h"
+#include "../common/Thread.h"
 #include "ClientRequestHandler.h"
 
 #include <vector>
@@ -13,9 +14,12 @@ private:
     std::vector<ClientRequestHandler*> threads;
     std::vector<Socket*> clients;
 
+    //para proteger la lista de jugadores
+     std::mutex& mutexPlayers;
+
 public:
-    explicit Listener(uint16_t port);
-    Listener(const Listener& orig);
+    explicit Listener(uint16_t port, std::mutex& mutexPlayers);
+    Listener(const Listener& orig, std::mutex& mutexPlayers);
     virtual ~Listener();
 
     void run();

@@ -1,7 +1,7 @@
-#ifndef TP4_CLIENT_TOWERDEFENSE_SENDER_H
-#define TP4_CLIENT_TOWERDEFENSE_SENDER_H
+#ifndef TP4_TOWERDEFENSE_CLIENTSENDER_H
+#define TP4_TOWERDEFENSE_CLIENTSENDER_H
 
-#include "../common/SharedBuffer.h"
+#include "SharedBuffer.h"
 #include "../common/Socket.h"
 #include "../common/Thread.h"
 
@@ -19,4 +19,4 @@ public:
 };
 
 
-#endif //TP4_CLIENT_TOWERDEFENSE_SENDER_H
+#endif //TP4_TOWERDEFENSE_CLIENTSENDER_H
