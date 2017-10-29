@@ -10,11 +10,13 @@
 int main(int argc, char **argv) {
     SharedBuffer toReceive;
     SharedBuffer toSend;
-    std::string host;
-    uint16_t port;
 
-    host = std::string(argv[1]);
-    port = atoi(argv[2]);
+    if (argc < 3) {
+        std::cerr << "gameaccess <host> <port>" << std::endl;
+        return 0;
+    }
+    std::string host = std::string(argv[1]);
+    uint16_t port = atoi(argv[2]);
 
     Socket client;
 
