@@ -1,8 +1,6 @@
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
+#include "../sdl/Screen.h"
 #include <stdexcept>
-#include <iostream>
-#include "../sdl/LTexture.h"
+#include "../common/Point.h"
 
 int main(int argc, char *argv[]) {
     const int SCREEN_WIDTH = 800;
@@ -12,30 +10,34 @@ int main(int argc, char *argv[]) {
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
         throw std::runtime_error("SDL init failed");
 
-    SDL_Window *gWindow = SDL_CreateWindow("Tower4Defense",
-        SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
-        SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-    if (!gWindow) throw std::runtime_error("Could not create window");
+    Mapa mapa(10, 10);
+    mapa.setCasilla('~', 1, 1);
+    mapa.setCasilla('*', 1, 8);
+    mapa.setCasilla('!', 8, 1);
+    mapa.setCasilla('@', 8, 8);
 
-    SDL_Renderer *gRenderer = SDL_CreateRenderer(gWindow, -1,
-            SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    if (!gRenderer) throw std::runtime_error("Could not create renderer");
+    Screen screen;
 
-    //Initialize renderer color
-    SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+    bool quit = false;
+    while (!quit) {
+        screen.clear();
 
-    //Initialize PNG loading
-    int imgFlags = IMG_INIT_PNG;
-    if (! IMG_Init(imgFlags) || ! imgFlags )
-        throw std::runtime_error("Could not initialize SDL_image. Error: "
-                + std::string(IMG_GetError()));
+        SDL_Event e;
+        while(SDL_PollEvent( &e ) != 0) {
+            if (e.type == SDL_QUIT) quit = true;
+            else if (e.type == SDL_MOUSEBUTTONDOWN) {
+                Point p = screen.mouseCurrentTile();
+                Point d = mapa.dimensiones();
+                if ((p.isPositive()) && (p.x < d.x) && (p.y < d.y))
+                    mapa.setCasilla('*', p.x, p.y);
+            } else if (e.type == SDL_KEYDOWN || e.type == SDL_KEYUP) {
+                screen.handleEvent(e);
+            }
+        }
 
-// Draw the map
-    LTexture tile;
-    tile.loadFromFile("images/sprites/tile-grass.png", gRenderer);
-    tile.render(gRenderer, 100, 100);
+        screen.put(mapa);
+        screen.draw();
+    }
 
-    SDL_RenderPresent(gRenderer);
-
-    while (true) if (std::cin.get() == 'q') break;
+    SDL_Quit();
 }
