@@ -9,54 +9,20 @@
 #include <set>
 #include "../common/Socket.h"
 #include "../common/ThreadedQueue.h"
-#include "../common/Thread.h"
 #include "../common/TextMessage.h"
 #include "../common/SocketManager.h"
 
-#include "ServerPlayer.h"
-#include "ClientRequestHandler.h"
-#include "../common/Message.h"
-#include "ServerGame.h"
-
-class ClientRequestHandler;
-class ServerPlayer;
-class ServerGame;
-
-
-class Server : public Thread {
+class GameServer {
 
 private:
     std::set<std::string> matches;
     std::mutex m;
-
-
-    std::mutex& mutexPlayers;
-    //std::vector<std::reference_wrapper<ThreadedQueue<TextMessage>>> clients;
-    ThreadedQueue<Message>& queueMessagesClient;
-    std::map<unsigned int,ServerPlayer*> players;
-    std::vector<ServerGame*> games;
+    std::vector<std::reference_wrapper<ThreadedQueue<TextMessage>>> clients;
 
 public:
-    Server(std::mutex& m,ThreadedQueue<Message>& tq);
+    GameServer();
 
-    ~Server();
-
-    void run();
-
-    std::string getGamesList();
-
-    void createGameAndNotifyAll(int clientId);
-    unsigned int createGame();
-    void notifyAllCreationGame(int gameId,int clientIdWhoCreatedGame);
-
-    void addPlayerToGame(int idGame,ServerPlayer* sp);
-
-    void sendGamesListToClient(int clientId);
-    void setQueueRequestClient(ThreadedQueue<Message> &queue);
-    void createAndRunPlayer(Socket s);
-
-    unsigned int CreateGame();
-    unsigned int getAmountGames();
+    ~GameServer();
 
     /*
      * Notifica a todos los clientes el mensaje pasado por parámetro.
@@ -71,14 +37,20 @@ public:
      * */
     void addClient(ThreadedQueue<TextMessage> &queue);
 
+    /*
+     * Procesa el request que recibe y envía la respuesta a todos los clientes
+     * asociados.
+     * Este método activa el mutex, y lo libera al terminar.
+     * request: pedido a procesar, enviado por alguno de los clientes.
+     * */
+    void processAndNotify(std::string request);
+
 private:
     /*
      * Método de servicio para realizar las notificaciones sin lockear.
      * Se consume desde métodos que necesitan notificar y ya activaron el lock.
      */
     void notifyAllWithoutLock(string message);
-
-    void addPlayerToGame(int clientId,int gameId);
 };
 
 
