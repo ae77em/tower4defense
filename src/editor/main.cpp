@@ -7,6 +7,11 @@ int main(int argc, char *argv[]) {
         throw std::runtime_error("SDL init failed");
 
     Mapa mapa(10, 10);
+    mapa.setCasilla('~', 1, 1);
+    mapa.setCasilla('*', 1, 8);
+    mapa.setCasilla('!', 8, 1);
+    mapa.setCasilla('@', 8, 8);
+
     Screen screen;
 
     bool quit = false;
