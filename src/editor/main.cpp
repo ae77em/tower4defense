@@ -1,10 +1,11 @@
 #include "Screen.h"
 #include <stdexcept>
+#include "../common/Point.h"
 
 int main(int argc, char *argv[]) {
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
         throw std::runtime_error("SDL init failed");
-    
+
     Mapa mapa(10, 10);
     Screen screen;
 

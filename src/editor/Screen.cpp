@@ -41,7 +41,7 @@ void Screen::draw() {
 }
 
 void Screen::putTower(unsigned x, unsigned y) {
-    Point pos = Utils::mapToScreen(x, y); 
+    Point pos = Utils::mapToScreen(x, y);
     pos.x -= camera.x;
     pos.y -= camera.y;
 
@@ -57,14 +57,14 @@ void Screen::putTower(unsigned x, unsigned y) {
      */
     pos.y -= tower.getHeight() - tile.getHeight();
 
-    tower.render(renderer, pos.x, pos.y); 
+    tower.render(renderer, pos.x, pos.y);
 }
 
 void Screen::putTile(unsigned x, unsigned y) {
-    Point pos = Utils::mapToScreen(x, y); 
+    Point pos = Utils::mapToScreen(x, y);
     pos.x -= camera.x;
     pos.y -= camera.y;
-    tile.render(renderer, pos.x, pos.y); 
+    tile.render(renderer, pos.x, pos.y);
 }
 
 void Screen::handleEvent(SDL_Event &e) {
