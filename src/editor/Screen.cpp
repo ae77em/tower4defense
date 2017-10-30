@@ -90,3 +90,7 @@ void Screen::put(Mapa &map) {
                           break;
             }
 }
+
+Point Screen::mouseCurrentTile() {
+    return Utils::getMouseRelativePoint(camera);
+}

@@ -7,6 +7,7 @@
 #include "../sdl/Dot.h"
 #include "../sdl/Constants.h"
 #include "../common/modelo/Mapa.h"
+#include "../common/Point.h"
 
 class Screen {
     SDL_Renderer *renderer;
@@ -26,6 +27,7 @@ public:
     void put(Mapa &map);
     void handleEvent(SDL_Event &e);
     void clear();
+    Point mouseCurrentTile();
 };
 
 #endif

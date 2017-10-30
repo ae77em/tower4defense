@@ -16,7 +16,10 @@ int main(int argc, char *argv[]) {
         while(SDL_PollEvent( &e ) != 0) {
             if (e.type == SDL_QUIT) quit = true;
             else if (e.type == SDL_MOUSEBUTTONDOWN) {
-                mapa.setCasilla('*', 5, 5);
+                Point p = screen.mouseCurrentTile();
+                Point d = mapa.dimensiones();
+                if ((p.isPositive()) && (p.x < d.x) && (p.y < d.y))
+                    mapa.setCasilla('*', p.x, p.y);
             } else if (e.type == SDL_KEYDOWN || e.type == SDL_KEYUP) {
                 screen.handleEvent(e);
             }
