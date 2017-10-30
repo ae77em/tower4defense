@@ -17,7 +17,7 @@ Screen::Screen() {
             + std::string(SDL_GetError()));
 
     //Initialize renderer color
-    SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
 
     //Initialize PNG loading
     int imgFlags = IMG_INIT_PNG;
@@ -73,7 +73,6 @@ void Screen::handleEvent(SDL_Event &e) {
 }
 
 void Screen::clear() {
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
     SDL_RenderClear(renderer);
 }
 
