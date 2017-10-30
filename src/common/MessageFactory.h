@@ -61,6 +61,12 @@ public:
     std::string getMapsRequest(int clientId);
 
     std::string getMapsNotification(Json::Value &root);
+
+    static std::string getCreateFullMatchNotification(int id, int clientId);
+
+    static std::string getAddPlayerToMatchNotification(int gameId, int clientIdWasAdded);
+
+    static std::string getAddPlayerAndRunMatchNotification(int id, int clientId);
 };
 
 

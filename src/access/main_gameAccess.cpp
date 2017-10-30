@@ -8,7 +8,8 @@
 #include "../common/MessageFactory.h"
 
 int main(int argc, char **argv) {
-    GameAccess gameAccess;
+/*
+ * GameAccess gameAccess;
     SharedBuffer toReceive;
     SharedBuffer toSend;
 
@@ -47,6 +48,6 @@ int main(int argc, char **argv) {
 
     client.shutdown();
     client.close();
-
+*/
     return 0;
 }

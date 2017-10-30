@@ -20,6 +20,8 @@ public:
     ServerGame();
     bool isTherePlace();
     void addPlayer(ServerPlayer* sp);
+
+    bool isFull();
 };
 
 

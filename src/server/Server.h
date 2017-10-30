@@ -29,6 +29,7 @@ private:
     std::set<std::string> maps;
     std::mutex m;
 
+
     std::mutex& mutexPlayers;
     //std::vector<std::reference_wrapper<ThreadedQueue<TextMessage>>> clients;
     ThreadedQueue<Message>& queueMessagesClient;
@@ -70,20 +71,14 @@ public:
      * */
     void addClient(ThreadedQueue<TextMessage> &queue);
 
-    /*
-     * Procesa el request que recibe y envía la respuesta a todos los clientes
-     * asociados.
-     * Este método activa el mutex, y lo libera al terminar.
-     * request: pedido a procesar, enviado por alguno de los clientes.
-     * */
-    void processAndNotify(std::string request);
-
 private:
     /*
      * Método de servicio para realizar las notificaciones sin lockear.
      * Se consume desde métodos que necesitan notificar y ya activaron el lock.
      */
     void notifyAllWithoutLock(string message);
+
+    void addPlayerToGame(int clientId,int gameId);
 };
 
 

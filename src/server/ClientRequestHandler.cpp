@@ -24,8 +24,8 @@ void ClientRequestHandler::sendData(std::string data){
 }
 
 void ClientRequestHandler::run() {
+    //lo primero que hago es enviarle el id al cliente
     std::string message = MessageFactory::getClientIdNotification( client.getSocket() );
-
     sendData(message);
 
 /**************************************************/

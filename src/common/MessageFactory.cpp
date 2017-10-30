@@ -207,3 +207,41 @@ std::string MessageFactory::getMarkTileNotification(Json::Value &root) {
     return toReturn;
 }
 
+std::string MessageFactory::getCreateFullMatchNotification(int gameId, int clientId) {
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = SERVER_NOTIFICATION_FULL_NEW_MATCH;
+
+    root["clientId"] = clientId;
+    root["gameId"] = gameId;
+
+    message.setData(root);
+
+    toReturn = message.serialize();
+
+    return toReturn;
+}
+
+std::string MessageFactory::getAddPlayerToMatchNotification(int gameId, int clientIdWasAdded) {
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = SERVER_NOTIFICATION_ENTER_EXISTING_GAME;
+
+    root["clientId"] = clientIdWasAdded;
+    root["gameId"] = gameId;
+
+    message.setData(root);
+
+    toReturn = message.serialize();
+
+    return toReturn;
+}
+
+//VER COMO MANEJAR ESTO, SI SE HACE EN DOS PASOS O EN UNO
+std::string MessageFactory::getAddPlayerAndRunMatchNotification(int gameID, int clientId) {
+    return std::__cxx11::string();
+}

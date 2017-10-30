@@ -27,7 +27,7 @@ void Listener::run(){
             int op = root[OPERATION_KEY].asInt();
 
             switch(op){
-                case SERVER_NOTIFICATION_GET_MAPS:{
+                case 1:{
                     std::vector<std::string> maps;
                     for (Json::Value &map : root["maps"]){
                         maps.push_back(map.asString());

@@ -19,23 +19,51 @@ unsigned int Server::getAmountGames(){
 void Server::createGameAndNotifyAll(int clientId){
     mutexPlayers.lock();
 
-    ServerPlayer * sp = players[clientId];
-
     int gameId = createGame();
+
+    ServerPlayer * sp = players[clientId];
 
     sp->setGameId(gameId);
 
     addPlayerToGame(gameId,sp);
 
-    notifyAllCreationGame(gameId,clientId);
+    std::string message = MessageFactory::getCreateMatchNotification( gameId, clientId );
+    notifyAll(message);
 
-    mutexPlayers.lock();
+    mutexPlayers.unlock();
 }
 
-void Server::notifyAllCreationGame(int gameId,int clientIdWhoCreatedGame){
-    std::string message = MessageFactory::getCreateMatchNotification( gameId, clientIdWhoCreatedGame );
+void Server::addPlayerToGame(int clientId,int gameId) {
+    mutexPlayers.lock();
 
-    for(int i=0; i < players.size(); i++){
+    ServerGame* serverGame = games.at(gameId);
+    ServerPlayer * serverPlayer = players[clientId];
+
+    //chequeo si no se lleno antes
+    if(serverGame->isTherePlace()){
+        //obtengo el jugador, le seteo el gameID y lo uno a la partida
+        serverPlayer->setGameId(gameId);
+        addPlayerToGame(gameId,serverPlayer);
+
+        //chequeo si la partida tiene 4 jugadores, de ser asi, arranca la partida
+        if(serverGame->isFull()){
+            std::string message = MessageFactory::getAddPlayerAndRunMatchNotification( gameId, clientId );
+            serverPlayer->sendData(message);
+        }else{
+            //si no esta llena simplemente notifico a todos el ingreso del jugador
+            std::string message = MessageFactory::getAddPlayerToMatchNotification( gameId, clientId );
+            notifyAll(message);
+        }
+    } else{
+        //notifico al cliente que se lleno la partida, llegaste tarde pibe jajaja
+        std::string message = MessageFactory::getCreateFullMatchNotification( gameId, clientId );
+        serverPlayer->sendData(message);
+    }
+
+    mutexPlayers.unlock();
+}
+void Server::notifyAll(std::string message) {
+    for(unsigned int i=0; i < players.size(); i++){
         players[i]->sendData(message);
     }
 }
@@ -90,23 +118,27 @@ void Server::run() {
             Json::Value &root = message.getData();
 
             int op = root[OPERATION_KEY].asInt();
-            int clientId = root["clientId"].asInt();
 
             std::cout << "GameServer: un cliente envio este mensaje: " + root.toStyledString() << std::endl;
 
             switch(op){
                 /* non-gaming requests: */
                 case CLIENT_REQUEST_ACCESS_GAME_MENU:{
+                    int clientId = root["clientId"].asInt();
                     sendGamesListToClient(clientId);
                     break;
                 }
                 case CLIENT_REQUEST_NEW_MATCH:{
+                    int clientId = root["clientId"].asInt();
                     createGameAndNotifyAll(clientId);
                     break;
                 }
                     /* this responses are individual */
                 case CLIENT_REQUEST_ENTER_EXISTING_MATCH:{
-                    //response = request;
+                    int clientId = root["clientId"].asInt();
+                    int gameId = root["gameId"].asInt();
+
+                    addPlayerToGame(clientId,gameId);
                     break;
                 }
                 case CLIENT_REQUEST_GET_MAPS:{
@@ -131,70 +163,6 @@ void Server::run() {
 
     //std::cout << "CRH: cliente se conecto y mando; "+ data +"y se murio jajaja"<<std::endl;
     std::cout << "GameServer: Se murio, se tendria que haber apagado todo"<<std::endl;
-}
-
-
-void Server::notifyAll(std::string message) {
-    m.lock();
-    /*TextMessage msg(message);
-    for (auto &client : clients) {
-        client.get().push(msg);
-    }*/
-    m.unlock();
-}
-
-
-void Server::processAndNotify(std::string request){
-    m.lock();
-
-    Message message;
-    std::string response;
-
-    message.deserialize(request);
-    Json::Value &root = message.getData();
-
-    int op = root[OPERATION_KEY].asInt();
-
-    switch(op){
-        /* non-gaming requests: */
-        case CLIENT_REQUEST_ACCESS_GAME_MENU:{
-            response = request;
-            break;
-        }
-        case CLIENT_REQUEST_ACCESS_CONFIGURATION_MENU:{
-            response = request;
-            break;
-        }
-        case CLIENT_REQUEST_NEW_MATCH:{
-            response = request;
-            break;
-        }
-        /* this responses are individual */
-        case CLIENT_REQUEST_ENTER_EXISTING_MATCH:{
-            response = request;
-            break;
-        }
-        case CLIENT_REQUEST_GET_MAPS:{
-            response = request;
-            break;
-        }
-
-        /* gaming requests: */
-        case CLIENT_REQUEST_PUT_TOWER:{
-            response = MessageFactory::getPutTowerNotification(root);
-            break;
-        }
-        case CLIENT_REQUEST_MARK_TILE:{
-            response = MessageFactory::getMarkTileNotification(root);
-            break;
-        }
-        default:
-            response = request;
-    }
-
-    notifyAllWithoutLock(response);
-
-    m.unlock();
 }
 
 void Server::notifyAllWithoutLock(std::string message){

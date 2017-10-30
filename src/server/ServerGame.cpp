@@ -14,3 +14,7 @@ void ServerGame::addPlayer(ServerPlayer* sp){
 bool ServerGame::isTherePlace(){
     return players.size() < MAX_PLAYERS;
 }
+
+bool ServerGame::isFull(){
+    return players.size() == MAX_PLAYERS;
+}
