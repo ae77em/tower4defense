@@ -80,13 +80,13 @@ unsigned int Server::createGame(){
     return games.size() - 1;
 }
 
-void Server::createAndRunPlayer(Socket s){
-    ClientRequestHandler *crh = new ClientRequestHandler(s,queueMessagesClient);
-    ServerPlayer* serverPlayer = new ServerPlayer(crh,s.getSocket());
+void Server::createAndRunPlayer(Socket* s){
+    ClientRequestHandler *crh = new ClientRequestHandler(*s,queueMessagesClient);
+    ServerPlayer* serverPlayer = new ServerPlayer(crh,s->getSocket());
 
     mutexPlayers.lock();
 
-    players[s.getSocket()] = serverPlayer;
+    players[s->getSocket()] = serverPlayer;
     serverPlayer->launchRequesHandler();
 
     mutexPlayers.unlock();

@@ -12,7 +12,7 @@
 class Tile {
 public:
     //Initializes position and type
-    Tile(int x, int y);
+    Tile(int x, int y, int type);
 
     //Shows the tile
     void render(SDL_Rect &camera,

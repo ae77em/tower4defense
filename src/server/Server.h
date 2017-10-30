@@ -53,7 +53,7 @@ public:
 
     void sendGamesListToClient(int clientId);
     void setQueueRequestClient(ThreadedQueue<Message> &queue);
-    void createAndRunPlayer(Socket s);
+    void createAndRunPlayer(Socket* s);
 
     unsigned int CreateGame();
     unsigned int getAmountGames();

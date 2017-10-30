@@ -26,14 +26,18 @@ void ClientRequestHandler::sendData(std::string data){
 void ClientRequestHandler::run() {
     //lo primero que hago es enviarle el id al cliente
     std::string message = MessageFactory::getClientIdNotification( client.getSocket() );
-    sendData(message);
+    std::string messag= "hola";
+
+    client.send(messag.c_str(),messag.length());
+
+    //sendData(message);
 
 /**************************************************/
 
     std::string data;
     TextMessage message2("");
 
-    while(true){
+    /*while(true){
         std::cout << "CRH: cliente: "<< client.getSocket() <<" Esperando Mensaje"<<std::endl;
 
         TextMessage message0("");
@@ -52,7 +56,7 @@ void ClientRequestHandler::run() {
             break;
         }
         queueSharedMessage.push(message);
-    }
+    }*/
     std::cout << "CRH: cliente: "<< client.getSocket() <<" termino su CTH thread"<<std::endl;
 }
 

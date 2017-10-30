@@ -1,0 +1,79 @@
+#ifndef TP4_TOWERDEFENSE_GAME_H
+#define TP4_TOWERDEFENSE_GAME_H
+
+static const int MAX_SERVER_NOTIFICATIONS_PER_FRAME = 50;
+
+#include "../common/Socket.h"
+#include <string>
+#include <SDL_rect.h>
+#include <SDL_video.h>
+#include <SDL_system.h>
+#include "../sdl/Constants.h"
+#include "../sdl/LTexture.h"
+#include "../sdl/Tile.h"
+#include "../common/Point.h"
+#include "Timer.h"
+#include "../common/SharedBuffer.h"
+#include "../common/Thread.h"
+
+class Game : public Thread {
+private:
+    //The window we'll be rendering to
+    SDL_Window *gWindow = NULL;
+
+    //The window renderer
+    SDL_Renderer *gRenderer = NULL;
+
+    //The level tiles
+    Tile *tileSet[TOTAL_TILES];
+
+    LTexture gDotTexture;
+
+    SDL_Rect gTileClips[TOTAL_TILE_SPRITES];
+
+    SDL_Rect gSpriteClipsPortalBlue[30];
+    LTexture gSpriteSheetTexturePortalBlue;
+
+    SDL_Rect gSpriteClipsPortalRed[30];
+    LTexture gSpriteSheetTexturePortalRed;
+
+    SDL_Rect gSpriteClipsEnemyAbominable[12];
+    LTexture gSpriteSheetTextureEnemyAbominable;
+
+    //Scene textures
+    LTexture gTileTextures[TOTAL_TILE_SPRITES];
+
+    SharedBuffer &dataFromServer;
+    SharedBuffer &dataToServer;
+
+    int eventDispatched;
+    int clientId;
+
+public:
+    Game(SharedBuffer &in, SharedBuffer &out, int clientId);
+    ~Game();
+
+    void run();
+    void interactWithServer(Socket &client, std::string text);
+    bool setTiles();
+    void close();
+    bool loadMedia();
+    bool init();
+
+private:
+    void handleMouseEvents(const SDL_Rect &camera,
+                           std::string &mov_description,
+                           SDL_Event &e) const;
+    void loadServerNotifications(std::string notification);
+
+    void handleServerNotifications(SDL_Rect rect);
+
+    enum GameEvents {
+        GAME_EVENT_PUT_TOWER = 1,
+        GAME_EVENT_QUIT_TOWER = 2
+    };
+
+    void loadPortalSprites();
+};
+
+#endif //TP4_TOWERDEFENSE_GAME_H
