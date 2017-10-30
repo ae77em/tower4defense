@@ -18,6 +18,7 @@ private:
     Gtk::ComboBoxText *cmbMapsText = nullptr;
     Gtk::Entry *entryMatchName = nullptr;
     Gtk::ComboBoxText *cmbMatchesText = nullptr;
+    Gtk::ComboBoxText *cmbElementsText = nullptr;
 
     const Socket &client;
     const std::string &host;
@@ -67,6 +68,8 @@ private:
     void setCreateMatchButtonEnableStatus();
 
     bool mustCreateMatchBeEnabled();
+
+    void initComboElements(Glib::RefPtr<Gtk::Builder> &refBuilder);
 };
 
 

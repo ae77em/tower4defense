@@ -19,7 +19,7 @@ void Listener::run(){
             dataFromServer = message.receiveFrom(server).getMessage();
 
             Message message;
-            std::string response;
+            std::string response = "";
 
             message.deserialize(dataFromServer);
             Json::Value &root = message.getData();
@@ -44,10 +44,10 @@ void Listener::run(){
                     break;
                 }
                 default:
-                    response = "no reconocida";
+                    response = "notificación del server no reconocida";
             }
 
-            std::cout << "dataFromServer: " << dataFromServer << std::endl;
+            std::cout << response << "dataFromServer: " << dataFromServer << std::endl;
         }
     } catch (std::exception) {
         /* Catcheo la excepción que se lanza cuando fuerzo la salida del accept

@@ -19,7 +19,7 @@
           <object class="GtkButton" id="btnJugar">
             <property name="label" translatable="yes">Jugar!!</property>
             <property name="width_request">109</property>
-            <property name="height_request">46</property>
+            <property name="height_request">36</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
@@ -27,22 +27,22 @@
             <property name="yalign">0.54000002145767212</property>
           </object>
           <packing>
-            <property name="x">378</property>
-            <property name="y">153</property>
+            <property name="x">377</property>
+            <property name="y">165</property>
           </packing>
         </child>
         <child>
           <object class="GtkButton" id="btnCrearPartida">
             <property name="label" translatable="yes">Crear Partida</property>
             <property name="width_request">109</property>
-            <property name="height_request">48</property>
+            <property name="height_request">36</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
           </object>
           <packing>
             <property name="x">376</property>
-            <property name="y">39</property>
+            <property name="y">44</property>
           </packing>
         </child>
         <child>
@@ -53,8 +53,8 @@
             <property name="can_focus">False</property>
           </object>
           <packing>
-            <property name="x">32</property>
-            <property name="y">164</property>
+            <property name="x">69</property>
+            <property name="y">163</property>
           </packing>
         </child>
         <child>
@@ -117,8 +117,46 @@
             <property name="label" translatable="yes">Unirse a partida existente</property>
           </object>
           <packing>
-            <property name="x">27</property>
-            <property name="y">126</property>
+            <property name="x">26</property>
+            <property name="y">116</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkComboBoxText" id="cmbElementos">
+            <property name="width_request">100</property>
+            <property name="height_request">38</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="x">253</property>
+            <property name="y">164</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label1">
+            <property name="width_request">76</property>
+            <property name="height_request">37</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Partida</property>
+          </object>
+          <packing>
+            <property name="x">6</property>
+            <property name="y">165</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label2">
+            <property name="width_request">73</property>
+            <property name="height_request">37</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Elemento</property>
+          </object>
+          <packing>
+            <property name="x">180</property>
+            <property name="y">165</property>
           </packing>
         </child>
       </object>

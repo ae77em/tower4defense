@@ -53,48 +53,6 @@ void GameAccess::on_btnJugar_clicked() {
     gwh->start();
 }
 
-void GameAccess::run() {
-    auto app = Gtk::Application::create();
-
-    //Load the GtkBuilder file and instantiate its widgets:
-    auto refBuilder = Gtk::Builder::create();
-
-    try {
-        refBuilder->add_from_file("resources/glade/game-access.glade");
-    }
-    catch (const Glib::FileError &ex) {
-        std::cerr << "FileError: " << ex.what() << std::endl;
-        return;
-    }
-    catch (const Glib::MarkupError &ex) {
-        std::cerr << "MarkupError: " << ex.what() << std::endl;
-        return;
-    }
-    catch (const Gtk::BuilderError &ex) {
-        std::cerr << "BuilderError: " << ex.what() << std::endl;
-        return;
-    }
-
-    //Get the GtkBuilder-instantiated Dialog:
-    refBuilder->get_widget("mainWindow", pWindow);
-    if (pWindow) {
-        initButtonCreateMatch(refBuilder);
-        initButtonPlay(refBuilder);
-        initComboMaps(refBuilder);
-        initEntryMatchName(refBuilder);
-        initComboMatches(refBuilder);
-
-        app->run(*pWindow);
-    }
-
-    delete pWindow;
-
-    for (unsigned int i = 0; i < gameWindowHandlers.size(); ++i){
-        gameWindowHandlers[i]->join();
-        delete gameWindowHandlers[i];
-    }
-}
-
 void GameAccess::initButtonCreateMatch(Glib::RefPtr<Gtk::Builder> &refBuilder) {
     refBuilder->get_widget("btnCrearPartida", pBtnCrearPartida);
     pBtnCrearPartida->set_sensitive(false);
@@ -141,6 +99,11 @@ void GameAccess::initComboMatches(Glib::RefPtr<Gtk::Builder> &refBuilder) {
             .connect(
                     sigc::mem_fun(*this, &GameAccess::on_cmbMatches_changed)
             );
+}
+
+void GameAccess::initComboElements(Glib::RefPtr<Gtk::Builder> &refBuilder) {
+    refBuilder->get_widget("cmbElementos", cmbElementsText);
+    cmbElementsText->append(STR_NONE);
 }
 
 void GameAccess::addMapsToCombo(const std::vector<std::string> &maps) {
@@ -195,5 +158,46 @@ bool GameAccess::isCmbMapsLoaded(){
     return cmbMapsText != nullptr;
 }
 
+void GameAccess::run() {
+    auto app = Gtk::Application::create();
 
+    //Load the GtkBuilder file and instantiate its widgets:
+    auto refBuilder = Gtk::Builder::create();
+
+    try {
+        refBuilder->add_from_file("resources/glade/game-access.glade");
+    }
+    catch (const Glib::FileError &ex) {
+        std::cerr << "FileError: " << ex.what() << std::endl;
+        return;
+    }
+    catch (const Glib::MarkupError &ex) {
+        std::cerr << "MarkupError: " << ex.what() << std::endl;
+        return;
+    }
+    catch (const Gtk::BuilderError &ex) {
+        std::cerr << "BuilderError: " << ex.what() << std::endl;
+        return;
+    }
+
+    //Get the GtkBuilder-instantiated Dialog:
+    refBuilder->get_widget("mainWindow", pWindow);
+    if (pWindow) {
+        initButtonCreateMatch(refBuilder);
+        initButtonPlay(refBuilder);
+        initComboMaps(refBuilder);
+        initEntryMatchName(refBuilder);
+        initComboMatches(refBuilder);
+        initComboElements(refBuilder);
+
+        app->run(*pWindow);
+    }
+
+    delete pWindow;
+
+    for (unsigned int i = 0; i < gameWindowHandlers.size(); ++i){
+        gameWindowHandlers[i]->join();
+        delete gameWindowHandlers[i];
+    }
+}
 
