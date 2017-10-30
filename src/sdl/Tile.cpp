@@ -4,7 +4,7 @@
 #include "Utils.h"
 #include "../common/Protocol.h"
 
-Tile::Tile(int x, int y) {
+Tile::Tile(int x, int y, int t) {
     //Get the offsets
     containerBoxAttributes.x = x;
     containerBoxAttributes.y = y;
@@ -14,7 +14,7 @@ Tile::Tile(int x, int y) {
     containerBoxAttributes.h = ISO_TILE_HEIGHT;
 
     //Get the tile type
-    type = 0;
+    type = t;
 }
 
 void Tile::render(SDL_Rect &camera,
@@ -66,9 +66,8 @@ void Tile::handleServerNotification(int opCode) {
     //If mouse event happened
     switch (opCode){
         case SERVER_NOTIFICATION_PUT_TOWER: {
-            type = type == BUTTON_SPRITE_MOUSE_DOWN
-                                ? BUTTON_SPRITE_DEFAULT
-                                : BUTTON_SPRITE_MOUSE_DOWN;
+            type = TILE_EARTH_TOWER;
+            break;
         }
         default:
             std::cout << "no se reconoció la notificación...";

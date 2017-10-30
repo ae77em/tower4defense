@@ -37,6 +37,9 @@ private:
     SDL_Rect gSpriteClipsPortalRed[30];
     LTexture gSpriteSheetTexturePortalRed;
 
+    SDL_Rect gSpriteClipsEnemyAbominable[12];
+    LTexture gSpriteSheetTextureEnemyAbominable;
+
     //Scene textures
     LTexture gTileTextures[TOTAL_TILE_SPRITES];
 
@@ -52,9 +55,9 @@ public:
 
     void run();
     void interactWithServer(Socket &client, std::string text);
-    bool setTiles(Tile *tiles[]);
-    void close(Tile *tiles[]);
-    bool loadMedia(Tile *tiles[]);
+    bool setTiles();
+    void close();
+    bool loadMedia();
     bool init();
 
 private:
@@ -69,6 +72,8 @@ private:
         GAME_EVENT_PUT_TOWER = 1,
         GAME_EVENT_QUIT_TOWER = 2
     };
+
+    void loadPortalSprites();
 };
 
 #endif //TP4_TOWERDEFENSE_GAME_H

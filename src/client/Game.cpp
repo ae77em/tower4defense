@@ -13,7 +13,7 @@
 Game::Game(SharedBuffer &in, SharedBuffer &out, int cId)
         : dataFromServer(in), dataToServer(out), clientId(cId) {}
 
-Game::~Game() { }
+Game::~Game() {}
 
 bool Game::init() {
     //Initialization flag
@@ -65,7 +65,7 @@ bool Game::init() {
     return success;
 }
 
-bool Game::loadMedia(Tile *tiles[]) {
+bool Game::loadMedia() {
     //Loading success flag
     bool success = true;
 
@@ -83,12 +83,15 @@ bool Game::loadMedia(Tile *tiles[]) {
         }
     }
 
-    gSpriteSheetTexturePortalBlue.loadFromFile("images/sprites/portal-blue2"
-                                                       ".png", gRenderer);
-    gSpriteSheetTexturePortalRed.loadFromFile("images/sprites/portal-red.png", gRenderer);
+    gSpriteSheetTexturePortalBlue
+            .loadFromFile("images/sprites/portal-blue2.png", gRenderer);
+    gSpriteSheetTexturePortalRed
+            .loadFromFile("images/sprites/portal-red.png", gRenderer);
+    gSpriteSheetTextureEnemyAbominable
+            .loadFromFile("images/sprites/enemy-abominable-walk.png", gRenderer);
 
     //Load tile map
-    if (!setTiles(tiles)) {
+    if (!setTiles()) {
         printf("Failed to load tile set!\n");
         success = false;
     }
@@ -96,12 +99,12 @@ bool Game::loadMedia(Tile *tiles[]) {
     return success;
 }
 
-void Game::close(Tile *tiles[]) {
+void Game::close() {
     //Deallocate tiles
     for (int i = 0; i < TOTAL_TILES; ++i) {
-        if (tiles[i] == NULL) {
-            delete tiles[i];
-            tiles[i] = NULL;
+        if (tileSet[i] == NULL) {
+            delete tileSet[i];
+            tileSet[i] = NULL;
         }
     }
 
@@ -122,7 +125,7 @@ void Game::close(Tile *tiles[]) {
     SDL_Quit();
 }
 
-bool Game::setTiles(Tile *tiles[]) {
+bool Game::setTiles() {
     //Success flag
     bool tilesLoaded = true;
 
@@ -130,7 +133,7 @@ bool Game::setTiles(Tile *tiles[]) {
     int x = 0, y = 0, k = 0;
 
     //Open the map
-    std::ifstream map("lazy.map");
+    std::ifstream map("resources/maps/mapa1.map");
 
     //If the map couldn't be loaded
     if (!map.is_open()) {
@@ -138,8 +141,8 @@ bool Game::setTiles(Tile *tiles[]) {
         tilesLoaded = false;
     } else {
         //Initialize the tiles
-        for (int j = 0; j < TILES_COLUMNS; ++j) {
-            for (int i = 0; i < TILES_ROWS; ++i) {
+        for (int i = 0; i < TILES_ROWS; ++i) {
+            for (int j = 0; j < TILES_COLUMNS; ++j) {
                 //Determines what kind of tile will be made
                 int tileType = -1;
 
@@ -159,11 +162,11 @@ bool Game::setTiles(Tile *tiles[]) {
                 y = j;
 
                 //If the number is a valid tile number
-                if ((tileType >= 0) /*&& (tileType < TOTAL_TILE_SPRITES)*/) {
+                if ((tileType >= 0)) {
                     k = i * TILES_COLUMNS + j;
-                    tiles[k] = new Tile(x, y);
-                }                //If we don't recognize the tile type
-                else {
+                    tileSet[k] = new Tile(x, y, tileType);
+                } else {
+                    //If we don't recognize the tile type
                     //Stop loading map
                     printf("Error loading map: Invalid tile type at %d!\n", i);
                     tilesLoaded = false;
@@ -174,44 +177,30 @@ bool Game::setTiles(Tile *tiles[]) {
 
         //Clip the sprite sheet
         if (tilesLoaded) {
-            gTileClips[GRASS].x = 0;
-            gTileClips[GRASS].y = 0;
-            gTileClips[GRASS].w = ISO_TILE_WIDTH;
-            gTileClips[GRASS].h = ISO_TILE_HEIGHT;
-
-            gTileClips[EARTH_TOWER].x = 0;
-            gTileClips[EARTH_TOWER].y = 0;
-            gTileClips[EARTH_TOWER].w = ISO_TILE_WIDTH;
-            gTileClips[EARTH_TOWER].h = 194;
-        }
-
-        unsigned int x_i = 0;
-        unsigned int y_i = 0;
-
-        for (int i = 0; i < 30; ++i) {
-            gSpriteClipsPortalBlue[i].x = i * 136;
-            gSpriteClipsPortalBlue[i].y = 0;
-            gSpriteClipsPortalBlue[i].w = 136;
-            gSpriteClipsPortalBlue[i].h = 181;
-
-            gSpriteClipsPortalRed[i].x = x_i * 136;
-            gSpriteClipsPortalRed[i].y = y_i * 185;
-            gSpriteClipsPortalRed[i].w = 136;
-            gSpriteClipsPortalRed[i].h = 185;
-
-            if (x_i < 10) {
-                ++x_i;
-            } else if (x_i == 10) {
-                x_i = 0;
+            // de 0 a 6 son los tiles de piso
+            for (int i = 0; i < TILE_EARTH_TOWER; ++i) {
+                gTileClips[i].x = 0;
+                gTileClips[i].y = 0;
+                gTileClips[i].w = ISO_TILE_WIDTH;
+                gTileClips[i].h = ISO_TILE_HEIGHT;
             }
 
-
-            if (i == 9) {
-                y_i = 1;
-            } else if (i == 19) {
-                y_i = 2;
-            }
+            gTileClips[TILE_EARTH_TOWER].x = 0;
+            gTileClips[TILE_EARTH_TOWER].y = 0;
+            gTileClips[TILE_EARTH_TOWER].w = ISO_TILE_WIDTH;
+            gTileClips[TILE_EARTH_TOWER].h = 194;
         }
+
+        loadPortalSprites();
+
+        int walkingStartFrame = (12 * 7 * 106);
+        for (int i = 0; i < 12; ++i) {
+            gSpriteClipsEnemyAbominable[i].x = walkingStartFrame + i * 106;
+            gSpriteClipsEnemyAbominable[i].y = 0;
+            gSpriteClipsEnemyAbominable[i].w = 105;
+            gSpriteClipsEnemyAbominable[i].h = 119;
+        }
+
     }
 
     //Close the file
@@ -219,6 +208,35 @@ bool Game::setTiles(Tile *tiles[]) {
 
     //If the map was loaded fine
     return tilesLoaded;
+}
+
+void Game::loadPortalSprites() {
+    unsigned int x_i = 0;
+    unsigned int y_i = 0;
+
+    for (int i = 0; i < 30; ++i) {
+        gSpriteClipsPortalBlue[i].x = i * 136;
+        gSpriteClipsPortalBlue[i].y = 0;
+        gSpriteClipsPortalBlue[i].w = 136;
+        gSpriteClipsPortalBlue[i].h = 181;
+
+        gSpriteClipsPortalRed[i].x = x_i * 136;
+        gSpriteClipsPortalRed[i].y = y_i * 185;
+        gSpriteClipsPortalRed[i].w = 136;
+        gSpriteClipsPortalRed[i].h = 185;
+
+        if (x_i < 10) {
+            ++x_i;
+        } else if (x_i == 10) {
+            x_i = 0;
+        }
+
+        if (i == 9) {
+            y_i = 1;
+        } else if (i == 19) {
+            y_i = 2;
+        }
+    }
 }
 
 void Game::handleMouseEvents(const SDL_Rect &camera,
@@ -250,7 +268,7 @@ void Game::handleServerNotifications(SDL_Rect camera) {
     int transactionsCounter = 0;
     std::string notification;
 
-    while (dataFromServer.hasData() && transactionsCounter < MAX_SERVER_NOTIFICATIONS_PER_FRAME){
+    while (dataFromServer.hasData() && transactionsCounter < MAX_SERVER_NOTIFICATIONS_PER_FRAME) {
         notification = dataFromServer.getNextData();
 
         Message message;
@@ -261,12 +279,14 @@ void Game::handleServerNotifications(SDL_Rect camera) {
 
         int op = root[OPERATION_KEY].asInt();
 
-        switch(op){
-            case SERVER_NOTIFICATION_PUT_TOWER:{
+        switch (op) {
+            case SERVER_NOTIFICATION_PUT_TOWER: {
                 int x = root["xCoord"].asInt();
                 int y = root["yCoord"].asInt();
                 int tilePos = x * TILES_COLUMNS + y;
-                tileSet[tilePos]->handleServerNotification(SERVER_NOTIFICATION_PUT_TOWER);
+                if (tileSet[tilePos]->getType() == TILE_FIRM){
+                    tileSet[tilePos]->handleServerNotification(SERVER_NOTIFICATION_PUT_TOWER);
+                }
                 break;
             }
             default:
@@ -285,13 +305,14 @@ void Game::run() {
         printf("Failed to initialize!\n");
     } else {
 
-        Tile portalBlue(0, 0);
-        Tile portalRed(5, 5);
+        Tile portalBlue(0, 0, 0);
+        Tile portalRed(5, 5, 0);
+        Tile enemyAbominable(7, 7, 0);
 
         int frameToDraw = 0;
 
         //Load media
-        if (!loadMedia(tileSet)) {
+        if (!loadMedia()) {
             printf("Failed to load media!\n");
         } else {
             //Main loop flag
@@ -346,13 +367,21 @@ void Game::run() {
 
                 frameToDraw = (SDL_GetTicks() / 75) % 30;
 
+                // blue portal
                 SDL_Rect *currentClip = &gSpriteClipsPortalBlue[frameToDraw];
                 portalBlue.renderSprite(camera, currentClip, gRenderer,
                                         &gSpriteSheetTexturePortalBlue);
 
+                // red portal
                 currentClip = &gSpriteClipsPortalRed[frameToDraw];
                 portalRed.renderSprite(camera, currentClip, gRenderer,
                                        &gSpriteSheetTexturePortalRed);
+
+                // enemy abominable
+                frameToDraw = (SDL_GetTicks() / 75) % 12;
+                currentClip = &gSpriteClipsEnemyAbominable[frameToDraw];
+                enemyAbominable.renderSprite(camera, currentClip, gRenderer,
+                                             &gSpriteSheetTextureEnemyAbominable);
 
                 //Update screen
                 SDL_RenderPresent(gRenderer);
@@ -360,7 +389,7 @@ void Game::run() {
         }
 
         //Free resources and close SDL
-        close(tileSet);
+        close();
     }
 }
 

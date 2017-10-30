@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 project(tp4_towerdefense)
 
-file(GLOB CLIENT_SOURCES "src/client/*.cpp" "src/common/*.cpp" "src/sdl/*.cpp")
+file(GLOB CLIENT_SOURCES "src/client/*.cpp" "src/common/*.h" "src/common/*.cpp" "src/sdl/*.h" "src/sdl/*.cpp")
 file(GLOB SERVER_SOURCES "src/server/*.cpp/" "src/common/*.cpp")
 file(GLOB EDITOR_SOURCES "src/editor/*.cpp" "src/common/**/*.cpp"
         "src/sdl/*.cpp") 
