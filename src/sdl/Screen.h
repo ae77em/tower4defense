@@ -3,9 +3,9 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include "../sdl/LTexture.h"
-#include "../sdl/Dot.h"
-#include "../sdl/Constants.h"
+#include "LTexture.h"
+#include "Dot.h"
+#include "Constants.h"
 #include "../common/modelo/Mapa.h"
 #include "../common/Point.h"
 

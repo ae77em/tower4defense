@@ -1,7 +1,7 @@
 #include "Screen.h"
 #include <stdexcept>
-#include "../sdl/Constants.h"
-#include "../sdl/Utils.h"
+#include "Constants.h"
+#include "Utils.h"
 #include "../common/modelo/Mapa.h"
 
 Screen::Screen() {

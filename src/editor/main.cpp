@@ -1,4 +1,4 @@
-#include "Screen.h"
+#include "../sdl/Screen.h"
 #include <stdexcept>
 #include "../common/Point.h"
 
