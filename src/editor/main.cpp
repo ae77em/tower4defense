@@ -17,6 +17,7 @@ int main(int argc, char *argv[]) {
     mapa.setCasilla('@', 8, 8);
 
     Screen screen;
+    screen.setDialog("Hola mundo!");
 
     bool quit = false;
     while (!quit) {
