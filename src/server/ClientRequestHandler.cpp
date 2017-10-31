@@ -25,11 +25,8 @@ void ClientRequestHandler::sendData(std::string data){
 
 void ClientRequestHandler::run() {
     //lo primero que hago es enviarle el id al cliente
-    std::string message = MessageFactory::getClientIdNotification( client.getSocket() );
-    sendData(message);
-
-/**************************************************/
-
+    //std::string message = MessageFactory::getClientIdNotification( client.getSocket() );
+    //sendData(message);
     std::string data;
     TextMessage message2("");
 
@@ -41,11 +38,10 @@ void ClientRequestHandler::run() {
 
         Message message;
         message.deserialize(requestSerialized);
-        Json::Value &root = message.getData();
 
-        int operationKey = root[OPERATION_KEY].asInt();
+        int operationKey = MessageFactory::getOperation(message);
 
-        std::cout << "CRH: cliente: "<< client.getSocket() <<" Recibio y despacho Mensaje: "<< root.toStyledString() <<std::endl;
+        std::cout << "CRH: cliente: "<< client.getSocket() <<" Recibio y despacho Mensaje: "<< message.toString() <<std::endl;
 
         if(operationKey == CLIENT_REQUEST_END_GAME){
             std::cout << "CRH: cliente: "<< client.getSocket() <<" requirio finalizar su comuc. "<<std::endl;

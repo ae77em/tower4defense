@@ -4,7 +4,8 @@
 #include "Protocol.h"
 #include "../common/Point.h"
 
-int MessageFactory::getOperation(Json::Value &root){
+int MessageFactory::getOperation(Message& request){
+    Json::Value &root = request.getData();
     return root[OPERATION_KEY].asInt();
 }
 
@@ -64,7 +65,6 @@ std::string MessageFactory::getGamesNotification(int clientId,std::string games)
  * NON-GAMING REQUESTS
  * ****************************************************************************
  * */
-//
 std::string MessageFactory::getGamesRequest(int clientId){
     std::string toReturn;
     Json::Value root(Json::objectValue);
@@ -163,7 +163,8 @@ std::string MessageFactory::getCreateMatchRequest(int clientId, std::string mapN
     return toReturn;
 }
 
-std::string MessageFactory::getCreateMatchNotification(Json::Value &root) {
+std::string MessageFactory::getCreateMatchNotification(Message &request) {
+    Json::Value &root = request.getData();
     std::string toReturn;
     Message message;
 
@@ -199,7 +200,8 @@ std::string MessageFactory::getPutTowerRequest(int clientId, int x, int y, bool 
     return toReturn;
 }
 
-std::string MessageFactory::getPutTowerNotification(Json::Value &root) {
+std::string MessageFactory::getPutTowerNotification(Message &request) {
+    Json::Value &root = request.getData();
     std::string toReturn;
     Message message;
 
@@ -231,7 +233,8 @@ std::string MessageFactory::getMarkTileRequest(int clientId, int x, int y, bool 
     return toReturn;
 }
 
-std::string MessageFactory::getMarkTileNotification(Json::Value &root) {
+std::string MessageFactory::getMarkTileNotification(Message &request) {
+    Json::Value &root = request.getData();
     std::string toReturn;
     Message message;
 
@@ -330,4 +333,16 @@ std::string MessageFactory::getAddPlayerToMatchNotification(int gameId, int clie
 //VER COMO MANEJAR ESTO, SI SE HACE EN DOS PASOS O EN UNO
 std::string MessageFactory::getAddPlayerAndRunMatchNotification(int gameID, int clientId) {
     return std::__cxx11::string();
+}
+
+int MessageFactory::getClientId(Message &request) {
+    Json::Value &root = request.getData();
+    int clientId = root["clientId"].asInt();
+    return clientId;
+}
+
+int MessageFactory::getMatchId(Message &request) {
+    Json::Value &root = request.getData();
+    int matchId = root["matchId"].asInt();
+    return matchId;
 }

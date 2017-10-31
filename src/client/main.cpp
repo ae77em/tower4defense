@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "Listener.h"
 #include "Sender.h"
+#include "../common/Utils.h"
 
 int main(int argc, char *argv[]) {
     std::string host = std::string(argv[1]);
@@ -17,6 +18,8 @@ int main(int argc, char *argv[]) {
 
     Listener listener(client, in);
     Sender sender(client, out);
+
+    Utils::printAsciiGameHeader();
 
     game.start();
     listener.start();

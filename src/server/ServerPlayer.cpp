@@ -1,10 +1,6 @@
-//
-// Created by federico on 28/10/17.
-//
-
 #include "ServerPlayer.h"
 
-ServerPlayer::ServerPlayer(ClientRequestHandler* crh,unsigned int aId):id(aId){
+ServerPlayer::ServerPlayer(ClientRequestHandler* crh, unsigned int aId):id(aId){
     this->clientRequestHandler = crh;
 }
 
@@ -13,13 +9,13 @@ unsigned int ServerPlayer::getId(){
 }
 
 void ServerPlayer::sendData(std::string data){
-    this->clientRequestHandler->sendData(data);
+    clientRequestHandler->sendData(data);
 }
 
 void ServerPlayer::launchRequesHandler(){
-    this->clientRequestHandler->start();
+    clientRequestHandler->start();
 }
 
-void ServerPlayer::setGameId(int gameId){
-    this->gameId = gameId;
+void ServerPlayer::setGameId(int gId){
+    gameId = gId;
 }

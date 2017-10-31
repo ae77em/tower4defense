@@ -26,7 +26,7 @@ void GameServer::notifyAll(std::string message) {
 void GameServer::processAndNotify(std::string request){
     m.lock();
 
-    Message message;
+    /*Message message;
     std::string response;
 
     message.deserialize(request);
@@ -37,7 +37,7 @@ void GameServer::processAndNotify(std::string request){
     bool isGlobalNotification = true;
 
     switch(op){
-        /* non-gaming requests: */
+        *//* non-gaming requests: *//*
         case CLIENT_REQUEST_ACCESS_GAME_MENU:{
             response = request;
             break;
@@ -50,7 +50,7 @@ void GameServer::processAndNotify(std::string request){
             response = MessageFactory::getNewMatchNotification(root, matches);
             break;
         }
-        /* this responses are individual */
+        *//* this responses are individual *//*
         case CLIENT_REQUEST_ENTER_MATCH:{
             response = request;
             break;
@@ -63,13 +63,13 @@ void GameServer::processAndNotify(std::string request){
             response = MessageFactory::getExistingMatchesNotification(matches);;
             break;
         }
-        /* gaming requests: */
+        *//* gaming requests: *//*
         case CLIENT_REQUEST_PUT_TOWER:{
-            response = MessageFactory::getPutTowerNotification(root);
+            response = MessageFactory::getPutTowerNotification(request);
             break;
         }
         case CLIENT_REQUEST_MARK_TILE:{
-            response = MessageFactory::getMarkTileNotification(root);
+            response = MessageFactory::getMarkTileNotification(request);
             break;
         }
         default:
@@ -79,13 +79,13 @@ void GameServer::processAndNotify(std::string request){
     if (isGlobalNotification){
         notifyAllWithoutLock(response);
     } else {
-        /* acá se disparan las notificaciones individuales,
+        *//* acá se disparan las notificaciones individuales,
          * por ejemplo, cuando no se puede crear un match o
          * no se puede unir a un match...ver cómo utilizar
          * el mecanismos con socketmanager para obtener el
          * cliente que hace el request en este caso.
-         * */
-    }
+         * *//*
+    }*/
 
     m.unlock();
 }

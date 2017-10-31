@@ -6,6 +6,7 @@
 #include "Listener.h"
 #include "Sender.h"
 #include "../common/MessageFactory.h"
+#include "../common/Utils.h"
 
 int main(int argc, char **argv) {
     SharedBuffer toReceive;
@@ -15,6 +16,9 @@ int main(int argc, char **argv) {
         std::cerr << "gameaccess <host> <port>" << std::endl;
         return 0;
     }
+
+    Utils::printAsciiGameHeader();
+
     std::string host = std::string(argv[1]);
     uint16_t port = atoi(argv[2]);
 

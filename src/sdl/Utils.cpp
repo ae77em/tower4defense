@@ -112,4 +112,3 @@ SDL_Rect Utils::getBoxByTileType(int type){
     return toReturn;
 }
 
-
