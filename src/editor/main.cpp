@@ -3,9 +3,6 @@
 #include "../common/Point.h"
 
 int main(int argc, char *argv[]) {
-    const int SCREEN_WIDTH = 800;
-    const int SCREEN_HEIGHT = 600;
-
 // SDL initialization
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
         throw std::runtime_error("SDL init failed");
