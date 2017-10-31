@@ -1,4 +1,5 @@
 #include <SDL_image.h>
+#include <SDL_ttf.h>
 #include "LTexture.h"
 
 LTexture::LTexture() {
@@ -11,6 +12,28 @@ LTexture::LTexture() {
 LTexture::~LTexture() {
     //Deallocate
     free();
+}
+
+bool LTexture::generateFromText(std::string text, SDL_Renderer *renderer,
+        TTF_Font *font, SDL_Color text_color, SDL_Color background_color) {
+    //Get rid of preexisting texture
+    free();
+
+    SDL_Surface* text_surface = TTF_RenderText_Shaded(font, text.c_str(),
+            text_color, background_color);
+    if (! text_surface) return false;
+
+    mTexture = SDL_CreateTextureFromSurface(renderer, text_surface);
+    if (! mTexture) {
+        SDL_FreeSurface(text_surface);
+        return false;
+    }
+
+    mWidth = text_surface->w;
+    mHeight = text_surface->h;
+
+    SDL_FreeSurface(text_surface);
+    return true;
 }
 
 bool LTexture::loadFromFile(std::string path, SDL_Renderer *gRenderer) {
