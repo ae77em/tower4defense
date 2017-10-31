@@ -14,12 +14,12 @@ public:
     //Deallocates memory
     ~LTexture();
 
-    bool generateFromText(std::string text, SDL_Renderer *renderer,
+    bool generateFromText(const std::string &text, SDL_Renderer *renderer,
             TTF_Font *font, SDL_Color text_color = { 0xC5, 0xC8, 0xC6, 0xCC },
             SDL_Color background_color = { 0x1D, 0x1F, 0x21, 0xCC});
 
     //Loads image at specified path
-    bool loadFromFile(std::string path, SDL_Renderer *gRenderer);
+    bool loadFromFile(const std::string &path, SDL_Renderer *gRenderer);
 
     //Deallocates texture
     void free();

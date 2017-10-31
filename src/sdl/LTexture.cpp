@@ -14,7 +14,7 @@ LTexture::~LTexture() {
     free();
 }
 
-bool LTexture::generateFromText(std::string text, SDL_Renderer *renderer,
+bool LTexture::generateFromText(const std::string &text, SDL_Renderer *renderer,
         TTF_Font *font, SDL_Color text_color, SDL_Color background_color) {
     //Get rid of preexisting texture
     free();
@@ -36,7 +36,7 @@ bool LTexture::generateFromText(std::string text, SDL_Renderer *renderer,
     return true;
 }
 
-bool LTexture::loadFromFile(std::string path, SDL_Renderer *gRenderer) {
+bool LTexture::loadFromFile(const std::string &path, SDL_Renderer *gRenderer) {
     //Get rid of preexisting texture
     free();
 
