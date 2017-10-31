@@ -3,12 +3,12 @@
 #include "../common/Point.h"
 
 int main(int argc, char *argv[]) {
-    const int SCREEN_WIDTH = 800;
-    const int SCREEN_HEIGHT = 600;
-
 // SDL initialization
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
         throw std::runtime_error("SDL init failed");
+
+    if (TTF_Init() == -1)
+        throw std::runtime_error("TTF init failed");
 
     Mapa mapa(10, 10);
     mapa.setCasilla('~', 1, 1);
@@ -17,6 +17,7 @@ int main(int argc, char *argv[]) {
     mapa.setCasilla('@', 8, 8);
 
     Screen screen;
+    screen.setDialog("Hola mundo!");
 
     bool quit = false;
     while (!quit) {
@@ -39,5 +40,6 @@ int main(int argc, char *argv[]) {
         screen.draw();
     }
 
+    TTF_Quit();
     SDL_Quit();
 }
