@@ -2,7 +2,7 @@
 #define TP4_TOWERDEFENSE_LTEXTURE_H
 
 #include <string>
-#include <SDL_system.h>
+#include <SDL2/SDL_system.h>
 #include <SDL2/SDL_ttf.h>
 
 //Texture wrapper class

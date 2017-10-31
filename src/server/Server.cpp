@@ -186,14 +186,15 @@ void Server::run() {
 
                     removeClient(MessageFactory::getClientId(request));
                     break;
-                default: {
+                    /* VERIFICAR CMAKE QUE  */
+                /*default: {
                     int clientId = MessageFactory::getClientId(request);
                     response = "No se reconoce codigo de operación ";
                     response.append(std::to_string(op));
                     response.append("\n");
                     response.append(request.getJsonString());
                     notifyTo(clientId, response);
-                }
+                }*/
             }
         }
     } catch (std::exception) {

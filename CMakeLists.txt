@@ -53,6 +53,6 @@ TARGET_LINK_LIBRARIES(client.exe ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES}
 TARGET_LINK_LIBRARIES(editor.exe ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES}
         ${SDL2TTF_LIBRARIES})
 
-SET(GCC_COVERAGE_COMPILE_FLAGS "-Wall -pedantic -pedantic-errors -O0 -ggdb"
+SET(GCC_COVERAGE_COMPILE_FLAGS "-Wall -Werror -pedantic -pedantic-errors -O0 -ggdb"
         "-DDEBUG -fno-inline -std=c++11")
 add_definitions(${GCC_COVERAGE_COMPILE_FLAGS})

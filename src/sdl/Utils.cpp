@@ -1,4 +1,4 @@
-#include <SDL_mouse.h>
+#include <SDL2/SDL_mouse.h>
 #include "Utils.h"
 #include "../sdl/Constants.h"
 

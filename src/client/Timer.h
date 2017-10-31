@@ -2,7 +2,7 @@
 #define TP4_TOWERDEFENSE_TIMER_H
 
 
-#include <SDL_quit.h>
+#include <SDL2/SDL_quit.h>
 
 //The application time based timer
 class LTimer {

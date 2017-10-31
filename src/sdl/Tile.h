@@ -2,9 +2,9 @@
 #define TP4_TOWERDEFENSE_ISOMETRICTILE_H
 
 #include <string>
-#include <SDL_rect.h>
-#include <SDL_system.h>
-#include <SDL_events.h>
+#include <SDL2/SDL_rect.h>
+#include <SDL2/SDL_system.h>
+#include <SDL2/SDL_events.h>
 #include "../sdl/LTexture.h"
 
 

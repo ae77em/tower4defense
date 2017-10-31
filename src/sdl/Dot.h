@@ -1,7 +1,7 @@
 #ifndef TP4_TOWERDEFENSE_DOT_H
 #define TP4_TOWERDEFENSE_DOT_H
 
-#include <SDL_rect.h>
+#include <SDL2/SDL_rect.h>
 #include "LTexture.h"
 #include "Tile.h"
 

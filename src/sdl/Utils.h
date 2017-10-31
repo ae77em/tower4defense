@@ -1,7 +1,7 @@
 #ifndef TP4_TOWERDEFENSE_UTILS_H
 #define TP4_TOWERDEFENSE_UTILS_H
 
-#include <SDL_rect.h>
+#include <SDL2/SDL_rect.h>
 #include "../common/Point.h"
 
 class Utils {
