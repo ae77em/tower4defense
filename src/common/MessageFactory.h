@@ -89,6 +89,8 @@ public:
     static std::string getMapName(Message &message);
 
     static std::string getMatchName(Message &message);
+
+    static std::string getClientEndConectionNotification(int clientId);
 };
 
 

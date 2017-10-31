@@ -11,7 +11,7 @@
 #include "../common/Message.h"
 #include <sstream>
 
-ClientRequestHandler::ClientRequestHandler(Socket &c, ThreadedQueue<Message> &th)
+ClientRequestHandler::ClientRequestHandler(Socket* c, ThreadedQueue<Message> &th)
                                                                 :client(c)
                                                                 , queueSharedMessage(th) {}
 
@@ -19,11 +19,11 @@ ClientRequestHandler::~ClientRequestHandler() { }
 
 void ClientRequestHandler::sendData(std::string data){
     TextMessage d( data );
-    d.sendTo(client);
+    d.sendTo(*client);
 }
 
 void ClientRequestHandler::sendClientId() {
-    string message = MessageFactory::getClientIdNotification(client.getSocket() );
+    string message = MessageFactory::getClientIdNotification(client->getSocket() );
     sendData(message);
 }
 
@@ -31,25 +31,39 @@ void ClientRequestHandler::run() {
     sendClientId();
     std::string data;
 
-    while(true){
-        std::cout << "CRH: cliente: "<< client.getSocket() <<" Esperando Mensaje"<<std::endl;
 
-        TextMessage textMessage("");
-        std::string requestSerialized = textMessage.receiveFrom(client).getMessage();
-
+    while(true) {
         Message message;
-        message.deserialize(requestSerialized);
+        try {
+            std::cout << "CRH: cliente: " << client->getSocket() << " Esperando Mensaje" << std::endl;
 
-        int operationKey = MessageFactory::getOperation(message);
+            TextMessage textMessage("");
+            std::string requestSerialized = textMessage.receiveFrom(*client).getMessage();
 
-        std::cout << "CRH: cliente: "<< client.getSocket() <<" Recibio y despacho Mensaje: "<< message.toString() <<std::endl;
+            message.deserialize(requestSerialized);
 
-        if(operationKey == CLIENT_REQUEST_END_GAME){
-            std::cout << "CRH: cliente: "<< client.getSocket() <<" requirio finalizar su comuc. "<<std::endl;
+            int operationKey = MessageFactory::getOperation(message);
+
+            std::cout << "CRH: cliente: " << client->getSocket() << " Recibio y despacho Mensaje: "
+                      << message.toString()
+                      << std::endl;
+
+            if (operationKey == CLIENT_REQUEST_END_GAME) {
+                std::cout << "CRH: cliente: " << client->getSocket() << " requirio finalizar su comuc. " << std::endl;
+                break;
+            }
+        }catch (std::runtime_error){
+            Message message;
+            int clientId = client->getSocket();
+            std::string notif = MessageFactory::getClientEndConectionNotification(clientId);
+            message.deserialize(notif);
+            queueSharedMessage.push(message);
+            std::cout << "CRH: cliente: "<< client->getSocket() <<" TERMINO CONEXION"<<std::endl;
             break;
         }
         queueSharedMessage.push(message);
     }
-    std::cout << "CRH: cliente: "<< client.getSocket() <<" termino su CTH thread"<<std::endl;
+
+    std::cout << "CRH: cliente: "<< client->getSocket() <<" termino su CTH thread"<<std::endl;
 }
 

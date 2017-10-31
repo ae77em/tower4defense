@@ -360,3 +360,18 @@ int MessageFactory::getMatchId(Message &request) {
     int matchId = root["matchId"].asInt();
     return matchId;
 }
+
+std::string MessageFactory::getClientEndConectionNotification(int clientId) {
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = SERVER_NOTIFICATION_END_CLIENT_CONNECTION;
+    root[CLIENT_ID_KEY] = clientId;
+
+    message.setData(root);
+
+    toReturn = message.serialize();
+
+    return toReturn;
+}

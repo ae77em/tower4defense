@@ -9,11 +9,11 @@
 class ClientRequestHandler : public Thread {
 private:
     char op;
-    Socket& client;
+    Socket* client;
     ThreadedQueue<Message>& queueSharedMessage;
 
 public:
-    explicit ClientRequestHandler(Socket &client, ThreadedQueue<Message> &th);
+    explicit ClientRequestHandler(Socket* client, ThreadedQueue<Message> &th);
     virtual ~ClientRequestHandler();
 
     void run();

@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Game.h"
 #include "Listener.h"
 #include "Sender.h"
@@ -19,6 +20,8 @@ int main(int argc, char *argv[]) {
 
     TextMessage textmessage("");
     std::string dataFromServer = textmessage.receiveFrom(server).getMessage();
+
+    std::cout<<"server: "<<dataFromServer<<std::endl;
 
     Message message;
 

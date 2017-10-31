@@ -81,6 +81,8 @@ private:
     void addPlayerToGame(int clientId,int gameId);
 
     void notifyTo(int clientId, string &message);
+
+    void removeClient(int id);
 };
 
 

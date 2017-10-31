@@ -61,6 +61,8 @@ void Server::addPlayerToGame(int clientId, int gameId) {
 }
 
 void Server::notifyAll(std::string message) {
+    std::cout<<"Notificando a: "<<players.size() << " jugadores"<<std::endl;
+
     for (std::pair<unsigned int, ServerPlayer *> player : players){
         player.second->sendData(message);
     }
@@ -78,7 +80,7 @@ unsigned int Server::createMatch() {
 }
 
 void Server::createAndRunPlayer(Socket *s) {
-    ClientRequestHandler *crh = new ClientRequestHandler(*s, queueMessagesClient);
+    ClientRequestHandler *crh = new ClientRequestHandler(s, queueMessagesClient);
     ServerPlayer *serverPlayer = new ServerPlayer(crh, s->getSocket());
 
     mutexPlayers.lock();
@@ -175,6 +177,15 @@ void Server::run() {
                     notifyAll(response);
                     break;
                 }
+                case SERVER_NOTIFICATION_END_CLIENT_CONNECTION:
+                    std::cout
+                        << "el cliente "
+                        << std::to_string(MessageFactory::getClientId(request))
+                        << " se desconectó."
+                        << std::endl;
+
+                    removeClient(MessageFactory::getClientId(request));
+                    break;
                 default: {
                     int clientId = MessageFactory::getClientId(request);
                     response = "No se reconoce codigo de operación ";
@@ -198,4 +209,8 @@ void Server::notifyAllWithoutLock(std::string message) {
     /*for (auto &client : clients) {
         client.get().push(msg);
     }*/
+}
+
+void Server::removeClient(int id) {
+    players.erase(id);
 }
