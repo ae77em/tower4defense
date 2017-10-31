@@ -18,34 +18,31 @@ ClientRequestHandler::ClientRequestHandler(Socket &c, ThreadedQueue<Message> &th
 ClientRequestHandler::~ClientRequestHandler() { }
 
 void ClientRequestHandler::sendData(std::string data){
-    //el primer mensaje es el envio del id
     TextMessage d( data );
     d.sendTo(client);
 }
 
-void ClientRequestHandler::run() {
-    //lo primero que hago es enviarle el id al cliente
-    std::string message = MessageFactory::getClientIdNotification( client.getSocket() );
+void ClientRequestHandler::sendClientId() {
+    string message = MessageFactory::getClientIdNotification(client.getSocket() );
     sendData(message);
+}
 
-/**************************************************/
-
+void ClientRequestHandler::run() {
+    sendClientId();
     std::string data;
-    TextMessage message2("");
 
     while(true){
         std::cout << "CRH: cliente: "<< client.getSocket() <<" Esperando Mensaje"<<std::endl;
 
-        TextMessage message0("");
-        std::string requestSerialized = message0.receiveFrom(client).getMessage();
+        TextMessage textMessage("");
+        std::string requestSerialized = textMessage.receiveFrom(client).getMessage();
 
         Message message;
         message.deserialize(requestSerialized);
-        Json::Value &root = message.getData();
 
-        int operationKey = root[OPERATION_KEY].asInt();
+        int operationKey = MessageFactory::getOperation(message);
 
-        std::cout << "CRH: cliente: "<< client.getSocket() <<" Recibio y despacho Mensaje: "<< root.toStyledString() <<std::endl;
+        std::cout << "CRH: cliente: "<< client.getSocket() <<" Recibio y despacho Mensaje: "<< message.toString() <<std::endl;
 
         if(operationKey == CLIENT_REQUEST_END_GAME){
             std::cout << "CRH: cliente: "<< client.getSocket() <<" requirio finalizar su comuc. "<<std::endl;

@@ -65,8 +65,7 @@ void Message::print() {
 std::string Message::toString() {
     std::stringstream ss;
 
-    ss << std::endl << "Json: "
-       << std::endl << this->getData()
+    ss << std::endl << this->getData()
        << std::endl;
 
     return ss.str();
@@ -76,6 +75,6 @@ void Message::setData(Json::Value &data) {
     this->data = data;
 }
 
-Json::Value &Message::getData() {
+Json::Value & Message::getData(){
     return this->data;
 }

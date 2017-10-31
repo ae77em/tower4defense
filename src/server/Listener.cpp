@@ -43,9 +43,8 @@ void Listener::run(){
                         << std::to_string(fd)
                         << std::endl;
 
-            // ClientRequestHandler se encarga solamente de tomar los request del client
-
-           server.createAndRunPlayer(*client);
+           //ClientRequestHandler se encarga solamente de tomar los request del client
+           server.createAndRunPlayer(client);
         }
     } catch (std::exception) {
         std::cout<< "Listener: Cachenado excepcion, se corto accept"<< std::endl;

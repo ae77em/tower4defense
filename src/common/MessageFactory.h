@@ -3,9 +3,12 @@
 
 static const char *const OPERATION_KEY = "operation";
 
+static const char *const CLIENT_ID_KEY = "clientId";
+
 #include <string>
 #include <jsoncpp/json/json.h>
 #include <set>
+#include "Message.h"
 
 class MessageFactory {
 public:
@@ -19,10 +22,10 @@ public:
 
 
 
-        /*
-         * Retorna la operación asociada al request que se hace con el Json.
-         */
-    static int getOperation(Json::Value &root);
+    /*
+     * Retorna la operación asociada al request que se hace con el Json.
+     */
+    static int getOperation(Message &request);
 
     /*
      * Retorna el request de texto para agregar una torre, listo para
@@ -38,7 +41,7 @@ public:
      * Retorna la notificación enviada por el server para poner una torre en el escenario.
      * Es un json string.
      */
-    static std::string getPutTowerNotification(Json::Value &root);
+    static std::string getPutTowerNotification(Message &request);
 
     /*
      * Retorna el request de texto para marcar un lugar donde poner una torre, listo para
@@ -53,11 +56,11 @@ public:
     /*
      * Retorna la operación asociada al request que se hace con el Json.
      */
-    static std::string getMarkTileNotification(Json::Value &root);
+    static std::string getMarkTileNotification(Message &request);
 
     static std::string getCreateMatchRequest(int clientId, std::string mapName);
 
-    static std::string getCreateMatchNotification(Json::Value &root);
+    static std::string getCreateMatchNotification(Message &request);
 
     static std::string getExistingMapsRequest(int clientId);
 
@@ -67,15 +70,25 @@ public:
 
     static std::string getExistingMatchesNotification(std::set<std::string> &matches);
 
-    static std::string getNewMatchNotification(Json::Value &root, std::set<std::string> &matches);
+    static std::string getNewMatchNotification(Message &request, std::set<std::string> &matches);
 
-    static std::string getNewMatchRequest(std::string &mapName, std::string &matchName);
+    static std::string getNewMatchRequest(int clientId, std::string &mapName, std::string &matchName);
 
     static std::string getCreateFullMatchNotification(int gameId, int clientId);
 
     static std::string getAddPlayerToMatchNotification(int gameId, int clientIdWasAdded);
 
     static std::string getAddPlayerAndRunMatchNotification(int gameID, int clientId);
+
+    static int getClientId(Message &message);
+
+    static int getMatchId(Message &message);
+
+    static std::vector<std::string> getMaps(Message &message);
+
+    static std::string getMapName(Message &message);
+
+    static std::string getMatchName(Message &message);
 };
 
 

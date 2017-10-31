@@ -4,8 +4,36 @@
 #include "Protocol.h"
 #include "../common/Point.h"
 
-int MessageFactory::getOperation(Json::Value &root){
+int MessageFactory::getOperation(Message& request){
+    Json::Value &root = request.getData();
     return root[OPERATION_KEY].asInt();
+}
+
+std::vector<std::string> MessageFactory::getMaps(Message& message){
+    std::vector<std::string> response;
+    Json::Value &root = message.getData();
+    for (Json::Value &map : root["maps"]){
+        response.push_back(map.asString());
+    }
+    return response;
+}
+
+std::string MessageFactory::getMapName(Message& message){
+    std::string response;
+    Json::Value &root = message.getData();
+
+    response = root.get("mapName", "").asString();
+
+    return response;
+}
+
+std::string MessageFactory::getMatchName(Message& message){
+    std::string response;
+    Json::Value &root = message.getData();
+
+    response = root.get("matchName", "").asString();
+
+    return response;
 }
 
 std::string MessageFactory::getClientIdNotification(int clientId){
@@ -13,8 +41,8 @@ std::string MessageFactory::getClientIdNotification(int clientId){
     Json::Value root(Json::objectValue);
     Message message;
 
-    root[OPERATION_KEY] = SERVER_NOTIFICATION_CREATE_ID;
-    root["clientId"] = clientId;
+    root[OPERATION_KEY] = SERVER_NOTIFICATION_CLIENT_ID;
+    root[CLIENT_ID_KEY] = clientId;
 
     message.setData(root);
 
@@ -49,7 +77,7 @@ std::string MessageFactory::getGamesNotification(int clientId,std::string games)
 
     root[OPERATION_KEY] = CLIENT_REQUEST_GET_MATCHES;
     root["games"] = games;
-    root["clientId"] = clientId;
+    root[CLIENT_ID_KEY] = clientId;
 
     message.setData(root);
 
@@ -64,14 +92,13 @@ std::string MessageFactory::getGamesNotification(int clientId,std::string games)
  * NON-GAMING REQUESTS
  * ****************************************************************************
  * */
-//
 std::string MessageFactory::getGamesRequest(int clientId){
     std::string toReturn;
     Json::Value root(Json::objectValue);
     Message message;
 
     root[OPERATION_KEY] = CLIENT_REQUEST_GET_MATCHES;
-    root["clientId"] = clientId;
+    root[CLIENT_ID_KEY] = clientId;
 
     message.setData(root);
 
@@ -86,7 +113,7 @@ std::string MessageFactory::getExistingMapsRequest(int clientId){
     Message message;
 
     root[OPERATION_KEY] = CLIENT_REQUEST_GET_MAPS;
-    root["clientId"] = clientId;
+    root[CLIENT_ID_KEY] = clientId;
 
     message.setData(root);
 
@@ -119,7 +146,7 @@ std::string MessageFactory::getExistingMatchesRequest(int clientId) {
     Message message;
 
     root[OPERATION_KEY] = CLIENT_REQUEST_GET_MATCHES;
-    root["clientId"] = clientId;
+    root[CLIENT_ID_KEY] = clientId;
 
     message.setData(root);
 
@@ -153,25 +180,11 @@ std::string MessageFactory::getCreateMatchRequest(int clientId, std::string mapN
     Message message;
 
     root[OPERATION_KEY] = CLIENT_REQUEST_NEW_MATCH;
-    root["clientId"] = clientId;
+    root[CLIENT_ID_KEY] = clientId;
     root["mapName"] = mapName;
 
     message.setData(root);
 
-    toReturn = message.serialize();
-
-    return toReturn;
-}
-
-std::string MessageFactory::getCreateMatchNotification(Json::Value &root) {
-    std::string toReturn;
-    Message message;
-
-    Json::Value responseRoot(root);
-
-    responseRoot[OPERATION_KEY] = SERVER_NOTIFICATION_NEW_MATCH;
-
-    message.setData(responseRoot);
     toReturn = message.serialize();
 
     return toReturn;
@@ -187,7 +200,7 @@ std::string MessageFactory::getPutTowerRequest(int clientId, int x, int y, bool 
     Message message;
 
     root[OPERATION_KEY] = CLIENT_REQUEST_PUT_TOWER;
-    root["clientId"] = clientId;
+    root[CLIENT_ID_KEY] = clientId;
     root["xCoord"] = x;
     root["yCoord"] = y;
     root["isPut"] = isPut;
@@ -199,7 +212,8 @@ std::string MessageFactory::getPutTowerRequest(int clientId, int x, int y, bool 
     return toReturn;
 }
 
-std::string MessageFactory::getPutTowerNotification(Json::Value &root) {
+std::string MessageFactory::getPutTowerNotification(Message &request) {
+    Json::Value &root = request.getData();
     std::string toReturn;
     Message message;
 
@@ -219,7 +233,7 @@ std::string MessageFactory::getMarkTileRequest(int clientId, int x, int y, bool 
     Message message;
 
     root[OPERATION_KEY] = CLIENT_REQUEST_MARK_TILE;
-    root["clientId"] = clientId;
+    root[CLIENT_ID_KEY] = clientId;
     root["xCoord"] = x;
     root["yCoord"] = y;
     root["isMark"] = isPut;
@@ -231,7 +245,8 @@ std::string MessageFactory::getMarkTileRequest(int clientId, int x, int y, bool 
     return toReturn;
 }
 
-std::string MessageFactory::getMarkTileNotification(Json::Value &root) {
+std::string MessageFactory::getMarkTileNotification(Message &request) {
+    Json::Value &root = request.getData();
     std::string toReturn;
     Message message;
 
@@ -245,12 +260,13 @@ std::string MessageFactory::getMarkTileNotification(Json::Value &root) {
     return toReturn;
 }
 
-std::string MessageFactory::getNewMatchRequest(std::string &mapName, std::string &matchName) {
+std::string MessageFactory::getNewMatchRequest(int clientId, std::string &mapName, std::string &matchName) {
     std::string toReturn;
     Json::Value root(Json::objectValue);
     Message message;
 
     root[OPERATION_KEY] = CLIENT_REQUEST_NEW_MATCH;
+    root[CLIENT_ID_KEY] = clientId;
     root["mapName"] = mapName;
     root["matchName"] = matchName;
 
@@ -261,7 +277,8 @@ std::string MessageFactory::getNewMatchRequest(std::string &mapName, std::string
     return toReturn;
 }
 
-std::string MessageFactory::getNewMatchNotification(Json::Value &root, std::set<std::string> &matches) {
+std::string MessageFactory::getNewMatchNotification(Message &request, std::set<std::string> &matches) {
+    Json::Value &root = request.getData();
     std::string toReturn;
     Message message;
 
@@ -300,7 +317,7 @@ std::string MessageFactory::getCreateFullMatchNotification(int gameId, int clien
 
     root[OPERATION_KEY] = SERVER_NOTIFICATION_MATCH_FULL;
 
-    root["clientId"] = clientId;
+    root[CLIENT_ID_KEY] = clientId;
     root["gameId"] = gameId;
 
     message.setData(root);
@@ -317,7 +334,7 @@ std::string MessageFactory::getAddPlayerToMatchNotification(int gameId, int clie
 
     root[OPERATION_KEY] = SERVER_NOTIFICATION_ENTER_EXISTING_GAME;
 
-    root["clientId"] = clientIdWasAdded;
+    root[CLIENT_ID_KEY] = clientIdWasAdded;
     root["gameId"] = gameId;
 
     message.setData(root);
@@ -330,4 +347,16 @@ std::string MessageFactory::getAddPlayerToMatchNotification(int gameId, int clie
 //VER COMO MANEJAR ESTO, SI SE HACE EN DOS PASOS O EN UNO
 std::string MessageFactory::getAddPlayerAndRunMatchNotification(int gameID, int clientId) {
     return std::__cxx11::string();
+}
+
+int MessageFactory::getClientId(Message &request) {
+    Json::Value &root = request.getData();
+    int clientId = root[CLIENT_ID_KEY].asInt();
+    return clientId;
+}
+
+int MessageFactory::getMatchId(Message &request) {
+    Json::Value &root = request.getData();
+    int matchId = root["matchId"].asInt();
+    return matchId;
 }

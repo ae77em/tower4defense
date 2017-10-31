@@ -6,12 +6,15 @@
 #include <exception>
 
 #include "Listener.h"
+#include "../common/Utils.h"
 
 int main(int argc, char *argv[]){
     if (argc != 2) {
         std::cerr << "Cantidad de parámetros incorrecta.";
         return 0;
     }
+
+    Utils::printAsciiGameHeader();
 
     uint16_t port = atoi(argv[1]);
 
