@@ -13,13 +13,16 @@ LTexture::~LTexture() {
     //Deallocate
     free();
 }
-
 bool LTexture::generateFromText(const std::string &text, SDL_Renderer *renderer,
         TTF_Font *font, SDL_Color text_color, SDL_Color background_color) {
     //Get rid of preexisting texture
     free();
 
-    SDL_Surface* text_surface = TTF_RenderText_Shaded(font, text.c_str(),
+    /* WARNING: A text_surface will fail to load if the string
+       to generate is empty. Setting the string to a single space
+       is a workaround for this behavior. */
+    SDL_Surface* text_surface = TTF_RenderText_Shaded(font,
+            (text == "") ? " " : text.c_str(),
             text_color, background_color);
     if (! text_surface) return false;
 

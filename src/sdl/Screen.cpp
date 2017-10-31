@@ -3,6 +3,7 @@
 #include "Constants.h"
 #include "Utils.h"
 #include "../common/modelo/Mapa.h"
+#include <SDL2/SDL_ttf.h>
 
 Screen::Screen() {
     window = SDL_CreateWindow("Tower4Defense", SDL_WINDOWPOS_UNDEFINED,
@@ -30,6 +31,10 @@ Screen::Screen() {
     fireTower.loadFromFile("images/fire_tower.png", renderer);
     airTower.loadFromFile("images/air_tower.png", renderer);
     tile.loadFromFile("images/sprites/tile-grass.png", renderer);
+
+    font = TTF_OpenFont("resources/fonts/UbuntuMono-R.ttf", 16);
+    if (! font) throw std::runtime_error("Could not load font");
+    setDialog("");
 }
 
 Screen::~Screen() {
@@ -40,6 +45,9 @@ Screen::~Screen() {
 void Screen::draw() {
     dot.move();
     dot.setCamera(camera);
+
+    putDialog();
+
     SDL_RenderPresent(renderer);
 }
 
@@ -103,6 +111,10 @@ void Screen::putTile(unsigned x, unsigned y) {
     tile.render(renderer, pos.x, pos.y);
 }
 
+void Screen::putDialog() {
+    dialog.render(renderer, 40, camera.h - 40);
+}
+
 void Screen::handleEvent(SDL_Event &e) {
     std::string s;
     dot.handleEvent(e, s);
@@ -133,4 +145,10 @@ void Screen::put(Mapa &map) {
 
 Point Screen::mouseCurrentTile() {
     return Utils::getMouseRelativePoint(camera);
+}
+
+void Screen::setDialog(const std::string &text) {
+    if (! dialog.generateFromText(text, renderer, font))
+        throw std::runtime_error("Failed to generate dialog \""
+                + text + "\"");
 }

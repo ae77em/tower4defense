@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL_ttf.h>
 #include "LTexture.h"
 #include "Dot.h"
 #include "Constants.h"
@@ -15,7 +16,11 @@ class Screen {
     Dot dot;
     SDL_Rect camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
 
+    TTF_Font *font;
+    LTexture dialog;
     LTexture tile, waterTower, earthTower, fireTower, airTower;
+
+    void putDialog();
 
     void putWaterTower(unsigned x, unsigned y);
     void putEarthTower(unsigned x, unsigned y);
@@ -27,10 +32,12 @@ public:
     Screen();
     ~Screen();
 
-    void draw();
-    void put(Mapa &map);
-    void handleEvent(SDL_Event &e);
     void clear();
+    void put(Mapa &map);
+    void setDialog(const std::string &text);
+    void draw();
+
+    void handleEvent(SDL_Event &e);
     Point mouseCurrentTile();
 };
 

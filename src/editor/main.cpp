@@ -7,6 +7,9 @@ int main(int argc, char *argv[]) {
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
         throw std::runtime_error("SDL init failed");
 
+    if (TTF_Init() == -1)
+        throw std::runtime_error("TTF init failed");
+
     Mapa mapa(10, 10);
     mapa.setCasilla('~', 1, 1);
     mapa.setCasilla('*', 1, 8);
@@ -36,5 +39,6 @@ int main(int argc, char *argv[]) {
         screen.draw();
     }
 
+    TTF_Quit();
     SDL_Quit();
 }
