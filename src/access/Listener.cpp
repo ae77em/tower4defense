@@ -13,32 +13,37 @@ Listener::~Listener() {}
 void Listener::run(){
     try {
         std::string dataFromServer;
-        TextMessage message("");
+        TextMessage textMessage("");
+
+        std::cout << "llegue al listener---" << std::endl;
 
         while (true) {
-            dataFromServer = message.receiveFrom(server).getMessage();
+            dataFromServer = textMessage.receiveFrom(server).getMessage();
 
             Message message;
             std::string response = "";
 
             message.deserialize(dataFromServer);
-            Json::Value &root = message.getData();
 
-            int op = root[OPERATION_KEY].asInt();
+            int op = MessageFactory::getOperation(message);
+
+            std::cout << "llego operación: " << std::to_string(op) << std::endl;
 
             switch(op){
-                case 1:{
+                case SERVER_NOTIFICATION_CLIENT_ID:{
+                    int clientId = MessageFactory::getClientId(message);
+                    gameAccess.setClientId(clientId);
+                    break;
+                }
+                case SERVER_NOTIFICATION_GET_MAPS:{
                     std::vector<std::string> maps;
-                    for (Json::Value &map : root["maps"]){
-                        maps.push_back(map.asString());
-                    }
-
+                    maps = MessageFactory::getMaps(message);
                     gameAccess.addMapsToCombo(maps);
                     break;
                 }
                 case SERVER_NOTIFICATION_NEW_MATCH:{
-                    std::string mapName = root["mapName"].asString();
-                    std::string matchName = root["matchName"].asString();
+                    std::string mapName = MessageFactory::getMapName(message);
+                    std::string matchName = MessageFactory::getMatchName(message);
 
                     gameAccess.addMatchToCombo(mapName, matchName);
                     break;

@@ -5,7 +5,9 @@
 #include <gtkmm.h>
 #include <iostream>
 
-GameAccess::GameAccess(const Socket &c, const std::string &h, const uint16_t &p) : client(c), host(h), port(p) { }
+GameAccess::GameAccess(const Socket &c, const std::string &h, const uint16_t &p) : client(c), host(h), port(p) {
+    clientId = -1;
+}
 
 GameAccess::~GameAccess(){}
 
@@ -41,7 +43,7 @@ void GameAccess::on_btnCrearPartida_clicked() {
     std::string mapName = cmbMapsText->get_active_text();
     std::string matchName = entryMatchName->get_text();
     
-    std::string request =  MessageFactory::getNewMatchRequest(mapName, matchName);
+    std::string request =  MessageFactory::getNewMatchRequest(clientId, mapName, matchName);
 
     TextMessage textMessage(request);
     textMessage.sendTo(const_cast<Socket &>(client));
@@ -154,8 +156,16 @@ void GameAccess::updateHeader() {
 }
 
 
-bool GameAccess::isCmbMapsLoaded(){
-    return cmbMapsText != nullptr;
+void GameAccess::setClientId(int cid){
+    clientId = cid;
+}
+
+int GameAccess::getClientId() {
+    return clientId;
+}
+
+bool GameAccess::isNotValidClientId(){
+    return clientId == -1;
 }
 
 void GameAccess::run() {

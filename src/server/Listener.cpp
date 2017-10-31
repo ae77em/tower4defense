@@ -43,11 +43,7 @@ void Listener::run(){
                         << std::to_string(fd)
                         << std::endl;
 
-           std::string messag= "hola";
-           client->send(messag.c_str(),messag.length());
-
            //ClientRequestHandler se encarga solamente de tomar los request del client
-
            server.createAndRunPlayer(client);
         }
     } catch (std::exception) {

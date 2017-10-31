@@ -1,8 +1,7 @@
 #include "ServerPlayer.h"
 
-ServerPlayer::ServerPlayer(ClientRequestHandler* crh, unsigned int aId):id(aId){
-    this->clientRequestHandler = crh;
-}
+ServerPlayer::ServerPlayer(ClientRequestHandler* crh, unsigned int aId)
+        : clientRequestHandler(crh), id(aId){ }
 
 unsigned int ServerPlayer::getId(){
     return id;

@@ -22,6 +22,8 @@ public:
 private:
     ClientRequestHandler() = delete;
     ClientRequestHandler(const ClientRequestHandler& orig) = delete;
+
+    void sendClientId();
 };
 
 #endif /* SERVER_CLIENT_REQUEST_HANDLER_H */

@@ -2,6 +2,9 @@
 #include "Listener.h"
 #include "Sender.h"
 #include "../common/Utils.h"
+#include "../common/TextMessage.h"
+#include "../common/Message.h"
+#include "../common/MessageFactory.h"
 
 int main(int argc, char *argv[]) {
     std::string host = std::string(argv[1]);
@@ -10,14 +13,23 @@ int main(int argc, char *argv[]) {
     SharedBuffer in;
     SharedBuffer out;
 
-    Socket client;
+    Socket server;
 
-    client.connect(host.c_str(), port);
+    server.connect(host.c_str(), port);
 
-    Game game(in, out, client.getSocket());
+    TextMessage textmessage("");
+    std::string dataFromServer = textmessage.receiveFrom(server).getMessage();
 
-    Listener listener(client, in);
-    Sender sender(client, out);
+    Message message;
+
+    message.deserialize(dataFromServer);
+
+    int clientId = MessageFactory::getClientId(message);
+
+    Game game(in, out, clientId);
+
+    Listener listener(server, in);
+    Sender sender(server, out);
 
     Utils::printAsciiGameHeader();
 
@@ -29,8 +41,8 @@ int main(int argc, char *argv[]) {
     listener.join();
     sender.join();
 
-    client.shutdown();
-    client.close();
+    server.shutdown();
+    server.close();
 
     return 0;
 }

@@ -3,6 +3,8 @@
 
 static const char *const OPERATION_KEY = "operation";
 
+static const char *const CLIENT_ID_KEY = "clientId";
+
 #include <string>
 #include <jsoncpp/json/json.h>
 #include <set>
@@ -68,9 +70,9 @@ public:
 
     static std::string getExistingMatchesNotification(std::set<std::string> &matches);
 
-    static std::string getNewMatchNotification(Json::Value &root, std::set<std::string> &matches);
+    static std::string getNewMatchNotification(Message &request, std::set<std::string> &matches);
 
-    static std::string getNewMatchRequest(std::string &mapName, std::string &matchName);
+    static std::string getNewMatchRequest(int clientId, std::string &mapName, std::string &matchName);
 
     static std::string getCreateFullMatchNotification(int gameId, int clientId);
 
@@ -81,6 +83,12 @@ public:
     static int getClientId(Message &message);
 
     static int getMatchId(Message &message);
+
+    static std::vector<std::string> getMaps(Message &message);
+
+    static std::string getMapName(Message &message);
+
+    static std::string getMatchName(Message &message);
 };
 
 

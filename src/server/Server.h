@@ -45,11 +45,11 @@ public:
 
     std::string getGamesList();
 
-    void createGameAndNotifyAll(int clientId);
-    unsigned int createGame();
+    void createGameAndNotifyAll(Message &request);
+    unsigned int createMatch();
     void notifyAllCreationGame(int gameId,int clientIdWhoCreatedGame);
 
-    void addPlayerToGame(int idGame,ServerPlayer* sp);
+    void addPlayerToMatch(int idMatch, ServerPlayer *sp);
 
     void sendGamesListToClient(int clientId);
     void setQueueRequestClient(ThreadedQueue<Message> &queue);
