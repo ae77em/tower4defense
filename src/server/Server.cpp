@@ -105,9 +105,7 @@ void Server::sendGamesListToClient(int clientId) {
 
 void Server::notifyTo(int clientId, std::string &message) {
     mutexPlayers.lock();
-
     players[clientId]->sendData(message);
-
     mutexPlayers.unlock();
 }
 
@@ -166,7 +164,7 @@ void Server::run() {
                     addPlayerToGame(clientId, gameId);
                     break;
                 }
-                    /* gaming requests: */
+                /* gaming requests: */
                 case CLIENT_REQUEST_PUT_TOWER: {
                     response = MessageFactory::getPutTowerNotification(request);
                     notifyAll(response);
@@ -186,15 +184,14 @@ void Server::run() {
 
                     removeClient(MessageFactory::getClientId(request));
                     break;
-                    /* VERIFICAR CMAKE QUE  */
-                /*default: {
+                default: {
                     int clientId = MessageFactory::getClientId(request);
                     response = "No se reconoce codigo de operación ";
                     response.append(std::to_string(op));
                     response.append("\n");
                     response.append(request.getJsonString());
                     notifyTo(clientId, response);
-                }*/
+                }
             }
         }
     } catch (std::exception) {

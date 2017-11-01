@@ -129,8 +129,8 @@ bool Game::setTiles() {
     //Success flag
     bool tilesLoaded = true;
 
-    //The tile offsets
-    int x = 0, y = 0, k = 0;
+    //The tile offset
+    int k = 0;
 
     //Open the map
     std::ifstream map("resources/maps/mapa1.map");
@@ -158,13 +158,11 @@ bool Game::setTiles() {
                 }
 
                 //Move to next tile spot
-                x = i;
-                y = j;
 
                 //If the number is a valid tile number
                 if ((tileType >= 0)) {
                     k = i * TILES_COLUMNS + j;
-                    tileSet[k] = new Tile(x, y, tileType);
+                    tileSet[k] = new Tile(i, j, tileType);
                 } else {
                     //If we don't recognize the tile type
                     //Stop loading map
