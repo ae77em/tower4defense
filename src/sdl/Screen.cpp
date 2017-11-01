@@ -61,6 +61,8 @@ void Screen::put(unsigned x, unsigned y, LTexture &texture) {
     /* Correccion vertical */
     pos.y -= texture.getHeight() - tile.getHeight();
 
+    /* Correccion horizontal */
+    pos.x += (tile.getWidth() - texture.getWidth()) / 2;
 
     texture.render(renderer, pos.x, pos.y);
 }
