@@ -51,64 +51,18 @@ void Screen::draw() {
     SDL_RenderPresent(renderer);
 }
 
-void Screen::putWaterTower(unsigned x, unsigned y) {
+void Screen::put(unsigned x, unsigned y, LTexture &texture) {
     Point pos = Utils::mapToScreen(x, y);
+
+    // Correccion por camara
     pos.x -= camera.x;
     pos.y -= camera.y;
 
-    /* Correccion de la posicion de la base
-     *
-     *   .    t   ^       ^
-     *  . .  ttt  |tile   |tower
-     * .   . t t  |       |
-     *  . .  t t  |       |
-     *   .   t t  v       |
-     *       t t  ^d      |
-     *       ttt  |       v
-     */
-    pos.y -= waterTower.getHeight() - tile.getHeight();
+    /* Correccion vertical */
+    pos.y -= texture.getHeight() - tile.getHeight();
 
-    waterTower.render(renderer, pos.x, pos.y);
-}
 
-void Screen::putEarthTower(unsigned x, unsigned y) {
-    Point pos = Utils::mapToScreen(x, y);
-    pos.x -= camera.x;
-    pos.y -= camera.y;
-
-    /* Correccion de la posicion de la base */
-    pos.y -= earthTower.getHeight() - tile.getHeight();
-
-    earthTower.render(renderer, pos.x, pos.y);
-}
-
-void Screen::putFireTower(unsigned x, unsigned y) {
-    Point pos = Utils::mapToScreen(x, y);
-    pos.x -= camera.x;
-    pos.y -= camera.y;
-
-    /* Correccion de la posicion de la base */
-    pos.y -= fireTower.getHeight() - tile.getHeight();
-
-    fireTower.render(renderer, pos.x, pos.y);
-}
-
-void Screen::putAirTower(unsigned x, unsigned y) {
-    Point pos = Utils::mapToScreen(x, y);
-    pos.x -= camera.x;
-    pos.y -= camera.y;
-
-    /* Correccion de la posicion de la base */
-    pos.y -= airTower.getHeight() - tile.getHeight();
-
-    airTower.render(renderer, pos.x, pos.y);
-}
-
-void Screen::putTile(unsigned x, unsigned y) {
-    Point pos = Utils::mapToScreen(x, y);
-    pos.x -= camera.x;
-    pos.y -= camera.y;
-    tile.render(renderer, pos.x, pos.y);
+    texture.render(renderer, pos.x, pos.y);
 }
 
 void Screen::putDialog() {
@@ -128,18 +82,18 @@ void Screen::put(Mapa &map) {
     Point dimensions = map.dimensiones();
     for (int x = 0; x < dimensions.x; ++x)
         for (int y = 0; y < dimensions.y; ++y)
-            if (map.casilla(x, y) != '#') putTile(x, y);
+            if (map.casilla(x, y) != '#') put(x, y, tile);
 
     for (int x = 0; x < dimensions.x; ++x)
         for (int y = 0; y < dimensions.y; ++y)
             switch (map.casilla(x, y)) {
-                case '~': putWaterTower(x, y);
+                case '~': put(x, y, waterTower);
                           break;
-                case '*': putEarthTower(x, y);
+                case '*': put(x, y, earthTower);
                           break;
-                case '!': putFireTower(x, y);
+                case '!': put(x, y, fireTower);
                           break;
-                case '@': putAirTower(x, y);
+                case '@': put(x, y, airTower);
             }
 }
 
