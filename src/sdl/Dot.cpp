@@ -2,6 +2,7 @@
 #include "Constants.h"
 #include "../common/Point.h"
 #include "Utils.h"
+#include "Keybinding.h"
 
 Dot::Dot() {
     //Initialize the collision box
@@ -20,42 +21,31 @@ void Dot::handleEvent(SDL_Event &e, std::string &desc) {
     if (e.type == SDL_KEYDOWN && e.key.repeat == 0) {
         desc = "aprete boton";
         //Adjust the velocity
-        switch (e.key.keysym.sym) {
-            case SDLK_UP:
-                mVelY -= DOT_VEL;
-                break;
-            case SDLK_DOWN:
-                mVelY += DOT_VEL;
-                break;
-            case SDLK_LEFT:
-                mVelX -= DOT_VEL;
-                break;
-            case SDLK_RIGHT:
-                mVelX += DOT_VEL;
-                break;
-            default:
-                desc = "";
-        }
-    }        //If a key was released
+        if (e.key.keysym.sym == default_keybinding.up)
+            mVelY -= DOT_VEL;
+        else if (e.key.keysym.sym == default_keybinding.down)
+            mVelY += DOT_VEL;
+        else if (e.key.keysym.sym == default_keybinding.left)
+            mVelX -= DOT_VEL;
+        else if (e.key.keysym.sym == default_keybinding.right)
+            mVelX += DOT_VEL;
+        else
+            desc = "";
+    }
+    //If a key was released
     else if (e.type == SDL_KEYUP && e.key.repeat == 0) {
         //Adjust the velocity
         desc = "solte boton";
-        switch (e.key.keysym.sym) {
-            case SDLK_UP:
-                mVelY += DOT_VEL;
-                break;
-            case SDLK_DOWN:
-                mVelY -= DOT_VEL;
-                break;
-            case SDLK_LEFT:
-                mVelX += DOT_VEL;
-                break;
-            case SDLK_RIGHT:
-                mVelX -= DOT_VEL;
-                break;
-            default:
-                desc = "";
-        }
+        if (e.key.keysym.sym == default_keybinding.up)
+            mVelY += DOT_VEL;
+        else if (e.key.keysym.sym == default_keybinding.down)
+            mVelY -= DOT_VEL;
+        else if (e.key.keysym.sym == default_keybinding.left)
+            mVelX += DOT_VEL;
+        else if (e.key.keysym.sym == default_keybinding.right)
+            mVelX -= DOT_VEL;
+        else
+            desc = "";
     }
 }
 
