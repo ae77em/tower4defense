@@ -42,7 +42,7 @@ public:
                 SDL_Point *center = NULL,
                 SDL_RendererFlip flip = SDL_FLIP_NONE);
 
-    void render_sprite(SDL_Renderer *gRenderer, int x, int y, SDL_Rect* clip);
+    void renderSprite(SDL_Renderer *gRenderer, int x, int y, SDL_Rect *clip);
 
     //Gets image dimensions
     int getWidth();

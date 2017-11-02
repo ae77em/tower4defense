@@ -51,6 +51,13 @@ Point Utils::mapToScreen(int i, int j, int h_offset, int w_offset) {
     return Point(x,y);
 }
 
+DecimalPoint Utils::mapToScreenDecimal(double i, double j) {
+    double x = (i - j) * (double(ISO_TILE_WIDTH)) / double(2);
+    double y = (i + j) * (double(ISO_TILE_HEIGHT)) / double(2);
+
+    return DecimalPoint(x,y);
+}
+
 Point Utils::screenToMap(int x, int y) {
     double x_d = static_cast<double>  (x);
     double y_d = static_cast<double>  (y);
@@ -67,6 +74,30 @@ Point Utils::screenToMap(int x, int y) {
     return Point(i, j);
 }
 
+DecimalPoint Utils::twoDimToIso(double x, double y) {
+    double yByIsoTileHeightHalf = y / ISO_TILE_HEIGHT_HALF;
+    double xByIsoTileWithHalf = x / ISO_TILE_WIDTH_HALF;
+
+    double i = (xByIsoTileWithHalf + yByIsoTileHeightHalf);
+    double j = (xByIsoTileWithHalf - yByIsoTileHeightHalf) / 2;
+
+    return DecimalPoint(i, j);
+}
+
+DecimalPoint Utils::isoToCartesian(double isoX, double isoY){
+    double carX = (isoX - isoY) / 1.5;
+    double carY = isoX / 3.0 + isoY / 1.5;
+
+    return DecimalPoint(carX, carY);
+}
+
+DecimalPoint Utils::cartesianToIso(double carX, double carY){
+    double isoX = carX - carY;
+    double isoY = (carY + carX) / 2.0;
+
+    return DecimalPoint(isoX, isoY);
+}
+
 Point Utils::getMouseRelativePoint(const SDL_Rect &camera) {
     int mousePosX, mousePosY;
 
@@ -75,8 +106,7 @@ Point Utils::getMouseRelativePoint(const SDL_Rect &camera) {
     mousePosX += camera.x;
     mousePosY += camera.y;
 
-    Point point = Utils::screenToMap(mousePosX,
-                                     mousePosY);
+    Point point = Utils::screenToMap(mousePosX, mousePosY);
 
     return point;
 }

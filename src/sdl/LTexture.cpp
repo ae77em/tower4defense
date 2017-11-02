@@ -129,7 +129,7 @@ void LTexture::render(SDL_Renderer *gRenderer,
 }
 
 
-void LTexture::render_sprite(SDL_Renderer *gRenderer, int x, int y, SDL_Rect* clip) {
+void LTexture::renderSprite(SDL_Renderer *gRenderer, int x, int y, SDL_Rect *clip) {
     //Set rendering space and render to screen
     SDL_Rect renderQuad = { x, y, mWidth, mHeight };
 

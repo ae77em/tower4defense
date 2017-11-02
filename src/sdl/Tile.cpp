@@ -48,7 +48,7 @@ void Tile::renderSprite(SDL_Rect &camera,
         int isox = screenPoint.x - camera.x;
         int isoy = screenPoint.y - camera.y;
 
-    gTileTextures->render_sprite(gRenderer, isox, isoy, gTileClips);
+    gTileTextures->renderSprite(gRenderer, isox, isoy, gTileClips);
 
 }
 

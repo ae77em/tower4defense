@@ -19,4 +19,21 @@ public:
     int y;
 };
 
+struct DecimalPoint {
+public:
+    DecimalPoint(double x, double y){
+        this->x = x;
+        this->y = y;
+    }
+
+    ~DecimalPoint(){};
+
+    bool isPositive(){
+        return x >= 0 and y >= 0;
+    }
+
+    double x;
+    double y;
+};
+
 #endif //TP4_TOWERDEFENSE_POINT_H

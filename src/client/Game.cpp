@@ -4,11 +4,10 @@
 #include <fstream>
 #include "../sdl/Dot.h"
 #include "../sdl/Utils.h"
-#include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "../common/MessageFactory.h"
-#include "../common/Message.h"
 #include "../common/Protocol.h"
+#include "../sdl/enemies/Enemy.h"
 
 Game::Game(SharedBuffer &in, SharedBuffer &out, int cId)
         : dataFromServer(in), dataToServer(out), clientId(cId) {}
@@ -87,8 +86,6 @@ bool Game::loadMedia() {
             .loadFromFile("images/sprites/portal-blue2.png", gRenderer);
     gSpriteSheetTexturePortalRed
             .loadFromFile("images/sprites/portal-red.png", gRenderer);
-    gSpriteSheetTextureEnemyAbominable
-            .loadFromFile("images/sprites/enemy-abominable-walk.png", gRenderer);
 
     //Load tile map
     if (!setTiles()) {
@@ -191,8 +188,8 @@ bool Game::setTiles() {
 
         loadPortalSprites();
 
-        int walkingStartFrame = (12 * 7 * 106);
-        for (int i = 0; i < 12; ++i) {
+        int walkingStartFrame = (NUMBER_OF_ABOMINABLE_SPRITES * 7 * 106);
+        for (int i = 0; i < NUMBER_OF_ABOMINABLE_SPRITES; ++i) {
             gSpriteClipsEnemyAbominable[i].x = walkingStartFrame + i * 106;
             gSpriteClipsEnemyAbominable[i].y = 0;
             gSpriteClipsEnemyAbominable[i].w = 105;
@@ -243,21 +240,21 @@ void Game::handleMouseEvents(const SDL_Rect &camera,
     if (e.type == SDL_MOUSEBUTTONDOWN) {
         Point point = Utils::getMouseRelativePoint(camera);
 
-        if (point.isPositive()) {
-            /* Si hice click y tengo algún evento marcado para disparar
-             * (por ejemplo, marqué un lugar para poner una torre, o quiero
-             * poner una torre) manejo dicho evento. */
-            switch (eventDispatched) {
-                case GAME_EVENT_PUT_TOWER: {
-                    std::string request;
-                    request = MessageFactory::getPutTowerRequest(clientId, point.x, point.y, true);
-                    dataToServer.addData(request);
-                    break;
-                }
-                default:
+        /* Si hice click y tengo algún evento marcado para disparar
+         * (por ejemplo, marqué un lugar para poner una torre, o quiero
+         * poner una torre) manejo dicho evento. */
+        switch (eventDispatched) {
+            case GAME_EVENT_PUT_TOWER: {
+                std::string request;
+                request = MessageFactory::getPutTowerRequest(clientId, point.x, point.y, true);
+                dataToServer.addData(request);
+                break;
+            }
+            default:
+                if (point.isPositive()) {
                     int tilePos = point.x * TILES_COLUMNS + point.y;
                     tileSet[tilePos]->handleEvent(e, mov_description);
-            }
+                }
         }
     }
 }
@@ -281,9 +278,11 @@ void Game::handleServerNotifications(SDL_Rect camera) {
             case SERVER_NOTIFICATION_PUT_TOWER: {
                 int x = root["xCoord"].asInt();
                 int y = root["yCoord"].asInt();
-                int tilePos = x * TILES_COLUMNS + y;
-                if (tileSet[tilePos]->getType() == TILE_FIRM){
-                    tileSet[tilePos]->handleServerNotification(SERVER_NOTIFICATION_PUT_TOWER);
+                if (Point(x, y).isPositive()) {
+                    int tilePos = x * TILES_COLUMNS + y;
+                    if (tileSet[tilePos]->getType() == TILE_FIRM) {
+                        tileSet[tilePos]->handleServerNotification(SERVER_NOTIFICATION_PUT_TOWER);
+                    }
                 }
                 break;
             }
@@ -302,12 +301,9 @@ void Game::run() {
     if (!init()) {
         printf("Failed to initialize!\n");
     } else {
-
-        Tile portalBlue(0, 0, 0);
-        Tile portalRed(5, 5, 0);
-        Tile enemyAbominable(7, 7, 0);
-
-        int frameToDraw = 0;
+        Enemy abominable(0, 0, gRenderer, gSpriteSheetTextureEnemyAbominable);
+        abominable.loadMedia();
+        abominable.setSprites();
 
         //Load media
         if (!loadMedia()) {
@@ -351,6 +347,8 @@ void Game::run() {
                 dot.move();
                 dot.setCamera(camera);
 
+                abominable.move();
+
                 //Clear screen
                 SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 0xFF);
                 SDL_RenderClear(gRenderer);
@@ -363,23 +361,7 @@ void Game::run() {
                 //Render dot
                 dot.render(gDotTexture, camera, gRenderer);
 
-                frameToDraw = (SDL_GetTicks() / 75) % 30;
-
-                // blue portal
-                SDL_Rect *currentClip = &gSpriteClipsPortalBlue[frameToDraw];
-                portalBlue.renderSprite(camera, currentClip, gRenderer,
-                                        &gSpriteSheetTexturePortalBlue);
-
-                // red portal
-                currentClip = &gSpriteClipsPortalRed[frameToDraw];
-                portalRed.renderSprite(camera, currentClip, gRenderer,
-                                       &gSpriteSheetTexturePortalRed);
-
-                // enemy abominable
-                frameToDraw = (SDL_GetTicks() / 75) % 12;
-                currentClip = &gSpriteClipsEnemyAbominable[frameToDraw];
-                enemyAbominable.renderSprite(camera, currentClip, gRenderer,
-                                             &gSpriteSheetTextureEnemyAbominable);
+                abominable.render(camera);
 
                 //Update screen
                 SDL_RenderPresent(gRenderer);
@@ -390,6 +372,4 @@ void Game::run() {
         close();
     }
 }
-
-
 

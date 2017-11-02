@@ -13,6 +13,14 @@ public:
     static Point getMouseRelativePoint(const SDL_Rect &camera);
 
     static SDL_Rect getBoxByTileType(int type);
+
+    static DecimalPoint mapToScreenDecimal(double i, double j);
+
+    static DecimalPoint twoDimToIso(double x, double y);
+
+    DecimalPoint isoToCartesian(double isoX, double isoY);
+
+    static DecimalPoint cartesianToIso(double carX, double carY);
 };
 
 
