@@ -3,9 +3,8 @@
 #include <vector>
 #include <stdexcept>
 
-Mapa::Mapa(unsigned x, unsigned y) :extension_x(x), extension_y(y) {
-    casillas = std::vector<char>(x * y, '.');
-}
+Mapa::Mapa(unsigned x, unsigned y) :extension_x(x), extension_y(y),
+        casillas(x * y, '.') {}
 
 char Mapa::casilla(unsigned x, unsigned y) {
     if (x >= extension_x || y >= extension_y)
