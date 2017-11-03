@@ -2,60 +2,41 @@
 #include "Constants.h"
 #include "../common/Point.h"
 #include "Utils.h"
+#include "Keybinding.h"
 
-Dot::Dot() {
-    //Initialize the collision box
-    mBox.x = 0;
-    mBox.y = 0;
-    mBox.w = DOT_WIDTH;
-    mBox.h = DOT_HEIGHT;
-
-    //Initialize the velocity
-    mVelX = 0;
-    mVelY = 0;
-}
+Dot::Dot(const Keybinding &keys) : mBox{0, 0, DOT_WIDTH, DOT_HEIGHT},
+        mVelX(0), mVelY(0), keys(keys) {}
 
 void Dot::handleEvent(SDL_Event &e, std::string &desc) {
     //If a key was pressed
     if (e.type == SDL_KEYDOWN && e.key.repeat == 0) {
         desc = "aprete boton";
         //Adjust the velocity
-        switch (e.key.keysym.sym) {
-            case SDLK_UP:
-                mVelY -= DOT_VEL;
-                break;
-            case SDLK_DOWN:
-                mVelY += DOT_VEL;
-                break;
-            case SDLK_LEFT:
-                mVelX -= DOT_VEL;
-                break;
-            case SDLK_RIGHT:
-                mVelX += DOT_VEL;
-                break;
-            default:
-                desc = "";
-        }
-    }        //If a key was released
+        if (e.key.keysym.sym == keys.up)
+            mVelY -= DOT_VEL;
+        else if (e.key.keysym.sym == keys.down)
+            mVelY += DOT_VEL;
+        else if (e.key.keysym.sym == keys.left)
+            mVelX -= DOT_VEL;
+        else if (e.key.keysym.sym == keys.right)
+            mVelX += DOT_VEL;
+        else
+            desc = "";
+    }
+    //If a key was released
     else if (e.type == SDL_KEYUP && e.key.repeat == 0) {
         //Adjust the velocity
         desc = "solte boton";
-        switch (e.key.keysym.sym) {
-            case SDLK_UP:
-                mVelY += DOT_VEL;
-                break;
-            case SDLK_DOWN:
-                mVelY -= DOT_VEL;
-                break;
-            case SDLK_LEFT:
-                mVelX += DOT_VEL;
-                break;
-            case SDLK_RIGHT:
-                mVelX -= DOT_VEL;
-                break;
-            default:
-                desc = "";
-        }
+        if (e.key.keysym.sym == keys.up)
+            mVelY += DOT_VEL;
+        else if (e.key.keysym.sym == keys.down)
+            mVelY -= DOT_VEL;
+        else if (e.key.keysym.sym == keys.left)
+            mVelX += DOT_VEL;
+        else if (e.key.keysym.sym == keys.right)
+            mVelX -= DOT_VEL;
+        else
+            desc = "";
     }
 }
 
