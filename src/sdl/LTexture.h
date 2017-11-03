@@ -19,7 +19,11 @@ public:
             SDL_Color background_color = { 0x1D, 0x1F, 0x21 });
 
     //Loads image at specified path
-    bool loadFromFile(const std::string &path, SDL_Renderer *gRenderer);
+    bool loadFromFile(const std::string &path,
+                      SDL_Renderer *gRenderer,
+                      int r = 0xFF,
+                      int g = 0,
+                      int b = 0xFF);
 
     //Deallocates texture
     void free();

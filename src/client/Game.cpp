@@ -187,15 +187,6 @@ bool Game::setTiles() {
         }
 
         loadPortalSprites();
-
-        int walkingStartFrame = (NUMBER_OF_ABOMINABLE_SPRITES * 7 * 106);
-        for (int i = 0; i < NUMBER_OF_ABOMINABLE_SPRITES; ++i) {
-            gSpriteClipsEnemyAbominable[i].x = walkingStartFrame + i * 106;
-            gSpriteClipsEnemyAbominable[i].y = 0;
-            gSpriteClipsEnemyAbominable[i].w = 105;
-            gSpriteClipsEnemyAbominable[i].h = 119;
-        }
-
     }
 
     //Close the file
@@ -234,12 +225,49 @@ void Game::loadPortalSprites() {
     }
 }
 
-void Game::handleMouseEvents(const SDL_Rect &camera,
-                             std::string &mov_description,
-                             SDL_Event &e) const {
+void Game::handleMouseEvents(SDL_Rect camera, std::string mov_description, SDL_Event e, Enemy &enemy) {
     if (e.type == SDL_MOUSEBUTTONDOWN) {
         Point point = Utils::getMouseRelativePoint(camera);
 
+        int mousePosX;
+        int mousePosY;
+        SDL_GetMouseState(&mousePosX, &mousePosY);
+
+        std::cout << "punto del mouse SIN ajustado con la camara: ("
+                  << std::to_string(mousePosX)
+                  << ", "
+                  << std::to_string(mousePosY)
+                  << ")"
+                  << std::endl;
+
+
+
+        mousePosX += camera.x;
+        mousePosY += camera.y;
+
+        Point otherPoint = Utils::screenToMap(mousePosX, mousePosY);
+
+        SDL_Rect pointRect = {otherPoint.x * ISO_TILE_WIDTH_HALF, otherPoint.y * ISO_TILE_HEIGHT_HALF, 1 , 1};
+
+        std::cout << "punto pointRect: ("
+                  << std::to_string(pointRect.x)
+                  << ", "
+                  << std::to_string(pointRect.y)
+                  << ")"
+                  << std::endl;
+
+        std::cout << "posición del monstruo: ("
+                  << std::to_string(enemy.getWalkBox().x)
+                  << ", "
+                  << std::to_string(enemy.getWalkBox().y)
+                  << ")"
+                  << std::endl;
+
+        if (Utils::checkCollision(pointRect,enemy.getWalkBox())){
+            eventDispatched = 3;
+        } else {
+            eventDispatched = 1;
+        }
         /* Si hice click y tengo algún evento marcado para disparar
          * (por ejemplo, marqué un lugar para poner una torre, o quiero
          * poner una torre) manejo dicho evento. */
@@ -248,6 +276,10 @@ void Game::handleMouseEvents(const SDL_Rect &camera,
                 std::string request;
                 request = MessageFactory::getPutTowerRequest(clientId, point.x, point.y, true);
                 dataToServer.addData(request);
+                break;
+            }
+            case GAME_EVENT_KILL_ENEMY: {
+                enemy.kill();
                 break;
             }
             default:
@@ -337,7 +369,7 @@ void Game::run() {
                     dot.handleEvent(e, mov_description);
 
                     eventDispatched = 1;
-                    handleMouseEvents(camera, mov_description, e);
+                    handleMouseEvents(camera, mov_description, e, abominable);
                     eventDispatched = 0;
                 }
 
@@ -361,7 +393,7 @@ void Game::run() {
                 //Render dot
                 dot.render(gDotTexture, camera, gRenderer);
 
-                abominable.render(camera);
+                abominable.animate(camera);
 
                 //Update screen
                 SDL_RenderPresent(gRenderer);

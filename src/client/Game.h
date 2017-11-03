@@ -15,6 +15,7 @@ static const int MAX_SERVER_NOTIFICATIONS_PER_FRAME = 50;
 #include "Timer.h"
 #include "../common/SharedBuffer.h"
 #include "../common/Thread.h"
+#include "../sdl/enemies/Enemy.h"
 
 class Game : public Thread {
 private:
@@ -61,16 +62,15 @@ public:
     bool init();
 
 private:
-    void handleMouseEvents(const SDL_Rect &camera,
-                           std::string &mov_description,
-                           SDL_Event &e) const;
+    void handleMouseEvents(SDL_Rect camera, std::string mov_description, SDL_Event e, Enemy &enemy);
     void loadServerNotifications(std::string notification);
 
     void handleServerNotifications(SDL_Rect rect);
 
     enum GameEvents {
         GAME_EVENT_PUT_TOWER = 1,
-        GAME_EVENT_QUIT_TOWER = 2
+        GAME_EVENT_QUIT_TOWER = 2,
+        GAME_EVENT_KILL_ENEMY = 3
     };
 
     void loadPortalSprites();

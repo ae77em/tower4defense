@@ -39,7 +39,7 @@ bool LTexture::generateFromText(const std::string &text, SDL_Renderer *renderer,
     return true;
 }
 
-bool LTexture::loadFromFile(const std::string &path, SDL_Renderer *gRenderer) {
+bool LTexture::loadFromFile(const std::string &path, SDL_Renderer *gRenderer, int r, int g, int b) {
     //Get rid of preexisting texture
     free();
 
@@ -55,7 +55,7 @@ bool LTexture::loadFromFile(const std::string &path, SDL_Renderer *gRenderer) {
         //Color key image
         SDL_SetColorKey(loadedSurface,
                         SDL_TRUE,
-                        SDL_MapRGB(loadedSurface->format, 0xFF, 0, 0xFF));
+                        SDL_MapRGB(loadedSurface->format, r, g, b));
 
         //Create texture from surface pixels
         newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
