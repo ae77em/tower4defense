@@ -54,6 +54,7 @@ int main(int argc, char *argv[]) {
         }
 
         screen.put(mapa);
+        screen.trace(0,0 , 9,9);
         screen.draw();
     }
 

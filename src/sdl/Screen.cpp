@@ -17,9 +17,6 @@ Screen::Screen() {
     if (!renderer) throw std::runtime_error("Could not create renderer"
             + std::string(SDL_GetError()));
 
-    //Initialize renderer color
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
-
     //Initialize PNG loading
     int imgFlags = IMG_INIT_PNG;
     if (! IMG_Init(imgFlags) || ! imgFlags )
@@ -77,6 +74,7 @@ void Screen::handleEvent(SDL_Event &e) {
 }
 
 void Screen::clear() {
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
     SDL_RenderClear(renderer);
 }
 
@@ -107,4 +105,25 @@ void Screen::setDialog(const std::string &text) {
     if (! dialog.generateFromText(text, renderer, font))
         throw std::runtime_error("Failed to generate dialog \""
                 + text + "\"");
+}
+
+void Screen::trace(unsigned x1, unsigned y1, unsigned x2, unsigned y2) {
+    auto p1 = Utils::mapToScreen(x1, y1);
+    p1.x -= camera.x;
+    p1.y -= camera.y;
+    p1.x += tile.getWidth() / 2;
+    p1.y += tile.getHeight() / 2;
+
+    auto p2 = Utils::mapToScreen(x2, y2);
+    p2.x -= camera.x;
+    p2.y -= camera.y;
+    p2.x += tile.getWidth() / 2;
+    p2.y += tile.getHeight() / 2;
+
+    SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+    if (SDL_RenderDrawLine(renderer, p1.x, p1.y, p2.x, p2.y))
+        throw std::runtime_error("Could not draw line ("
+                + std::to_string(x1) + ", " + std::to_string(y1) + ") ("
+                + std::to_string(x2) + ", " + std::to_string(y2) + ") "
+                + std::string(SDL_GetError()));
 }
