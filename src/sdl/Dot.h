@@ -4,6 +4,7 @@
 #include <SDL2/SDL_rect.h>
 #include "LTexture.h"
 #include "Tile.h"
+#include "Keybinding.h"
 
 //The dot that will move around on the screen
 class Dot {
@@ -16,7 +17,7 @@ public:
     static const int DOT_VEL = 10;
 
     //Initializes the variables
-    Dot();
+    explicit Dot(const Keybinding &keys = default_keybinding);
 
     //Takes key presses and adjusts the dot's velocity
     void handleEvent(SDL_Event &e, std::string &desc);
@@ -37,6 +38,8 @@ private:
 
     //The velocity of the dot
     int mVelX, mVelY;
+
+    const Keybinding &keys;
 };
 
 #endif //TP4_TOWERDEFENSE_DOT_H

@@ -22,11 +22,7 @@ class Screen {
 
     void putDialog();
 
-    void putWaterTower(unsigned x, unsigned y);
-    void putEarthTower(unsigned x, unsigned y);
-    void putFireTower(unsigned x, unsigned y);
-    void putAirTower(unsigned x, unsigned y);
-    void putTile(unsigned x, unsigned y);
+    void put(unsigned x, unsigned y, LTexture &texture);
 
 public:
     Screen();
