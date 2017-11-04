@@ -17,6 +17,7 @@ static const int MAX_SERVER_NOTIFICATIONS_PER_FRAME = 1;
 #include "../common/Thread.h"
 #include "../sdl/enemies/Enemy.h"
 #include "../sdl/enemies/Abmonible.h"
+#include "../sdl/towers/Tower.h"
 
 class Game : public Thread {
 private:
@@ -39,8 +40,8 @@ private:
     SDL_Rect gSpriteClipsPortalRed[30];
     LTexture gSpriteSheetTexturePortalRed;
 
-    SDL_Rect gSpriteClipsEnemyAbominable[12];
     LTexture gSpriteSheetTextureEnemyAbominable;
+    LTexture gSpriteSheetTextureTower;
 
     //Scene textures
     LTexture gTileTextures[TOTAL_TILE_SPRITES];
@@ -66,7 +67,7 @@ private:
     void handleMouseEvents(SDL_Rect camera, std::string mov_description, SDL_Event e, Enemy &enemy);
     void loadServerNotifications(std::string notification);
 
-    void handleServerNotifications(SDL_Rect rect, Enemy &enemy);
+    void handleServerNotifications(SDL_Rect rect, Enemy &enemy, Tower &tower);
 
     enum GameEvents {
         GAME_EVENT_PUT_TOWER = 1,

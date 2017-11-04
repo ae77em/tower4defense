@@ -403,6 +403,6 @@ Point MessageFactory::getPoint(Message message) {
 
 int MessageFactory::getDirection(Message message) {
     Json::Value &root = message.getData();
-    int direction = root.get("direction","1").asInt();
+    int direction = root.get("direction","0").asInt();
     return direction;
 }

@@ -8,6 +8,9 @@ Enemy::Enemy(int x, int y, SDL_Renderer *r, LTexture &t) : texture(t) {
     walkBox.w = WALK_SPRITE_WIDTH;
     walkBox.h = WALK_SPRITE_HEIGHT;
 
+    collisionCircle.r = CARTESIAN_TILE_WIDTH / 2;
+    shiftColliders();
+
     deathBox = walkBox;
     walkBox.w = DEATH_SPRITE_WIDTH;
     walkBox.h = DEATH_SPRITE_HEIGHT;
@@ -34,7 +37,7 @@ bool Enemy::loadMedia() {
     return success;
 }
 
-void Enemy::kill(){
+void Enemy::kill() {
     isAlive = false;
 }
 
@@ -102,34 +105,13 @@ void Enemy::renderWalk(SDL_Rect &camera) {
     renderLifeBar(isox, isoy);
 }
 
-void Enemy::renderLifeBar(int x, int y) {
-    int w = 50; // porque sí
-    int h = 4; // porque también (?)...
-    double percent = double(remainingLifePoints) / double(initialLifePoints);
-    SDL_Color FGColor = {0x00, 0xFF, 0x00, 0xFF}; // green
-    SDL_Color BGColor = {0xFF, 0x00, 0x00, 0xFF}; // red
-
-    percent = percent > 1.f ? 1.f : percent < 0.f ? 0.f : percent;
-    SDL_Color old;
-    SDL_GetRenderDrawColor(renderer, &old.r, &old.g, &old.g, &old.a);
-    SDL_Rect bgrect = { x, y, w, h };
-    SDL_SetRenderDrawColor(renderer, BGColor.r, BGColor.g, BGColor.b, BGColor.a);
-    SDL_RenderFillRect(renderer, &bgrect);
-    SDL_SetRenderDrawColor(renderer, FGColor.r, FGColor.g, FGColor.b, FGColor.a);
-    int pw = (int)((float)w * percent);
-    int px = x + (w - pw);
-    SDL_Rect fgrect = { px, y, pw, h };
-    SDL_RenderFillRect(renderer, &fgrect);
-    SDL_SetRenderDrawColor(renderer, old.r, old.g, old.b, old.a);
-}
-
 void Enemy::renderDie(SDL_Rect &camera) {
     int frameToDraw = (SDL_GetTicks() / 100) % NUMBER_OF_DEATH_SPRITES;
 
     firstFrameOfDeathRendered = (firstFrameOfDeathRendered || frameToDraw == 0);
     lastFrameOfDeathRendered = (lastFrameOfDeathRendered || frameToDraw == NUMBER_OF_DEATH_SPRITES - 1);
 
-    if (!(firstFrameOfDeathRendered and lastFrameOfDeathRendered)){
+    if (!(firstFrameOfDeathRendered and lastFrameOfDeathRendered)) {
         DecimalPoint screenPoint = Utils::cartesianToIso(deathBox.x, deathBox.y);
 
         int offset = walkBox.h - ISO_TILE_HEIGHT;
@@ -142,19 +124,20 @@ void Enemy::renderDie(SDL_Rect &camera) {
 }
 
 void Enemy::animate(SDL_Rect &camera) {
-    if (isAlive){
+    if (isAlive) {
         renderWalk(camera);
     } else {
         renderDie(camera);
     }
 }
 
-void Enemy::moveTo(int x, int y){
+void Enemy::moveTo(int x, int y) {
     walkBox.x = x;
     walkBox.y = y;
+    shiftColliders();
 }
 
-void Enemy::setDirection(int d){
+void Enemy::setDirection(int d) {
     currentDirection = d;
 }
 
@@ -192,14 +175,45 @@ int Enemy::getIsAir() const {
     return isAir;
 }
 
-bool Enemy::itIsAlive()const {
+bool Enemy::itIsAlive() const {
     return isAlive;
 }
 
 void Enemy::quitLifePoints(int points) {
     remainingLifePoints -= points;
 
-    if (remainingLifePoints <= 0){
+    if (remainingLifePoints <= 0) {
         isAlive = false;
     }
+}
+
+void Enemy::shiftColliders() {
+    //Align collider to center of dot
+    collisionCircle.x = walkBox.x;
+    collisionCircle.y = walkBox.y;
+}
+
+Circle &Enemy::getCollisionCircle() {
+    return collisionCircle;
+}
+
+void Enemy::renderLifeBar(int x, int y) {
+    int w = 50; // porque sí
+    int h = 4; // porque también (?)...
+    double percent = double(remainingLifePoints) / double(initialLifePoints);
+    SDL_Color FGColor = {0x00, 0xFF, 0x00, 0xFF}; // green
+    SDL_Color BGColor = {0xFF, 0x00, 0x00, 0xFF}; // red
+
+    percent = percent > 1.f ? 1.f : percent < 0.f ? 0.f : percent;
+    SDL_Color old;
+    SDL_GetRenderDrawColor(renderer, &old.r, &old.g, &old.g, &old.a);
+    SDL_Rect bgrect = {x, y, w, h};
+    SDL_SetRenderDrawColor(renderer, BGColor.r, BGColor.g, BGColor.b, BGColor.a);
+    SDL_RenderFillRect(renderer, &bgrect);
+    SDL_SetRenderDrawColor(renderer, FGColor.r, FGColor.g, FGColor.b, FGColor.a);
+    int pw = (int) ((float) w * percent);
+    int px = x + (w - pw);
+    SDL_Rect fgrect = {px, y, pw, h};
+    SDL_RenderFillRect(renderer, &fgrect);
+    SDL_SetRenderDrawColor(renderer, old.r, old.g, old.b, old.a);
 }

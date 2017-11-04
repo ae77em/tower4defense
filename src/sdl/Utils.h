@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL_rect.h>
 #include "../common/Point.h"
+#include "Circle.h"
 
 class Utils {
 public:
@@ -41,6 +42,10 @@ public:
     static int getMovementDirection(int displacement, int mapDisplacement);
 
     static DecimalPoint screenToMapDecimal(int x, int y);
+
+    static bool hasCircleCollision(Circle &a, Circle &b);
+
+    static double distanceSquared(int x1, int y1, int x2, int y2);
 };
 
 

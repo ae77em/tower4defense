@@ -7,6 +7,7 @@
 #include <SDL2/SDL_image.h>
 #include "../common/MessageFactory.h"
 #include "../common/Protocol.h"
+#include "../sdl/towers/Tower.h"
 
 Game::Game(SharedBuffer &in, SharedBuffer &out, int cId)
         : dataFromServer(in), dataToServer(out), clientId(cId) {}
@@ -277,7 +278,7 @@ void Game::matarBichoSiLeHiceClick(const SDL_Rect &camera, Enemy &enemy) {
 
 }
 
-void Game::handleServerNotifications(SDL_Rect camera, Enemy &enemy) {
+void Game::handleServerNotifications(SDL_Rect camera, Enemy &enemy, Tower &tower) {
     int transactionsCounter = 0;
     std::string notification;
 
@@ -297,16 +298,25 @@ void Game::handleServerNotifications(SDL_Rect camera, Enemy &enemy) {
                 Point point = MessageFactory::getPoint(message);
 
                 if (point.isPositive()) {
-                    int tilePos = point.x * TILES_COLUMNS + point.y;
+                    /*int tilePos = point.x * TILES_COLUMNS + point.y;
                     if (tileSet[tilePos]->getType() == TILE_FIRM) {
                         tileSet[tilePos]->handleServerNotification(SERVER_NOTIFICATION_PUT_TOWER);
-                    }
+                    }*/
+                    tower.setPosition(point.x, point.y);
                 }
                 break;
             }
             case SERVER_NOTIFICATION_MOVE_ENEMY: {
                 Point point = MessageFactory::getPoint(message);
                 int dir = MessageFactory::getDirection(message);
+
+                if (enemy.getCollisionCircle().hasCollisionWith(tower.getCollisionCircle())){
+                    tower.setIsShooting(true);
+                    enemy.quitLifePoints(tower.getShotDamage());
+                } else {
+                    tower.setIsShooting(false);
+                }
+
                 if (enemy.itIsAlive()) {
                     enemy.setDirection(dir);
                     enemy.moveTo(point.x, point.y);
@@ -331,6 +341,10 @@ void Game::run() {
         Abmonible abmonible(0, 0, gRenderer, gSpriteSheetTextureEnemyAbominable);
         abmonible.loadMedia();
         abmonible.setSprites();
+
+        Tower tower(0, 0, gRenderer, gSpriteSheetTextureTower);
+        tower.loadMedia();
+        tower.setSprites();
 
         //Load media
         if (!loadMedia()) {
@@ -368,7 +382,7 @@ void Game::run() {
                     eventDispatched = 0;
                 }
 
-                handleServerNotifications(camera, abmonible);
+                handleServerNotifications(camera, abmonible, tower);
 
                 //Move the dot
                 dot.move();
@@ -387,6 +401,7 @@ void Game::run() {
                 dot.render(gDotTexture, camera, gRenderer);
 
                 abmonible.animate(camera);
+                tower.animate(camera);
 
                 //Update screen
                 SDL_RenderPresent(gRenderer);

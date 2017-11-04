@@ -1,5 +1,129 @@
-//
-// Created by esteban on 02/11/17.
-//
-
 #include "Tower.h"
+#include "../Utils.h"
+
+Tower::Tower(int x, int y, SDL_Renderer *r, LTexture &t) : texture(t) {
+    Point initialSreenPos = Utils::mapToScreen(x, y);
+    idleBox.x = initialSreenPos.x;
+    idleBox.y = initialSreenPos.y;
+    idleBox.w = IDLE_SPRITE_WIDTH;
+    idleBox.h = IDLE_SPRITE_HEIGHT;
+
+    shotBox = idleBox;
+    idleBox.w = SHOT_SPRITE_WIDTH;
+    idleBox.h = SHOT_SPRITE_HEIGHT;
+
+    shotRatio = 2;
+    shotDamage = 1;
+    // shotDelay;
+    collisionCircle.r = (CARTESIAN_TILE_WIDTH / 2) * shotRatio;
+    shiftColliders();
+
+    isShooting = false;
+
+    renderer = r;
+
+    setSprites();
+}
+
+int Tower::getShotDamage() const {
+    return shotDamage;
+}
+
+Tower::~Tower(){}
+
+bool Tower::loadMedia() {
+    bool success = true;
+    if (!texture.loadFromFile("images/sprites/tower-earth.png", renderer, 0xFF, 0x00, 0x99)) {
+        printf("Failed to load dot texture!\n");
+        success = false;
+    }
+    return success;
+}
+
+void Tower::setPosition(int x, int y) {
+    idleBox.x = x;
+    idleBox.y = y;
+
+    shiftColliders();
+}
+
+void Tower::setSprites() {
+    int spriteWidth = IDLE_SPRITE_WIDTH + 1;
+
+    // seteo los sprites para espera...
+    int idleStartX = 1;
+    int idleStartY = 16;
+
+    for (int i = 0; i < NUMBER_OF_IDLE_SPRITES; ++i) {
+        idleSprites[i].x = idleStartX + (i * spriteWidth);
+        idleSprites[i].y = idleStartY;
+        idleSprites[i].w = IDLE_SPRITE_WIDTH;
+        idleSprites[i].h = IDLE_SPRITE_HEIGHT;
+    }
+
+    // seteo los sprites para disparo...
+    spriteWidth = SHOT_SPRITE_WIDTH + 1;
+
+    int shotStartX = 1;
+    int shotStartY = 287;
+
+    for (int i = 0; i < NUMBER_OF_SHOT_SPRITES; ++i) {
+        shotSprites[i].x = shotStartX + (i * spriteWidth);
+        shotSprites[i].y = shotStartY;
+        shotSprites[i].w = SHOT_SPRITE_WIDTH;
+        shotSprites[i].h = SHOT_SPRITE_HEIGHT;
+    }
+}
+
+void Tower::animate(SDL_Rect &camera) {
+    if (isShooting) {
+        renderShot(camera);
+    } else {
+        renderIdle(camera);
+    }
+}
+
+void Tower::setIsShooting(bool isShooting) {
+    Tower::isShooting = isShooting;
+}
+
+void Tower::renderIdle(SDL_Rect &camera) {
+    int frameToDraw = (SDL_GetTicks() / 100) % NUMBER_OF_IDLE_SPRITES;
+    DecimalPoint screenPoint = Utils::cartesianToIso(idleBox.x, idleBox.y);
+
+    // set the shot box pos to assure that the shot start in the same
+    // tile in that the idle ended...
+    shotBox.x = idleBox.x;
+    shotBox.y = idleBox.y;
+
+    int offset = idleBox.h - ISO_TILE_HEIGHT;
+
+    double isox = screenPoint.x - camera.x;
+    double isoy = screenPoint.y - camera.y - offset;
+
+    texture.renderSprite(renderer, isox, isoy, &idleSprites[frameToDraw]);
+}
+
+void Tower::renderShot(SDL_Rect &camera) {
+    int frameToDraw = (SDL_GetTicks() / 100) % NUMBER_OF_SHOT_SPRITES;
+
+    DecimalPoint screenPoint = Utils::cartesianToIso(shotBox.x, shotBox.y);
+
+    int offset = idleBox.h - ISO_TILE_HEIGHT;
+
+    double isox = screenPoint.x - camera.x;
+    double isoy = screenPoint.y - camera.y - offset;
+
+    texture.renderSprite(renderer, isox, isoy, &shotSprites[frameToDraw]);
+}
+
+void Tower::shiftColliders() {
+    // tanto el box de idle como el de disparo tienen las mismas dimensiones,
+    // así que es indistinto qué medida tomamos
+    collisionCircle.x = idleBox.x;
+    collisionCircle.y = idleBox.y;
+}
+
+Circle &Tower::getCollisionCircle() {
+    return collisionCircle;
+}

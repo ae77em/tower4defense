@@ -62,6 +62,16 @@ void Listener::cargarBufferConDatosDePrueba() {
 
     Point point(0, 0);
 
+    std::string putTowerRequest = MessageFactory::getPutTowerRequest(1,
+                                                                     5 * CARTESIAN_TILE_WIDTH,
+                                                                     6 * CARTESIAN_TILE_HEIGHT,
+                                                                     true);
+    Message message;
+    message.deserialize(putTowerRequest);
+    std::string putTowerNotification = MessageFactory::getPutTowerNotification(message);
+
+    buffer.addData(putTowerNotification);
+
     for (unsigned int i = 0; i < camino.size(); ++i) {
         point = camino.at(i);
         x = point.x * CARTESIAN_TILE_WIDTH;

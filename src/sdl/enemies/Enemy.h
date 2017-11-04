@@ -6,6 +6,7 @@
 #include "../LTexture.h"
 #include "../../common/Point.h"
 #include "../Constants.h"
+#include "../Circle.h"
 
 const int NUMBER_OF_WALK_SPRITES = 12;
 const int NUMBER_OF_WALK_DIRECTIONS = 4;
@@ -15,40 +16,17 @@ const int NUMBER_OF_DEATH_DIRECTIONS = 4;
 
 
 class Enemy {
-protected:
-    // abominable como monstruo default...porque sí (?)
-    const std::string TEXTURE_FILE_PATH = "images/sprites/enemy-abominable-walk.png";
-
-    const int FRONT_LEFT_SPRITE_ROW = 1;
-    const int BACK_LEFT_SPRITE_ROW = 3;
-    const int BACK_RIGHT_SPRITE_ROW = 5;
-    const int FRONT_RIGHT_SPRITE_ROW = 7;
-
-    const int SPRITE_DIRECTIONS[4] = {
-                                        FRONT_LEFT_SPRITE_ROW,
-                                        BACK_LEFT_SPRITE_ROW,
-                                        BACK_RIGHT_SPRITE_ROW,
-                                        FRONT_RIGHT_SPRITE_ROW
-                                    };
-
-    const int WALK_SPRITE_WIDTH = 105;
-    const int WALK_SPRITE_HEIGHT = 119;
-
-    const int DEATH_SPRITE_WIDTH = 200;
-    const int DEATH_SPRITE_HEIGHT = 155;
-
-    const int MAX_VELOCITY = 10;
-
-    bool isAlive;
-    int initialLifePoints;
-    int remainingLifePoints;
-    int velocity;
-    int isAir;
-
 private:
-    //Collision box of the enemy
+    // Box to draw of the enemy
     SDL_Rect walkBox;
     SDL_Rect deathBox;
+
+    // collision circle of the enemy
+    Circle collisionCircle;
+public:
+    Circle &getCollisionCircle();
+
+private:
 
     //The velocity of the enemy
     int velocityX, velocityY;
@@ -97,12 +75,49 @@ public:
     void move();
 
     /*
-     * Renderea el enemigo en la pantalla.
+     * Renderea un sprite de la animación del enemigo caminando en la pantalla.
      * camera: cuadrado que representa el lugar visible del mapa.
-     * clip: el número de clip en el sprite a dibujar.
      * */
     void renderWalk(SDL_Rect &camera);
 
+    /*
+     * Renderea un sprite de la animación del enemigo muriendo en la pantalla.
+     * camera: cuadrado que representa el lugar visible del mapa.
+     * */
+    void renderDie(SDL_Rect &camera);
+
+    /*
+     * Renderea la animación actual seteada para el enemigo.
+     * camera: cuadrado que representa el lugar visible del mapa.
+     * */
+    void animate(SDL_Rect &camera);
+
+    /*
+     * Setea la propiedad isAlive en false del enemigo.
+     * */
+    void kill();
+
+    /*
+     * Mueve al enemigo a las coordenadas (x,y) del mapa. Las coordenadas tienen
+     * que indicar la posición entera dentro del mapa isométrico, teniendo en cuenta
+     * que el mapa tiene columnas = CARTES
+     *
+     * */
+    void moveTo(int x, int y);
+
+    void setDirection(int d);
+
+    void renderLifeBar(int x, int y);
+
+    bool itIsAlive()const;
+
+    int getLifePoints() const;
+
+    void quitLifePoints(int points);
+
+    int getVelocity() const;
+
+    int getIsAir() const;
     /*
      * Modifica la textura que se utilizará para mostrar el enemigo.
      * texture: referencia a la textura a utilizar.
@@ -128,29 +143,42 @@ public:
      * */
     void setVelocity(int velocityX, int velocityY);
 
-    void renderDie(SDL_Rect &camera);
 
-    void animate(SDL_Rect &camera);
-
-    void kill();
 
     const SDL_Rect &getWalkBox() const;
 
-    void moveTo(int x, int y);
 
-    void setDirection(int d);
+protected:
+    // abominable como monstruo default...porque sí... :D
+    const std::string TEXTURE_FILE_PATH = "images/sprites/enemy-abominable-walk.png";
 
-    void renderLifeBar(int x, int y);
+    const int FRONT_LEFT_SPRITE_ROW = 1;
+    const int BACK_LEFT_SPRITE_ROW = 3;
+    const int BACK_RIGHT_SPRITE_ROW = 5;
+    const int FRONT_RIGHT_SPRITE_ROW = 7;
 
-    bool itIsAlive()const;
+    const int SPRITE_DIRECTIONS[4] = {
+            FRONT_LEFT_SPRITE_ROW,
+            BACK_LEFT_SPRITE_ROW,
+            BACK_RIGHT_SPRITE_ROW,
+            FRONT_RIGHT_SPRITE_ROW
+    };
 
-    int getLifePoints() const;
+    const int WALK_SPRITE_WIDTH = 105;
+    const int WALK_SPRITE_HEIGHT = 119;
 
-    void quitLifePoints(int points);
+    const int DEATH_SPRITE_WIDTH = 200;
+    const int DEATH_SPRITE_HEIGHT = 155;
 
-    int getVelocity() const;
+    const int MAX_VELOCITY = 10;
 
-    int getIsAir() const;
+    bool isAlive;
+    int initialLifePoints;
+    int remainingLifePoints;
+    int velocity;
+    int isAir;
+
+    void shiftColliders();
 };
 
 

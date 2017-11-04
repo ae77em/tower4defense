@@ -2,8 +2,6 @@
 #include "Utils.h"
 #include "../sdl/Constants.h"
 
-#include <iostream>
-
 bool Utils::checkCollision(SDL_Rect a, SDL_Rect b) {
     //The sides of the rectangles
     int leftA, leftB;
@@ -45,17 +43,17 @@ bool Utils::checkCollision(SDL_Rect a, SDL_Rect b) {
 }
 
 Point Utils::mapToScreen(int i, int j, int h_offset, int w_offset) {
-    int x = (i - j) * (ISO_TILE_WIDTH + w_offset)/ 2;
+    int x = (i - j) * (ISO_TILE_WIDTH + w_offset) / 2;
     int y = (i + j) * (ISO_TILE_HEIGHT + h_offset) / 2;
 
-    return Point(x,y);
+    return Point(x, y);
 }
 
 DecimalPoint Utils::mapToScreenDecimal(double i, double j) {
     double x = (i - j) * (double(ISO_TILE_WIDTH)) / double(2);
     double y = (i + j) * (double(ISO_TILE_HEIGHT)) / double(2);
 
-    return DecimalPoint(x,y);
+    return DecimalPoint(x, y);
 }
 
 Point Utils::screenToMap(int x, int y) {
@@ -101,14 +99,14 @@ DecimalPoint Utils::twoDimToIso(double x, double y) {
     return DecimalPoint(i, j);
 }
 
-DecimalPoint Utils::isoToCartesian(double isoX, double isoY){
+DecimalPoint Utils::isoToCartesian(double isoX, double isoY) {
     double carX = (isoX - isoY) / 1.5;
     double carY = isoX / 3.0 + isoY / 1.5;
 
     return DecimalPoint(carX, carY);
 }
 
-DecimalPoint Utils::cartesianToIso(double carX, double carY){
+DecimalPoint Utils::cartesianToIso(double carX, double carY) {
     double isoX = carX - carY;
     double isoY = (carY + carX) / 2.0;
 
@@ -128,10 +126,10 @@ Point Utils::getMouseRelativePoint(const SDL_Rect &camera) {
     return point;
 }
 
-SDL_Rect Utils::getBoxByTileType(int type){
+SDL_Rect Utils::getBoxByTileType(int type) {
     SDL_Rect toReturn;
 
-    switch (type){
+    switch (type) {
         case static_cast<int>(TileType::TILE_GRASS):
         case static_cast<int>(TileType::TILE_DESERT):
         case static_cast<int>(TileType::TILE_ICE):
@@ -162,8 +160,8 @@ SDL_Rect Utils::getBoxByTileType(int type){
 int Utils::getNextMapDisplacement(int currentAxisPoint, int finalAxisPoint) {
     int toReturn;
 
-    if (currentAxisPoint != finalAxisPoint){
-        if (currentAxisPoint < finalAxisPoint){
+    if (currentAxisPoint != finalAxisPoint) {
+        if (currentAxisPoint < finalAxisPoint) {
             toReturn = 1;
         } else {
             toReturn = -1;
@@ -177,17 +175,32 @@ int Utils::getNextMapDisplacement(int currentAxisPoint, int finalAxisPoint) {
 
 int Utils::getMovementDirection(int xDirection, int yDirection) {
     int toReturn;
-    if (xDirection == 1){
+    if (xDirection == 1) {
         toReturn = X_POSITIVE;
-    } else if (xDirection == -1){
+    } else if (xDirection == -1) {
         toReturn = X_NEGATIVE;
-    } else if (yDirection == 1){
+    } else if (yDirection == 1) {
         toReturn = Y_POSITIVE;
-    } else if (yDirection == -1){
+    } else if (yDirection == -1) {
         toReturn = Y_NEGATIVE;
     } else {
         toReturn = -1;
     }
     return toReturn;
+}
+
+double Utils::distanceSquared(int x1, int y1, int x2, int y2) {
+    int deltaX = x2 - x1;
+    int deltaY = y2 - y1;
+    return deltaX * deltaX + deltaY * deltaY;
+}
+
+bool Utils::hasCircleCollision(Circle &a, Circle &b) {
+    //Calculate total radius squared
+    int totalRadiusSquared = a.r + b.r;
+    totalRadiusSquared = totalRadiusSquared * totalRadiusSquared;
+
+    //If the distance between the centers of the circles is less than the sum of their radii
+    return (distanceSquared(a.x, a.y, b.x, b.y) < (totalRadiusSquared));
 }
 
