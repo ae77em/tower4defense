@@ -9,6 +9,7 @@ static const char *const CLIENT_ID_KEY = "clientId";
 #include <jsoncpp/json/json.h>
 #include <set>
 #include "Message.h"
+#include "Point.h"
 
 class MessageFactory {
 public:
@@ -62,16 +63,34 @@ public:
 
     static std::string getCreateMatchNotification(Message &request);
 
+    /*
+     * Retorna el pedido para obtener todos los mapas existentes para jugar.
+     */
     static std::string getExistingMapsRequest(int clientId);
 
+    /*
+     * Retorna la notificación con todos los mapas existentes para jugar.
+     */
     static std::string getExistingMapsNotification();
 
+    /*
+     * Retorna el pedido para obtener todas las partidas existentes para jugar.
+     */
     static std::string getExistingMatchesRequest(int clientId);
 
+    /*
+     * Retorna la notificación con todas las partidas existentes para jugar.
+     */
     static std::string getExistingMatchesNotification(std::set<std::string> &matches);
 
+    /*
+     * Retorna la notificación informando de una nueva partida fue creada.
+     */
     static std::string getNewMatchNotification(Message &request, std::set<std::string> &matches);
 
+    /*
+     * Retorna el pedido para crear una nueva partida.
+     */
     static std::string getNewMatchRequest(int clientId, std::string &mapName, std::string &matchName);
 
     static std::string getCreateFullMatchNotification(int gameId, int clientId);
@@ -91,6 +110,12 @@ public:
     static std::string getMatchName(Message &message);
 
     static std::string getClientEndConectionNotification(int clientId);
+
+    static std::string getMovementNotification(int moveable, int x, int y, int direction);
+
+    static Point getPoint(Message message);
+
+    static int getDirection(Message message);
 };
 
 

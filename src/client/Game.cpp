@@ -8,9 +8,10 @@
 #include "../common/MessageFactory.h"
 #include "../common/Protocol.h"
 #include "../sdl/enemies/Enemy.h"
+#include "../sdl/enemies/Abmonible.h"
 
 Game::Game(SharedBuffer &in, SharedBuffer &out, int cId)
-        : dataFromServer(in), dataToServer(out), clientId(cId) {}
+        : dataFromServer(in), dataToServer(out), clientId(cId) { }
 
 Game::~Game() {}
 
@@ -229,45 +230,8 @@ void Game::handleMouseEvents(SDL_Rect camera, std::string mov_description, SDL_E
     if (e.type == SDL_MOUSEBUTTONDOWN) {
         Point point = Utils::getMouseRelativePoint(camera);
 
-        int mousePosX;
-        int mousePosY;
-        SDL_GetMouseState(&mousePosX, &mousePosY);
+        matarBichoSiLeHiceClick(camera, enemy); // para pruebas
 
-        std::cout << "punto del mouse SIN ajustado con la camara: ("
-                  << std::to_string(mousePosX)
-                  << ", "
-                  << std::to_string(mousePosY)
-                  << ")"
-                  << std::endl;
-
-
-
-        mousePosX += camera.x;
-        mousePosY += camera.y;
-
-        Point otherPoint = Utils::screenToMap(mousePosX, mousePosY);
-
-        SDL_Rect pointRect = {otherPoint.x * ISO_TILE_WIDTH_HALF, otherPoint.y * ISO_TILE_HEIGHT_HALF, 1 , 1};
-
-        std::cout << "punto pointRect: ("
-                  << std::to_string(pointRect.x)
-                  << ", "
-                  << std::to_string(pointRect.y)
-                  << ")"
-                  << std::endl;
-
-        std::cout << "posición del monstruo: ("
-                  << std::to_string(enemy.getWalkBox().x)
-                  << ", "
-                  << std::to_string(enemy.getWalkBox().y)
-                  << ")"
-                  << std::endl;
-
-        if (Utils::checkCollision(pointRect,enemy.getWalkBox())){
-            eventDispatched = 3;
-        } else {
-            eventDispatched = 1;
-        }
         /* Si hice click y tengo algún evento marcado para disparar
          * (por ejemplo, marqué un lugar para poner una torre, o quiero
          * poner una torre) manejo dicho evento. */
@@ -291,31 +255,79 @@ void Game::handleMouseEvents(SDL_Rect camera, std::string mov_description, SDL_E
     }
 }
 
-void Game::handleServerNotifications(SDL_Rect camera) {
+void Game::matarBichoSiLeHiceClick(const SDL_Rect &camera, const Enemy &enemy) {
+    int mousePosX;
+    int mousePosY;
+    SDL_GetMouseState(&mousePosX, &mousePosY);
+
+    std::cout << "punto del mouse SIN ajustado con la camara: ("
+              << std::__cxx11::to_string(mousePosX)
+              << ", "
+              << std::__cxx11::to_string(mousePosY)
+              << ")"
+              << std::endl;
+
+
+    mousePosX += camera.x;
+    mousePosY += camera.y;
+
+    Point otherPoint = Utils::screenToMap(mousePosX, mousePosY);
+
+    SDL_Rect pointRect = {otherPoint.x * ISO_TILE_WIDTH_HALF, otherPoint.y * ISO_TILE_HEIGHT_HALF, 1 , 1};
+
+    std::cout << "punto pointRect: ("
+              << std::__cxx11::to_string(pointRect.x)
+              << ", "
+              << std::__cxx11::to_string(pointRect.y)
+              << ")"
+              << std::endl;
+
+    std::cout << "posición del monstruo: ("
+              << std::__cxx11::to_string(enemy.getWalkBox().x)
+              << ", "
+              << std::__cxx11::to_string(enemy.getWalkBox().y)
+              << ")"
+              << std::endl;
+
+    if (Utils::checkCollision(pointRect, enemy.getWalkBox())){
+            eventDispatched = 3;
+        } else {
+            eventDispatched = 1;
+        }
+}
+
+void Game::handleServerNotifications(SDL_Rect camera, Enemy &enemy) {
     int transactionsCounter = 0;
     std::string notification;
 
     while (dataFromServer.hasData() && transactionsCounter < MAX_SERVER_NOTIFICATIONS_PER_FRAME) {
+        ++transactionsCounter;
         notification = dataFromServer.getNextData();
 
         Message message;
         std::string response;
 
         message.deserialize(notification);
-        Json::Value &root = message.getData();
 
-        int op = root[OPERATION_KEY].asInt();
+        int op = MessageFactory::getOperation(message);
 
         switch (op) {
             case SERVER_NOTIFICATION_PUT_TOWER: {
-                int x = root["xCoord"].asInt();
-                int y = root["yCoord"].asInt();
-                if (Point(x, y).isPositive()) {
-                    int tilePos = x * TILES_COLUMNS + y;
+                Point point = MessageFactory::getPoint(message);
+
+                if (point.isPositive()) {
+                    int tilePos = point.x * TILES_COLUMNS + point.y;
                     if (tileSet[tilePos]->getType() == TILE_FIRM) {
                         tileSet[tilePos]->handleServerNotification(SERVER_NOTIFICATION_PUT_TOWER);
                     }
                 }
+                break;
+            }
+            case SERVER_NOTIFICATION_MOVE_ENEMY: {
+                Point point = MessageFactory::getPoint(message);
+                int dir = MessageFactory::getDirection(message);
+                enemy.setDirection(dir);
+                enemy.moveTo(point.x, point.y);
                 break;
             }
             default:
@@ -333,9 +345,17 @@ void Game::run() {
     if (!init()) {
         printf("Failed to initialize!\n");
     } else {
-        Enemy abominable(0, 0, gRenderer, gSpriteSheetTextureEnemyAbominable);
-        abominable.loadMedia();
-        abominable.setSprites();
+        Abmonible abmonible(0, 0, gRenderer, gSpriteSheetTextureEnemyAbominable);
+        abmonible.loadMedia();
+        abmonible.setSprites();
+
+        std::vector<Point> way;
+
+        way.push_back(Point(0,5));
+        way.push_back(Point(1,5));
+        way.push_back(Point(2,5));
+        way.push_back(Point(3,5));
+
 
         //Load media
         if (!loadMedia()) {
@@ -369,17 +389,17 @@ void Game::run() {
                     dot.handleEvent(e, mov_description);
 
                     eventDispatched = 1;
-                    handleMouseEvents(camera, mov_description, e, abominable);
+                    handleMouseEvents(camera, mov_description, e, abmonible);
                     eventDispatched = 0;
                 }
 
-                handleServerNotifications(camera);
+                handleServerNotifications(camera, abmonible);
 
                 //Move the dot
                 dot.move();
                 dot.setCamera(camera);
 
-                abominable.move();
+                //abmonible.move();
 
                 //Clear screen
                 SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 0xFF);
@@ -393,7 +413,7 @@ void Game::run() {
                 //Render dot
                 dot.render(gDotTexture, camera, gRenderer);
 
-                abominable.animate(camera);
+                abmonible.animate(camera);
 
                 //Update screen
                 SDL_RenderPresent(gRenderer);

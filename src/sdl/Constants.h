@@ -9,6 +9,8 @@ const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
 
 //Tile constants
+const int CARTESIAN_TILE_WIDTH = 80;
+const int CARTESIAN_TILE_HEIGHT = 80;
 const int ISO_TILE_WIDTH = 160;
 const int ISO_TILE_HEIGHT = 80;
 const int ISO_TILE_WIDTH_HALF = ISO_TILE_WIDTH / 2;
@@ -34,6 +36,13 @@ enum TileType {
 enum LTileSpriteMouseEvent {
     BUTTON_SPRITE_DEFAULT = 0,
     BUTTON_SPRITE_MOUSE_DOWN = 1
+};
+
+enum MovementDirection {
+    X_POSITIVE = 3,
+    Y_POSITIVE = 0,
+    X_NEGATIVE = 1,
+    Y_NEGATIVE = 2
 };
 
 const std::vector<std::string> TILES_IMAGES_PATHS({

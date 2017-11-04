@@ -375,3 +375,34 @@ std::string MessageFactory::getClientEndConectionNotification(int clientId) {
 
     return toReturn;
 }
+
+std::string MessageFactory::getMovementNotification(int moveable, int x, int y, int direction) {
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = SERVER_NOTIFICATION_MOVE_ENEMY;
+    root["xCoord"] = x;
+    root["yCoord"] = y;
+    root["typeOfMoveable"] = moveable;
+    root["direction"] = direction;
+
+    message.setData(root);
+
+    toReturn = message.serialize();
+
+    return toReturn;
+}
+
+Point MessageFactory::getPoint(Message message) {
+    Json::Value &root = message.getData();
+    int x = root.get("xCoord","-1").asInt();
+    int y = root.get("yCoord","-1").asInt();
+    return Point(x,y);
+}
+
+int MessageFactory::getDirection(Message message) {
+    Json::Value &root = message.getData();
+    int direction = root.get("direction","1").asInt();
+    return direction;
+}

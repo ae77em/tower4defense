@@ -1,7 +1,7 @@
 #ifndef TP4_TOWERDEFENSE_GAME_H
 #define TP4_TOWERDEFENSE_GAME_H
 
-static const int MAX_SERVER_NOTIFICATIONS_PER_FRAME = 50;
+static const int MAX_SERVER_NOTIFICATIONS_PER_FRAME = 1;
 
 #include "../common/Socket.h"
 #include <string>
@@ -16,6 +16,7 @@ static const int MAX_SERVER_NOTIFICATIONS_PER_FRAME = 50;
 #include "../common/SharedBuffer.h"
 #include "../common/Thread.h"
 #include "../sdl/enemies/Enemy.h"
+#include "../sdl/enemies/Abmonible.h"
 
 class Game : public Thread {
 private:
@@ -65,7 +66,7 @@ private:
     void handleMouseEvents(SDL_Rect camera, std::string mov_description, SDL_Event e, Enemy &enemy);
     void loadServerNotifications(std::string notification);
 
-    void handleServerNotifications(SDL_Rect rect);
+    void handleServerNotifications(SDL_Rect rect, Enemy &enemy);
 
     enum GameEvents {
         GAME_EVENT_PUT_TOWER = 1,
@@ -74,6 +75,8 @@ private:
     };
 
     void loadPortalSprites();
+
+    void matarBichoSiLeHiceClick(const SDL_Rect &camera, const Enemy &enemy);
 };
 
 #endif //TP4_TOWERDEFENSE_GAME_H

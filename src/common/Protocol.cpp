@@ -2,7 +2,7 @@
 #include <string>
 
 std::string Protocol::notificationToString(int notificationType) {
-    std::string toReturn = "Notification";
+    std::string toReturn = "GameNotification";
 
     switch (notificationType) {
         case CLIENT_REQUEST_ACCESS_GAME_MENU:

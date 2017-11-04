@@ -1,0 +1,10 @@
+#ifndef TP4_TOWERDEFENSE_TOWER_H
+#define TP4_TOWERDEFENSE_TOWER_H
+
+
+class Tower {
+
+};
+
+
+#endif //TP4_TOWERDEFENSE_TOWER_H

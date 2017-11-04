@@ -19,13 +19,9 @@ protected:
     // abominable como monstruo default...porque sí (?)
     const std::string TEXTURE_FILE_PATH = "images/sprites/enemy-abominable-walk.png";
 
-    //const int FRONT_SPRITE_ROW = 0;
     const int FRONT_LEFT_SPRITE_ROW = 1;
-    //const int LEFT_SPRITE_ROW = 2;
     const int BACK_LEFT_SPRITE_ROW = 3;
-    //const int BACK_SPRITE_ROW = 4;
     const int BACK_RIGHT_SPRITE_ROW = 5;
-    //const int RIGHT_SPRITE_ROW = 6;
     const int FRONT_RIGHT_SPRITE_ROW = 7;
 
     const int SPRITE_DIRECTIONS[4] = {
@@ -43,13 +39,21 @@ protected:
 
     const int MAX_VELOCITY = 10;
 
+    int lifePoints;
+public:
+    int getLifePoints() const;
+
+    int getVelocity() const;
+
+    int getIsAir() const;
+
+protected:
+    int velocity;
+    int isAir;
+
 private:
     //Collision box of the enemy
     SDL_Rect walkBox;
-public:
-    const SDL_Rect &getWalkBox() const;
-
-private:
     SDL_Rect deathBox;
 
     //The velocity of the enemy
@@ -61,6 +65,8 @@ private:
     SDL_Renderer *renderer;
     SDL_Rect walkingSprites[NUMBER_OF_WALK_DIRECTIONS][NUMBER_OF_WALK_SPRITES];
     SDL_Rect deathSprites[NUMBER_OF_DEATH_DIRECTIONS][NUMBER_OF_DEATH_SPRITES];
+
+    int currentDirection;
 
     bool isAlive;
 
@@ -132,6 +138,12 @@ public:
     void animate(SDL_Rect &camera);
 
     void kill();
+
+    const SDL_Rect &getWalkBox() const;
+
+    void moveTo(int x, int y);
+
+    void setDirection(int d);
 };
 
 

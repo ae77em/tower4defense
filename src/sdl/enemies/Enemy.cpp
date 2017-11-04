@@ -13,8 +13,9 @@ Enemy::Enemy(int x, int y, SDL_Renderer *r, LTexture &t) : texture(t) {
     walkBox.h = DEATH_SPRITE_HEIGHT;
 
     //Initialize the velocity
-    velocityX = 5;
-    velocityY = 0;
+    velocity = 1;
+    lifePoints = 200;
+    isAir = false;
 
     renderer = r;
 
@@ -95,7 +96,7 @@ void Enemy::renderWalk(SDL_Rect &camera) {
     double isox = screenPoint.x - camera.x;
     double isoy = screenPoint.y - camera.y - offset;
 
-    texture.renderSprite(renderer, isox, isoy, &walkingSprites[3][frameToDraw]);
+    texture.renderSprite(renderer, isox, isoy, &walkingSprites[currentDirection][frameToDraw]);
 }
 
 void Enemy::renderDie(SDL_Rect &camera) {
@@ -108,7 +109,7 @@ void Enemy::renderDie(SDL_Rect &camera) {
     double isox = screenPoint.x - camera.x;
     double isoy = screenPoint.y - camera.y - offset;
 
-    texture.renderSprite(renderer, isox, isoy, &deathSprites[3][frameToDraw]);
+    texture.renderSprite(renderer, isox, isoy, &deathSprites[currentDirection][frameToDraw]);
 }
 
 void Enemy::animate(SDL_Rect &camera) {
@@ -119,16 +120,20 @@ void Enemy::animate(SDL_Rect &camera) {
     }
 }
 
-void Enemy::move() {
-    Point minXScreenPoint = Utils::mapToScreen(0, TILES_ROWS);
-    Point maxXScreenPoint = Utils::mapToScreen(TILES_COLUMNS, 0);
-    Point minYScreenPoint = Utils::mapToScreen(0, 0);
-    Point maxYScreenPoint = Utils::mapToScreen(TILES_COLUMNS, TILES_ROWS);
+void Enemy::moveTo(int x, int y){
+    walkBox.x = x;
+    walkBox.y = y;
+}
 
+void Enemy::setDirection(int d){
+    currentDirection = d;
+}
+
+void Enemy::move() {
     walkBox.x += velocityX;
 
     // stop if is the end is reached
-    if ((walkBox.x < minXScreenPoint.x) or (walkBox.x > maxXScreenPoint.x)) {
+    if ((walkBox.x < 0) or (walkBox.x > TILES_COLUMNS * CARTESIAN_TILE_WIDTH)) {
         //move back
         walkBox.x -= velocityX;
     }
@@ -136,7 +141,7 @@ void Enemy::move() {
     walkBox.y += velocityY;
 
     // stop if is the end is reached
-    if ((walkBox.y < minYScreenPoint.y) || (walkBox.y > maxYScreenPoint.y)) {
+    if ((walkBox.y < 0) || (walkBox.y > TILES_ROWS * CARTESIAN_TILE_HEIGHT)) {
         //move back
         walkBox.y -= velocityY;
     }
@@ -144,4 +149,16 @@ void Enemy::move() {
 
 const SDL_Rect &Enemy::getWalkBox() const {
     return walkBox;
+}
+
+int Enemy::getLifePoints() const {
+    return lifePoints;
+}
+
+int Enemy::getVelocity() const {
+    return velocity;
+}
+
+int Enemy::getIsAir() const {
+    return isAir;
 }

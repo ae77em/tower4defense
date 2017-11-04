@@ -16,6 +16,10 @@ public:
     virtual ~Listener();
 
     void run();
+
+    void cargarBufferConDatosDePrueba();
+
+    int getNextMapDisplacement(int y, int yFinal) const;
 };
 
 
