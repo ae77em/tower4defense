@@ -6,11 +6,11 @@
 #include "../sdl/enemies/Abmonible.h"
 #include "../sdl/Utils.h"
 
-Listener::Listener(Socket &s, SharedBuffer &b) : server(s), buffer(b) { }
+Listener::Listener(Socket &s, SharedBuffer &b) : server(s), buffer(b) {}
 
 Listener::~Listener() {}
 
-void Listener::run(){
+void Listener::run() {
     try {
         // TODO PARA PRUEBAS ////////////////////////
         cargarBufferConDatosDePrueba();
@@ -38,7 +38,7 @@ void Listener::cargarBufferConDatosDePrueba() {
     double yFinal;
 
     std::vector<Point> camino;
-    camino.push_back(Point(0,5));
+    camino.push_back(Point(0, 5));
     camino.push_back(Point(1,5));
     camino.push_back(Point(2,5));
     camino.push_back(Point(3,5));
@@ -60,35 +60,41 @@ void Listener::cargarBufferConDatosDePrueba() {
     camino.push_back(Point(15,5));
     camino.push_back(Point(16,5));
 
-    Point point(0,0);
+    Point point(0, 0);
 
-    for (unsigned int i = 0; i < camino.size(); ++i){
+    for (unsigned int i = 0; i < camino.size(); ++i) {
         point = camino.at(i);
         x = point.x * CARTESIAN_TILE_WIDTH;
         y = point.y * CARTESIAN_TILE_HEIGHT;
 
-        if (i < camino.size() - 1){
-            point = camino.at(i+1);
+        xFinal = x;
+        yFinal = y;
+
+        if (i < camino.size() - 1) {
+            point = camino.at(i + 1);
             xFinal = point.x * CARTESIAN_TILE_WIDTH;
             yFinal = point.y * CARTESIAN_TILE_HEIGHT;
         }
 
         int currentTime;
 
-        int direction = Utils::getMovementDirection(Utils::getNextMapDisplacement(x, xFinal), Utils::getNextMapDisplacement(y, yFinal));
+        int direction = Utils::getMovementDirection(Utils::getNextMapDisplacement(x, xFinal),
+                                                    Utils::getNextMapDisplacement(y, yFinal));
 
-        while( x != xFinal || y != yFinal ){
-            std::string movementNotification = MessageFactory::getMovementNotification(ENEMY_ABMONIBLE, x, y, direction);
+        while (x != xFinal || y != yFinal) {
+            std::string movementNotification = MessageFactory::getMovementNotification(ENEMY_ABMONIBLE, x, y,
+                                                                                       direction);
 
             buffer.addData(movementNotification);
 
             // todo: ablandar esto
             currentTime = SDL_GetTicks();
-            while ((currentTime - SDL_GetTicks()) < 0.1){};
+            while ((currentTime - SDL_GetTicks()) < 0.1) {};
 
             x += Utils::getNextMapDisplacement(x, xFinal);
             y += Utils::getNextMapDisplacement(y, yFinal);
         }
+
     }
 }
 

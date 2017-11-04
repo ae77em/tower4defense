@@ -76,7 +76,7 @@ private:
 
     void loadPortalSprites();
 
-    void matarBichoSiLeHiceClick(const SDL_Rect &camera, const Enemy &enemy);
+    void matarBichoSiLeHiceClick(const SDL_Rect &camera, Enemy &enemy);
 };
 
 #endif //TP4_TOWERDEFENSE_GAME_H

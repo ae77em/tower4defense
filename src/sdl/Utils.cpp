@@ -74,6 +74,23 @@ Point Utils::screenToMap(int x, int y) {
     return Point(i, j);
 }
 
+DecimalPoint Utils::screenToMapDecimal(int x, int y) {
+    double x_d = static_cast<double>  (x);
+    double y_d = static_cast<double>  (y);
+
+    double yByIsoTileHeightHalf = y_d / ISO_TILE_HEIGHT_HALF;
+    double xByIsoTileWithHalf = x_d / ISO_TILE_WIDTH_HALF;
+
+    double i = (yByIsoTileHeightHalf + xByIsoTileWithHalf) / 2;
+    double j = (yByIsoTileHeightHalf - xByIsoTileWithHalf) / 2;
+
+    //double i = d_i - 0.5;
+    j += 0.5;
+
+    return DecimalPoint(i, j);
+}
+
+
 DecimalPoint Utils::twoDimToIso(double x, double y) {
     double yByIsoTileHeightHalf = y / ISO_TILE_HEIGHT_HALF;
     double xByIsoTileWithHalf = x / ISO_TILE_WIDTH_HALF;

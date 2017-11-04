@@ -13,21 +13,22 @@ LTexture::~LTexture() {
     //Deallocate
     free();
 }
+
 bool LTexture::generateFromText(const std::string &text, SDL_Renderer *renderer,
-        TTF_Font *font, SDL_Color text_color, SDL_Color background_color) {
+                                TTF_Font *font, SDL_Color text_color, SDL_Color background_color) {
     //Get rid of preexisting texture
     free();
 
     /* WARNING: A text_surface will fail to load if the string
        to generate is empty. Setting the string to a single space
        is a workaround for this behavior. */
-    SDL_Surface* text_surface = TTF_RenderText_Shaded(font,
-            (text == "") ? " " : text.c_str(),
-            text_color, background_color);
-    if (! text_surface) return false;
+    SDL_Surface *text_surface = TTF_RenderText_Shaded(font,
+                                                      (text == "") ? " " : text.c_str(),
+                                                      text_color, background_color);
+    if (!text_surface) return false;
 
     mTexture = SDL_CreateTextureFromSurface(renderer, text_surface);
-    if (! mTexture) {
+    if (!mTexture) {
         SDL_FreeSurface(text_surface);
         return false;
     }
@@ -131,11 +132,10 @@ void LTexture::render(SDL_Renderer *gRenderer,
 
 void LTexture::renderSprite(SDL_Renderer *gRenderer, int x, int y, SDL_Rect *clip) {
     //Set rendering space and render to screen
-    SDL_Rect renderQuad = { x, y, mWidth, mHeight };
+    SDL_Rect renderQuad = {x, y, mWidth, mHeight};
 
     //Set clip rendering dimensions
-    if(clip != NULL)
-    {
+    if (clip != NULL) {
         renderQuad.w = clip->w;
         renderQuad.h = clip->h;
     }

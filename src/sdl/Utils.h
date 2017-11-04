@@ -39,6 +39,8 @@ public:
     static int getNextMapDisplacement(int currentAxisPoint, int finalAxisPoint);
 
     static int getMovementDirection(int displacement, int mapDisplacement);
+
+    static DecimalPoint screenToMapDecimal(int x, int y);
 };
 
 

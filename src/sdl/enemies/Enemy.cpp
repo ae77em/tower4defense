@@ -14,8 +14,9 @@ Enemy::Enemy(int x, int y, SDL_Renderer *r, LTexture &t) : texture(t) {
 
     //Initialize the velocity
     velocity = 1;
-    lifePoints = 200;
+    initialLifePoints = remainingLifePoints = 200;
     isAir = false;
+    isAlive = true;
 
     renderer = r;
 
@@ -97,19 +98,47 @@ void Enemy::renderWalk(SDL_Rect &camera) {
     double isoy = screenPoint.y - camera.y - offset;
 
     texture.renderSprite(renderer, isox, isoy, &walkingSprites[currentDirection][frameToDraw]);
+
+    renderLifeBar(isox, isoy);
+}
+
+void Enemy::renderLifeBar(int x, int y) {
+    int w = 50; // porque sí
+    int h = 4; // porque también (?)...
+    double percent = double(remainingLifePoints) / double(initialLifePoints);
+    SDL_Color FGColor = {0x00, 0xFF, 0x00, 0xFF}; // green
+    SDL_Color BGColor = {0xFF, 0x00, 0x00, 0xFF}; // red
+
+    percent = percent > 1.f ? 1.f : percent < 0.f ? 0.f : percent;
+    SDL_Color old;
+    SDL_GetRenderDrawColor(renderer, &old.r, &old.g, &old.g, &old.a);
+    SDL_Rect bgrect = { x, y, w, h };
+    SDL_SetRenderDrawColor(renderer, BGColor.r, BGColor.g, BGColor.b, BGColor.a);
+    SDL_RenderFillRect(renderer, &bgrect);
+    SDL_SetRenderDrawColor(renderer, FGColor.r, FGColor.g, FGColor.b, FGColor.a);
+    int pw = (int)((float)w * percent);
+    int px = x + (w - pw);
+    SDL_Rect fgrect = { px, y, pw, h };
+    SDL_RenderFillRect(renderer, &fgrect);
+    SDL_SetRenderDrawColor(renderer, old.r, old.g, old.b, old.a);
 }
 
 void Enemy::renderDie(SDL_Rect &camera) {
     int frameToDraw = (SDL_GetTicks() / 100) % NUMBER_OF_DEATH_SPRITES;
 
-    DecimalPoint screenPoint = Utils::cartesianToIso(deathBox.x, deathBox.y);
+    firstFrameOfDeathRendered = (firstFrameOfDeathRendered || frameToDraw == 0);
+    lastFrameOfDeathRendered = (lastFrameOfDeathRendered || frameToDraw == NUMBER_OF_DEATH_SPRITES - 1);
 
-    int offset = walkBox.h - ISO_TILE_HEIGHT;
+    if (!(firstFrameOfDeathRendered and lastFrameOfDeathRendered)){
+        DecimalPoint screenPoint = Utils::cartesianToIso(deathBox.x, deathBox.y);
 
-    double isox = screenPoint.x - camera.x;
-    double isoy = screenPoint.y - camera.y - offset;
+        int offset = walkBox.h - ISO_TILE_HEIGHT;
 
-    texture.renderSprite(renderer, isox, isoy, &deathSprites[currentDirection][frameToDraw]);
+        double isox = screenPoint.x - camera.x;
+        double isoy = screenPoint.y - camera.y - offset;
+
+        texture.renderSprite(renderer, isox, isoy, &deathSprites[currentDirection][frameToDraw]);
+    }
 }
 
 void Enemy::animate(SDL_Rect &camera) {
@@ -152,7 +181,7 @@ const SDL_Rect &Enemy::getWalkBox() const {
 }
 
 int Enemy::getLifePoints() const {
-    return lifePoints;
+    return initialLifePoints;
 }
 
 int Enemy::getVelocity() const {
@@ -161,4 +190,16 @@ int Enemy::getVelocity() const {
 
 int Enemy::getIsAir() const {
     return isAir;
+}
+
+bool Enemy::itIsAlive()const {
+    return isAlive;
+}
+
+void Enemy::quitLifePoints(int points) {
+    remainingLifePoints -= points;
+
+    if (remainingLifePoints <= 0){
+        isAlive = false;
+    }
 }

@@ -7,11 +7,9 @@
 #include <SDL2/SDL_image.h>
 #include "../common/MessageFactory.h"
 #include "../common/Protocol.h"
-#include "../sdl/enemies/Enemy.h"
-#include "../sdl/enemies/Abmonible.h"
 
 Game::Game(SharedBuffer &in, SharedBuffer &out, int cId)
-        : dataFromServer(in), dataToServer(out), clientId(cId) { }
+        : dataFromServer(in), dataToServer(out), clientId(cId) {}
 
 Game::~Game() {}
 
@@ -255,45 +253,28 @@ void Game::handleMouseEvents(SDL_Rect camera, std::string mov_description, SDL_E
     }
 }
 
-void Game::matarBichoSiLeHiceClick(const SDL_Rect &camera, const Enemy &enemy) {
+void Game::matarBichoSiLeHiceClick(const SDL_Rect &camera, Enemy &enemy) {
     int mousePosX;
     int mousePosY;
     SDL_GetMouseState(&mousePosX, &mousePosY);
 
-    std::cout << "punto del mouse SIN ajustado con la camara: ("
-              << std::__cxx11::to_string(mousePosX)
-              << ", "
-              << std::__cxx11::to_string(mousePosY)
-              << ")"
-              << std::endl;
-
-
     mousePosX += camera.x;
     mousePosY += camera.y;
 
-    Point otherPoint = Utils::screenToMap(mousePosX, mousePosY);
+    DecimalPoint otherPoint = Utils::screenToMapDecimal(mousePosX, mousePosY);
 
-    SDL_Rect pointRect = {otherPoint.x * ISO_TILE_WIDTH_HALF, otherPoint.y * ISO_TILE_HEIGHT_HALF, 1 , 1};
+    SDL_Rect pointRect = {int(otherPoint.x * CARTESIAN_TILE_WIDTH), int(otherPoint.y * CARTESIAN_TILE_HEIGHT), 1, 1};
 
-    std::cout << "punto pointRect: ("
-              << std::__cxx11::to_string(pointRect.x)
-              << ", "
-              << std::__cxx11::to_string(pointRect.y)
-              << ")"
-              << std::endl;
+    if (Utils::checkCollision(pointRect, enemy.getWalkBox())) {
+        enemy.quitLifePoints(50);
 
-    std::cout << "posición del monstruo: ("
-              << std::__cxx11::to_string(enemy.getWalkBox().x)
-              << ", "
-              << std::__cxx11::to_string(enemy.getWalkBox().y)
-              << ")"
-              << std::endl;
-
-    if (Utils::checkCollision(pointRect, enemy.getWalkBox())){
+        if (!enemy.itIsAlive()) {
             eventDispatched = 3;
-        } else {
-            eventDispatched = 1;
         }
+    } else {
+        eventDispatched = 1;
+    }
+
 }
 
 void Game::handleServerNotifications(SDL_Rect camera, Enemy &enemy) {
@@ -326,8 +307,10 @@ void Game::handleServerNotifications(SDL_Rect camera, Enemy &enemy) {
             case SERVER_NOTIFICATION_MOVE_ENEMY: {
                 Point point = MessageFactory::getPoint(message);
                 int dir = MessageFactory::getDirection(message);
-                enemy.setDirection(dir);
-                enemy.moveTo(point.x, point.y);
+                if (enemy.itIsAlive()) {
+                    enemy.setDirection(dir);
+                    enemy.moveTo(point.x, point.y);
+                }
                 break;
             }
             default:
@@ -348,14 +331,6 @@ void Game::run() {
         Abmonible abmonible(0, 0, gRenderer, gSpriteSheetTextureEnemyAbominable);
         abmonible.loadMedia();
         abmonible.setSprites();
-
-        std::vector<Point> way;
-
-        way.push_back(Point(0,5));
-        way.push_back(Point(1,5));
-        way.push_back(Point(2,5));
-        way.push_back(Point(3,5));
-
 
         //Load media
         if (!loadMedia()) {
@@ -398,8 +373,6 @@ void Game::run() {
                 //Move the dot
                 dot.move();
                 dot.setCamera(camera);
-
-                //abmonible.move();
 
                 //Clear screen
                 SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 0xFF);

@@ -39,15 +39,9 @@ protected:
 
     const int MAX_VELOCITY = 10;
 
-    int lifePoints;
-public:
-    int getLifePoints() const;
-
-    int getVelocity() const;
-
-    int getIsAir() const;
-
-protected:
+    bool isAlive;
+    int initialLifePoints;
+    int remainingLifePoints;
     int velocity;
     int isAir;
 
@@ -68,7 +62,8 @@ private:
 
     int currentDirection;
 
-    bool isAlive;
+    bool firstFrameOfDeathRendered = false;
+    bool lastFrameOfDeathRendered = false;
 
 public:
     Enemy(int x, int y, SDL_Renderer *renderer, LTexture &t);
@@ -144,6 +139,18 @@ public:
     void moveTo(int x, int y);
 
     void setDirection(int d);
+
+    void renderLifeBar(int x, int y);
+
+    bool itIsAlive()const;
+
+    int getLifePoints() const;
+
+    void quitLifePoints(int points);
+
+    int getVelocity() const;
+
+    int getIsAir() const;
 };
 
 
