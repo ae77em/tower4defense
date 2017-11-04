@@ -298,10 +298,6 @@ void Game::handleServerNotifications(SDL_Rect camera, Enemy &enemy, Tower &tower
                 Point point = MessageFactory::getPoint(message);
 
                 if (point.isPositive()) {
-                    /*int tilePos = point.x * TILES_COLUMNS + point.y;
-                    if (tileSet[tilePos]->getType() == TILE_FIRM) {
-                        tileSet[tilePos]->handleServerNotification(SERVER_NOTIFICATION_PUT_TOWER);
-                    }*/
                     tower.setPosition(point.x, point.y);
                 }
                 break;

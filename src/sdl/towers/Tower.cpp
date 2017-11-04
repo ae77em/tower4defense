@@ -13,8 +13,8 @@ Tower::Tower(int x, int y, SDL_Renderer *r, LTexture &t) : texture(t) {
     idleBox.h = SHOT_SPRITE_HEIGHT;
 
     shotRatio = 2;
-    shotDamage = 1;
-    // shotDelay;
+    shotDamage = 20;
+    shotMsTimeGap = 3000; //miliseconds
     collisionCircle.r = (CARTESIAN_TILE_WIDTH / 2) * shotRatio;
     shiftColliders();
 
@@ -25,8 +25,18 @@ Tower::Tower(int x, int y, SDL_Renderer *r, LTexture &t) : texture(t) {
     setSprites();
 }
 
-int Tower::getShotDamage() const {
-    return shotDamage;
+int Tower::getShotDamage() {
+    int toReturn;
+    if (lastShotTime == 0){
+        lastShotTime = SDL_GetTicks();
+        toReturn = shotDamage;
+    } else if ((int)(SDL_GetTicks() - lastShotTime) >= shotMsTimeGap){
+        lastShotTime = SDL_GetTicks();
+        toReturn = shotDamage;
+    } else {
+        toReturn = 0;
+    }
+    return toReturn;
 }
 
 Tower::~Tower(){}

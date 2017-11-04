@@ -90,7 +90,7 @@ public:
 
     Circle &getCollisionCircle();
 
-    int getShotDamage() const;
+    int getShotDamage();
 
     void setIsShooting(bool isShooting);
 
@@ -119,7 +119,11 @@ protected:
 
     int shotRatio;
 
+    int shotMsTimeGap;
+
     bool isShooting;
+
+    int lastShotTime = 0;
 
     void shiftColliders();
 
