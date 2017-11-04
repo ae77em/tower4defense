@@ -1,8 +1,10 @@
 #include "Screen.h"
 #include <stdexcept>
+#include <vector>
 #include "Constants.h"
 #include "Utils.h"
 #include "../common/modelo/Mapa.h"
+#include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_ttf.h>
 
 Screen::Screen() {
@@ -107,23 +109,23 @@ void Screen::setDialog(const std::string &text) {
                 + text + "\"");
 }
 
-void Screen::trace(unsigned x1, unsigned y1, unsigned x2, unsigned y2) {
-    auto p1 = Utils::mapToScreen(x1, y1);
-    p1.x -= camera.x;
-    p1.y -= camera.y;
-    p1.x += tile.getWidth() / 2;
-    p1.y += tile.getHeight() / 2;
+void Screen::trace(const std::vector<Point> &path) {
+    std::vector<SDL_Point> visual_path;
+    visual_path.reserve(path.size());
+    for (const auto& point : path) {
+        auto screen_point = Utils::mapToScreen(point.x, point.y);
+        screen_point.x -= camera.x;
+        screen_point.y -= camera.y;
+        screen_point.x += tile.getWidth() / 2;
+        screen_point.y += tile.getHeight() / 2;
 
-    auto p2 = Utils::mapToScreen(x2, y2);
-    p2.x -= camera.x;
-    p2.y -= camera.y;
-    p2.x += tile.getWidth() / 2;
-    p2.y += tile.getHeight() / 2;
+        SDL_Point sdl_point = {screen_point.x, screen_point.y};
+        visual_path.push_back(sdl_point);
+    }
 
     SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-    if (SDL_RenderDrawLine(renderer, p1.x, p1.y, p2.x, p2.y))
-        throw std::runtime_error("Could not draw line ("
-                + std::to_string(x1) + ", " + std::to_string(y1) + ") ("
-                + std::to_string(x2) + ", " + std::to_string(y2) + ") "
+    if (SDL_RenderDrawLines(renderer, visual_path.data(), visual_path.size())
+            < 0)
+        throw std::runtime_error("Could not draw lines "
                 + std::string(SDL_GetError()));
 }

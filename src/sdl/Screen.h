@@ -30,7 +30,7 @@ public:
 
     void clear();
     void put(Mapa &map);
-    void trace(unsigned x1, unsigned y1, unsigned x2, unsigned y2);
+    void trace(const std::vector<Point> &path);
     void setDialog(const std::string &text);
     void draw();
 

@@ -2,6 +2,7 @@
 #include <SDL2/SDL_image.h>
 #include "../sdl/Screen.h"
 #include <stdexcept>
+#include <vector>
 #include "../common/Point.h"
 
 int main(int argc, char *argv[]) {
@@ -54,7 +55,7 @@ int main(int argc, char *argv[]) {
         }
 
         screen.put(mapa);
-        screen.trace(0,0 , 9,9);
+        screen.trace({ {0,0}, {9,0}, {9,9} });
         screen.draw();
     }
 
