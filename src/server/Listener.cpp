@@ -1,5 +1,5 @@
 #include "Listener.h"
-#include "../common/Socket.h"
+#include "Server.h"
 
 #include <vector>
 #include <cstring>
@@ -11,8 +11,6 @@ Listener::Listener(uint16_t port, std::mutex& aMutexPlayers):mutexPlayers(aMutex
 }
 
 Listener::Listener(const Listener& orig, std::mutex& aMutexPlayers):mutexPlayers(aMutexPlayers) { }
-
-Listener::~Listener() { }
 
 void Listener::shutdown(){
     int size = threads.size();

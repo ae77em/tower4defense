@@ -15,6 +15,7 @@ private:
     std::vector<GameWindowHandler*> gameWindowHandlers;
     Gtk::Button *pBtnCrearPartida = nullptr;
     Gtk::Button *pbtnJugar = nullptr;
+    Gtk::Button *pbtnUnirse = nullptr;
     Gtk::ComboBoxText *cmbMapsText = nullptr;
     Gtk::Entry *entryMatchName = nullptr;
     Gtk::ComboBoxText *cmbMatchesText = nullptr;
@@ -104,12 +105,18 @@ public:
 
     void on_entryMatchName_changed();
 
+    void addElementsToCombo(const std::list<std::string> &elements);
+
 private:
     void setCreateMatchButtonEnableStatus();
 
     bool mustCreateMatchBeEnabled();
 
     void initComboElements(Glib::RefPtr<Gtk::Builder> &refBuilder);
+
+    void on_btnUnirse_clicked();
+
+    void initButtonJoin(Glib::RefPtr<Gtk::Builder> &refBuilder);
 
 };
 

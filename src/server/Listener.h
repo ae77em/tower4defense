@@ -20,7 +20,6 @@ private:
 public:
     explicit Listener(uint16_t port, std::mutex& mutexPlayers);
     Listener(const Listener& orig, std::mutex& mutexPlayers);
-    virtual ~Listener();
 
     void run();
 

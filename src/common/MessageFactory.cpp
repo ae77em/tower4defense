@@ -277,48 +277,41 @@ std::string MessageFactory::getNewMatchRequest(int clientId, std::string &mapNam
     return toReturn;
 }
 
-std::string MessageFactory::getNewMatchNotification(Message &request, std::set<std::string> &matches) {
-    Json::Value &root = request.getData();
-    std::string toReturn;
+std::string MessageFactory::getNewMatchNotification(std::string matchName) {
+    Json::Value responseRoot;
     Message message;
 
-    Json::Value responseRoot(root);
-
-    std::string mapName = root["mapName"].asString();
-    std::string matchName = root["matchName"].asString();
-
-    std::string composedMatchName;
-    composedMatchName.assign(mapName);
-    composedMatchName.append(" ");
-    composedMatchName.append(matchName);
-
-    if (matches.find(matchName) == matches.end()) {
-        matches.insert(matchName);
-        responseRoot[OPERATION_KEY] = SERVER_NOTIFICATION_NEW_MATCH;
-        responseRoot["mapName"] = mapName;
-        responseRoot["matchName"] = matchName;
-    } else {
-        responseRoot[OPERATION_KEY] = SERVER_NOTIFICATION_NEW_MATCH_ERROR;
-        responseRoot["mapName"] = mapName;
-        responseRoot["matchName"] = matchName;
-        responseRoot["errorDesc"] = "La partida no se puede crear ya que existe otra con ese nombre.";
-    }
+    responseRoot[OPERATION_KEY] = SERVER_NOTIFICATION_NEW_MATCH;
+    responseRoot["matchName"] = matchName;
 
     message.setData(responseRoot);
-    toReturn = message.serialize();
 
-    return toReturn;
+    return message.serialize();
 }
 
-std::string MessageFactory::getCreateFullMatchNotification(int gameId, int clientId) {
+std::string MessageFactory::getNewMatchErrorNotification(std::string matchName,
+                                                         std::string errorMessage) {
+    Json::Value responseRoot;
+    Message message;
+
+    responseRoot[OPERATION_KEY] = SERVER_NOTIFICATION_NEW_MATCH;
+    responseRoot["matchName"] = matchName;
+    responseRoot["errorMessage"] = errorMessage;
+
+    message.setData(responseRoot);
+
+    return message.serialize();
+}
+
+std::string MessageFactory::getMatchNotAvailableNotification(std::string matchName, std::string errorMessage) {
     std::string toReturn;
     Json::Value root(Json::objectValue);
     Message message;
 
-    root[OPERATION_KEY] = SERVER_NOTIFICATION_MATCH_FULL;
+    root[OPERATION_KEY] = SERVER_NOTIFICATION_MATCH_NOT_AVAILABLE;
 
-    root[CLIENT_ID_KEY] = clientId;
-    root["gameId"] = gameId;
+    root["errorMessage"] = errorMessage;
+    root["matchName"] = matchName;
 
     message.setData(root);
 
@@ -327,7 +320,10 @@ std::string MessageFactory::getCreateFullMatchNotification(int gameId, int clien
     return toReturn;
 }
 
-std::string MessageFactory::getAddPlayerToMatchNotification(int gameId, int clientIdWasAdded) {
+std::string
+MessageFactory::getAddPlayerToMatchNotification(std::string matchName,
+                                                int clientIdWasAdded,
+                                                std::string usedElement) {
     std::string toReturn;
     Json::Value root(Json::objectValue);
     Message message;
@@ -335,7 +331,8 @@ std::string MessageFactory::getAddPlayerToMatchNotification(int gameId, int clie
     root[OPERATION_KEY] = SERVER_NOTIFICATION_ENTER_EXISTING_GAME;
 
     root[CLIENT_ID_KEY] = clientIdWasAdded;
-    root["gameId"] = gameId;
+    root["matchName"] = matchName;
+    root["usedElement"] = usedElement;
 
     message.setData(root);
 
@@ -345,7 +342,7 @@ std::string MessageFactory::getAddPlayerToMatchNotification(int gameId, int clie
 }
 
 //VER COMO MANEJAR ESTO, SI SE HACE EN DOS PASOS O EN UNO
-std::string MessageFactory::getAddPlayerAndRunMatchNotification(int gameID, int clientId) {
+std::string MessageFactory::getAddPlayerAndRunMatchNotification(std::string gameID, int clientId) {
     return std::__cxx11::string();
 }
 
@@ -405,4 +402,56 @@ int MessageFactory::getDirection(Message message) {
     Json::Value &root = message.getData();
     int direction = root.get("direction","0").asInt();
     return direction;
+}
+
+std::string MessageFactory::getStartMatchNotification(std::string matchName) {
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = SERVER_NOTIFICATION_START_MATCH;
+    root["matchName"] = matchName;
+
+    message.setData(root);
+
+    return message.serialize();
+}
+
+std::string MessageFactory::getMatchStartedNotification(std::string cause) {
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = SERVER_NOTIFICATION_STARTED_MATCH;
+    root["cause"] = cause;
+
+    message.setData(root);
+
+    return message.serialize();
+}
+
+std::string MessageFactory::getMatchElementsNotification(std::list<std::string> elements) {
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = SERVER_NOTIFICATION_STARTED_MATCH;
+    root["maps"] = Json::arrayValue;
+
+    for (std::string elementName : elements) {
+        root["elements"].append(elementName);
+    }
+
+    message.setData(root);
+
+    return message.serialize();
+}
+
+std::list<std::string> MessageFactory::getElements(Message message) {
+    std::list<std::string> response;
+    Json::Value &root = message.getData();
+    for (Json::Value &map : root["elements"]){
+        response.push_back(map.asString());
+    }
+    return response;
 }

@@ -3,19 +3,17 @@
 #include <string>
 #include <cstring>
 #include <iostream>
+
 #include "../common/TextMessage.h"
-#include "../common/ThreadedQueue.h"
-#include "../common/SocketManager.h"
-#include "../common/Protocol.h"
 #include "../common/MessageFactory.h"
 #include "../common/Message.h"
-#include <sstream>
+#include "../common/Protocol.h"
+
+#include "ClientRequestHandler.h"
 
 ClientRequestHandler::ClientRequestHandler(Socket* c, ThreadedQueue<Message> &th)
                                                                 :client(c)
                                                                 , queueSharedMessage(th) {}
-
-ClientRequestHandler::~ClientRequestHandler() { }
 
 void ClientRequestHandler::sendData(std::string data){
     TextMessage d( data );

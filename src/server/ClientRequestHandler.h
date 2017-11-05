@@ -4,7 +4,7 @@
 #include "../common/Thread.h"
 #include "../common/Socket.h"
 #include "../common/Message.h"
-#include "Server.h"
+#include "../common/ThreadedQueue.h"
 
 class ClientRequestHandler : public Thread {
 private:
@@ -14,7 +14,6 @@ private:
 
 public:
     explicit ClientRequestHandler(Socket* client, ThreadedQueue<Message> &th);
-    virtual ~ClientRequestHandler();
 
     void run();
     void sendData(std::string data);

@@ -55,6 +55,12 @@ void GameAccess::on_btnJugar_clicked() {
     gwh->start();
 }
 
+void GameAccess::on_btnUnirse_clicked() {
+    GameWindowHandler *gwh = new GameWindowHandler(host, port);
+    gameWindowHandlers.push_back(gwh);
+    gwh->start();
+}
+
 void GameAccess::initButtonCreateMatch(Glib::RefPtr<Gtk::Builder> &refBuilder) {
     refBuilder->get_widget("btnCrearPartida", pBtnCrearPartida);
     pBtnCrearPartida->set_sensitive(false);
@@ -75,6 +81,17 @@ void GameAccess::initButtonPlay(Glib::RefPtr<Gtk::Builder> &refBuilder) {
                             sigc::mem_fun(*this, &GameAccess::on_btnJugar_clicked)
                     );
         }
+}
+
+void GameAccess::initButtonJoin(Glib::RefPtr<Gtk::Builder> &refBuilder) {
+    refBuilder->get_widget("btnUnirse", pbtnUnirse);
+    pbtnUnirse->set_sensitive(false);
+    if (pbtnUnirse) {
+        pbtnUnirse->signal_clicked()
+                .connect(
+                        sigc::mem_fun(*this, &GameAccess::on_btnUnirse_clicked)
+                );
+    }
 }
 
 void GameAccess::initComboMaps(Glib::RefPtr<Gtk::Builder> &refBuilder) {
@@ -118,6 +135,15 @@ void GameAccess::addMatchToCombo(const std::string &mapName, const std::string &
     cmbMatchesText->append(mapName, matchName);
 }
 
+void GameAccess::addElementsToCombo(const std::list<std::string> &elements) {
+/*    for (int i = cmbElementsText->get_children().size(); i >= 0; --i){
+        cmbElementsText->remove_text(i);
+    }*/
+
+    for (std::string element : elements){
+        cmbElementsText->append(element);
+    }
+}
 
 void GameAccess::addMap(std::string map) {
     /*Gtk::TreeModel::Row row = *(cmbMapsModel->append());
@@ -195,6 +221,7 @@ void GameAccess::run() {
     if (pWindow) {
         initButtonCreateMatch(refBuilder);
         initButtonPlay(refBuilder);
+        initButtonJoin(refBuilder);
         initComboMaps(refBuilder);
         initEntryMatchName(refBuilder);
         initComboMatches(refBuilder);

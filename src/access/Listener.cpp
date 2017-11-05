@@ -48,6 +48,12 @@ void Listener::run(){
                     gameAccess.addMatchToCombo(mapName, matchName);
                     break;
                 }
+                case SERVER_NOTIFICATION_GET_ELEMENTS:{
+                    std::list<std::string> elements = MessageFactory::getElements(message);
+
+                    gameAccess.addElementsToCombo(elements);
+                    break;
+                }
                 default:
                     response = "notificación del server no reconocida";
             }

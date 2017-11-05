@@ -8,6 +8,7 @@ static const char *const CLIENT_ID_KEY = "clientId";
 #include <string>
 #include <jsoncpp/json/json.h>
 #include <set>
+#include <list>
 #include "Message.h"
 #include "Point.h"
 
@@ -20,6 +21,9 @@ public:
     static std::string getGamesNotification(int clientId,std::string games);
 
     static std::string getCreateMatchNotification(int gameId,int clientIdWhoCreatedGame);
+
+    static std::string getNewMatchNotification(std::string matchName);
+    static std::string getNewMatchErrorNotification(std::string matchName,std::string cause);
 
 
 
@@ -93,11 +97,13 @@ public:
      */
     static std::string getNewMatchRequest(int clientId, std::string &mapName, std::string &matchName);
 
-    static std::string getCreateFullMatchNotification(int gameId, int clientId);
+    static std::string getMatchNotAvailableNotification(std::string matchName, std::string errorMessage);
 
-    static std::string getAddPlayerToMatchNotification(int gameId, int clientIdWasAdded);
+    static std::string getAddPlayerToMatchNotification(std::string gameId,
+                                                       int clientIdWasAdded,
+                                                       std::string usedElement);
 
-    static std::string getAddPlayerAndRunMatchNotification(int gameID, int clientId);
+    static std::string getAddPlayerAndRunMatchNotification(std::string gameID, int clientId);
 
     static int getClientId(Message &message);
 
@@ -116,6 +122,14 @@ public:
     static Point getPoint(Message message);
 
     static int getDirection(Message message);
+
+    static std::string getStartMatchNotification(std::string name);
+
+    static std::string getMatchStartedNotification(std::string name);
+
+    static std::string getMatchElementsNotification(std::list<std::string> elements);
+
+    static std::list<std::string> getElements(Message message);
 };
 
 
