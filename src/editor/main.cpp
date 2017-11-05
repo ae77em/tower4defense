@@ -61,6 +61,13 @@ int main(int argc, char *argv[]) {
                 if (e.type == SDL_KEYDOWN && e.key.keysym.sym == keys.road)
                     mode = PATH;
             } else if (mode == PATH) {
+                if (e.type == SDL_MOUSEBUTTONDOWN) {
+                    Point p = screen.mouseCurrentTile();
+                    Point d = mapa.dimensiones();
+                    if ((p.isPositive()) && (p.x < d.x) && (p.y < d.y))
+                        path.push_back(p);
+                }
+
                 // Change mode
                 if (e.type == SDL_KEYDOWN && e.key.keysym.sym == keys.road)
                     mode = TILE;
