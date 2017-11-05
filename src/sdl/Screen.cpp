@@ -110,6 +110,8 @@ void Screen::setDialog(const std::string &text) {
 }
 
 void Screen::trace(const std::vector<Point> &path) {
+    if (path.size() < 2) return;
+
     std::vector<SDL_Point> visual_path;
     visual_path.reserve(path.size());
     for (const auto& point : path) {
