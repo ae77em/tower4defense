@@ -94,7 +94,12 @@ public:
 
     void setIsShooting(bool isShooting);
 
-    int shotDamage;
+    void shiftColliders();
+
+    void sumExperiencePoints(int points);
+
+    int getExperiencePoints();
+
 protected:
     // abominable como monstruo default...porque sí... :D
     const std::string TEXTURE_FILE_PATH = "images/sprites/enemy-abominable-idle.png";
@@ -125,9 +130,12 @@ protected:
 
     int lastShotTime = 0;
 
-    void shiftColliders();
+    int shotDamage;
+
+    int experiencePoints;
 
     Circle collisionCircle;
+
 };
 
 #endif //TP4_TOWERDEFENSE_TOWER_H

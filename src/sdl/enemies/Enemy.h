@@ -23,8 +23,6 @@ private:
 
     // collision circle of the enemy
     Circle collisionCircle;
-public:
-    Circle &getCollisionCircle();
 
 private:
 
@@ -143,9 +141,15 @@ public:
      * */
     void setVelocity(int velocityX, int velocityY);
 
-
+    /*
+     * Retirba el bonus que se entrega por matar a este enemigo.
+     * Corresponde al 50% de los puntos de vida del monstruo.
+     * */
+    int getBonus();
 
     const SDL_Rect &getWalkBox() const;
+
+    Circle &getCollisionCircle();
 
 
 protected:

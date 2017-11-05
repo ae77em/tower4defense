@@ -197,6 +197,7 @@ Circle &Enemy::getCollisionCircle() {
     return collisionCircle;
 }
 
+
 void Enemy::renderLifeBar(int x, int y) {
     int w = 50; // porque sí
     int h = 4; // porque también (?)...
@@ -216,4 +217,8 @@ void Enemy::renderLifeBar(int x, int y) {
     SDL_Rect fgrect = {px, y, pw, h};
     SDL_RenderFillRect(renderer, &fgrect);
     SDL_SetRenderDrawColor(renderer, old.r, old.g, old.b, old.a);
+}
+
+int Enemy::getBonus() {
+    return initialLifePoints / 2;
 }

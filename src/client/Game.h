@@ -32,6 +32,8 @@ private:
 
     LTexture gDotTexture;
 
+    LTexture gPromptTextTexture;
+
     SDL_Rect gTileClips[TOTAL_TILE_SPRITES];
 
     SDL_Rect gSpriteClipsPortalBlue[30];
@@ -78,6 +80,13 @@ private:
     void loadPortalSprites();
 
     void matarBichoSiLeHiceClick(const SDL_Rect &camera, Enemy &enemy);
+
+    bool gameWon;
+    bool gameLoose;
+
+    void renderText(SDL_Rect &camera, std::string text);
+
+    TTF_Font *font;
 };
 
 #endif //TP4_TOWERDEFENSE_GAME_H

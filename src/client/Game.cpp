@@ -19,7 +19,10 @@ bool Game::init() {
     bool success = true;
 
     //Initialize SDL
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+    if (TTF_Init()<0){
+        printf("TTF could not initialize! SDL Error: %s\n", TTF_GetError());
+        success = false;
+    } else if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         printf("SDL could not initialize! SDL Error: %s\n", SDL_GetError());
         success = false;
     } else {
@@ -57,6 +60,8 @@ bool Game::init() {
                            IMG_GetError());
                     success = false;
                 }
+
+                font = TTF_OpenFont("resources/fonts/UbuntuMono-R.ttf", 16);
             }
         }
     }
@@ -305,10 +310,15 @@ void Game::handleServerNotifications(SDL_Rect camera, Enemy &enemy, Tower &tower
             case SERVER_NOTIFICATION_MOVE_ENEMY: {
                 Point point = MessageFactory::getPoint(message);
                 int dir = MessageFactory::getDirection(message);
-
-                if (enemy.getCollisionCircle().hasCollisionWith(tower.getCollisionCircle())){
+                bool towerIsShooting =
+                        enemy.itIsAlive() &&
+                        enemy.getCollisionCircle().hasCollisionWith(tower.getCollisionCircle());
+                if (towerIsShooting){
                     tower.setIsShooting(true);
-                    enemy.quitLifePoints(tower.getShotDamage());
+                    int shotDamage = tower.getShotDamage();
+                    enemy.quitLifePoints(shotDamage);
+                    tower.sumExperiencePoints(shotDamage);
+                    std::cout << "la torre tiene " << tower.getExperiencePoints() << " de experiencia." << std::endl;
                 } else {
                     tower.setIsShooting(false);
                 }
@@ -316,7 +326,13 @@ void Game::handleServerNotifications(SDL_Rect camera, Enemy &enemy, Tower &tower
                 if (enemy.itIsAlive()) {
                     enemy.setDirection(dir);
                     enemy.moveTo(point.x, point.y);
+                } else if (towerIsShooting) {
+                    tower.sumExperiencePoints(enemy.getBonus());
+                    std::cout << "la torre sumó bonus de " << enemy.getBonus() << " puntos de experiencia." << std::endl;
+                    gameWon = true;
                 }
+
+                std::cout << "la torre tiene " << tower.getExperiencePoints() << " de experiencia." << std::endl;
                 break;
             }
             default:
@@ -329,6 +345,9 @@ void Game::handleServerNotifications(SDL_Rect camera, Enemy &enemy, Tower &tower
 
 void Game::run() {
     std::string mov_description;
+
+    unsigned int gameEndedTime = 0;
+    bool gameEnded = false;
 
     //Start up SDL and create window
     if (!init()) {
@@ -358,16 +377,25 @@ void Game::run() {
             //Level camera
             SDL_Rect camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
 
-            //int frame = 0;
-
             //While application is running
             while (!quit) {
+                gameEnded = gameWon || gameLoose;
+                if (gameEnded && gameEndedTime == 0){
+                    gameEndedTime = SDL_GetTicks();
+                }
+
                 //Handle events on queue
                 mov_description = "";
                 while (SDL_PollEvent(&e) != 0) {
                     //User requests quit
                     if (e.type == SDL_QUIT) {
                         quit = true;
+                    }
+
+                    if (gameEnded) {
+                        if (SDL_GetTicks() - gameEndedTime > 3000){
+                            quit = true;
+                        }
                     }
 
                     //Handle input for the dot
@@ -399,6 +427,14 @@ void Game::run() {
                 abmonible.animate(camera);
                 tower.animate(camera);
 
+                if (gameEnded){
+                    if (gameWon){
+                        renderText(camera, "Partida ganada :)");
+                    } else {
+                        renderText(camera, "Partida perdida...");
+                    }
+                }
+
                 //Update screen
                 SDL_RenderPresent(gRenderer);
             }
@@ -407,5 +443,17 @@ void Game::run() {
         //Free resources and close SDL
         close();
     }
+}
+
+void Game::renderText(SDL_Rect &camera, std::string text) {
+    //aTTF_Font* gFont = TTF_OpenFont("Sans.ttf", 28);
+
+    //SDL_Color textColor = {0xFF, 0xFF, 0, 0xFF };
+    //SDL_Color bgColor = { 0, 0, 0, 0xFF };
+
+    gPromptTextTexture.generateFromText(text,gRenderer,font/*,textColor,bgColor*/);
+
+    std::cout << "voy a renderear '" << text << "'" << std::endl;
+    gPromptTextTexture.render(gRenderer, 50, 50);
 }
 
