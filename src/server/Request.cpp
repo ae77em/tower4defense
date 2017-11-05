@@ -1,7 +1,3 @@
-//
-// Created by federico on 04/11/17.
-//
-
 #include "Request.h"
 #include "../common/MessageFactory.h"
 

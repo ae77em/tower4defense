@@ -11,7 +11,7 @@
 class ServerPlayer {
 
 private:
-    ClientRequestHandler* clientRequestHandler;
+    ClientRequestHandler *clientRequestHandler;
     unsigned int id;
     std::string gameId;
     unsigned int status;
@@ -22,13 +22,13 @@ public:
     void setElement(const string &element);
 
 public:
-    explicit ServerPlayer(ClientRequestHandler* crh, unsigned int aId);
+    explicit ServerPlayer(ClientRequestHandler *crh, unsigned int aId);
 
     unsigned int getId();
 
 
-
     void sendData(std::string data);
+
     void launchRequesHandler();
 
     void setGameId(std::string gameId);
@@ -37,4 +37,5 @@ public:
 
     unsigned int getStatus();
 };
+
 #endif //TP4_TOWERDEFENSE_SERVERPLAYER_H

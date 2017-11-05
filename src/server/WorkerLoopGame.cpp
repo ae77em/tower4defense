@@ -1,7 +1,3 @@
-//
-// Created by federico on 04/11/17.
-//
-
 #include "WorkerLoopGame.h"
 
 WorkerLoopGame::WorkerLoopGame(std::vector<ServerPlayer*>& p,
