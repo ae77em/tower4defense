@@ -8,7 +8,7 @@ Enemy::Enemy(int x, int y, SDL_Renderer *r, LTexture &t) : texture(t) {
     walkBox.w = WALK_SPRITE_WIDTH;
     walkBox.h = WALK_SPRITE_HEIGHT;
 
-    collisionCircle.r = CARTESIAN_TILE_WIDTH / 2;
+    collisionCircle.r = Enemy::getCollisionCircleRadio();
     shiftColliders();
 
     deathBox = walkBox;
@@ -221,4 +221,8 @@ void Enemy::renderLifeBar(int x, int y) {
 
 int Enemy::getBonus() {
     return initialLifePoints / 2;
+}
+
+int Enemy::getCollisionCircleRadio(){
+    return CARTESIAN_TILE_WIDTH / 2;
 }

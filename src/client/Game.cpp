@@ -7,7 +7,6 @@
 #include <SDL2/SDL_image.h>
 #include "../common/MessageFactory.h"
 #include "../common/Protocol.h"
-#include "../sdl/towers/Tower.h"
 
 Game::Game(SharedBuffer &in, SharedBuffer &out, int cId)
         : dataFromServer(in), dataToServer(out), clientId(cId) {}
@@ -19,7 +18,7 @@ bool Game::init() {
     bool success = true;
 
     //Initialize SDL
-    if (TTF_Init()<0){
+    if (TTF_Init() < 0) {
         printf("TTF could not initialize! SDL Error: %s\n", TTF_GetError());
         success = false;
     } else if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -309,11 +308,12 @@ void Game::handleServerNotifications(SDL_Rect camera, Enemy &enemy, Tower &tower
             }
             case SERVER_NOTIFICATION_MOVE_ENEMY: {
                 Point point = MessageFactory::getPoint(message);
+                Point finalPoint(1279, 400);
                 int dir = MessageFactory::getDirection(message);
                 bool towerIsShooting =
                         enemy.itIsAlive() &&
                         enemy.getCollisionCircle().hasCollisionWith(tower.getCollisionCircle());
-                if (towerIsShooting){
+                if (towerIsShooting) {
                     tower.setIsShooting(true);
                     int shotDamage = tower.getShotDamage();
                     enemy.quitLifePoints(shotDamage);
@@ -328,19 +328,27 @@ void Game::handleServerNotifications(SDL_Rect camera, Enemy &enemy, Tower &tower
                     enemy.moveTo(point.x, point.y);
                 } else if (towerIsShooting) {
                     tower.sumExperiencePoints(enemy.getBonus());
-                    std::cout << "la torre sumó bonus de " << enemy.getBonus() << " puntos de experiencia." << std::endl;
+                    std::cout << "la torre sumó bonus de " << enemy.getBonus() << " puntos de experiencia."
+                              << std::endl;
                     gameWon = true;
+                }
+
+                if (enemy.itIsAlive()) {
+                    if (point.x >= finalPoint.x && point.y >= finalPoint.y) {
+                        gameLoose = true;
+                    }
                 }
 
                 std::cout << "la torre tiene " << tower.getExperiencePoints() << " de experiencia." << std::endl;
                 break;
-            }
-            default:
-                response = "no reconocida";
         }
-
-        std::cout << "notification: " << notification << std::endl;
+        default:
+            response = "no reconocida";
     }
+
+    std::cout << "notification: " << notification << std::endl;
+}
+
 }
 
 void Game::run() {
@@ -380,7 +388,7 @@ void Game::run() {
             //While application is running
             while (!quit) {
                 gameEnded = gameWon || gameLoose;
-                if (gameEnded && gameEndedTime == 0){
+                if (gameEnded && gameEndedTime == 0) {
                     gameEndedTime = SDL_GetTicks();
                 }
 
@@ -393,7 +401,7 @@ void Game::run() {
                     }
 
                     if (gameEnded) {
-                        if (SDL_GetTicks() - gameEndedTime > 3000){
+                        if (SDL_GetTicks() - gameEndedTime > 3000) {
                             quit = true;
                         }
                     }
@@ -427,8 +435,8 @@ void Game::run() {
                 abmonible.animate(camera);
                 tower.animate(camera);
 
-                if (gameEnded){
-                    if (gameWon){
+                if (gameEnded) {
+                    if (gameWon) {
                         renderText(camera, "Partida ganada :)");
                     } else {
                         renderText(camera, "Partida perdida...");
@@ -446,14 +454,13 @@ void Game::run() {
 }
 
 void Game::renderText(SDL_Rect &camera, std::string text) {
-    //aTTF_Font* gFont = TTF_OpenFont("Sans.ttf", 28);
+    SDL_Color textColor = {0xFF, 0xFF, 0, 0xFF}; // letra amarilla
+    SDL_Color bgColor = {0, 0, 0, 0}; // fondo transparente (supuestamente)
 
-    //SDL_Color textColor = {0xFF, 0xFF, 0, 0xFF };
-    //SDL_Color bgColor = { 0, 0, 0, 0xFF };
+    TTF_SetFontStyle(font, TTF_STYLE_BOLD);
 
-    gPromptTextTexture.generateFromText(text,gRenderer,font/*,textColor,bgColor*/);
+    gPromptTextTexture.generateFromText(text, gRenderer, font, textColor, bgColor);
 
-    std::cout << "voy a renderear '" << text << "'" << std::endl;
     gPromptTextTexture.render(gRenderer, 50, 50);
 }
 

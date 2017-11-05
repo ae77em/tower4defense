@@ -152,6 +152,8 @@ public:
     Circle &getCollisionCircle();
 
 
+    static int getCollisionCircleRadio();
+
 protected:
     // abominable como monstruo default...porque sí... :D
     const std::string TEXTURE_FILE_PATH = "images/sprites/enemy-abominable-walk.png";
@@ -183,6 +185,7 @@ protected:
     int isAir;
 
     void shiftColliders();
+
 };
 
 

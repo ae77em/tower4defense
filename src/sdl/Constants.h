@@ -45,6 +45,15 @@ enum MovementDirection {
     Y_NEGATIVE = 2
 };
 
+enum EnemyType {
+    ABMONIBLE = 0,
+    BLOOD_HAWK = 1,
+    GOATMAN = 2,
+    GREEN_DAEMON = 3,
+    SPECTRE = 4,
+    ZOMBIE = 5
+};
+
 const std::vector<std::string> TILES_IMAGES_PATHS({
     "images/sprites/tile-grass.png",
     "images/sprites/tile-desert.png",
