@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
     mapa.setCasilla('@', 8, 8);
 
     Screen screen;
-    screen.setDialog("Hola mundo!");
+    screen.setDialog("-- TILE --");
 
     enum input_mode mode = TILE;
     char tile_type_to_put = '~';
@@ -58,8 +58,10 @@ int main(int argc, char *argv[]) {
                     tile_type_to_put = '@';
 
                 // Change mode
-                if (e.type == SDL_KEYDOWN && e.key.keysym.sym == keys.road)
+                if (e.type == SDL_KEYDOWN && e.key.keysym.sym == keys.road) {
                     mode = PATH;
+                    screen.setDialog("-- PATH --");
+                }
             } else if (mode == PATH) {
                 if (e.type == SDL_MOUSEBUTTONDOWN) {
                     Point p = screen.mouseCurrentTile();
@@ -69,8 +71,10 @@ int main(int argc, char *argv[]) {
                 }
 
                 // Change mode
-                if (e.type == SDL_KEYDOWN && e.key.keysym.sym == keys.road)
+                if (e.type == SDL_KEYDOWN && e.key.keysym.sym == keys.road) {
                     mode = TILE;
+                    screen.setDialog("-- TILE --");
+                }
             }
 
             screen.handleEvent(e);
