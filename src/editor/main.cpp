@@ -2,7 +2,10 @@
 #include <SDL2/SDL_image.h>
 #include "../sdl/Screen.h"
 #include <stdexcept>
+#include <vector>
 #include "../common/Point.h"
+
+enum input_mode { TILE, PATH };
 
 int main(int argc, char *argv[]) {
 // SDL initialization
@@ -19,9 +22,12 @@ int main(int argc, char *argv[]) {
     mapa.setCasilla('@', 8, 8);
 
     Screen screen;
-    screen.setDialog("Hola mundo!");
+    screen.setDialog("-- TILE --");
 
+    enum input_mode mode = TILE;
     char tile_type_to_put = '~';
+
+    std::vector<Point> path;
 
     Keybinding keys(default_keybinding);
 
@@ -33,27 +39,49 @@ int main(int argc, char *argv[]) {
         while(SDL_PollEvent( &e ) != 0) {
             if (e.type == SDL_QUIT) quit = true;
 
-            if (e.type == SDL_MOUSEBUTTONDOWN) {
-                Point p = screen.mouseCurrentTile();
-                Point d = mapa.dimensiones();
-                if ((p.isPositive()) && (p.x < d.x) && (p.y < d.y))
-                    mapa.setCasilla(tile_type_to_put, p.x, p.y);
-            }
+            if (mode == TILE) {
+                if (e.type == SDL_MOUSEBUTTONDOWN) {
+                    Point p = screen.mouseCurrentTile();
+                    Point d = mapa.dimensiones();
+                    if ((p.isPositive()) && (p.x < d.x) && (p.y < d.y))
+                        mapa.setCasilla(tile_type_to_put, p.x, p.y);
+                }
 
-            // Change tool type
-            if (e.type == SDL_KEYDOWN && e.key.keysym.sym == keys.water)
-                tile_type_to_put = '~';
-            if (e.type == SDL_KEYDOWN && e.key.keysym.sym == keys.earth)
-                tile_type_to_put = '*';
-            if (e.type == SDL_KEYDOWN && e.key.keysym.sym == keys.fire)
-                tile_type_to_put = '!';
-            if (e.type == SDL_KEYDOWN && e.key.keysym.sym == keys.air)
-                tile_type_to_put = '@';
+                // Change tool type
+                if (e.type == SDL_KEYDOWN && e.key.keysym.sym == keys.water)
+                    tile_type_to_put = '~';
+                if (e.type == SDL_KEYDOWN && e.key.keysym.sym == keys.earth)
+                    tile_type_to_put = '*';
+                if (e.type == SDL_KEYDOWN && e.key.keysym.sym == keys.fire)
+                    tile_type_to_put = '!';
+                if (e.type == SDL_KEYDOWN && e.key.keysym.sym == keys.air)
+                    tile_type_to_put = '@';
+
+                // Change mode
+                if (e.type == SDL_KEYDOWN && e.key.keysym.sym == keys.road) {
+                    mode = PATH;
+                    screen.setDialog("-- PATH --");
+                }
+            } else if (mode == PATH) {
+                if (e.type == SDL_MOUSEBUTTONDOWN) {
+                    Point p = screen.mouseCurrentTile();
+                    Point d = mapa.dimensiones();
+                    if ((p.isPositive()) && (p.x < d.x) && (p.y < d.y))
+                        path.push_back(p);
+                }
+
+                // Change mode
+                if (e.type == SDL_KEYDOWN && e.key.keysym.sym == keys.road) {
+                    mode = TILE;
+                    screen.setDialog("-- TILE --");
+                }
+            }
 
             screen.handleEvent(e);
         }
 
         screen.put(mapa);
+        screen.trace(path);
         screen.draw();
     }
 

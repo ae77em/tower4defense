@@ -1,8 +1,10 @@
 #include "Screen.h"
 #include <stdexcept>
+#include <vector>
 #include "Constants.h"
 #include "Utils.h"
 #include "../common/modelo/Mapa.h"
+#include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_ttf.h>
 
 Screen::Screen() {
@@ -16,9 +18,6 @@ Screen::Screen() {
             SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (!renderer) throw std::runtime_error("Could not create renderer"
             + std::string(SDL_GetError()));
-
-    //Initialize renderer color
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
 
     //Initialize PNG loading
     int imgFlags = IMG_INIT_PNG;
@@ -77,6 +76,7 @@ void Screen::handleEvent(SDL_Event &e) {
 }
 
 void Screen::clear() {
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
     SDL_RenderClear(renderer);
 }
 
@@ -107,4 +107,27 @@ void Screen::setDialog(const std::string &text) {
     if (! dialog.generateFromText(text, renderer, font))
         throw std::runtime_error("Failed to generate dialog \""
                 + text + "\"");
+}
+
+void Screen::trace(const std::vector<Point> &path) {
+    if (path.size() < 2) return;
+
+    std::vector<SDL_Point> visual_path;
+    visual_path.reserve(path.size());
+    for (const auto& point : path) {
+        auto screen_point = Utils::mapToScreen(point.x, point.y);
+        screen_point.x -= camera.x;
+        screen_point.y -= camera.y;
+        screen_point.x += tile.getWidth() / 2;
+        screen_point.y += tile.getHeight() / 2;
+
+        SDL_Point sdl_point = {screen_point.x, screen_point.y};
+        visual_path.push_back(sdl_point);
+    }
+
+    SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+    if (SDL_RenderDrawLines(renderer, visual_path.data(), visual_path.size())
+            < 0)
+        throw std::runtime_error("Could not draw lines "
+                + std::string(SDL_GetError()));
 }
