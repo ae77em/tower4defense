@@ -72,8 +72,13 @@ int main(int argc, char *argv[]) {
                         path.push_back(p);
                 }
 
+                if (e.type == SDL_KEYDOWN && e.key.keysym.sym == keys.cancel) {
+                    path.clear();
+                }
+
                 // Change mode
                 if (e.type == SDL_KEYDOWN && e.key.keysym.sym == keys.road) {
+                    path.clear();
                     mode = TILE;
                     screen.setDialog("-- TILE --");
                 }
