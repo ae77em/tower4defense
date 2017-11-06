@@ -65,15 +65,39 @@ int main(int argc, char *argv[]) {
                     screen.setDialog("-- PATH --");
                 }
             } else if (mode == PATH) {
-                if (e.type == SDL_MOUSEBUTTONDOWN) {
+                // Simple, unshifted click adds points to path
+                if (e.type == SDL_MOUSEBUTTONDOWN
+                        && !( KMOD_SHIFT & SDL_GetModState() )) {
                     Point p = screen.mouseCurrentTile();
                     Point d = mapa.dimensiones();
                     if ((p.isPositive()) && (p.x < d.x) && (p.y < d.y))
                         path.push_back(p);
                 }
 
+                // Shift-click adds point to path, ends it, and adds it to map
+                if (e.type == SDL_MOUSEBUTTONDOWN
+                        && ( KMOD_SHIFT & SDL_GetModState() )) {
+                    Point p = screen.mouseCurrentTile();
+                    Point d = mapa.dimensiones();
+
+                    /* Do something iff the new point is acceptable as
+                       an extension of the path, and the result would be
+                       a sensible path */
+                    if ((p.isPositive()) && (p.x < d.x) && (p.y < d.y)
+                            && (path.size() > 0)) {
+                        path.push_back(p);
+                        mapa.agregarCamino(path);
+                        path.clear();
+                    }
+                }
+
+                if (e.type == SDL_KEYDOWN && e.key.keysym.sym == keys.cancel) {
+                    path.clear();
+                }
+
                 // Change mode
                 if (e.type == SDL_KEYDOWN && e.key.keysym.sym == keys.road) {
+                    path.clear();
                     mode = TILE;
                     screen.setDialog("-- TILE --");
                 }
@@ -83,6 +107,8 @@ int main(int argc, char *argv[]) {
         }
 
         screen.put(mapa);
+        for (const auto& camino : mapa.getCaminos())
+            screen.trace(camino);
         screen.trace(path);
         screen.draw();
     }

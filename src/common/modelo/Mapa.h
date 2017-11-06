@@ -12,6 +12,7 @@
 class Mapa {
     unsigned extension_x, extension_y;
     std::vector<char> casillas;
+    std::vector<std::vector<Point>> caminos;
 
 public:
     Mapa(unsigned x, unsigned y);
@@ -34,9 +35,12 @@ public:
             S salida
      */
     char casilla(unsigned x, unsigned y);
-
     void setCasilla(char value, unsigned x, unsigned y);
+
     Point dimensiones();
+
+    std::vector<std::vector<Point>>& getCaminos();
+    void agregarCamino(const std::vector<Point> &camino);
 };
 
 #endif
