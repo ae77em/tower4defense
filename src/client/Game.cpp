@@ -229,11 +229,11 @@ void Game::loadPortalSprites() {
     }
 }
 
-void Game::handleMouseEvents(SDL_Rect camera, std::string mov_description, SDL_Event e, Enemy &enemy) {
+void Game::handleMouseEvents(SDL_Rect camera, std::string mov_description, SDL_Event e) {
     if (e.type == SDL_MOUSEBUTTONDOWN) {
         Point point = Utils::getMouseRelativePoint(camera);
 
-        matarBichoSiLeHiceClick(camera, enemy); // para pruebas
+        //matarBichoSiLeHiceClick(camera, enemy); // para pruebas
 
         /* Si hice click y tengo algún evento marcado para disparar
          * (por ejemplo, marqué un lugar para poner una torre, o quiero
@@ -246,7 +246,7 @@ void Game::handleMouseEvents(SDL_Rect camera, std::string mov_description, SDL_E
                 break;
             }
             case GAME_EVENT_KILL_ENEMY: {
-                enemy.kill();
+                //enemy.kill();
                 break;
             }
             default:
@@ -282,7 +282,7 @@ void Game::matarBichoSiLeHiceClick(const SDL_Rect &camera, Enemy &enemy) {
 
 }
 
-void Game::handleServerNotifications(SDL_Rect camera, Enemy &enemy, Tower &tower) {
+void Game::handleServerNotifications(SDL_Rect camera, Tower &tower) {
     int transactionsCounter = 0;
     std::string notification;
 
@@ -310,30 +310,43 @@ void Game::handleServerNotifications(SDL_Rect camera, Enemy &enemy, Tower &tower
                 Point point = MessageFactory::getPoint(message);
                 Point finalPoint(1279, 400);
                 int dir = MessageFactory::getDirection(message);
+                int enemyId = MessageFactory::getEnemyId(message);
+
+                Enemy *enemy = enemies.at(enemyId);
+
                 bool towerIsShooting =
-                        enemy.itIsAlive() &&
-                        enemy.getCollisionCircle().hasCollisionWith(tower.getCollisionCircle());
+                        enemy->itIsAlive() &&
+                        enemy->getCollisionCircle().hasCollisionWith(tower.getCollisionCircle());
                 if (towerIsShooting) {
                     tower.setIsShooting(true);
                     int shotDamage = tower.getShotDamage();
-                    enemy.quitLifePoints(shotDamage);
+                    enemy->quitLifePoints(shotDamage);
                     tower.sumExperiencePoints(shotDamage);
                     std::cout << "la torre tiene " << tower.getExperiencePoints() << " de experiencia." << std::endl;
                 } else {
                     tower.setIsShooting(false);
                 }
 
-                if (enemy.itIsAlive()) {
-                    enemy.setDirection(dir);
-                    enemy.moveTo(point.x, point.y);
+                if (enemy->itIsAlive()) {
+                    enemy->setDirection(dir);
+                    enemy->moveTo(point.x, point.y);
                 } else if (towerIsShooting) {
-                    tower.sumExperiencePoints(enemy.getBonus());
-                    std::cout << "la torre sumó bonus de " << enemy.getBonus() << " puntos de experiencia."
+                    tower.sumExperiencePoints(enemy->getBonus());
+                    std::cout << "la torre sumó bonus de " << enemy->getBonus() << " puntos de experiencia."
                               << std::endl;
-                    gameWon = true;
+
+                    for (Enemy *enemy1 : enemies){
+                        if (enemy1->itIsAlive()) {
+                            gameWon = false;
+                            break;
+                        } else {
+                            gameWon = true;
+                        }
+
+                    }
                 }
 
-                if (enemy.itIsAlive()) {
+                if (enemy->itIsAlive()) {
                     if (point.x >= finalPoint.x && point.y >= finalPoint.y) {
                         gameLoose = true;
                     }
@@ -359,11 +372,14 @@ void Game::run() {
 
     //Start up SDL and create window
     if (!init()) {
-        printf("Failed to initialize!\n");
+        printf("Failed to initializde!\n");
     } else {
-        Abmonible abmonible(0, 0, gRenderer, gSpriteSheetTextureEnemyAbominable);
-        abmonible.loadMedia();
-        abmonible.setSprites();
+        for (int x= 0; x < 5; ++x){
+            Enemy *abmonible = new Abmonible(0, 0, gRenderer);
+            abmonible->loadMedia();
+            abmonible->setSprites();
+            enemies.push_back(abmonible);
+        }
 
         Tower tower(0, 0, gRenderer, gSpriteSheetTextureTower);
         tower.loadMedia();
@@ -410,11 +426,11 @@ void Game::run() {
                     dot.handleEvent(e, mov_description);
 
                     eventDispatched = 1;
-                    handleMouseEvents(camera, mov_description, e, abmonible);
+                    handleMouseEvents(camera, mov_description, e);
                     eventDispatched = 0;
                 }
 
-                handleServerNotifications(camera, abmonible, tower);
+                handleServerNotifications(camera, tower);
 
                 //Move the dot
                 dot.move();
@@ -432,8 +448,11 @@ void Game::run() {
                 //Render dot
                 dot.render(gDotTexture, camera, gRenderer);
 
-                abmonible.animate(camera);
                 tower.animate(camera);
+
+                for (Enemy *enemy : enemies){
+                    enemy->animate(camera);
+                }
 
                 if (gameEnded) {
                     if (gameWon) {

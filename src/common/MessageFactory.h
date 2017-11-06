@@ -117,7 +117,7 @@ public:
 
     static std::string getClientEndConectionNotification(int clientId);
 
-    static std::string getMovementNotification(int moveable, int x, int y, int direction);
+    static std::string getMovementNotification(int enemyId, int moveable, int x, int y, int direction);
 
     static Point getPoint(Message message);
 
@@ -130,6 +130,8 @@ public:
     static std::string getMatchElementsNotification(std::list<std::string> elements);
 
     static std::list<std::string> getElements(Message message);
+
+    static int getEnemyId(Message message);
 };
 
 

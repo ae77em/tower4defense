@@ -6,7 +6,7 @@
 
 class Abmonible : public Enemy {
 public:
-    Abmonible(int x, int y, SDL_Renderer *renderer, LTexture &t);
+    Abmonible(int x, int y, SDL_Renderer *renderer);
 
 };
 

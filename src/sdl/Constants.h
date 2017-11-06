@@ -4,11 +4,15 @@
 #include <vector>
 #include <string>
 
-//Screen dimension constants
+//
+// Screen dimension constants
+//
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
 
-//Tile constants
+//
+// Tile constants
+//
 const int CARTESIAN_TILE_WIDTH = 80;
 const int CARTESIAN_TILE_HEIGHT = 80;
 const int ISO_TILE_WIDTH = 160;
@@ -21,6 +25,16 @@ const int TILES_ROWS = 24;
 const int TILES_COLUMNS = 16;
 const int TOTAL_TILES = TILES_ROWS * TILES_COLUMNS;
 const int TOTAL_TILE_SPRITES = 7;
+
+//
+// Constants of enemies sprites
+//
+const int NUMBER_OF_ENEMY_WALK_SPRITES = 12;
+const int NUMBER_OF_ENEMY_WALK_DIRECTIONS = 4;
+
+const int NUMBER_OF_ENEMY_DEATH_SPRITES = 18;
+const int NUMBER_OF_ENEMY_DEATH_DIRECTIONS = 4;
+
 
 //The different tile sprites
 enum TileType {

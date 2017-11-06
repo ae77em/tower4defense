@@ -1,10 +1,12 @@
+#include <SDL2/SDL_timer.h>
+#include <iostream>
 #include "Listener.h"
 #include "../common/TextMessage.h"
 #include "../common/MessageFactory.h"
 #include "../common/Protocol.h"
 #include "../sdl/Constants.h"
-#include "../sdl/enemies/Abmonible.h"
 #include "../sdl/Utils.h"
+#include "../server/game-actors/enemies/ActorEnemy.h"
 
 Listener::Listener(Socket &s, SharedBuffer &b) : server(s), buffer(b) {}
 
@@ -12,7 +14,7 @@ Listener::~Listener() {}
 
 void Listener::run() {
     try {
-        // TODO PARA PRUEBAS ////////////////////////
+        // TODO PARA PRUEBAS - ESTO DSPS SE BORRA ////////////////////////
         cargarBufferConDatosDePrueba();
         // //////////////////////////////////////////
 
@@ -30,37 +32,65 @@ void Listener::run() {
     }
 }
 
+/*
+ * ESTO SIMULA DISTINTAS NOTIFICACIONES DEL SERVER PARA LLEVAR
+ * ADELANTE UN JUEGO. ESTO VUELA CUANDO INTEGREMOS SERVER CON
+ * CLIENTE DEFINITIVAMENTE.
+*/
 void Listener::cargarBufferConDatosDePrueba() {
 
-    double x;
+    /*double x;
     double y;
     double xFinal;
-    double yFinal;
+    double yFinal;*/
 
     std::vector<Point> camino;
-    camino.push_back(Point(0, 5));
-    camino.push_back(Point(1,5));
-    camino.push_back(Point(2,5));
-    camino.push_back(Point(3,5));
-    camino.push_back(Point(4,5));
-    camino.push_back(Point(4,6));
-    camino.push_back(Point(4,7));
-    camino.push_back(Point(5,7));
-    camino.push_back(Point(6,7));
-    camino.push_back(Point(7,7));
-    camino.push_back(Point(8,7));
-    camino.push_back(Point(9,7));
-    camino.push_back(Point(10,7));
-    camino.push_back(Point(11,7));
-    camino.push_back(Point(12,7));
-    camino.push_back(Point(12,6));
-    camino.push_back(Point(12,5));
-    camino.push_back(Point(13,5));
-    camino.push_back(Point(14,5));
-    camino.push_back(Point(15,5));
-    camino.push_back(Point(16,5));
+    // supongo que recorro una matriz de baldosas de CARTESIAN_TILE_WIDTH x CARTESIAN_TILE_HEIGHT
+    camino.push_back(Point(0 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
+    camino.push_back(Point(1 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
+    camino.push_back(Point(2 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
+    camino.push_back(Point(3 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
+    camino.push_back(Point(4 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
+    camino.push_back(Point(4 * CARTESIAN_TILE_WIDTH,6 * CARTESIAN_TILE_HEIGHT));
+    camino.push_back(Point(4 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
+    camino.push_back(Point(5 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
+    camino.push_back(Point(6 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
+    camino.push_back(Point(7 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
+    camino.push_back(Point(8 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
+    camino.push_back(Point(9 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
+    camino.push_back(Point(10 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
+    camino.push_back(Point(11 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
+    camino.push_back(Point(12 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
+    camino.push_back(Point(12 * CARTESIAN_TILE_WIDTH,6 * CARTESIAN_TILE_HEIGHT));
+    camino.push_back(Point(12 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
+    camino.push_back(Point(13 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
+    camino.push_back(Point(14 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
+    camino.push_back(Point(15 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
+    camino.push_back(Point(16 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
 
     Point point(0, 0);
+
+    std::vector<ActorEnemy> horda;
+
+    /*ActorEnemy enemy1;
+    enemy1.setPath(camino);
+    ActorEnemy enemy2;
+    enemy2.setPath(camino);
+    ActorEnemy enemy3;
+
+    horda.push_back(enemy1);
+    horda.push_back(enemy2);
+    horda.push_back(enemy3);*/
+
+    for (int x = 0; x < 5; ++x){
+        ActorEnemy enemy;
+        enemy.setPath(camino);
+        horda.push_back(enemy);
+    }
+
+    for (unsigned i = 0; i < horda.size(); ++i){
+        horda.at(i).setCurrentPathPosition(-i * CARTESIAN_TILE_WIDTH / 2);
+    }
 
     std::string putTowerRequest = MessageFactory::getPutTowerRequest(1,
                                                                      5 * CARTESIAN_TILE_WIDTH,
@@ -72,39 +102,47 @@ void Listener::cargarBufferConDatosDePrueba() {
 
     buffer.addData(putTowerNotification);
 
-    for (unsigned int i = 0; i < camino.size(); ++i) {
-        point = camino.at(i);
-        x = point.x * CARTESIAN_TILE_WIDTH;
-        y = point.y * CARTESIAN_TILE_HEIGHT;
+    std::vector<Point> auxCamino;
+    bool termine = false;
+    int avance = 0;
+    unsigned ultimoQueEntro = 0;
+    bool entraronTodos;
 
-        xFinal = x;
-        yFinal = y;
+    while (!termine) {
+        horda[ultimoQueEntro].setIsWalking(true);
 
-        if (i < camino.size() - 1) {
-            point = camino.at(i + 1);
-            xFinal = point.x * CARTESIAN_TILE_WIDTH;
-            yFinal = point.y * CARTESIAN_TILE_HEIGHT;
+        while (avance < CARTESIAN_TILE_WIDTH){
+            for (unsigned h = 0; h <= ultimoQueEntro; ++h) {
+                horda[h].advance();
+                int xpos = horda[h].getXPosition();
+                std::string movementNotification =
+                        MessageFactory::getMovementNotification(h, ENEMY_ABMONIBLE, xpos,
+                                                                horda[h].getYPosition(), horda[h].getCurrentDirection());
+
+                buffer.addData(movementNotification);
+            }
+            ++avance;
         }
 
-        int currentTime;
+        avance = 0;
 
-        int direction = Utils::getMovementDirection(Utils::getNextMapDisplacement(x, xFinal),
-                                                    Utils::getNextMapDisplacement(y, yFinal));
-
-        while (x != xFinal || y != yFinal) {
-            std::string movementNotification = MessageFactory::getMovementNotification(ENEMY_ABMONIBLE, x, y,
-                                                                                       direction);
-
-            buffer.addData(movementNotification);
-
-            // todo: ablandar esto
-            currentTime = SDL_GetTicks();
-            while ((currentTime - SDL_GetTicks()) < 0.1) {};
-
-            x += Utils::getNextMapDisplacement(x, xFinal);
-            y += Utils::getNextMapDisplacement(y, yFinal);
+        if (!entraronTodos){
+            ++ultimoQueEntro;
+            // corrijo si me pasé
+            if (ultimoQueEntro >= horda.size()){
+                ultimoQueEntro = horda.size() - 1;
+                entraronTodos = true;
+            }
         }
 
+        for (unsigned h = 0; h <= ultimoQueEntro; ++h) {
+            horda[h].gotoNextPathPosition();
+        }
+
+        termine = (horda[horda.size()-1].getCurrentPosition() == (int)(camino.size() - 1));
     }
+
+    std::cout << "salid";
+
 }
 

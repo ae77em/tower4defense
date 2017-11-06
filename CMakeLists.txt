@@ -4,8 +4,8 @@ project(tp4_towerdefense)
 SET(CMAKE_CXX_FLAGS "-Wall -Werror -pedantic -pedantic-errors -O0 -ggdb -DDEBUG -fno-inline -std=c++11")
 
 file(GLOB CLIENT_SOURCES "src/client/*.cpp" "src/common/*.cpp"
-        "src/common/**/*.cpp" "src/sdl/*.cpp" "src/sdl/*/*.cpp")
-file(GLOB SERVER_SOURCES "src/server/*.cpp/" "src/common/*.cpp")
+        "src/common/**/*.cpp" "src/sdl/*.cpp" "src/sdl/*/*.cpp" "src/server/*/*/*.cpp")
+file(GLOB SERVER_SOURCES "src/server/*.cpp" "src/server/*/*/*.cpp" "src/common/*.cpp")
 file(GLOB EDITOR_SOURCES "src/editor/*.cpp" "src/common/**/*.cpp"
         "src/sdl/*.cpp") 
 file(GLOB GAMEACCESS_SOURCES "src/access/*.cpp" "src/common/*.cpp")

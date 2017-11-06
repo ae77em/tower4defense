@@ -1,7 +1,7 @@
 #include "Enemy.h"
 #include "../Utils.h"
 
-Enemy::Enemy(int x, int y, SDL_Renderer *r, LTexture &t) : texture(t) {
+Enemy::Enemy(int x, int y, SDL_Renderer *r) {
     Point initialSreenPos = Utils::mapToScreen(x, y);
     walkBox.x = initialSreenPos.x;
     walkBox.y = initialSreenPos.y;
@@ -56,8 +56,8 @@ void Enemy::setSprites() {
     int walkingStartX = 1765;
     int walkingStartY = 3537;
 
-    for (int i = 0; i < NUMBER_OF_WALK_DIRECTIONS; ++i) {
-        for (int j = 0; j < NUMBER_OF_WALK_SPRITES; ++j) {
+    for (int i = 0; i < NUMBER_OF_ENEMY_WALK_DIRECTIONS; ++i) {
+        for (int j = 0; j < NUMBER_OF_ENEMY_WALK_SPRITES; ++j) {
             spritesRow = SPRITE_DIRECTIONS[i];
 
             walkingSprites[i][j].x = walkingStartX + (j * spriteWidth);
@@ -74,8 +74,8 @@ void Enemy::setSprites() {
     int deathStartX = 1;
     int deathStartY = 2273;
 
-    for (int i = 0; i < NUMBER_OF_DEATH_DIRECTIONS; ++i) {
-        for (int j = 0; j < NUMBER_OF_DEATH_SPRITES; ++j) {
+    for (int i = 0; i < NUMBER_OF_ENEMY_DEATH_DIRECTIONS; ++i) {
+        for (int j = 0; j < NUMBER_OF_ENEMY_DEATH_SPRITES; ++j) {
             spritesRow = SPRITE_DIRECTIONS[i];
 
             deathSprites[i][j].x = deathStartX + (j * spriteWidth);
@@ -87,7 +87,7 @@ void Enemy::setSprites() {
 }
 
 void Enemy::renderWalk(SDL_Rect &camera) {
-    int frameToDraw = (SDL_GetTicks() / 100) % NUMBER_OF_WALK_SPRITES;
+    int frameToDraw = (SDL_GetTicks() / 100) % NUMBER_OF_ENEMY_WALK_SPRITES;
     DecimalPoint screenPoint = Utils::cartesianToIso(walkBox.x, walkBox.y);
 
     // set the death box pos to assure that the death start in the same
@@ -106,10 +106,10 @@ void Enemy::renderWalk(SDL_Rect &camera) {
 }
 
 void Enemy::renderDie(SDL_Rect &camera) {
-    int frameToDraw = (SDL_GetTicks() / 100) % NUMBER_OF_DEATH_SPRITES;
+    int frameToDraw = (SDL_GetTicks() / 100) % NUMBER_OF_ENEMY_DEATH_SPRITES;
 
     firstFrameOfDeathRendered = (firstFrameOfDeathRendered || frameToDraw == 0);
-    lastFrameOfDeathRendered = (lastFrameOfDeathRendered || frameToDraw == NUMBER_OF_DEATH_SPRITES - 1);
+    lastFrameOfDeathRendered = (lastFrameOfDeathRendered || frameToDraw == NUMBER_OF_ENEMY_DEATH_SPRITES - 1);
 
     if (!(firstFrameOfDeathRendered and lastFrameOfDeathRendered)) {
         DecimalPoint screenPoint = Utils::cartesianToIso(deathBox.x, deathBox.y);
@@ -226,3 +226,4 @@ int Enemy::getBonus() {
 int Enemy::getCollisionCircleRadio(){
     return CARTESIAN_TILE_WIDTH / 2;
 }
+

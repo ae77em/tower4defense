@@ -4,7 +4,7 @@
 Horde::Horde(int enemyType, size_t size, int x, int y, SDL_Renderer *r, LTexture &t) {
     switch (enemyType){
         case ABMONIBLE:{
-            loadAbmonibles(size, x, y, r, t);
+            loadAbmonibles(size, x, y, r);
             break;
         }
         default:{
@@ -15,10 +15,10 @@ Horde::Horde(int enemyType, size_t size, int x, int y, SDL_Renderer *r, LTexture
 
 Horde::~Horde() {}
 
-void Horde::loadAbmonibles(size_t size, int x, int y, SDL_Renderer *r, LTexture &t) {
+void Horde::loadAbmonibles(size_t size, int x, int y, SDL_Renderer *r) {
     enemySeparartion = Abmonible::getCollisionCircleRadio();
     for (unsigned i = 0; i < size; ++i){
-        enemies.push_back(new Abmonible(x, y, r, t));
+        enemies.push_back(new Abmonible(x, y, r));
     }
 }
 

@@ -54,6 +54,8 @@ private:
     int eventDispatched;
     int clientId;
 
+    std::vector<Enemy*> enemies;
+
 public:
     Game(SharedBuffer &in, SharedBuffer &out, int clientId);
     ~Game();
@@ -66,10 +68,10 @@ public:
     bool init();
 
 private:
-    void handleMouseEvents(SDL_Rect camera, std::string mov_description, SDL_Event e, Enemy &enemy);
+    void handleMouseEvents(SDL_Rect camera, std::string mov_description, SDL_Event e);
     void loadServerNotifications(std::string notification);
 
-    void handleServerNotifications(SDL_Rect rect, Enemy &enemy, Tower &tower);
+    void handleServerNotifications(SDL_Rect rect, Tower &tower);
 
     enum GameEvents {
         GAME_EVENT_PUT_TOWER = 1,

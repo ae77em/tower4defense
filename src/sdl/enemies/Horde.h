@@ -15,7 +15,7 @@ public:
     std::vector<Enemy *> &getEnemies();
 
 private:
-    void loadAbmonibles(size_t size, int x, int y, SDL_Renderer *r, LTexture &texture);
+    void loadAbmonibles(size_t size, int x, int y, SDL_Renderer *r);
     void loadBloodHawks(size_t size);
     void loadGoatmans(size_t size);
     void loadGreenDaemons(size_t size);

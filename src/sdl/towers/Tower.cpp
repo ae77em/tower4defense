@@ -13,7 +13,7 @@ Tower::Tower(int x, int y, SDL_Renderer *r, LTexture &t) : texture(t) {
     idleBox.h = SHOT_SPRITE_HEIGHT;
 
     shotRatio = 2;
-    shotDamage = 2;
+    shotDamage = 50;
     shotMsTimeGap = 3000; //miliseconds
     collisionCircle.r = (CARTESIAN_TILE_WIDTH / 2) * shotRatio;
     shiftColliders();

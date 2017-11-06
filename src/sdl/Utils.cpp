@@ -157,38 +157,6 @@ SDL_Rect Utils::getBoxByTileType(int type) {
     return toReturn;
 }
 
-int Utils::getNextMapDisplacement(int currentAxisPoint, int finalAxisPoint) {
-    int toReturn;
-
-    if (currentAxisPoint != finalAxisPoint) {
-        if (currentAxisPoint < finalAxisPoint) {
-            toReturn = 1;
-        } else {
-            toReturn = -1;
-        }
-    } else {
-        toReturn = 0;
-    }
-
-    return toReturn;
-}
-
-int Utils::getMovementDirection(int xDirection, int yDirection) {
-    int toReturn;
-    if (xDirection == 1) {
-        toReturn = X_POSITIVE;
-    } else if (xDirection == -1) {
-        toReturn = X_NEGATIVE;
-    } else if (yDirection == 1) {
-        toReturn = Y_POSITIVE;
-    } else if (yDirection == -1) {
-        toReturn = Y_NEGATIVE;
-    } else {
-        toReturn = -1;
-    }
-    return toReturn;
-}
-
 double Utils::distanceSquared(int x1, int y1, int x2, int y2) {
     int deltaX = x2 - x1;
     int deltaY = y2 - y1;

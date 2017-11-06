@@ -1,48 +1,40 @@
-#ifndef TP4_TOWERDEFENSE_ENEMY_H
-#define TP4_TOWERDEFENSE_ENEMY_H
+#ifndef TP4_TOWERDEFENSE_SDL_ENEMY_H
+#define TP4_TOWERDEFENSE_SDL_ENEMY_H
 
 
 #include <vector>
+#include <array>
 #include "../LTexture.h"
 #include "../../common/Point.h"
 #include "../Constants.h"
 #include "../Circle.h"
 
-const int NUMBER_OF_WALK_SPRITES = 12;
-const int NUMBER_OF_WALK_DIRECTIONS = 4;
-
-const int NUMBER_OF_DEATH_SPRITES = 18;
-const int NUMBER_OF_DEATH_DIRECTIONS = 4;
-
-
 class Enemy {
 private:
-    // Box to draw of the enemy
+    /* ATRIBUTOS RELACIONADOS CON DIBUJO */
     SDL_Rect walkBox;
+    std::array<std::array<SDL_Rect, NUMBER_OF_ENEMY_WALK_DIRECTIONS>, NUMBER_OF_ENEMY_WALK_SPRITES> walkingSprites;
+    //SDL_Rect walkingSprites[NUMBER_OF_ENEMY_WALK_DIRECTIONS][NUMBER_OF_ENEMY_WALK_SPRITES];
+
     SDL_Rect deathBox;
-
-    // collision circle of the enemy
-    Circle collisionCircle;
-
-private:
-
-    //The velocity of the enemy
-    int velocityX, velocityY;
-
-    std::vector<Point> path;
-
-    LTexture &texture;
-    SDL_Renderer *renderer;
-    SDL_Rect walkingSprites[NUMBER_OF_WALK_DIRECTIONS][NUMBER_OF_WALK_SPRITES];
-    SDL_Rect deathSprites[NUMBER_OF_DEATH_DIRECTIONS][NUMBER_OF_DEATH_SPRITES];
-
-    int currentDirection;
+    std::array<std::array<SDL_Rect, NUMBER_OF_ENEMY_DEATH_DIRECTIONS>, NUMBER_OF_ENEMY_DEATH_SPRITES> deathSprites;
+            //SDL_Rect deathSprites[NUMBER_OF_ENEMY_DEATH_DIRECTIONS][NUMBER_OF_ENEMY_DEATH_SPRITES];
 
     bool firstFrameOfDeathRendered = false;
     bool lastFrameOfDeathRendered = false;
 
+    Circle collisionCircle;
+
+    int velocityX;
+    int velocityY;
+
+    LTexture texture;
+    SDL_Renderer *renderer;
+
+    int currentDirection = 0;
+
 public:
-    Enemy(int x, int y, SDL_Renderer *renderer, LTexture &t);
+    Enemy(int x, int y, SDL_Renderer *renderer);
 
     ~Enemy();
 
@@ -153,6 +145,11 @@ public:
 
 
     static int getCollisionCircleRadio();
+
+    const std::vector<Point> &getPath() const;
+
+    void setPath(const std::vector<Point> &path);
+
 
 protected:
     // abominable como monstruo default...porque sí... :D
