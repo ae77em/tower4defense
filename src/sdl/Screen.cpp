@@ -1,4 +1,6 @@
 #include "Screen.h"
+#include "LTexture.h"
+#include "Animation.h"
 #include <stdexcept>
 #include <vector>
 #include "Constants.h"
@@ -30,6 +32,10 @@ Screen::Screen() {
     fireTower.loadFromFile("images/fire_tower.png", renderer);
     airTower.loadFromFile("images/air_tower.png", renderer);
     tile.loadFromFile("images/sprites/tile-grass.png", renderer);
+    portal_blue = new Animation(renderer,
+            "images/sprites/portal-blue2.png", 30, 1);
+    portal_red = new Animation(renderer,
+            "images/sprites/portal-red.png", 10, 3);
 
     font = TTF_OpenFont("resources/fonts/UbuntuMono-R.ttf", 16);
     if (! font) throw std::runtime_error("Could not load font");
@@ -37,6 +43,9 @@ Screen::Screen() {
 }
 
 Screen::~Screen() {
+    delete portal_blue;
+    delete portal_red;
+
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
 }
@@ -64,6 +73,22 @@ void Screen::put(unsigned x, unsigned y, LTexture &texture) {
     pos.x += (tile.getWidth() - texture.getWidth()) / 2;
 
     texture.render(renderer, pos.x, pos.y);
+}
+
+void Screen::put(unsigned x, unsigned y, Animation *animation) {
+    Point pos = Utils::mapToScreen(x, y);
+
+    // Correccion por camara
+    pos.x -= camera.x;
+    pos.y -= camera.y;
+
+    /* Correccion vertical */
+    pos.y -= animation->getHeight() - tile.getHeight();
+
+    /* Correccion horizontal */
+    pos.x += (tile.getWidth() - animation->getWidth()) / 2;
+
+    animation->renderFrame(SDL_GetTicks() / 33, pos.x, pos.y);
 }
 
 void Screen::putDialog() {
@@ -96,6 +121,10 @@ void Screen::put(Mapa &map) {
                 case '!': put(x, y, fireTower);
                           break;
                 case '@': put(x, y, airTower);
+                          break;
+                case 'E': put(x, y, portal_blue);
+                          break;
+                case 'S': put(x, y, portal_red);
             }
 }
 

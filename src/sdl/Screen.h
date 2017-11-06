@@ -5,6 +5,7 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include "LTexture.h"
+#include "Animation.h"
 #include "Dot.h"
 #include "Constants.h"
 #include "../common/modelo/Mapa.h"
@@ -19,10 +20,12 @@ class Screen {
     TTF_Font *font;
     LTexture dialog;
     LTexture tile, waterTower, earthTower, fireTower, airTower;
+    Animation *portal_blue, *portal_red;
 
     void putDialog();
 
     void put(unsigned x, unsigned y, LTexture &texture);
+    void put(unsigned x, unsigned y, Animation *animation);
 
 public:
     Screen();
