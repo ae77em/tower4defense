@@ -51,7 +51,6 @@ void Screen::draw() {
     dot.setCamera(camera);
 
     putDialog();
-    portal->renderFrame(SDL_GetTicks() / 33, 100, 100);
 
     SDL_RenderPresent(renderer);
 }
@@ -70,6 +69,22 @@ void Screen::put(unsigned x, unsigned y, LTexture &texture) {
     pos.x += (tile.getWidth() - texture.getWidth()) / 2;
 
     texture.render(renderer, pos.x, pos.y);
+}
+
+void Screen::put(unsigned x, unsigned y, Animation *animation) {
+    Point pos = Utils::mapToScreen(x, y);
+
+    // Correccion por camara
+    pos.x -= camera.x;
+    pos.y -= camera.y;
+
+    /* Correccion vertical */
+    pos.y -= animation->getHeight() - tile.getHeight();
+
+    /* Correccion horizontal */
+    pos.x += (tile.getWidth() - animation->getWidth()) / 2;
+
+    animation->renderFrame(SDL_GetTicks() / 33, pos.x, pos.y);
 }
 
 void Screen::putDialog() {
@@ -102,6 +117,8 @@ void Screen::put(Mapa &map) {
                 case '!': put(x, y, fireTower);
                           break;
                 case '@': put(x, y, airTower);
+                          break;
+                case 'E': put(x, y, portal);
             }
 }
 

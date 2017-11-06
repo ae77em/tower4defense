@@ -22,3 +22,11 @@ void Animation::renderFrame(int frame, int x, int y) {
 
     spritesheet.renderSprite(renderer, x, y, &clip);
 }
+
+int Animation::getHeight() {
+    return clip.h;
+}
+
+int Animation::getWidth() {
+    return clip.w;
+}

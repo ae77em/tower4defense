@@ -25,6 +25,7 @@ class Screen {
     void putDialog();
 
     void put(unsigned x, unsigned y, LTexture &texture);
+    void put(unsigned x, unsigned y, Animation *animation);
 
 public:
     Screen();

@@ -23,6 +23,9 @@ class Animation {
             unsigned hcount, unsigned vcount);
 
     void renderFrame(int frame, int x, int y);
+
+    int getHeight();
+    int getWidth();
 };
 
 #endif
