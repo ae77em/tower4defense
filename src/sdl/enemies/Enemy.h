@@ -76,7 +76,6 @@ public:
     void setDirection(int d);
 
     bool isAlive() const;
-    int getLifePoints() const;
     void quitLifePoints(int points);
 
     int getIsAir() const;

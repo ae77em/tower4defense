@@ -162,10 +162,6 @@ const SDL_Rect &Enemy::getWalkBox() const {
     return walkBox;
 }
 
-int Enemy::getLifePoints() const {
-    return initialLifePoints;
-}
-
 int Enemy::getVelocity() const {
     return velocity;
 }
