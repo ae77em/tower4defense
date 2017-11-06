@@ -20,7 +20,7 @@ class Screen {
     TTF_Font *font;
     LTexture dialog;
     LTexture tile, waterTower, earthTower, fireTower, airTower;
-    Animation *portal;
+    Animation *portal_blue, *portal_red;
 
     void putDialog();
 

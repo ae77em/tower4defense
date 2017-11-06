@@ -21,6 +21,7 @@ int main(int argc, char *argv[]) {
     mapa.setCasilla('!', 8, 1);
     mapa.setCasilla('@', 8, 8);
     mapa.setCasilla('E', 4, 4);
+    mapa.setCasilla('S', 5, 5);
 
     Screen screen;
     screen.setDialog("-- TILE --");
