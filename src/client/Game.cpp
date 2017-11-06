@@ -229,7 +229,8 @@ void Game::loadPortalSprites() {
     }
 }
 
-void Game::handleMouseEvents(SDL_Rect camera, std::string mov_description, SDL_Event e, Enemy &enemy) {
+void Game::handleMouseEvents(SDL_Rect camera, std::string mov_description,
+        SDL_Event e, Enemy &enemy) {
     if (e.type == SDL_MOUSEBUTTONDOWN) {
         Point point = Utils::getMouseRelativePoint(camera);
 
@@ -274,10 +275,10 @@ void Game::matarBichoSiLeHiceClick(const SDL_Rect &camera, Enemy &enemy) {
         enemy.quitLifePoints(50);
 
         if (!enemy.itIsAlive()) {
-            eventDispatched = 3;
+            eventDispatched = GAME_EVENT_KILL_ENEMY;
         }
     } else {
-        eventDispatched = 1;
+        eventDispatched = GAME_EVENT_PUT_TOWER;
     }
 
 }

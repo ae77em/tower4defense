@@ -24,8 +24,6 @@ private:
     // collision circle of the enemy
     Circle collisionCircle;
 
-private:
-
     //The velocity of the enemy
     int velocityX, velocityY;
 
@@ -43,23 +41,11 @@ private:
 
 public:
     Enemy(int x, int y, SDL_Renderer *renderer, LTexture &t);
-
+    bool loadMedia();
+    void setSprites();
     ~Enemy();
 
-    /*
-     * Carga la imagen que contiene los sprites del monstruo.
-     */
-    bool loadMedia();
-
-    /*
-     * Setea la posición del monstruo en la pantalla.
-     */
     void setPosition(int x, int y);
-
-    /*
-     * Carga los sprites del monstruo en un array.
-     */
-    void setSprites();
 
     /*
      * Toma los datos de configuración del enemigo de un archivo y lo nutre
@@ -71,6 +57,15 @@ public:
      * Mueve el enemigo, siguiendo el camino indicado, y chequea colisiones.
      * */
     void move();
+    void kill();
+
+    /*
+     * Renderea la animación actual seteada para el enemigo.
+     * camera: cuadrado que representa el lugar visible del mapa.
+     * */
+    void animate(SDL_Rect &camera);
+
+    void renderLifeBar(int x, int y);
 
     /*
      * Renderea un sprite de la animación del enemigo caminando en la pantalla.
@@ -85,35 +80,18 @@ public:
     void renderDie(SDL_Rect &camera);
 
     /*
-     * Renderea la animación actual seteada para el enemigo.
-     * camera: cuadrado que representa el lugar visible del mapa.
-     * */
-    void animate(SDL_Rect &camera);
-
-    /*
-     * Setea la propiedad isAlive en false del enemigo.
-     * */
-    void kill();
-
-    /*
      * Mueve al enemigo a las coordenadas (x,y) del mapa. Las coordenadas tienen
      * que indicar la posición entera dentro del mapa isométrico, teniendo en cuenta
-     * que el mapa tiene columnas = CARTES
+     * que el mapa tiene columnas cartesianas.
      *
      * */
     void moveTo(int x, int y);
 
     void setDirection(int d);
 
-    void renderLifeBar(int x, int y);
-
     bool itIsAlive()const;
-
     int getLifePoints() const;
-
     void quitLifePoints(int points);
-
-    int getVelocity() const;
 
     int getIsAir() const;
     /*
@@ -140,6 +118,7 @@ public:
      * camera: puntero al renderer utilizado.
      * */
     void setVelocity(int velocityX, int velocityY);
+    int getVelocity() const;
 
     /*
      * Retirba el bonus que se entrega por matar a este enemigo.
@@ -185,8 +164,6 @@ protected:
     int isAir;
 
     void shiftColliders();
-
 };
-
 
 #endif //TP4_TOWERDEFENSE_ENEMY_H
