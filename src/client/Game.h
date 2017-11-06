@@ -81,6 +81,9 @@ private:
 
     void matarBichoSiLeHiceClick(const SDL_Rect &camera, Enemy &enemy);
 
+    /* A game is, at all times, in one of three states: won, lost,
+       or undecided. There is no point (and some risk) in keeping
+       the information redundantly in several variables. */
     bool gameWon;
     bool gameLoose;
 

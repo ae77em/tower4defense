@@ -352,105 +352,100 @@ void Game::handleServerNotifications(SDL_Rect camera, Enemy &enemy, Tower &tower
 }
 
 void Game::run() {
+    //Start up SDL and create window
+    if (!init()) {
+        printf("Failed to initialize!\n");
+        return;
+    }
+
+    //Load media
+    if (!loadMedia()) {
+        printf("Failed to load media!\n");
+        close();
+        return;
+    }
+
     std::string mov_description;
 
     unsigned int gameEndedTime = 0;
     bool gameEnded = false;
 
-    //Start up SDL and create window
-    if (!init()) {
-        printf("Failed to initialize!\n");
-    } else {
-        Abmonible abmonible(0, 0, gRenderer, gSpriteSheetTextureEnemyAbominable);
-        abmonible.loadMedia();
-        abmonible.setSprites();
+    Abmonible abominable(0, 0, gRenderer, gSpriteSheetTextureEnemyAbominable);
+    abominable.loadMedia();
+    abominable.setSprites();
 
-        Tower tower(0, 0, gRenderer, gSpriteSheetTextureTower);
-        tower.loadMedia();
-        tower.setSprites();
+    Tower tower(0, 0, gRenderer, gSpriteSheetTextureTower);
+    tower.loadMedia();
+    tower.setSprites();
 
-        //Load media
-        if (!loadMedia()) {
-            printf("Failed to load media!\n");
-        } else {
-            //Main loop flag
-            bool quit = false;
+    //Event handler
+    SDL_Event e;
 
-            //Event handler
-            SDL_Event e;
+    //The dot that will be moving around on the screen
+    Dot dot;
 
-            //The dot that will be moving around on the screen
-            Dot dot;
+    //Level camera
+    SDL_Rect camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
 
-            //Level camera
-            SDL_Rect camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+    bool quit = false;
+    while (!quit) {
+        gameEnded = gameWon || gameLoose;
+        if (gameEnded && gameEndedTime == 0) {
+            gameEndedTime = SDL_GetTicks();
+        }
 
-            //While application is running
-            while (!quit) {
-                gameEnded = gameWon || gameLoose;
-                if (gameEnded && gameEndedTime == 0) {
-                    gameEndedTime = SDL_GetTicks();
-                }
+        //Handle events on queue
+        mov_description = "";
+        while (SDL_PollEvent(&e) != 0) {
+            if (e.type == SDL_QUIT) quit = true;
 
-                //Handle events on queue
-                mov_description = "";
-                while (SDL_PollEvent(&e) != 0) {
-                    //User requests quit
-                    if (e.type == SDL_QUIT) {
-                        quit = true;
-                    }
+            // Autoquit three seconds after game over
+            if (gameEnded && ((SDL_GetTicks() - gameEndedTime) > 3000))
+                    quit = true;
 
-                    if (gameEnded) {
-                        if (SDL_GetTicks() - gameEndedTime > 3000) {
-                            quit = true;
-                        }
-                    }
+            // Change dot (camera) velocity, if necessary
+            dot.handleEvent(e, mov_description);
 
-                    //Handle input for the dot
-                    dot.handleEvent(e, mov_description);
+            // FIXME Explain the purpose of eventDispatched
+            eventDispatched = 1;
+            handleMouseEvents(camera, mov_description, e, abominable);
+            eventDispatched = 0;
+        }
 
-                    eventDispatched = 1;
-                    handleMouseEvents(camera, mov_description, e, abmonible);
-                    eventDispatched = 0;
-                }
+        handleServerNotifications(camera, abominable, tower);
 
-                handleServerNotifications(camera, abmonible, tower);
+        //Move the dot
+        dot.move();
+        dot.setCamera(camera);
 
-                //Move the dot
-                dot.move();
-                dot.setCamera(camera);
+        //Clear screen
+        SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 0xFF);
+        SDL_RenderClear(gRenderer);
 
-                //Clear screen
-                SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 0xFF);
-                SDL_RenderClear(gRenderer);
+        //Render level
+        for (int i = 0; i < TOTAL_TILES; ++i) {
+            tileSet[i]->render(camera, gTileClips, gRenderer, gTileTextures);
+        }
 
-                //Render level
-                for (int i = 0; i < TOTAL_TILES; ++i) {
-                    tileSet[i]->render(camera, gTileClips, gRenderer, gTileTextures);
-                }
+        dot.render(gDotTexture, camera, gRenderer);
 
-                //Render dot
-                dot.render(gDotTexture, camera, gRenderer);
+        abominable.animate(camera);
+        tower.animate(camera);
 
-                abmonible.animate(camera);
-                tower.animate(camera);
-
-                if (gameEnded) {
-                    if (gameWon) {
-                        renderText(camera, "Partida ganada :)");
-                    } else {
-                        renderText(camera, "Partida perdida...");
-                    }
-                }
-
-                //Update screen
-                SDL_RenderPresent(gRenderer);
+        if (gameEnded) {
+            if (gameWon) {
+                renderText(camera, "Partida ganada :)");
+            } else {
+                renderText(camera, "Partida perdida...");
             }
         }
 
-        //Free resources and close SDL
-        close();
+        //Update screen
+        SDL_RenderPresent(gRenderer);
     }
+
+    //Free resources and close SDL
+    close();
 }
 
 void Game::renderText(SDL_Rect &camera, std::string text) {
