@@ -1,4 +1,6 @@
 #include "Screen.h"
+#include "LTexture.h"
+#include "Animation.h"
 #include <stdexcept>
 #include <vector>
 #include "Constants.h"
@@ -46,6 +48,9 @@ void Screen::draw() {
     dot.setCamera(camera);
 
     putDialog();
+
+    Animation portal(renderer, "images/sprites/portal-blue2.png", 30, 1);
+    portal.renderFrame(SDL_GetTicks() / 33, 100, 100);
 
     SDL_RenderPresent(renderer);
 }
