@@ -90,7 +90,7 @@ public:
     /*
      * Mueve al enemigo a las coordenadas (x,y) del mapa. Las coordenadas tienen
      * que indicar la posición entera dentro del mapa isométrico, teniendo en cuenta
-     * que el mapa tiene columnas = CARTES
+     * que el mapa tiene columnas cartesianas.
      *
      * */
     void moveTo(int x, int y);
@@ -155,6 +155,10 @@ protected:
     // abominable como monstruo default...porque sí... :D
     const std::string TEXTURE_FILE_PATH = "images/sprites/enemy-abominable-walk.png";
 
+    /* There are eight directions to face: front, front left, left,
+       and so on, on a clockwise fashion. We are only interested
+       in facing diagonally from the player's perspective, which is why
+       we only consider these four directions. */
     const int FRONT_LEFT_SPRITE_ROW = 1;
     const int BACK_LEFT_SPRITE_ROW = 3;
     const int BACK_RIGHT_SPRITE_ROW = 5;
