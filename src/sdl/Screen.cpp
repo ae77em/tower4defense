@@ -32,6 +32,7 @@ Screen::Screen() {
     fireTower.loadFromFile("images/fire_tower.png", renderer);
     airTower.loadFromFile("images/air_tower.png", renderer);
     tile.loadFromFile("images/sprites/tile-grass.png", renderer);
+    portal = new Animation(renderer, "images/sprites/portal-blue2.png", 30, 1);
 
     font = TTF_OpenFont("resources/fonts/UbuntuMono-R.ttf", 16);
     if (! font) throw std::runtime_error("Could not load font");
@@ -39,6 +40,8 @@ Screen::Screen() {
 }
 
 Screen::~Screen() {
+    delete portal;
+
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
 }
@@ -48,9 +51,7 @@ void Screen::draw() {
     dot.setCamera(camera);
 
     putDialog();
-
-    Animation portal(renderer, "images/sprites/portal-blue2.png", 30, 1);
-    portal.renderFrame(SDL_GetTicks() / 33, 100, 100);
+    portal->renderFrame(SDL_GetTicks() / 33, 100, 100);
 
     SDL_RenderPresent(renderer);
 }
