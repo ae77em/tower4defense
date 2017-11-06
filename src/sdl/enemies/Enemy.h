@@ -89,7 +89,7 @@ public:
 
     void setDirection(int d);
 
-    bool itIsAlive()const;
+    bool isAlive() const;
     int getLifePoints() const;
     void quitLifePoints(int points);
 
@@ -157,7 +157,6 @@ protected:
 
     const int MAX_VELOCITY = 10;
 
-    bool isAlive;
     int initialLifePoints;
     int remainingLifePoints;
     int velocity;

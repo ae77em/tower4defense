@@ -274,7 +274,7 @@ void Game::matarBichoSiLeHiceClick(const SDL_Rect &camera, Enemy &enemy) {
     if (Utils::checkCollision(pointRect, enemy.getWalkBox())) {
         enemy.quitLifePoints(50);
 
-        if (!enemy.itIsAlive()) {
+        if (!enemy.isAlive()) {
             eventDispatched = GAME_EVENT_KILL_ENEMY;
         }
     } else {
@@ -312,7 +312,7 @@ void Game::handleServerNotifications(SDL_Rect camera, Enemy &enemy, Tower &tower
                 Point finalPoint(1279, 400);
                 int dir = MessageFactory::getDirection(message);
                 bool towerIsShooting =
-                        enemy.itIsAlive() &&
+                        enemy.isAlive() &&
                         enemy.getCollisionCircle().hasCollisionWith(tower.getCollisionCircle());
                 if (towerIsShooting) {
                     tower.setIsShooting(true);
@@ -324,7 +324,7 @@ void Game::handleServerNotifications(SDL_Rect camera, Enemy &enemy, Tower &tower
                     tower.setIsShooting(false);
                 }
 
-                if (enemy.itIsAlive()) {
+                if (enemy.isAlive()) {
                     enemy.setDirection(dir);
                     enemy.moveTo(point.x, point.y);
                 } else if (towerIsShooting) {
@@ -334,7 +334,7 @@ void Game::handleServerNotifications(SDL_Rect camera, Enemy &enemy, Tower &tower
                     gameWon = true;
                 }
 
-                if (enemy.itIsAlive()) {
+                if (enemy.isAlive()) {
                     if (point.x >= finalPoint.x && point.y >= finalPoint.y) {
                         gameLoose = true;
                     }

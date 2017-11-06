@@ -19,7 +19,6 @@ Enemy::Enemy(int x, int y, SDL_Renderer *r, LTexture &t) : texture(t) {
     velocity = 1;
     initialLifePoints = remainingLifePoints = 200;
     isAir = false;
-    isAlive = true;
 
     renderer = r;
 
@@ -38,7 +37,7 @@ bool Enemy::loadMedia() {
 }
 
 void Enemy::kill() {
-    isAlive = false;
+    remainingLifePoints = 0;
 }
 
 void Enemy::setPosition(int x, int y) {
@@ -124,7 +123,7 @@ void Enemy::renderDie(SDL_Rect &camera) {
 }
 
 void Enemy::animate(SDL_Rect &camera) {
-    if (isAlive) {
+    if (isAlive()) {
         renderWalk(camera);
     } else {
         renderDie(camera);
@@ -175,16 +174,12 @@ int Enemy::getIsAir() const {
     return isAir;
 }
 
-bool Enemy::itIsAlive() const {
-    return isAlive;
-}
-
 void Enemy::quitLifePoints(int points) {
     remainingLifePoints -= points;
+}
 
-    if (remainingLifePoints <= 0) {
-        isAlive = false;
-    }
+bool Enemy::isAlive() const {
+    return remainingLifePoints > 0;
 }
 
 void Enemy::shiftColliders() {
