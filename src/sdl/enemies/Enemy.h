@@ -65,20 +65,6 @@ public:
      * */
     void animate(SDL_Rect &camera);
 
-    void renderLifeBar(int x, int y);
-
-    /*
-     * Renderea un sprite de la animación del enemigo caminando en la pantalla.
-     * camera: cuadrado que representa el lugar visible del mapa.
-     * */
-    void renderWalk(SDL_Rect &camera);
-
-    /*
-     * Renderea un sprite de la animación del enemigo muriendo en la pantalla.
-     * camera: cuadrado que representa el lugar visible del mapa.
-     * */
-    void renderDie(SDL_Rect &camera);
-
     /*
      * Mueve al enemigo a las coordenadas (x,y) del mapa. Las coordenadas tienen
      * que indicar la posición entera dentro del mapa isométrico, teniendo en cuenta
@@ -163,6 +149,11 @@ protected:
     int isAir;
 
     void shiftColliders();
+
+    // Rendering subroutines
+    void renderWalk(SDL_Rect &camera);
+    void renderDie(SDL_Rect &camera);
+    void renderLifeBar(int x, int y);
 };
 
 #endif //TP4_TOWERDEFENSE_ENEMY_H
