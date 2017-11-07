@@ -14,6 +14,7 @@ struct Keybinding {
     SDL_Keycode water, earth, fire, air;
     SDL_Keycode portal_entry, portal_exit;
     SDL_Keycode road;
+    SDL_Keycode cancel;
 };
 
 extern const struct Keybinding default_keybinding;
