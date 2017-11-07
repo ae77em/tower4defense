@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <vector>
 #include "../common/Point.h"
+#include <iostream>
 
 enum input_mode { TILE, PATH };
 
@@ -112,6 +113,8 @@ int main(int argc, char *argv[]) {
         screen.trace(path);
         screen.draw();
     }
+
+    std::cout << mapa.serialize();
 
     TTF_Quit();
     SDL_Quit();

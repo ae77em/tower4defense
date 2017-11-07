@@ -41,6 +41,8 @@ public:
 
     std::vector<std::vector<Point>>& getCaminos();
     void agregarCamino(const std::vector<Point> &camino);
+
+    std::string serialize();
 };
 
 #endif

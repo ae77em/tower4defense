@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
+#include <jsoncpp/json/json.h>
 
 Mapa::Mapa(unsigned x, unsigned y) :extension_x(x), extension_y(y),
         casillas(x * y, '.'), caminos() {}
@@ -35,4 +36,16 @@ std::vector<std::vector<Point>>& Mapa::getCaminos() {
 
 void Mapa::agregarCamino(const std::vector<Point> &camino) {
     caminos.push_back(camino);
+}
+
+std::string Mapa::serialize() {
+    Json::Value root;
+    root["width"] = extension_x;
+    root["height"] = extension_y;
+    for (char c : casillas) root["tiles"].append(c);
+
+    Json::StreamWriterBuilder builder;
+    builder["commentStyle"] = "None";
+    builder["indentation"] = "    ";
+    return Json::writeString(builder, root);
 }
