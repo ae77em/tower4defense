@@ -18,6 +18,15 @@ std::vector<std::string> MessageFactory::getMaps(Message& message){
     return response;
 }
 
+std::vector<std::string> MessageFactory::getMatches(Message& message){
+    std::vector<std::string> response;
+    Json::Value &root = message.getData();
+    for (Json::Value &map : root["matches"]){
+        response.push_back(map.asString());
+    }
+    return response;
+}
+
 std::string MessageFactory::getMapName(Message& message){
     std::string response;
     Json::Value &root = message.getData();
@@ -155,7 +164,7 @@ std::string MessageFactory::getExistingMatchesRequest(int clientId) {
     return toReturn;
 }
 
-std::string MessageFactory::getExistingMatchesNotification(std::set<std::string> &matches) {
+std::string MessageFactory::getExistingMatchesNotification(std::vector<std::string> &matches) {
     std::string toReturn;
     Message message;
 
@@ -328,7 +337,7 @@ MessageFactory::getAddPlayerToMatchNotification(std::string matchName,
     Json::Value root(Json::objectValue);
     Message message;
 
-    root[OPERATION_KEY] = SERVER_NOTIFICATION_ENTER_EXISTING_GAME;
+    root[OPERATION_KEY] = SERVER_NOTIFICATION_ENTER_EXISTING_MATCH;
 
     root[CLIENT_ID_KEY] = clientIdWasAdded;
     root["matchName"] = matchName;
@@ -508,6 +517,20 @@ std::string MessageFactory::getEnterMatchRequest(int clientId, std::string match
     for (std::string element : elements){
         root["elements"].append(element);
     }
+
+    message.setData(root);
+
+    return message.serialize();
+}
+
+std::string MessageFactory::getEnteredInMatchNotification(int clientId, std::string matchName) {
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = SERVER_NOTIFICATION_ENTERED_MATCH;
+    root["clientId"] = clientId;
+    root["matchName"] = matchName;
 
     message.setData(root);
 

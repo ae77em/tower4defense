@@ -26,6 +26,7 @@ private:
     const std::string &host;
     const uint16_t &port;
     int clientId;
+    std::string matchName;
 
 public:
     GameAccess(const Socket &client, const std::string &host, const uint16_t &port);
@@ -42,6 +43,12 @@ public:
      * maps: vector de strings con los nombres de los mapas.
      */
     void addMapsToCombo(const std::vector<std::string> &maps);
+
+    /*
+     * Agrega las partidas pasados como parámetro al combo de partidas.
+     * maps: vector de strings con los nombres de las partidas.
+     */
+    void addMatchesToCombo(const std::vector<std::string> &matches);
 
     /*
      * Agrega una partida al combo de partidas.
@@ -102,6 +109,10 @@ public:
 
     void on_entryMatchName_changed();
 
+    void setAvailableElementsForJoin(const std::list<std::string> &unavailableElements);
+
+    void setJoinedToMatch(int clientId, std::string matchName);
+
 private:
     void setCreateMatchButtonEnableStatus();
 
@@ -118,6 +129,7 @@ private:
     bool isSomeElementCheckActiveAndChecked();
 
     void handlePlayButtonsAvailability();
+
 };
 
 

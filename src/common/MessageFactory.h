@@ -85,7 +85,7 @@ public:
     /*
      * Retorna la notificación con todas las partidas existentes para jugar.
      */
-    static std::string getExistingMatchesNotification(std::set<std::string> &matches);
+    static std::string getExistingMatchesNotification(std::vector<std::string> &matches);
 
     /*
      * Retorna la notificación informando de una nueva partida fue creada.
@@ -140,6 +140,10 @@ public:
     std::string getNewMatchRequest(int clientId, std::string matchName);
 
     static std::string getStartMatchRequest(int clientId, std::string &matchName);
+
+    static std::vector<std::string> getMatches(Message &message);
+
+    static std::string getEnteredInMatchNotification(int clientId, std::string matchName);
 };
 
 

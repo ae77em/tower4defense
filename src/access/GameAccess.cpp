@@ -130,6 +130,7 @@ void GameAccess::on_btnJugar_clicked() {
 }
 
 void GameAccess::on_btnUnirse_clicked() {
+    std::cout << "hice click en unirse..." << std::endl;
     std::string matchName = cmbMatchesText->get_active_text();
     std::vector<std::string> elements = getSelectedElements();
 
@@ -227,7 +228,6 @@ void GameAccess::initCheckboxElements(Glib::RefPtr<Gtk::Builder> &refBuilder) {
                 );
     }
 
-
     refBuilder->get_widget("chkAgua", pchkAgua);
     if (pchkAgua) {
         pchkAgua->set_sensitive(false);
@@ -236,7 +236,6 @@ void GameAccess::initCheckboxElements(Glib::RefPtr<Gtk::Builder> &refBuilder) {
                         sigc::mem_fun(*this, &GameAccess::on_chkElement_clicked)
                 );
     }
-
 
     refBuilder->get_widget("chkFuego", pchkFuego);
     if (pchkFuego) {
@@ -264,6 +263,12 @@ void GameAccess::addMapsToCombo(const std::vector<std::string> &maps) {
     }
 }
 
+void GameAccess::addMatchesToCombo(const std::vector<std::string> &matches) {
+    for (std::string match : matches){
+        cmbMatchesText->append(match);
+    }
+}
+
 void GameAccess::addMatchToCombo(const std::string &mapName, const std::string &matchName) {
     cmbMatchesText->append(mapName, matchName);
 }
@@ -287,6 +292,34 @@ void GameAccess::setAvailableElements(const std::list<std::string> &elements) {
         }
     }
 }
+
+void GameAccess::setAvailableElementsForJoin(const std::list<std::string> &unavailableElements) {
+    for (std::string element : unavailableElements){
+        if (STR_AIR.compare(element) == 0){
+            pchkAire->set_active(false);
+            pchkAire->set_sensitive(false);
+        } else if (STR_FIRE.compare(element) == 0){
+            pchkAire->set_active(false);
+            pchkFuego->set_sensitive(false);
+        } else if (STR_TERRAIN.compare(element) == 0){
+            pchkAire->set_active(false);
+            pchkTierra->set_sensitive(false);
+        } else if (STR_WATER.compare(element) == 0){
+            pchkAire->set_active(false);
+            pchkAgua->set_sensitive(false);
+        }
+    }
+}
+
+void GameAccess::setJoinedToMatch(int clientId, std::string mName){
+    if (clientId == this->getClientId()){
+        pbtnUnirse->set_sensitive(false);
+        pbtnJugar->set_sensitive(true);
+
+        matchName = mName;
+    }
+}
+
 
 void GameAccess::setClientId(int cid){
     clientId = cid;

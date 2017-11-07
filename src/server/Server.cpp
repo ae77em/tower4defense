@@ -2,7 +2,6 @@
 #include "../common/MessageFactory.h"
 #include "../common/Protocol.h"
 #include "Request.h"
-#include "ClientRequestHandler.h"
 
 Server::Server(std::mutex &m, ThreadedQueue<Message> &tq) : mutexPlayers(m),
                                                             queueMessagesClient(tq) {}
@@ -17,9 +16,9 @@ void Server::createGame(int clientId, string matchName) {
 
     std::string message = "";
 
-    if( wasCreated ){
+    if (wasCreated) {
         message = MessageFactory::getNewMatchNotification(matchName);
-    }else{
+    } else {
         message = MessageFactory::getNewMatchErrorNotification(matchName, "La partida ya existe");
     }
 
@@ -49,11 +48,11 @@ void Server::addPlayerToGame(int clientId, std::string mName, vector<string> ele
         } else {
             //si no esta llena simplemente notifico a todos el ingreso del jugador
             std::string message = MessageFactory::getAddPlayerToMatchNotification(mName, clientId, elements);
-            notifyAll(message);
+            notifyPlayerAdded(clientId, message);
         }
     } else {
         //notifico al cliente que se lleno la partida, llegaste tarde pibe jajaja
-        std::string message = MessageFactory::getMatchNotAvailableNotification(mName,"Elemento no disponible");
+        std::string message = MessageFactory::getMatchNotAvailableNotification(mName, "Elemento no disponible");
         serverPlayer->sendData(message);
     }
 
@@ -61,10 +60,20 @@ void Server::addPlayerToGame(int clientId, std::string mName, vector<string> ele
 }
 
 void Server::notifyAll(std::string message) {
-    std::cout<<"Notificando a: "<<players.size() << " jugadores"<<std::endl;
+    std::cout << "Notificando a: " << players.size() << " jugadores" << std::endl;
 
-    for (std::pair<unsigned int, ServerPlayer *> player : players){
+    for (std::pair<unsigned int, ServerPlayer *> player : players) {
         player.second->sendData(message);
+    }
+}
+
+void Server::notifyAllExpeptTo(int clientId, std::string message) {
+    std::cout << "Notificando a: " << players.size() - 1 << " jugadores" << std::endl;
+
+    for (std::pair<unsigned int, ServerPlayer *> player : players) {
+        if ((int) player.first != clientId) {
+            player.second->sendData(message);
+        }
     }
 }
 
@@ -74,7 +83,7 @@ void Server::addPlayerToMatch(std::string nameMatch, ServerPlayer *sp) {
 
 //crea el juego y retorna el id del mismo, EL ID ES EL INDICE DENTRO DEL VECTOR
 bool Server::createMatch(std::string nameMatch) {
-    if( games.find(nameMatch) == games.end() ){
+    if (games.find(nameMatch) == games.end()) {
         games.insert(std::pair<std::string, ServerGame *>(nameMatch, new ServerGame(mutexPlayers)));
         return true;
     }
@@ -137,13 +146,13 @@ void Server::run() {
                     createGame(clientId, nameMatch);
                     break;
                 }
-                /* this responses are individual */
+                    /* this responses are individual */
                 case CLIENT_REQUEST_ENTER_MATCH: {
                     int clientId = request.getAsInt("clientId");
                     std::string nameMatch = request.getAsString("matchName");
                     std::vector<std::string> elements = request.getAsStringVector("elements");
 
-                    addPlayerToGame(clientId,nameMatch,elements);
+                    addPlayerToGame(clientId, nameMatch, elements);
 
                     break;
                 }
@@ -154,15 +163,16 @@ void Server::run() {
                     break;
                 }
                 case CLIENT_REQUEST_GET_MATCHES: {
-                    int clientId = MessageFactory::getClientId(messageRequest);
-                    response = MessageFactory::getExistingMatchesNotification(matches);
+                    int clientId = request.getAsInt("clientId");
+                    std::vector<std::string> matchNames = getMatchesNames();
+                    response = MessageFactory::getExistingMatchesNotification(matchNames);
                     notifyTo(clientId, response);
                     break;
                 }
                 case CLIENT_REQUEST_GET_ELEMENTS: {
                     int clientId = request.getAsInt("clientId");
                     std::string nameMatch = request.getAsString("matchName");
-                    sendElementsToClient(clientId,nameMatch);
+                    sendElementsToClient(clientId, nameMatch);
                     break;
                 }
                 case CLIENT_REQUEST_ENTER_EXISTING_MATCH: {
@@ -181,7 +191,7 @@ void Server::run() {
                     break;
                 }
 
-                /* gaming requests: */
+                    /* gaming requests: */
                 case CLIENT_REQUEST_PUT_TOWER: {
                     response = MessageFactory::getPutTowerNotification(messageRequest);
                     notifyAll(response);
@@ -194,10 +204,10 @@ void Server::run() {
                 }
                 case SERVER_NOTIFICATION_END_CLIENT_CONNECTION:
                     std::cout
-                        << "el cliente "
-                        << std::to_string(MessageFactory::getClientId(messageRequest))
-                        << " se desconectó."
-                        << std::endl;
+                            << "el cliente "
+                            << std::to_string(MessageFactory::getClientId(messageRequest))
+                            << " se desconectó."
+                            << std::endl;
 
                     removeClient(MessageFactory::getClientId(messageRequest));
                     break;
@@ -225,13 +235,13 @@ void Server::removeClient(int id) {
 void Server::startMatch(int clientId, string matchName) {
     ServerGame *serverGame = games.at(matchName);
 
-    if(serverGame->isPlaying()){
+    if (serverGame->isPlaying()) {
         //reboto pedido
         ServerPlayer *serverPlayer = players.at(clientId);
 
         std::string message = MessageFactory::getMatchStartedNotification("El match ya inicio");
         serverPlayer->sendData(message);
-    }else{
+    } else {
         serverGame->setPlaying(true);
 
         std::string message = MessageFactory::getStartMatchNotification(matchName);
@@ -248,4 +258,24 @@ void Server::sendElementsToClient(int clientId, string matchName) {
     std::string message = MessageFactory::getMatchElementsNotification(elements);
 
     notifyTo(clientId, message);
+}
+
+std::vector<std::string> Server::getMatchesNames() {
+    std::vector<std::string> matchesNames;
+
+    for (std::map<std::string, ServerGame *>::iterator it = games.begin(); it != games.end(); ++it) {
+        matchesNames.push_back(it->first);
+    }
+
+    return matchesNames;
+}
+
+void Server::notifyPlayerAdded(int clientId, string matchName) {
+
+    std::cout << "Notificando a: " << players.size() << " jugadores" << std::endl;
+
+    for (std::pair<unsigned int, ServerPlayer *> player : players) {
+        player.second->sendData(message);
+    }
+
 }

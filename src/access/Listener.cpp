@@ -41,6 +41,12 @@ void Listener::run(){
                     gameAccess.addMapsToCombo(maps);
                     break;
                 }
+                case SERVER_NOTIFICATION_GET_MATCHES:{
+                    std::vector<std::string> matches;
+                    matches = MessageFactory::getMatches(message);
+                    gameAccess.addMatchesToCombo(matches);
+                    break;
+                }
                 case SERVER_NOTIFICATION_NEW_MATCH:{
                     std::string mapName = MessageFactory::getMapName(message);
                     std::string matchName = MessageFactory::getMatchName(message);
@@ -58,6 +64,21 @@ void Listener::run(){
                     std::list<std::string> elements = MessageFactory::getElements(message);
 
                     gameAccess.setAvailableElements(elements);
+                    break;
+                }
+                case SERVER_NOTIFICATION_ENTER_EXISTING_MATCH:{
+                    int clientId = MessageFactory::getClientId(message);
+                    std::list<std::string> elements = MessageFactory::getElements(message);
+
+                    if (gameAccess.getClientId() != clientId){
+                        gameAccess.setAvailableElementsForJoin(elements);
+                    }
+                    break;
+                }
+                case SERVER_NOTIFICATION_ENTERED_MATCH:{
+                    int clientId = MessageFactory::getClientId(message);
+                    std::string matchName = MessageFactory::getMatchName(message);
+                    gameAccess.setJoinedToMatch(clientId, matchName);
                     break;
                 }
                 default:

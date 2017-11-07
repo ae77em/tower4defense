@@ -73,6 +73,12 @@ private:
     void startMatch(int id, string basic_string);
 
     void sendElementsToClient(int clientId, string matchName);
+
+    std::vector<std::string> getMatchesNames();
+
+    void notifyAllExpeptTo(int clientId, std::string message);
+
+    void notifyPlayerAdded(int clientId, string matchName);
 };
 
 
