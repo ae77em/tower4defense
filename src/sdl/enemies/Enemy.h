@@ -10,29 +10,6 @@
 #include "../Circle.h"
 
 class Enemy {
-private:
-    /* ATRIBUTOS RELACIONADOS CON DIBUJO */
-    SDL_Rect walkBox;
-    std::array<std::array<SDL_Rect, NUMBER_OF_ENEMY_WALK_DIRECTIONS>, NUMBER_OF_ENEMY_WALK_SPRITES> walkingSprites;
-    //SDL_Rect walkingSprites[NUMBER_OF_ENEMY_WALK_DIRECTIONS][NUMBER_OF_ENEMY_WALK_SPRITES];
-
-    SDL_Rect deathBox;
-    std::array<std::array<SDL_Rect, NUMBER_OF_ENEMY_DEATH_DIRECTIONS>, NUMBER_OF_ENEMY_DEATH_SPRITES> deathSprites;
-            //SDL_Rect deathSprites[NUMBER_OF_ENEMY_DEATH_DIRECTIONS][NUMBER_OF_ENEMY_DEATH_SPRITES];
-
-    bool firstFrameOfDeathRendered = false;
-    bool lastFrameOfDeathRendered = false;
-
-    Circle collisionCircle;
-
-    int velocityX;
-    int velocityY;
-
-    LTexture texture;
-    SDL_Renderer *renderer;
-
-    int currentDirection = 0;
-
 public:
     Enemy(int x, int y, SDL_Renderer *renderer);
 
@@ -41,7 +18,7 @@ public:
     /*
      * Carga la imagen que contiene los sprites del monstruo.
      */
-    bool loadMedia();
+    virtual bool loadMedia();
 
     /*
      * Setea la posición del monstruo en la pantalla.
@@ -150,32 +127,26 @@ public:
 
     void setPath(const std::vector<Point> &path);
 
+    void shiftColliders();
 
 protected:
-    // abominable como monstruo default...porque sí... :D
+    // Defino este monstruo por default...
     const std::string TEXTURE_FILE_PATH = "images/sprites/enemy-abominable-walk.png";
 
-    /* There are eight directions to face: front, front left, left,
-       and so on, on a clockwise fashion. We are only interested
-       in facing diagonally from the player's perspective, which is why
-       we only consider these four directions. */
-    const int FRONT_LEFT_SPRITE_ROW = 1;
-    const int BACK_LEFT_SPRITE_ROW = 3;
-    const int BACK_RIGHT_SPRITE_ROW = 5;
-    const int FRONT_RIGHT_SPRITE_ROW = 7;
+    /* Point for get the sprites */
+    int walkingStartX = 1765;
+    int walkingStartY = 3537;
+    int walkSpriteWidth = 105;
+    int walkSpriteHeight = 119;
+    int numberOfEnemyWalkSprites = NUMBER_OF_ENEMY_WALK_SPRITES;
+    int numberOfEnemyWalkDirections = NUMBER_OF_ENEMY_WALK_DIRECTIONS;
 
-    const int SPRITE_DIRECTIONS[4] = {
-            FRONT_LEFT_SPRITE_ROW,
-            BACK_LEFT_SPRITE_ROW,
-            BACK_RIGHT_SPRITE_ROW,
-            FRONT_RIGHT_SPRITE_ROW
-    };
-
-    const int WALK_SPRITE_WIDTH = 105;
-    const int WALK_SPRITE_HEIGHT = 119;
-
-    const int DEATH_SPRITE_WIDTH = 200;
-    const int DEATH_SPRITE_HEIGHT = 155;
+    int deathStartX = 1;
+    int deathStartY = 2273;
+    int deathSpriteWidth = 200;
+    int deathSpriteHeight = 155;
+    int numberOfEnemyDeathSprites = NUMBER_OF_ENEMY_DEATH_SPRITES;
+    int numberOfEnemyDeathDirections = NUMBER_OF_ENEMY_DEATH_DIRECTIONS;
 
     const int MAX_VELOCITY = 10;
 
@@ -185,8 +156,26 @@ protected:
     int velocity;
     int isAir;
 
-    void shiftColliders();
+    LTexture texture;
 
+    /* ATRIBUTOS RELACIONADOS CON DIBUJO */
+    SDL_Rect walkBox;
+    std::array<std::array<SDL_Rect, NUMBER_OF_ENEMY_WALK_DIRECTIONS>, NUMBER_OF_ENEMY_WALK_SPRITES> walkingSprites;
+
+    SDL_Rect deathBox;
+    std::array<std::array<SDL_Rect, NUMBER_OF_ENEMY_DEATH_DIRECTIONS>, NUMBER_OF_ENEMY_DEATH_SPRITES> deathSprites;
+
+    bool firstFrameOfDeathRendered = false;
+    bool lastFrameOfDeathRendered = false;
+
+    Circle collisionCircle;
+
+    int velocityX;
+    int velocityY;
+
+    SDL_Renderer *renderer;
+
+    int currentDirection = 0;
 };
 
 

@@ -27,8 +27,8 @@
             <property name="yalign">0.54000002145767212</property>
           </object>
           <packing>
-            <property name="x">377</property>
-            <property name="y">165</property>
+            <property name="x">376</property>
+            <property name="y">192</property>
           </packing>
         </child>
         <child>
@@ -157,6 +157,21 @@
           <packing>
             <property name="x">180</property>
             <property name="y">165</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="btnUnirse">
+            <property name="label" translatable="yes">Unirse</property>
+            <property name="width_request">109</property>
+            <property name="height_request">36</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="image_position">top</property>
+          </object>
+          <packing>
+            <property name="x">376</property>
+            <property name="y">131</property>
           </packing>
         </child>
       </object>

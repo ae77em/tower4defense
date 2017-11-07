@@ -3,17 +3,24 @@
 
 Enemy::Enemy(int x, int y, SDL_Renderer *r) {
     Point initialSreenPos = Utils::mapToScreen(x, y);
+
+    walkSpriteWidth = 105;
+    walkSpriteHeight = 119;
+
+    deathSpriteWidth = 200;
+    deathSpriteHeight = 155;
+
     walkBox.x = initialSreenPos.x;
     walkBox.y = initialSreenPos.y;
-    walkBox.w = WALK_SPRITE_WIDTH;
-    walkBox.h = WALK_SPRITE_HEIGHT;
+    walkBox.w = walkSpriteWidth;
+    walkBox.h = walkSpriteHeight;
 
     collisionCircle.r = Enemy::getCollisionCircleRadio();
     shiftColliders();
 
     deathBox = walkBox;
-    walkBox.w = DEATH_SPRITE_WIDTH;
-    walkBox.h = DEATH_SPRITE_HEIGHT;
+    walkBox.w = deathSpriteWidth;
+    walkBox.h = deathSpriteHeight;
 
     //Initialize the velocity
     velocity = 1;
@@ -48,46 +55,40 @@ void Enemy::setPosition(int x, int y) {
 }
 
 void Enemy::setSprites() {
-    int spriteWidth = WALK_SPRITE_WIDTH + 1;
-    int spriteHeight = WALK_SPRITE_HEIGHT + 1;
+    int spriteWidth = walkSpriteWidth + 1;
+    int spriteHeight = walkSpriteHeight + 1;
 
-    // seteo los sprites para caminar...
     int spritesRow;
-    int walkingStartX = 1765;
-    int walkingStartY = 3537;
 
-    for (int i = 0; i < NUMBER_OF_ENEMY_WALK_DIRECTIONS; ++i) {
-        for (int j = 0; j < NUMBER_OF_ENEMY_WALK_SPRITES; ++j) {
+    for (int i = 0; i < numberOfEnemyWalkDirections; ++i) {
+        for (int j = 0; j < numberOfEnemyWalkSprites; ++j) {
             spritesRow = SPRITE_DIRECTIONS[i];
 
             walkingSprites[i][j].x = walkingStartX + (j * spriteWidth);
             walkingSprites[i][j].y = walkingStartY + (spritesRow * spriteHeight);
-            walkingSprites[i][j].w = WALK_SPRITE_WIDTH;
-            walkingSprites[i][j].h = WALK_SPRITE_HEIGHT;
+            walkingSprites[i][j].w = walkSpriteWidth;
+            walkingSprites[i][j].h = walkSpriteHeight;
         }
     }
 
     // seteo los sprites para morir...
-    spriteWidth = DEATH_SPRITE_WIDTH + 1;
-    spriteHeight = DEATH_SPRITE_HEIGHT + 1;
+    spriteWidth = deathSpriteWidth + 1;
+    spriteHeight = deathSpriteHeight + 1;
 
-    int deathStartX = 1;
-    int deathStartY = 2273;
-
-    for (int i = 0; i < NUMBER_OF_ENEMY_DEATH_DIRECTIONS; ++i) {
-        for (int j = 0; j < NUMBER_OF_ENEMY_DEATH_SPRITES; ++j) {
+    for (int i = 0; i < numberOfEnemyDeathDirections; ++i) {
+        for (int j = 0; j < numberOfEnemyDeathSprites; ++j) {
             spritesRow = SPRITE_DIRECTIONS[i];
 
             deathSprites[i][j].x = deathStartX + (j * spriteWidth);
             deathSprites[i][j].y = deathStartY + (spritesRow * spriteHeight);
-            deathSprites[i][j].w = DEATH_SPRITE_WIDTH;
-            deathSprites[i][j].h = DEATH_SPRITE_HEIGHT;
+            deathSprites[i][j].w = deathSpriteWidth;
+            deathSprites[i][j].h = deathSpriteHeight;
         }
     }
 }
 
 void Enemy::renderWalk(SDL_Rect &camera) {
-    int frameToDraw = (SDL_GetTicks() / 100) % NUMBER_OF_ENEMY_WALK_SPRITES;
+    int frameToDraw = (SDL_GetTicks() / 100) % numberOfEnemyWalkSprites;
     DecimalPoint screenPoint = Utils::cartesianToIso(walkBox.x, walkBox.y);
 
     // set the death box pos to assure that the death start in the same
@@ -106,7 +107,7 @@ void Enemy::renderWalk(SDL_Rect &camera) {
 }
 
 void Enemy::renderDie(SDL_Rect &camera) {
-    int frameToDraw = (SDL_GetTicks() / 100) % NUMBER_OF_ENEMY_DEATH_SPRITES;
+    int frameToDraw = (SDL_GetTicks() / 100) % numberOfEnemyDeathSprites;
 
     firstFrameOfDeathRendered = (firstFrameOfDeathRendered || frameToDraw == 0);
     lastFrameOfDeathRendered = (lastFrameOfDeathRendered || frameToDraw == NUMBER_OF_ENEMY_DEATH_SPRITES - 1);

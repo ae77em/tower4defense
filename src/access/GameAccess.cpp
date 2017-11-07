@@ -29,13 +29,30 @@ bool GameAccess::mustCreateMatchBeEnabled() {
     return (map.compare(STR_NONE) != 0) && !(entryMatchName->get_text().empty());
 }
 
-void GameAccess::on_cmbMatches_changed(){
-    std::string match = cmbMatchesText->get_active_text();
+void GameAccess::on_cmbElements_changed(){
+    std::string elementName = cmbElementsText->get_active_text();
 
-    if (match.compare(STR_NONE) != 0){
+    if (elementName.compare(STR_NONE) != 0){
+        /*std::string request = MessageFactory::getMatchElementsRequest(clientId, elementName);
+
+        TextMessage textMessage(request);
+        textMessage.sendTo(const_cast<Socket &>(client));*/
         pbtnJugar->set_sensitive(true);
+        pbtnUnirse->set_sensitive(true);
     } else {
         pbtnJugar->set_sensitive(false);
+        pbtnUnirse->set_sensitive(false);
+    }
+}
+
+void GameAccess::on_cmbMatches_changed(){
+    std::string matchName = cmbMatchesText->get_active_text();
+
+    if (matchName.compare(STR_NONE) != 0){
+        std::string request = MessageFactory::getMatchElementsRequest(clientId, matchName);
+
+        TextMessage textMessage(request);
+        textMessage.sendTo(const_cast<Socket &>(client));
     }
 }
 
@@ -50,15 +67,25 @@ void GameAccess::on_btnCrearPartida_clicked() {
 }
 
 void GameAccess::on_btnJugar_clicked() {
-    GameWindowHandler *gwh = new GameWindowHandler(host, port);
+    /*GameWindowHandler *gwh = new GameWindowHandler(host, port);
     gameWindowHandlers.push_back(gwh);
-    gwh->start();
+    gwh->start();*/
+    std::string matchName = entryMatchName->get_text();
+
+    std::string request = MessageFactory::getStartMatchRequest(clientId, matchName);
+
+    TextMessage textMessage(request);
+    textMessage.sendTo(const_cast<Socket &>(client));
 }
 
 void GameAccess::on_btnUnirse_clicked() {
-    GameWindowHandler *gwh = new GameWindowHandler(host, port);
-    gameWindowHandlers.push_back(gwh);
-    gwh->start();
+    std::string matchName = cmbMatchesText->get_active_text();
+    std::string elementName = cmbElementsText->get_active_text();
+
+    std::string request =  MessageFactory::getRemoveElementRequest(clientId, matchName, elementName);
+
+    TextMessage textMessage(request);
+    textMessage.sendTo(const_cast<Socket &>(client));
 }
 
 void GameAccess::initButtonCreateMatch(Glib::RefPtr<Gtk::Builder> &refBuilder) {
@@ -123,6 +150,10 @@ void GameAccess::initComboMatches(Glib::RefPtr<Gtk::Builder> &refBuilder) {
 void GameAccess::initComboElements(Glib::RefPtr<Gtk::Builder> &refBuilder) {
     refBuilder->get_widget("cmbElementos", cmbElementsText);
     cmbElementsText->append(STR_NONE);
+    cmbElementsText->signal_changed()
+            .connect(
+                    sigc::mem_fun(*this, &GameAccess::on_cmbElements_changed)
+            );
 }
 
 void GameAccess::addMapsToCombo(const std::vector<std::string> &maps) {
@@ -136,10 +167,6 @@ void GameAccess::addMatchToCombo(const std::string &mapName, const std::string &
 }
 
 void GameAccess::addElementsToCombo(const std::list<std::string> &elements) {
-/*    for (int i = cmbElementsText->get_children().size(); i >= 0; --i){
-        cmbElementsText->remove_text(i);
-    }*/
-
     for (std::string element : elements){
         cmbElementsText->append(element);
     }

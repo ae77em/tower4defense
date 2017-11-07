@@ -118,6 +118,7 @@ private:
 
     void initButtonJoin(Glib::RefPtr<Gtk::Builder> &refBuilder);
 
+    void on_cmbElements_changed();
 };
 
 

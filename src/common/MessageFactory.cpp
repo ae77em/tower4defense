@@ -411,6 +411,23 @@ int MessageFactory::getEnemyId(Message message) {
     return direction;
 }
 
+std::string MessageFactory::getStartMatchRequest(int clientId, std::string &matchName) {
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = CLIENT_REQUEST_NEW_MATCH;
+    root[CLIENT_ID_KEY] = clientId;
+    root["matchName"] = matchName;
+
+    message.setData(root);
+
+    toReturn = message.serialize();
+
+    return toReturn;
+}
+
+
 std::string MessageFactory::getStartMatchNotification(std::string matchName) {
     std::string toReturn;
     Json::Value root(Json::objectValue);
@@ -442,7 +459,7 @@ std::string MessageFactory::getMatchElementsNotification(std::list<std::string> 
     Json::Value root(Json::objectValue);
     Message message;
 
-    root[OPERATION_KEY] = SERVER_NOTIFICATION_STARTED_MATCH;
+    root[OPERATION_KEY] = SERVER_NOTIFICATION_GET_ELEMENTS;
     root["maps"] = Json::arrayValue;
 
     for (std::string elementName : elements) {
@@ -461,4 +478,33 @@ std::list<std::string> MessageFactory::getElements(Message message) {
         response.push_back(map.asString());
     }
     return response;
+}
+
+std::string MessageFactory::getMatchElementsRequest(int clientId, std::string matchName) {
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = CLIENT_REQUEST_GET_ELEMENTS;
+    root["clientId"] = clientId;
+    root["matchName"] = matchName;
+
+    message.setData(root);
+
+    return message.serialize();
+}
+
+std::string MessageFactory::getRemoveElementRequest(int clientId, std::string matchName, std::string elementName) {
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = CLIENT_REQUEST_ENTER_MATCH;
+    root["clientId"] = clientId;
+    root["matchName"] = matchName;
+    root["elementName"] = elementName;
+
+    message.setData(root);
+
+    return message.serialize();
 }

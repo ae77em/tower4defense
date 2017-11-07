@@ -132,6 +132,14 @@ public:
     static std::list<std::string> getElements(Message message);
 
     static int getEnemyId(Message message);
+
+    static std::string getMatchElementsRequest(int clientId, std::string matchName);
+
+    static std::string getRemoveElementRequest(int clientId, std::string matchName, std::string elementName);
+
+    std::string getNewMatchRequest(int clientId, std::string matchName);
+
+    std::string getStartMatchRequest(int clientId, std::string &matchName);
 };
 
 

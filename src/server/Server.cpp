@@ -74,9 +74,8 @@ void Server::addPlayerToMatch(std::string nameMatch, ServerPlayer *sp) {
 
 //crea el juego y retorna el id del mismo, EL ID ES EL INDICE DENTRO DEL VECTOR
 bool Server::createMatch(std::string nameMatch) {
-    if( games.find(nameMatch) != games.end() ){
+    if( games.find(nameMatch) == games.end() ){
         games.insert(std::pair<std::string, ServerGame *>(nameMatch, new ServerGame(mutexPlayers)));
-
         return true;
     }
     return false;
@@ -131,6 +130,7 @@ void Server::run() {
             switch (op) {
                 /* non-gaming requests: */
                 case CLIENT_REQUEST_NEW_MATCH: {
+                    //FALTA TOMAR EL VALOR DEL MAPA
                     int clientId = request.getAsInt("clientId");
                     std::string nameMatch = request.getAsString("matchName");
 
@@ -233,6 +233,7 @@ void Server::startMatch(int clientId, string matchName) {
         serverPlayer->sendData(message);
     }else{
         serverGame->setPlaying(true);
+        games.at()
 
         std::string message = MessageFactory::getStartMatchNotification(matchName);
         serverGame->notifyAll(message);

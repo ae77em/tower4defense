@@ -54,6 +54,12 @@ void Listener::run(){
                     gameAccess.addElementsToCombo(elements);
                     break;
                 }
+                case SERVER_NOTIFICATION_START_MATCH:{
+                    std::list<std::string> elements = MessageFactory::getElements(message);
+
+                    gameAccess.addElementsToCombo(elements);
+                    break;
+                }
                 default:
                     response = "notificación del server no reconocida";
             }

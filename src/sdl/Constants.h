@@ -35,6 +35,38 @@ const int NUMBER_OF_ENEMY_WALK_DIRECTIONS = 4;
 const int NUMBER_OF_ENEMY_DEATH_SPRITES = 18;
 const int NUMBER_OF_ENEMY_DEATH_DIRECTIONS = 4;
 
+/* Measures of sprites for default enemy */
+const int WALK_SPRITE_WIDTH_DEFAULT = 105;
+const int WALK_SPRITE_HEIGHT_DEFAULT = 119;
+
+const int DEATH_SPRITE_WIDTH_DEFAULT = 200;
+const int DEATH_SPRITE_HEIGHT_DEFAULT = 155;
+
+/* Measures of sprites for ABMONIBLE */
+const int WALK_SPRITE_WIDTH_ABMONIBLE = 105;
+const int WALK_SPRITE_HEIGHT_ABMONIBLE = 119;
+
+const int DEATH_SPRITE_WIDTH_ABMONIBLE = 200;
+const int DEATH_SPRITE_HEIGHT_ABMONIBLE = 155;
+
+
+
+/* There are eight directions to face: front, front left, left,
+   and so on, on a clockwise fashion. We are only interested
+   in facing diagonally from the player's perspective, which is why
+   we only consider these four directions. */
+const int FRONT_LEFT_SPRITE_ROW = 1;
+const int BACK_LEFT_SPRITE_ROW = 3;
+const int BACK_RIGHT_SPRITE_ROW = 5;
+const int FRONT_RIGHT_SPRITE_ROW = 7;
+
+const int SPRITE_DIRECTIONS[4] = {
+        FRONT_LEFT_SPRITE_ROW,
+        BACK_LEFT_SPRITE_ROW,
+        BACK_RIGHT_SPRITE_ROW,
+        FRONT_RIGHT_SPRITE_ROW
+};
+
 
 //The different tile sprites
 enum TileType {
