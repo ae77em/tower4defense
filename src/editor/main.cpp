@@ -4,7 +4,6 @@
 #include <stdexcept>
 #include <vector>
 #include "../common/Point.h"
-#include <iostream>
 #include <fstream>
 
 enum input_mode { TILE, PATH };
@@ -25,8 +24,8 @@ int main(int argc, char *argv[]) {
     mapa.setCasilla('E', 4, 4);
     mapa.setCasilla('S', 5, 5);
 
-    std::ifstream map_file("resources/maps/mapa.json",
-            std::ios::in | std::ios::binary);
+    std::fstream map_file;
+    map_file.open("resources/maps/mapa.json", std::ios::in | std::ios::binary);
     if (map_file) {
         // load json into string
         std::string contents;
@@ -129,7 +128,9 @@ int main(int argc, char *argv[]) {
         screen.draw();
     }
 
-    std::cout << mapa.serialize();
+    map_file.open("resources/maps/mapa.json", std::ios::out | std::ios::binary);
+    map_file << mapa.serialize();
+    map_file.close();
 
     TTF_Quit();
     SDL_Quit();
