@@ -16,6 +16,8 @@ class Mapa {
 
 public:
     Mapa(unsigned x, unsigned y);
+    Mapa(std::string filename);
+    std::string serialize();
 
     /* Devuelve el contenido de la casilla en la posicion x, y.
        Lanza una excepcion si x,y no estan dentro del rango.
@@ -41,8 +43,6 @@ public:
 
     std::vector<std::vector<Point>>& getCaminos();
     void agregarCamino(const std::vector<Point> &camino);
-
-    std::string serialize();
 };
 
 #endif

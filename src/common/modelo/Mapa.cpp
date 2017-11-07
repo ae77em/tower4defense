@@ -52,3 +52,15 @@ std::string Mapa::serialize() {
     builder["indentation"] = "    ";
     return Json::writeString(builder, root);
 }
+
+Mapa::Mapa(std::string json) {
+    Json::Value root;
+    Json::Reader reader;
+    reader.parse(json, root);
+
+    extension_x = root["width"].asUInt();
+    extension_y = root["height"].asUInt();
+
+    std::string str_casillas = root["tiles"].asString();
+    casillas = std::vector<char>(str_casillas.begin(), str_casillas.end());
+}

@@ -5,6 +5,7 @@
 #include <vector>
 #include "../common/Point.h"
 #include <iostream>
+#include <fstream>
 
 enum input_mode { TILE, PATH };
 
@@ -23,6 +24,20 @@ int main(int argc, char *argv[]) {
     mapa.setCasilla('@', 8, 8);
     mapa.setCasilla('E', 4, 4);
     mapa.setCasilla('S', 5, 5);
+
+    std::ifstream map_file("resources/maps/mapa.json",
+            std::ios::in | std::ios::binary);
+    if (map_file) {
+        // load json into string
+        std::string contents;
+        map_file.seekg(0, std::ios::end);
+        contents.resize(map_file.tellg());
+        map_file.seekg(0, std::ios::beg);
+        map_file.read(&contents[0], contents.size());
+        map_file.close();
+
+        mapa = Mapa(contents);
+    }
 
     Screen screen;
     screen.setDialog("-- TILE --");
