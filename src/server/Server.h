@@ -62,7 +62,7 @@ public:
 
 private:
 
-    void addPlayerToGame(int clientId,std::string mName,std::string elementName);
+    void addPlayerToGame(int clientId, std::string mName, vector<string> elementName);
 
     void notifyTo(int clientId, string &message);
 

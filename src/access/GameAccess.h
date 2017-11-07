@@ -1,8 +1,6 @@
 #ifndef TP4_TOWERDEFENSE_GAMEACCESS_H
 #define TP4_TOWERDEFENSE_GAMEACCESS_H
 
-static const char *const STR_NONE = "-none-";
-
 #include <gtkmm.h>
 #include "AccessGameHandler.h"
 #include "../common/Thread.h"
@@ -19,7 +17,10 @@ private:
     Gtk::ComboBoxText *cmbMapsText = nullptr;
     Gtk::Entry *entryMatchName = nullptr;
     Gtk::ComboBoxText *cmbMatchesText = nullptr;
-    Gtk::ComboBoxText *cmbElementsText = nullptr;
+    Gtk::CheckButton *pchkAire = nullptr;
+    Gtk::CheckButton *pchkAgua = nullptr;
+    Gtk::CheckButton *pchkFuego = nullptr;
+    Gtk::CheckButton *pchkTierra = nullptr;
 
     const Socket &client;
     const std::string &host;
@@ -41,12 +42,6 @@ public:
      * maps: vector de strings con los nombres de los mapas.
      */
     void addMapsToCombo(const std::vector<std::string> &maps);
-
-    /*
-     * Agrega las partidas pasadas como parámetro al combo de partidas.
-     * matches: vector de strings con los nombres de las partidas.
-     */
-    void addMatchesToCombo(const std::vector<std::string> &matches);
 
     /*
      * Agrega una partida al combo de partidas.
@@ -75,11 +70,11 @@ public:
      */
     bool isNotValidClientId();
 
-    void addMap(std::string map);
-
-    void updateHeader();
-
-    void dropMap(std::string map);
+    /* Habilita los checkboxes correspondientes a lo elementos disponibles, para
+     * poder ser seleccionados.
+     * elements: listado de elementos disponibles.
+     * */
+    void setAvailableElements(const std::list<std::string> &elements);
 
     /* Inicializadores de los distintos inputs.
      * refBuilder: referencia al builder donde se están colocando los elementos.
@@ -103,22 +98,26 @@ public:
 
     void on_cmbMatches_changed();
 
-    void on_entryMatchName_changed();
+    void on_chkElement_clicked();
 
-    void addElementsToCombo(const std::list<std::string> &elements);
+    void on_entryMatchName_changed();
 
 private:
     void setCreateMatchButtonEnableStatus();
 
     bool mustCreateMatchBeEnabled();
 
-    void initComboElements(Glib::RefPtr<Gtk::Builder> &refBuilder);
-
     void on_btnUnirse_clicked();
 
     void initButtonJoin(Glib::RefPtr<Gtk::Builder> &refBuilder);
 
-    void on_cmbElements_changed();
+    void initCheckboxElements(Glib::RefPtr<Gtk::Builder> &refPtr);
+
+    std::vector<std::string> getSelectedElements();
+
+    bool isSomeElementCheckActiveAndChecked();
+
+    void handlePlayButtonsAvailability();
 };
 
 

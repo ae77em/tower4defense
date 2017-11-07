@@ -59,6 +59,12 @@ enum TypeOfMoveable {
     ENEMY_SPECTRE = 4
 };
 
+const std::string STR_WATER = "Agua";
+const std::string STR_AIR = "Aire";
+const std::string STR_FIRE = "Fuego";
+const std::string STR_TERRAIN = "Tierra";
+const std::string STR_NONE = "-none-";
+
 
 class Protocol {
 public:

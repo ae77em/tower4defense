@@ -2,24 +2,31 @@
 #include "../sdl/Constants.h"
 #include "../common/Protocol.h"
 
+#include <algorithm>
+
 ServerGame::ServerGame(std::mutex& m):mutex(m),
                                       workerLoopGame(players,actions,mutexActionsGame),
                                       listenerLoopGame(actions,mutexActionsGame,queueMessagesGame) {
-    elements.push_back(WATER);
-    elements.push_back(AIR);
-    elements.push_back(FIRE);
-    elements.push_back(TERRAIN);
+    elements.push_back(STR_WATER);
+    elements.push_back(STR_AIR);
+    elements.push_back(STR_FIRE);
+    elements.push_back(STR_TERRAIN);
 }
 
 void ServerGame::addPlayer(ServerPlayer* sp){
     players.push_back(sp);
 }
 
-bool ServerGame::isElementAvailibity(std::string element){
-    for(ServerPlayer* p : players)
-        if( p->getElement() == element)
-            return false;
-
+bool ServerGame::elementsAreAvailables(vector<string> elements) {
+    std::vector<std::string> othersElements;
+    for (ServerPlayer *p : players){
+        othersElements = p->getElements();
+        for (std::string oe : othersElements) {
+            if(std::find(elements.begin(), elements.end(), oe) != elements.end()) {
+                return false;
+            }
+        }
+    }
     return true;
 }
 

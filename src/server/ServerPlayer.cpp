@@ -27,10 +27,10 @@ unsigned int ServerPlayer::getStatus(){
     return this->status;
 }
 
-const string &ServerPlayer::getElement() const {
-    return element;
+std::vector<std::string> & ServerPlayer::getElements() {
+    return elements;
 }
 
-void ServerPlayer::setElement(const string &element) {
-    ServerPlayer::element = element;
+void ServerPlayer::setElements(std::vector<std::string> els) {
+    elements = els;
 }

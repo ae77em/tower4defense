@@ -323,7 +323,7 @@ std::string MessageFactory::getMatchNotAvailableNotification(std::string matchNa
 std::string
 MessageFactory::getAddPlayerToMatchNotification(std::string matchName,
                                                 int clientIdWasAdded,
-                                                std::string usedElement) {
+                                                std::vector<std::string> elements) {
     std::string toReturn;
     Json::Value root(Json::objectValue);
     Message message;
@@ -332,7 +332,9 @@ MessageFactory::getAddPlayerToMatchNotification(std::string matchName,
 
     root[CLIENT_ID_KEY] = clientIdWasAdded;
     root["matchName"] = matchName;
-    root["usedElement"] = usedElement;
+    for (std::string element : elements){
+        root["elements"].append(element);
+    }
 
     message.setData(root);
 
@@ -494,7 +496,8 @@ std::string MessageFactory::getMatchElementsRequest(int clientId, std::string ma
     return message.serialize();
 }
 
-std::string MessageFactory::getRemoveElementRequest(int clientId, std::string matchName, std::string elementName) {
+std::string MessageFactory::getEnterMatchRequest(int clientId, std::string matchName,
+                                                 std::vector<std::string> elements) {
     std::string toReturn;
     Json::Value root(Json::objectValue);
     Message message;
@@ -502,7 +505,9 @@ std::string MessageFactory::getRemoveElementRequest(int clientId, std::string ma
     root[OPERATION_KEY] = CLIENT_REQUEST_ENTER_MATCH;
     root["clientId"] = clientId;
     root["matchName"] = matchName;
-    root["elementName"] = elementName;
+    for (std::string element : elements){
+        root["elements"].append(element);
+    }
 
     message.setData(root);
 

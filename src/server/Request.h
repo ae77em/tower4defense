@@ -14,6 +14,7 @@ public:
 
     int getAsInt(std::string key);
 
+    std::vector<std::string> getAsStringVector(std::string key);
 };
 
 

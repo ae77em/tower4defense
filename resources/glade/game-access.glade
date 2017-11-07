@@ -7,7 +7,7 @@
     <property name="title" translatable="yes">Tower4Defense</property>
     <property name="window_position">center</property>
     <property name="default_width">525</property>
-    <property name="default_height">265</property>
+    <property name="default_height">300</property>
     <property name="icon_name">applications-games</property>
     <child>
       <object class="GtkLayout" id="layout">
@@ -122,18 +122,6 @@
           </packing>
         </child>
         <child>
-          <object class="GtkComboBoxText" id="cmbElementos">
-            <property name="width_request">100</property>
-            <property name="height_request">38</property>
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-          </object>
-          <packing>
-            <property name="x">253</property>
-            <property name="y">164</property>
-          </packing>
-        </child>
-        <child>
           <object class="GtkLabel" id="label1">
             <property name="width_request">76</property>
             <property name="height_request">37</property>
@@ -152,11 +140,11 @@
             <property name="height_request">37</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Elemento</property>
+            <property name="label" translatable="yes">Elementos disponibles</property>
           </object>
           <packing>
-            <property name="x">180</property>
-            <property name="y">165</property>
+            <property name="x">194</property>
+            <property name="y">115</property>
           </packing>
         </child>
         <child>
@@ -172,6 +160,70 @@
           <packing>
             <property name="x">376</property>
             <property name="y">131</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkCheckButton" id="chkAgua">
+            <property name="label" translatable="yes">Agua</property>
+            <property name="width_request">100</property>
+            <property name="height_request">30</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="xalign">0</property>
+            <property name="draw_indicator">True</property>
+          </object>
+          <packing>
+            <property name="x">196</property>
+            <property name="y">155</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkCheckButton" id="chkAire">
+            <property name="label" translatable="yes">Aire</property>
+            <property name="width_request">100</property>
+            <property name="height_request">30</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="xalign">0</property>
+            <property name="draw_indicator">True</property>
+          </object>
+          <packing>
+            <property name="x">196</property>
+            <property name="y">185</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkCheckButton" id="chkFuego">
+            <property name="label" translatable="yes">Fuego</property>
+            <property name="width_request">100</property>
+            <property name="height_request">30</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="xalign">0</property>
+            <property name="draw_indicator">True</property>
+          </object>
+          <packing>
+            <property name="x">196</property>
+            <property name="y">215</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkCheckButton" id="chkTierra">
+            <property name="label" translatable="yes">Tierra</property>
+            <property name="width_request">100</property>
+            <property name="height_request">30</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="xalign">0</property>
+            <property name="draw_indicator">True</property>
+          </object>
+          <packing>
+            <property name="x">196</property>
+            <property name="y">245</property>
           </packing>
         </child>
       </object>

@@ -101,7 +101,7 @@ public:
 
     static std::string getAddPlayerToMatchNotification(std::string gameId,
                                                        int clientIdWasAdded,
-                                                       std::string usedElement);
+                                                       std::vector<std::string> elements);
 
     static std::string getAddPlayerAndRunMatchNotification(std::string gameID, int clientId);
 
@@ -135,11 +135,11 @@ public:
 
     static std::string getMatchElementsRequest(int clientId, std::string matchName);
 
-    static std::string getRemoveElementRequest(int clientId, std::string matchName, std::string elementName);
+    static std::string getEnterMatchRequest(int clientId, std::string matchName, std::vector<std::string> elements);
 
     std::string getNewMatchRequest(int clientId, std::string matchName);
 
-    std::string getStartMatchRequest(int clientId, std::string &matchName);
+    static std::string getStartMatchRequest(int clientId, std::string &matchName);
 };
 
 

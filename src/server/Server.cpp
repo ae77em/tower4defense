@@ -26,17 +26,17 @@ void Server::createGame(int clientId, string matchName) {
     notifyAll(message);
 }
 
-void Server::addPlayerToGame(int clientId,std::string mName,std::string elemName) {
+void Server::addPlayerToGame(int clientId, std::string mName, vector<string> elements) {
     mutexPlayers.lock();
 
     ServerGame *serverGame = games.at(mName);
     ServerPlayer *serverPlayer = players.at(clientId);
 
     //chequeo si no se lleno antes
-    if (serverGame->isElementAvailibity(elemName)) {
+    if (serverGame->elementsAreAvailables(elements)) {
         //obtengo el jugador, le seteo el gameID y lo uno a la partida
         serverPlayer->setGameId(mName);
-        serverPlayer->setElement(elemName);
+        serverPlayer->setElements(elements);
         serverGame->addPlayer(serverPlayer);
 
         //chequeo si la partida tiene 4 jugadores, de ser asi, arranca la partida
@@ -48,7 +48,7 @@ void Server::addPlayerToGame(int clientId,std::string mName,std::string elemName
             serverGame->startGame();
         } else {
             //si no esta llena simplemente notifico a todos el ingreso del jugador
-            std::string message = MessageFactory::getAddPlayerToMatchNotification(mName, clientId, elemName);
+            std::string message = MessageFactory::getAddPlayerToMatchNotification(mName, clientId, elements);
             notifyAll(message);
         }
     } else {
@@ -141,9 +141,9 @@ void Server::run() {
                 case CLIENT_REQUEST_ENTER_MATCH: {
                     int clientId = request.getAsInt("clientId");
                     std::string nameMatch = request.getAsString("matchName");
-                    std::string elementName = request.getAsString("elementName");
+                    std::vector<std::string> elements = request.getAsStringVector("elements");
 
-                    addPlayerToGame(clientId,nameMatch,elementName);
+                    addPlayerToGame(clientId,nameMatch,elements);
 
                     break;
                 }
@@ -168,9 +168,9 @@ void Server::run() {
                 case CLIENT_REQUEST_ENTER_EXISTING_MATCH: {
                     int clientId = request.getAsInt("clientId");
                     std::string matchName = request.getAsString("matchName");
-                    std::string elementName = request.getAsString("elementName");
+                    std::vector<std::string> elements = request.getAsStringVector("elements");
 
-                    addPlayerToGame(clientId, matchName, elementName);
+                    addPlayerToGame(clientId, matchName, elements);
                     break;
                 }
                 case CLIENT_REQUEST_START_MATCH: {
@@ -233,7 +233,6 @@ void Server::startMatch(int clientId, string matchName) {
         serverPlayer->sendData(message);
     }else{
         serverGame->setPlaying(true);
-        games.at()
 
         std::string message = MessageFactory::getStartMatchNotification(matchName);
         serverGame->notifyAll(message);

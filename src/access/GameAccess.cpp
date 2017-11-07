@@ -2,6 +2,7 @@
 #include "../common/MessageFactory.h"
 #include "../common/Socket.h"
 #include "../common/TextMessage.h"
+#include "../common/Protocol.h"
 #include <gtkmm.h>
 #include <iostream>
 
@@ -10,6 +11,51 @@ GameAccess::GameAccess(const Socket &c, const std::string &h, const uint16_t &p)
 }
 
 GameAccess::~GameAccess(){}
+
+
+void GameAccess::run() {
+    auto app = Gtk::Application::create();
+
+    //Load the GtkBuilder file and instantiate its widgets:
+    auto refBuilder = Gtk::Builder::create();
+
+    try {
+        refBuilder->add_from_file("resources/glade/game-access.glade");
+    }
+    catch (const Glib::FileError &ex) {
+        std::cerr << "FileError: " << ex.what() << std::endl;
+        return;
+    }
+    catch (const Glib::MarkupError &ex) {
+        std::cerr << "MarkupError: " << ex.what() << std::endl;
+        return;
+    }
+    catch (const Gtk::BuilderError &ex) {
+        std::cerr << "BuilderError: " << ex.what() << std::endl;
+        return;
+    }
+
+    //Get the GtkBuilder-instantiated Dialog:
+    refBuilder->get_widget("mainWindow", pWindow);
+    if (pWindow) {
+        initButtonCreateMatch(refBuilder);
+        initButtonPlay(refBuilder);
+        initButtonJoin(refBuilder);
+        initComboMaps(refBuilder);
+        initEntryMatchName(refBuilder);
+        initComboMatches(refBuilder);
+        initCheckboxElements(refBuilder);
+
+        app->run(*pWindow);
+    }
+
+    delete pWindow;
+
+    for (unsigned int i = 0; i < gameWindowHandlers.size(); ++i){
+        gameWindowHandlers[i]->join();
+        delete gameWindowHandlers[i];
+    }
+}
 
 void GameAccess::on_cmbMapas_changed(){
     setCreateMatchButtonEnableStatus();
@@ -29,20 +75,25 @@ bool GameAccess::mustCreateMatchBeEnabled() {
     return (map.compare(STR_NONE) != 0) && !(entryMatchName->get_text().empty());
 }
 
-void GameAccess::on_cmbElements_changed(){
-    std::string elementName = cmbElementsText->get_active_text();
+void GameAccess::on_chkElement_clicked() {
+    handlePlayButtonsAvailability();
+}
 
-    if (elementName.compare(STR_NONE) != 0){
-        /*std::string request = MessageFactory::getMatchElementsRequest(clientId, elementName);
-
-        TextMessage textMessage(request);
-        textMessage.sendTo(const_cast<Socket &>(client));*/
+void GameAccess::handlePlayButtonsAvailability(){
+    if (isSomeElementCheckActiveAndChecked()){
         pbtnJugar->set_sensitive(true);
         pbtnUnirse->set_sensitive(true);
     } else {
         pbtnJugar->set_sensitive(false);
         pbtnUnirse->set_sensitive(false);
     }
+}
+
+bool GameAccess::isSomeElementCheckActiveAndChecked(){
+    return (pchkAire->get_sensitive() && pchkAire->get_active())
+            ||  (pchkAgua->get_sensitive() && pchkAgua->get_active())
+            ||  (pchkFuego->get_sensitive() && pchkFuego->get_active())
+            ||  (pchkTierra->get_sensitive() && pchkTierra->get_active());
 }
 
 void GameAccess::on_cmbMatches_changed(){
@@ -80,40 +131,59 @@ void GameAccess::on_btnJugar_clicked() {
 
 void GameAccess::on_btnUnirse_clicked() {
     std::string matchName = cmbMatchesText->get_active_text();
-    std::string elementName = cmbElementsText->get_active_text();
+    std::vector<std::string> elements = getSelectedElements();
 
-    std::string request =  MessageFactory::getRemoveElementRequest(clientId, matchName, elementName);
+    std::string request = MessageFactory::getEnterMatchRequest(clientId, matchName, elements);
 
     TextMessage textMessage(request);
     textMessage.sendTo(const_cast<Socket &>(client));
 }
 
+std::vector<std::string> GameAccess::getSelectedElements(){
+    std::vector<std::string> toReturn;
+
+    if (pchkAire->get_active()){
+        toReturn.push_back(STR_AIR);
+    }
+    if (pchkFuego->get_active()){
+        toReturn.push_back(STR_FIRE);
+    }
+    if (pchkTierra->get_active()){
+        toReturn.push_back(STR_TERRAIN);
+    }
+    if (pchkAgua->get_active()){
+        toReturn.push_back(STR_WATER);
+    }
+
+    return toReturn;
+}
+
 void GameAccess::initButtonCreateMatch(Glib::RefPtr<Gtk::Builder> &refBuilder) {
     refBuilder->get_widget("btnCrearPartida", pBtnCrearPartida);
-    pBtnCrearPartida->set_sensitive(false);
     if (pBtnCrearPartida) {
-            pBtnCrearPartida->signal_clicked()
-                    .connect(
-                            sigc::mem_fun(*this, &GameAccess::on_btnCrearPartida_clicked)
-                    );
+        pBtnCrearPartida->set_sensitive(false);
+        pBtnCrearPartida->signal_clicked()
+                .connect(
+                        sigc::mem_fun(*this, &GameAccess::on_btnCrearPartida_clicked)
+                );
         }
 }
 
 void GameAccess::initButtonPlay(Glib::RefPtr<Gtk::Builder> &refBuilder) {
     refBuilder->get_widget("btnJugar", pbtnJugar);
-    pbtnJugar->set_sensitive(false);
     if (pbtnJugar) {
-            pbtnJugar->signal_clicked()
-                    .connect(
-                            sigc::mem_fun(*this, &GameAccess::on_btnJugar_clicked)
-                    );
-        }
+        pbtnJugar->set_sensitive(false);
+        pbtnJugar->signal_clicked()
+                .connect(
+                        sigc::mem_fun(*this, &GameAccess::on_btnJugar_clicked)
+                );
+    }
 }
 
 void GameAccess::initButtonJoin(Glib::RefPtr<Gtk::Builder> &refBuilder) {
     refBuilder->get_widget("btnUnirse", pbtnUnirse);
-    pbtnUnirse->set_sensitive(false);
     if (pbtnUnirse) {
+        pbtnUnirse->set_sensitive(false);
         pbtnUnirse->signal_clicked()
                 .connect(
                         sigc::mem_fun(*this, &GameAccess::on_btnUnirse_clicked)
@@ -147,14 +217,46 @@ void GameAccess::initComboMatches(Glib::RefPtr<Gtk::Builder> &refBuilder) {
             );
 }
 
-void GameAccess::initComboElements(Glib::RefPtr<Gtk::Builder> &refBuilder) {
-    refBuilder->get_widget("cmbElementos", cmbElementsText);
-    cmbElementsText->append(STR_NONE);
-    cmbElementsText->signal_changed()
-            .connect(
-                    sigc::mem_fun(*this, &GameAccess::on_cmbElements_changed)
-            );
+void GameAccess::initCheckboxElements(Glib::RefPtr<Gtk::Builder> &refBuilder) {
+    refBuilder->get_widget("chkAire", pchkAire);
+    if (pchkAire) {
+        pchkAire->set_sensitive(false);
+        pchkAire->signal_clicked()
+                .connect(
+                        sigc::mem_fun(*this, &GameAccess::on_chkElement_clicked)
+                );
+    }
+
+
+    refBuilder->get_widget("chkAgua", pchkAgua);
+    if (pchkAgua) {
+        pchkAgua->set_sensitive(false);
+        pchkAgua->signal_clicked()
+                .connect(
+                        sigc::mem_fun(*this, &GameAccess::on_chkElement_clicked)
+                );
+    }
+
+
+    refBuilder->get_widget("chkFuego", pchkFuego);
+    if (pchkFuego) {
+        pchkFuego->set_sensitive(false);
+        pchkFuego->signal_clicked()
+                .connect(
+                        sigc::mem_fun(*this, &GameAccess::on_chkElement_clicked)
+                );
+    }
+
+    refBuilder->get_widget("chkTierra", pchkTierra);
+    if (pchkTierra) {
+        pchkTierra->set_sensitive(false);
+        pchkTierra->signal_clicked()
+                .connect(
+                        sigc::mem_fun(*this, &GameAccess::on_chkElement_clicked)
+                );
+    }
 }
+
 
 void GameAccess::addMapsToCombo(const std::vector<std::string> &maps) {
     for (std::string map : maps){
@@ -166,48 +268,25 @@ void GameAccess::addMatchToCombo(const std::string &mapName, const std::string &
     cmbMatchesText->append(mapName, matchName);
 }
 
-void GameAccess::addElementsToCombo(const std::list<std::string> &elements) {
+void GameAccess::setAvailableElements(const std::list<std::string> &elements) {
+    /* inhabilito todas */
+    pchkAire->set_sensitive(false);
+    pchkFuego->set_sensitive(false);
+    pchkTierra->set_sensitive(false);
+    pchkAgua->set_sensitive(false);
+    /* habilito las que correspondan */
     for (std::string element : elements){
-        cmbElementsText->append(element);
-    }
-}
-
-void GameAccess::addMap(std::string map) {
-    /*Gtk::TreeModel::Row row = *(cmbMapsModel->append());
-    //row[cmbMapsColumns.getId()] = 0;
-    row[cmbMapsColumns.getValue()] = map;*/
-}
-
-void GameAccess::dropMap(std::string map) {
-    /*Gtk::TreeModel::Children children = cmbMapsModel->children();
-    Gtk::TreeModel::Row row;
-
-    Gtk::TreeModel::Children::iterator iter;
-
-    for (iter = children.begin(); iter != children.end(); ++iter) {
-        row = *iter;
-
-        if (row[cmbMapsColumns.getValue()] == map) {
-            cmbMapsModel->erase(row);
-            break;
+        if (STR_AIR.compare(element) == 0){
+            pchkAire->set_sensitive(true);
+        } else if (STR_FIRE.compare(element) == 0){
+            pchkFuego->set_sensitive(true);
+        } else if (STR_TERRAIN.compare(element) == 0){
+            pchkTierra->set_sensitive(true);
+        } else if (STR_WATER.compare(element) == 0){
+            pchkAgua->set_sensitive(true);
         }
     }
-
-*/    //updateHeader();
 }
-
-void GameAccess::updateHeader() {
-    /*Gtk::TreeViewColumn *col = m_TreeView.get_column(0);
-
-    std::string encabezado = "Nivel " + std::to_string(nivel);
-
-    encabezado += " ( " + std::to_string(jugConectados);
-    encabezado += "/" + std::to_string(jugNecesarios) + " )";
-
-    col->set_title(encabezado);
-    col->set_alignment(0.5);*/
-}
-
 
 void GameAccess::setClientId(int cid){
     clientId = cid;
@@ -221,47 +300,4 @@ bool GameAccess::isNotValidClientId(){
     return clientId == -1;
 }
 
-void GameAccess::run() {
-    auto app = Gtk::Application::create();
-
-    //Load the GtkBuilder file and instantiate its widgets:
-    auto refBuilder = Gtk::Builder::create();
-
-    try {
-        refBuilder->add_from_file("resources/glade/game-access.glade");
-    }
-    catch (const Glib::FileError &ex) {
-        std::cerr << "FileError: " << ex.what() << std::endl;
-        return;
-    }
-    catch (const Glib::MarkupError &ex) {
-        std::cerr << "MarkupError: " << ex.what() << std::endl;
-        return;
-    }
-    catch (const Gtk::BuilderError &ex) {
-        std::cerr << "BuilderError: " << ex.what() << std::endl;
-        return;
-    }
-
-    //Get the GtkBuilder-instantiated Dialog:
-    refBuilder->get_widget("mainWindow", pWindow);
-    if (pWindow) {
-        initButtonCreateMatch(refBuilder);
-        initButtonPlay(refBuilder);
-        initButtonJoin(refBuilder);
-        initComboMaps(refBuilder);
-        initEntryMatchName(refBuilder);
-        initComboMatches(refBuilder);
-        initComboElements(refBuilder);
-
-        app->run(*pWindow);
-    }
-
-    delete pWindow;
-
-    for (unsigned int i = 0; i < gameWindowHandlers.size(); ++i){
-        gameWindowHandlers[i]->join();
-        delete gameWindowHandlers[i];
-    }
-}
 

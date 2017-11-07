@@ -27,13 +27,6 @@ private:
 
     std::list<std::string> elements;
 
-    const std::string WATER = "Agua";
-    const std::string AIR = "Aire";
-    const std::string FIRE = "Fuego";
-    const std::string TERRAIN = "Tierra";
-
-
-
 public:
     bool isPlaying() const;
 
@@ -41,7 +34,7 @@ public:
 
 public:
     ServerGame(std::mutex& mutex);
-    bool isElementAvailibity(std::string element);
+    bool elementsAreAvailables(vector<string> elements);
     void addPlayer(ServerPlayer* sp);
 
     bool isFull();

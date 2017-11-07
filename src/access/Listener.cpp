@@ -51,13 +51,13 @@ void Listener::run(){
                 case SERVER_NOTIFICATION_GET_ELEMENTS:{
                     std::list<std::string> elements = MessageFactory::getElements(message);
 
-                    gameAccess.addElementsToCombo(elements);
+                    gameAccess.setAvailableElements(elements);
                     break;
                 }
                 case SERVER_NOTIFICATION_START_MATCH:{
                     std::list<std::string> elements = MessageFactory::getElements(message);
 
-                    gameAccess.addElementsToCombo(elements);
+                    gameAccess.setAvailableElements(elements);
                     break;
                 }
                 default:
