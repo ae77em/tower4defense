@@ -40,9 +40,12 @@ void Mapa::agregarCamino(const std::vector<Point> &camino) {
 
 std::string Mapa::serialize() {
     Json::Value root;
+
     root["width"] = extension_x;
     root["height"] = extension_y;
-    for (char c : casillas) root["tiles"].append(c);
+
+    std::string string_casillas(casillas.data(), extension_x * extension_y);
+    root["tiles"] = string_casillas;
 
     Json::StreamWriterBuilder builder;
     builder["commentStyle"] = "None";
