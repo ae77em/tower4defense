@@ -141,6 +141,8 @@ public:
 
     static std::string getStartMatchRequest(int clientId, std::string &matchName);
 
+    static std::string getStatusMatchNotification(std::vector<GameActor *> actors);
+
     static std::vector<std::string> getMatches(Message &message);
 
     static std::string getEnteredInMatchNotification(int clientId, std::string matchName);

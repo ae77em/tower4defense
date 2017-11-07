@@ -6,6 +6,7 @@
 #include "ServerPlayer.h"
 #include "GameActor.h"
 #include "ActionGame.h"
+#include "game-actors/enemies/ActorEnemy.h"
 
 class WorkerLoopGame : public Thread{
 private:
@@ -21,7 +22,9 @@ public:
 
     void run();
 
-    void buildContextGame();
+    void buildGameContext();
+
+    string getGameStatus();
 };
 
 

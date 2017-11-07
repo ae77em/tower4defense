@@ -5,8 +5,6 @@
 
 ActorEnemy::ActorEnemy() {}
 
-ActorEnemy::~ActorEnemy() {}
-
 const std::vector<Point> &ActorEnemy::getPath() const {
     return path;
 }
@@ -53,8 +51,6 @@ void ActorEnemy::advance() {
 
     xPosition += xMovement;
     yPosition += yMovement;
-
-
 }
 
 void ActorEnemy::gotoNextPathPosition(){
@@ -85,4 +81,16 @@ int ActorEnemy::getXPosition() const {
 
 int ActorEnemy::getYPosition() const {
     return yPosition;
+}
+
+void ActorEnemy::live(){
+    advance();
+}
+
+int ActorEnemy::getEnergy(){
+    return remainingLifePoints;
+}
+
+std::string ActorEnemy::getClass() {
+    return "ActorEnemy";
 }

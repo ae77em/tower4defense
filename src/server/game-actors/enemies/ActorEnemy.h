@@ -2,9 +2,12 @@
 #define TP4_TOWERDEFENSE_SERVER_ENEMY_H
 
 #include <vector>
+#include <string>
+#include <bits/basic_string.h>
 #include "../../../common/Point.h"
+#include "../../GameActor.h"
 
-class ActorEnemy {
+class ActorEnemy : public GameActor {
 private:
     std::vector<Point> path;
     int currentDirection;
@@ -15,10 +18,17 @@ private:
     int yPosition;
     bool isWalking;
 
+    int velocity = 1;
+    int initialLifePoints = 200;
+    int remainingLifePoints = 200;
+    int isAir = false;
+    int isAlive = true;
+
+
 public:
     ActorEnemy();
 
-    virtual ~ActorEnemy();
+    void live();
 
     const Point &getCurrentPoint() const;
 
@@ -45,6 +55,10 @@ public:
     int getYPosition() const;
 
     void setIsWalking(bool isWalking);
+
+    int getEnergy();
+
+    std::string getClass();
 };
 
 #endif //TP4_TOWERDEFENSE_SERVER_ENEMY_H

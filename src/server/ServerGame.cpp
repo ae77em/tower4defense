@@ -37,7 +37,7 @@ bool ServerGame::isFull(){
 void ServerGame::startGame() {
     changeStatusPlayesOnGame(PLAYING);
 
-    workerLoopGame.buildContextGame();
+    workerLoopGame.buildGameContext();
 
     listenerLoopGame.start();
     workerLoopGame.start();

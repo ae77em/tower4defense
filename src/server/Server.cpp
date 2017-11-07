@@ -83,7 +83,7 @@ void Server::addPlayerToMatch(std::string nameMatch, ServerPlayer *sp) {
 
 //crea el juego y retorna el id del mismo, EL ID ES EL INDICE DENTRO DEL VECTOR
 bool Server::createMatch(std::string nameMatch) {
-    if (games.find(nameMatch) == games.end()) {
+    if( games.find(nameMatch) == games.end() ){
         games.insert(std::pair<std::string, ServerGame *>(nameMatch, new ServerGame(mutexPlayers)));
         return true;
     }
@@ -146,13 +146,13 @@ void Server::run() {
                     createGame(clientId, nameMatch);
                     break;
                 }
-                    /* this responses are individual */
+                /* this responses are individual */
                 case CLIENT_REQUEST_ENTER_MATCH: {
                     int clientId = request.getAsInt("clientId");
                     std::string nameMatch = request.getAsString("matchName");
                     std::vector<std::string> elements = request.getAsStringVector("elements");
 
-                    addPlayerToGame(clientId, nameMatch, elements);
+                    addPlayerToGame(clientId,nameMatch,elements);
 
                     break;
                 }
@@ -191,7 +191,7 @@ void Server::run() {
                     break;
                 }
 
-                    /* gaming requests: */
+                /* gaming requests: */
                 case CLIENT_REQUEST_PUT_TOWER: {
                     response = MessageFactory::getPutTowerNotification(messageRequest);
                     notifyAll(response);

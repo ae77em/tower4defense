@@ -3,6 +3,7 @@
 #include "Message.h"
 #include "Protocol.h"
 #include "../common/Point.h"
+#include "../server/GameActor.h"
 
 int MessageFactory::getOperation(Message& request){
     Json::Value &root = request.getData();
@@ -516,6 +517,29 @@ std::string MessageFactory::getEnterMatchRequest(int clientId, std::string match
     root["matchName"] = matchName;
     for (std::string element : elements){
         root["elements"].append(element);
+    }
+
+    message.setData(root);
+
+    return message.serialize();
+}
+
+std::string MessageFactory::getStatusMatchNotification(std::vector<GameActor *> actors) {
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = SERVER_NOTIFICATION_SCENARIO_STATUS;
+
+    for (GameActor* g : actors){
+        Json::Value jsonActor(Json::objectValue);
+
+        jsonActor["class"] = g->getClass();
+        jsonActor["x"] = g->getXPosition();
+        jsonActor["y"] = g->getYPosition();
+        jsonActor["life"] = g->getEnergy();
+
+        root["actor_enemy"].append(jsonActor);
     }
 
     message.setData(root);

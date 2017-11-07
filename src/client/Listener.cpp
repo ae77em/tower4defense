@@ -4,9 +4,6 @@
 #include "../common/TextMessage.h"
 #include "../common/MessageFactory.h"
 #include "../common/Protocol.h"
-#include "../sdl/Constants.h"
-#include "../sdl/Utils.h"
-#include "../server/game-actors/enemies/ActorEnemy.h"
 
 Listener::Listener(Socket &s, SharedBuffer &b) : server(s), buffer(b) {}
 
@@ -15,7 +12,7 @@ Listener::~Listener() {}
 void Listener::run() {
     try {
         // TODO PARA PRUEBAS - ESTO DSPS SE BORRA ////////////////////////
-        cargarBufferConDatosDePrueba();
+        //cargarBufferConDatosDePrueba();
         // //////////////////////////////////////////
 
         std::string dataFromServer;
@@ -37,12 +34,16 @@ void Listener::run() {
  * ADELANTE UN JUEGO. ESTO VUELA CUANDO INTEGREMOS SERVER CON
  * CLIENTE DEFINITIVAMENTE.
 */
+/*
+
 void Listener::cargarBufferConDatosDePrueba() {
 
-    /*double x;
+    */
+/*double x;
     double y;
     double xFinal;
-    double yFinal;*/
+    double yFinal;*//*
+
 
     std::vector<Point> camino;
     // supongo que recorro una matriz de baldosas de CARTESIAN_TILE_WIDTH x CARTESIAN_TILE_HEIGHT
@@ -72,7 +73,8 @@ void Listener::cargarBufferConDatosDePrueba() {
 
     std::vector<ActorEnemy> horda;
 
-    /*ActorEnemy enemy1;
+    */
+/*ActorEnemy enemy1;
     enemy1.setPath(camino);
     ActorEnemy enemy2;
     enemy2.setPath(camino);
@@ -80,7 +82,8 @@ void Listener::cargarBufferConDatosDePrueba() {
 
     horda.push_back(enemy1);
     horda.push_back(enemy2);
-    horda.push_back(enemy3);*/
+    horda.push_back(enemy3);*//*
+
 
     for (int x = 0; x < 5; ++x){
         ActorEnemy enemy;
@@ -146,3 +149,4 @@ void Listener::cargarBufferConDatosDePrueba() {
 
 }
 
+*/
