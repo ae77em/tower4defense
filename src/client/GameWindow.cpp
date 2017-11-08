@@ -1,4 +1,4 @@
-#include "Game.h"
+#include "GameWindow.h"
 
 #include <iostream>
 #include <fstream>
@@ -8,12 +8,12 @@
 #include "../common/MessageFactory.h"
 #include "../common/Protocol.h"
 
-Game::Game(SharedBuffer &in, SharedBuffer &out, int cId)
+GameWindow::GameWindow(SharedBuffer &in, SharedBuffer &out, int cId)
         : dataFromServer(in), dataToServer(out), clientId(cId) {}
 
-Game::~Game() {}
+GameWindow::~GameWindow() {}
 
-bool Game::init() {
+bool GameWindow::init() {
     //Initialization flag
     bool success = true;
 
@@ -68,7 +68,7 @@ bool Game::init() {
     return success;
 }
 
-bool Game::loadMedia() {
+bool GameWindow::loadMedia() {
     //Loading success flag
     bool success = true;
 
@@ -100,7 +100,7 @@ bool Game::loadMedia() {
     return success;
 }
 
-void Game::close() {
+void GameWindow::close() {
     //Deallocate tiles
     for (int i = 0; i < TOTAL_TILES; ++i) {
         if (tileSet[i] == NULL) {
@@ -126,7 +126,7 @@ void Game::close() {
     SDL_Quit();
 }
 
-bool Game::setTiles() {
+bool GameWindow::setTiles() {
     //Success flag
     bool tilesLoaded = true;
 
@@ -200,7 +200,7 @@ bool Game::setTiles() {
     return tilesLoaded;
 }
 
-void Game::loadPortalSprites() {
+void GameWindow::loadPortalSprites() {
     unsigned int x_i = 0;
     unsigned int y_i = 0;
 
@@ -229,7 +229,7 @@ void Game::loadPortalSprites() {
     }
 }
 
-void Game::handleMouseEvents(SDL_Rect camera, std::string mov_description, SDL_Event e) {
+void GameWindow::handleMouseEvents(SDL_Rect camera, std::string mov_description, SDL_Event e) {
     if (e.type == SDL_MOUSEBUTTONDOWN) {
         Point point = Utils::getMouseRelativePoint(camera);
 
@@ -258,7 +258,7 @@ void Game::handleMouseEvents(SDL_Rect camera, std::string mov_description, SDL_E
     }
 }
 
-void Game::matarBichoSiLeHiceClick(const SDL_Rect &camera, Enemy &enemy) {
+void GameWindow::matarBichoSiLeHiceClick(const SDL_Rect &camera, Enemy &enemy) {
     int mousePosX;
     int mousePosY;
     SDL_GetMouseState(&mousePosX, &mousePosY);
@@ -282,7 +282,7 @@ void Game::matarBichoSiLeHiceClick(const SDL_Rect &camera, Enemy &enemy) {
 
 }
 
-void Game::handleServerNotifications(SDL_Rect camera, Tower &tower) {
+void GameWindow::handleServerNotifications(SDL_Rect camera, Tower &tower) {
     int transactionsCounter = 0;
     std::string notification;
 
@@ -364,7 +364,7 @@ void Game::handleServerNotifications(SDL_Rect camera, Tower &tower) {
 
 }
 
-void Game::run() {
+void GameWindow::run() {
     std::string mov_description;
 
     unsigned int gameEndedTime = 0;
@@ -472,7 +472,7 @@ void Game::run() {
     }
 }
 
-void Game::renderText(SDL_Rect &camera, std::string text) {
+void GameWindow::renderText(SDL_Rect &camera, std::string text) {
     SDL_Color textColor = {0xFF, 0xFF, 0, 0xFF}; // letra amarilla
     SDL_Color bgColor = {0, 0, 0, 0}; // fondo transparente (supuestamente)
 

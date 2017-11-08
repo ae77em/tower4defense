@@ -6,6 +6,10 @@ Sender::Sender(Socket &s, SharedBuffer &b) : server(s), buffer(b) {}
 
 Sender::~Sender(){}
 
+void Sender::shutdown() {
+    //server.shutdown();
+}
+
 void Sender::run(){
     try {
         std::string dataToSend;

@@ -1,7 +1,7 @@
 #include <iostream>
 #include "ListenerLoopGame.h"
 
-ListenerLoopGame::ListenerLoopGame(std::list<ActionGame*>& a,
+ListenerLoopGame::ListenerLoopGame(std::list<GameAction*>& a,
                                    std::mutex& m,
                                    ThreadedQueue<Message>& q):
                                         actions(a),

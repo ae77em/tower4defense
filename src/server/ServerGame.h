@@ -7,7 +7,7 @@
 #include "ServerPlayer.h"
 #include "WorkerLoopGame.h"
 #include "ListenerLoopGame.h"
-#include "ActionGame.h"
+#include "GameAction.h"
 
 class ServerGame {
 private:
@@ -21,7 +21,7 @@ private:
     WorkerLoopGame workerLoopGame;
     ListenerLoopGame listenerLoopGame;
 
-    std::list<ActionGame*> actions;
+    std::list<GameAction*> actions;
 
     bool playing = false;
 
@@ -50,6 +50,8 @@ public:
     std::list<std::string> getElements();
 
     void removeElement(string elementName);
+
+    list<string> getUnavailableElements();
 };
 
 

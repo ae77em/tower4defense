@@ -12,14 +12,13 @@ static const int MAX_SERVER_NOTIFICATIONS_PER_FRAME = 1;
 #include "../sdl/LTexture.h"
 #include "../sdl/Tile.h"
 #include "../common/Point.h"
-#include "Timer.h"
 #include "../common/SharedBuffer.h"
 #include "../common/Thread.h"
 #include "../sdl/enemies/Enemy.h"
 #include "../sdl/enemies/Abmonible.h"
 #include "../sdl/towers/Tower.h"
 
-class Game : public Thread {
+class GameWindow : public Thread {
 private:
     //The window we'll be rendering to
     SDL_Window *gWindow = NULL;
@@ -57,8 +56,8 @@ private:
     std::vector<Enemy*> enemies;
 
 public:
-    Game(SharedBuffer &in, SharedBuffer &out, int clientId);
-    ~Game();
+    GameWindow(SharedBuffer &in, SharedBuffer &out, int clientId);
+    ~GameWindow();
 
     void run();
     void interactWithServer(Socket &client, std::string text);

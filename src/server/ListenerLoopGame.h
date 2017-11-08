@@ -6,16 +6,16 @@
 #include "../common/Thread.h"
 #include "../common/Message.h"
 #include "../common/ThreadedQueue.h"
-#include "ActionGame.h"
+#include "GameAction.h"
 
 class ListenerLoopGame : public Thread{
 private:
-    std::list<ActionGame*>& actions;
+    std::list<GameAction*>& actions;
     std::mutex& mutexActions;
     ThreadedQueue<Message>& queueMessagesGame;
 
 public:
-    ListenerLoopGame(std::list<ActionGame*>& a,
+    ListenerLoopGame(std::list<GameAction*>& a,
                      std::mutex& m,
                      ThreadedQueue<Message>& q);
 

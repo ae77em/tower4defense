@@ -16,7 +16,7 @@
 #include "ServerPlayer.h"
 #include "ServerGame.h"
 
-class ServerAccess : public Thread {
+class Server : public Thread {
 
 private:
     std::set<std::string> matches;
@@ -29,7 +29,7 @@ private:
     std::map<std::string,ServerGame*> games;
 
 public:
-    ServerAccess(std::mutex& m,ThreadedQueue<Message>& tq);
+    Server(std::mutex& m,ThreadedQueue<Message>& tq);
 
     void run();
 
@@ -41,7 +41,6 @@ public:
 
     void addPlayerToMatch(std::string nameMatch, ServerPlayer *sp);
 
-    void sendGamesListToClient(int clientId);
     void setQueueRequestClient(ThreadedQueue<Message> &queue);
     void createAndRunPlayer(Socket* s);
 
@@ -72,7 +71,7 @@ private:
 
     void startMatch(int id, string basic_string);
 
-    void sendElementsToClient(int clientId, string matchName);
+    void sendUnavailableElementsToClient(int clientId, string matchName);
 
     std::vector<std::string> getMatchesNames();
 

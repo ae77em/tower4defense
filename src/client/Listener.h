@@ -1,26 +1,24 @@
-#ifndef TP4_CLIENT_TOWERDEFENSE_LISTENER_H
-#define TP4_CLIENT_TOWERDEFENSE_LISTENER_H
+#ifndef TP4_ACCESS_TOWERDEFENSE_LISTENER_H
+#define TP4_ACCESS_TOWERDEFENSE_LISTENER_H
 
-#include "../common/SharedBuffer.h"
 #include "../common/Thread.h"
 #include "../common/Socket.h"
+#include "GameAccessWindow.h"
+#include "../common/SharedBuffer.h"
 
 class Listener : public Thread {
 private:
     Socket &server;
+    GameAccessWindow &gameAccess;
     SharedBuffer &buffer;
 
 public:
-    Listener(Socket &server, SharedBuffer &b);
+    Listener(Socket &server, GameAccessWindow &b, SharedBuffer&bfr);
 
     virtual ~Listener();
 
     void run();
-
-    void cargarBufferConDatosDePrueba();
-
-    int getNextMapDisplacement(int y, int yFinal) const;
 };
 
 
-#endif //TP4_CLIENT_TOWERDEFENSE_LISTENER_H
+#endif //TP4_ACCESS_TOWERDEFENSE_LISTENER_H

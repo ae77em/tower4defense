@@ -9,7 +9,7 @@
 #include <thread>
 
 WorkerLoopGame::WorkerLoopGame(std::vector<ServerPlayer*>& p,
-                               std::list<ActionGame*>& a,
+                               std::list<GameAction*>& a,
                                std::mutex& m):
                                                 players(p),
                                                 actions(a),
@@ -22,17 +22,17 @@ void WorkerLoopGame::run(){
 
     //while(isRunning()){
     while (ciclos > 0){
-        //std::list<ActionGame*> obtainedActions = getActions();
-        std::list<ActionGame *> actionsGame;
+        //std::list<GameAction*> obtainedActions = getActions();
+        std::list<GameAction *> actionsGame;
 
         mutexActions.lock();
-        for (ActionGame* a : this->actions) {
+        for (GameAction* a : this->actions) {
             actionsGame.push_back(a);
         }
         mutexActions.unlock();
 
         //TOMO LAS ACCIONES PARSEADAS DE LOS REQUEST Y LAS APLICO A TODOS LOS ACTORES
-        /*for (ActionGame* a : actionsGame) {
+        /*for (GameAction* a : actionsGame) {
             for (GameActor* g : gameActors){
 
             }

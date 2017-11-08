@@ -85,7 +85,7 @@ std::string MessageFactory::getGamesNotification(int clientId,std::string games)
     Json::Value root(Json::objectValue);
     Message message;
 
-    root[OPERATION_KEY] = CLIENT_REQUEST_GET_MATCHES;
+    root[OPERATION_KEY] = CLIENT_REQUEST_GET_ALL_MATCHES;
     root["games"] = games;
     root[CLIENT_ID_KEY] = clientId;
 
@@ -107,7 +107,7 @@ std::string MessageFactory::getGamesRequest(int clientId){
     Json::Value root(Json::objectValue);
     Message message;
 
-    root[OPERATION_KEY] = CLIENT_REQUEST_GET_MATCHES;
+    root[OPERATION_KEY] = CLIENT_REQUEST_GET_ALL_MATCHES;
     root[CLIENT_ID_KEY] = clientId;
 
     message.setData(root);
@@ -122,7 +122,7 @@ std::string MessageFactory::getExistingMapsRequest(int clientId){
     Json::Value root(Json::objectValue);
     Message message;
 
-    root[OPERATION_KEY] = CLIENT_REQUEST_GET_MAPS;
+    root[OPERATION_KEY] = CLIENT_REQUEST_GET_ALL_MAPS;
     root[CLIENT_ID_KEY] = clientId;
 
     message.setData(root);
@@ -138,7 +138,7 @@ std::string MessageFactory::getExistingMapsNotification() {
 
     Json::Value responseRoot(Json::objectValue);
 
-    responseRoot[OPERATION_KEY] = SERVER_NOTIFICATION_GET_MAPS;
+    responseRoot[OPERATION_KEY] = SERVER_NOTIFICATION_GET_ALL_MAPS;
     responseRoot["maps"] = Json::arrayValue;
     /* TODO: obtener la data posta... */
     responseRoot["maps"].append("mapa1");
@@ -155,7 +155,7 @@ std::string MessageFactory::getExistingMatchesRequest(int clientId) {
     Json::Value root(Json::objectValue);
     Message message;
 
-    root[OPERATION_KEY] = CLIENT_REQUEST_GET_MATCHES;
+    root[OPERATION_KEY] = CLIENT_REQUEST_GET_ALL_MATCHES;
     root[CLIENT_ID_KEY] = clientId;
 
     message.setData(root);
@@ -171,7 +171,7 @@ std::string MessageFactory::getExistingMatchesNotification(std::vector<std::stri
 
     Json::Value responseRoot(Json::objectValue);
 
-    responseRoot[OPERATION_KEY] = SERVER_NOTIFICATION_GET_MATCHES;
+    responseRoot[OPERATION_KEY] = SERVER_NOTIFICATION_GET_ALL_MATCHES;
     responseRoot["matches"] = Json::arrayValue;
 
     for (const std::string &match : matches) {
@@ -466,12 +466,12 @@ std::string MessageFactory::getMatchStartedNotification(std::string cause) {
     return message.serialize();
 }
 
-std::string MessageFactory::getMatchElementsNotification(std::list<std::string> elements) {
+std::string MessageFactory::getUnavailableElementsNotification(std::list<std::string> elements) {
     std::string toReturn;
     Json::Value root(Json::objectValue);
     Message message;
 
-    root[OPERATION_KEY] = SERVER_NOTIFICATION_GET_ELEMENTS;
+    root[OPERATION_KEY] = SERVER_NOTIFICATION_GET_UNAVAILABLE_ELEMENTS;
     root["maps"] = Json::arrayValue;
 
     for (std::string elementName : elements) {
@@ -492,12 +492,12 @@ std::list<std::string> MessageFactory::getElements(Message message) {
     return response;
 }
 
-std::string MessageFactory::getMatchElementsRequest(int clientId, std::string matchName) {
+std::string MessageFactory::getUnavailableElementsRequest(int clientId, std::string matchName) {
     std::string toReturn;
     Json::Value root(Json::objectValue);
     Message message;
 
-    root[OPERATION_KEY] = CLIENT_REQUEST_GET_ELEMENTS;
+    root[OPERATION_KEY] = CLIENT_REQUEST_GET_UNAVAILABLE_ELEMENTS;
     root["clientId"] = clientId;
     root["matchName"] = matchName;
 

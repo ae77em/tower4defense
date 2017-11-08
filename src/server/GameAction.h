@@ -2,10 +2,10 @@
 #define TP4_TOWERDEFENSE_ACTIONGAME_H
 
 
-class ActionGame {
+class GameAction {
 public:
-    ActionGame();
-    ~ActionGame();
+    GameAction();
+    ~GameAction();
 };
 
 

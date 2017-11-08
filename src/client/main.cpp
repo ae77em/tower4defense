@@ -2,11 +2,11 @@
 #include <iostream>
 #include "../common/SharedBuffer.h"
 #include "../common/Socket.h"
-#include "ListenerAccess.h"
-#include "SenderAccess.h"
+#include "Listener.h"
 #include "../common/MessageFactory.h"
 #include "../common/Utils.h"
 #include "../common/TextMessage.h"
+#include "Sender.h"
 
 int main(int argc, char **argv) {
     SharedBuffer toReceive;
@@ -33,16 +33,16 @@ int main(int argc, char **argv) {
     message.deserialize(dataFromServer);
     int clientId = MessageFactory::getClientId(message);
 
-    GameAccess gameAccess(server, host, port);
+    GameAccessWindow gameAccess(server, toSend, toReceive);
     gameAccess.setClientId(clientId);
-    ListenerAccess listener(server, gameAccess);
-    SenderAccess sender(server, toSend);
+    Listener listener(server, gameAccess, toReceive);
+    Sender sender(server, toSend);
 
     gameAccess.start();
 
     time_t start = time(0);
     // wait for 1 second, while the window is setted
-    while (difftime(time(0), start) < 0.5) {}
+    while (difftime(time(0), start) < 1) {}
 
     listener.start();
     // sends the initial requests, and inmediatly finishes him

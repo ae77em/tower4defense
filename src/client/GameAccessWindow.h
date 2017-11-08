@@ -3,11 +3,12 @@
 
 #include <gtkmm.h>
 #include "../common/Thread.h"
-#include "ComboColumns.h"
 #include "../common/Socket.h"
+#include "../common/SharedBuffer.h"
 
-class GameAccess : public Thread {
+class GameAccessWindow : public Thread {
 private:
+    /* View */
     Gtk::Window *pWindow;
     Gtk::Button *pBtnCrearPartida = nullptr;
     Gtk::Button *pbtnJugar = nullptr;
@@ -20,16 +21,17 @@ private:
     Gtk::CheckButton *pchkFuego = nullptr;
     Gtk::CheckButton *pchkTierra = nullptr;
 
+    /* Connection */
     const Socket &client;
-    const std::string &host;
-    const uint16_t &port;
+    SharedBuffer& toSend;
+    SharedBuffer& toReceive;
     int clientId;
     std::string matchName;
 
 public:
-    GameAccess(const Socket &client, const std::string &host, const uint16_t &port);
+    GameAccessWindow(const Socket &client, SharedBuffer &toSend, SharedBuffer &toReceive);
 
-    virtual ~GameAccess();
+    virtual ~GameAccessWindow();
 
     /*
      * Inicia un nuevo thread corriendo el programa de acceso al juego.
@@ -79,7 +81,7 @@ public:
      * poder ser seleccionados.
      * elements: listado de elementos disponibles.
      * */
-    void setAvailableElements(const std::list<std::string> &elements);
+    void setAvailableElements(const std::list<std::string> &unavailableElements);
 
     /* Inicializadores de los distintos inputs.
      * refBuilder: referencia al builder donde se están colocando los elementos.
@@ -128,6 +130,7 @@ private:
 
     void handlePlayButtonsAvailability();
 
+    bool hasValidValue(const std::string &match) const;
 };
 
 

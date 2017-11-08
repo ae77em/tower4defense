@@ -16,6 +16,8 @@ public:
     virtual ~Sender();
 
     void run();
+
+    void shutdown();
 };
 
 

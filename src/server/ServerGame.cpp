@@ -74,3 +74,17 @@ void ServerGame::removeElement(std::string elementName) {
 std::list<std::string> ServerGame::getElements() {
     return elements;
 }
+
+std::list<std::string> ServerGame::getUnavailableElements() {
+    std::list<std::string> toReturn;
+    std::vector<std::string> playerElements;
+
+    for(ServerPlayer* sp : players){
+        playerElements = sp->getElements();
+        for (std::string el : playerElements){
+            toReturn.push_back(el);
+        }
+    }
+
+    return toReturn;
+}

@@ -27,7 +27,7 @@ int main(int argc, char *argv[]){
     listener.shutdown();
     listener.join();
 
-    std::cout << "MainServer: se termino todo, jajaja" << std::endl;
+    std::cout << "MainServer: se termino todo" << std::endl;
 
     return EXIT_SUCCESS;
 }

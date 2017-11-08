@@ -128,13 +128,13 @@ public:
 
     static std::string getMatchStartedNotification(std::string name);
 
-    static std::string getMatchElementsNotification(std::list<std::string> elements);
+    static std::string getUnavailableElementsNotification(std::list<std::string> elements);
 
     static std::list<std::string> getElements(Message message);
 
     static int getEnemyId(Message message);
 
-    static std::string getMatchElementsRequest(int clientId, std::string matchName);
+    static std::string getUnavailableElementsRequest(int clientId, std::string matchName);
 
     static std::string getEnterMatchRequest(int clientId, std::string matchName, std::vector<std::string> elements);
 
