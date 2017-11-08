@@ -6,15 +6,15 @@
 #include "../common/SharedBuffer.h"
 #include "GameAccess.h"
 
-class Sender : public Thread {
+class SenderAccess : public Thread {
 private:
     Socket server;
     SharedBuffer &buffer;
 
 public:
-    Sender(Socket &server, SharedBuffer &b);
+    SenderAccess(Socket &server, SharedBuffer &b);
 
-    virtual ~Sender();
+    virtual ~SenderAccess();
 
     void run();
 };

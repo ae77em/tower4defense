@@ -1,17 +1,17 @@
-#include "Server.h"
+#include "ServerAccess.h"
 #include "../common/MessageFactory.h"
 #include "../common/Protocol.h"
 #include "Request.h"
 
-Server::Server(std::mutex &m, ThreadedQueue<Message> &tq) : mutexPlayers(m),
+ServerAccess::ServerAccess(std::mutex &m, ThreadedQueue<Message> &tq) : mutexPlayers(m),
                                                             queueMessagesClient(tq) {}
 
 
-unsigned int Server::getAmountGames() {
+unsigned int ServerAccess::getAmountGames() {
     return games.size();
 }
 
-void Server::createGame(int clientId, string matchName) {
+void ServerAccess::createGame(int clientId, string matchName) {
     bool wasCreated = createMatch(matchName);
 
     std::string message = "";
@@ -25,7 +25,7 @@ void Server::createGame(int clientId, string matchName) {
     notifyAll(message);
 }
 
-void Server::addPlayerToGame(int clientId, std::string mName, vector<string> elements) {
+void ServerAccess::addPlayerToGame(int clientId, std::string mName, vector<string> elements) {
     mutexPlayers.lock();
 
     ServerGame *serverGame = games.at(mName);
@@ -59,7 +59,7 @@ void Server::addPlayerToGame(int clientId, std::string mName, vector<string> ele
     mutexPlayers.unlock();
 }
 
-void Server::notifyAll(std::string message) {
+void ServerAccess::notifyAll(std::string message) {
     std::cout << "Notificando a: " << players.size() << " jugadores" << std::endl;
 
     for (std::pair<unsigned int, ServerPlayer *> player : players) {
@@ -67,7 +67,7 @@ void Server::notifyAll(std::string message) {
     }
 }
 
-void Server::notifyAllExpeptTo(int clientId, std::string message) {
+void ServerAccess::notifyAllExpeptTo(int clientId, std::string message) {
     std::cout << "Notificando a: " << players.size() - 1 << " jugadores" << std::endl;
 
     for (std::pair<unsigned int, ServerPlayer *> player : players) {
@@ -77,12 +77,12 @@ void Server::notifyAllExpeptTo(int clientId, std::string message) {
     }
 }
 
-void Server::addPlayerToMatch(std::string nameMatch, ServerPlayer *sp) {
+void ServerAccess::addPlayerToMatch(std::string nameMatch, ServerPlayer *sp) {
     games.at(nameMatch)->addPlayer(sp);
 }
 
 //crea el juego y retorna el id del mismo, EL ID ES EL INDICE DENTRO DEL VECTOR
-bool Server::createMatch(std::string nameMatch) {
+bool ServerAccess::createMatch(std::string nameMatch) {
     if( games.find(nameMatch) == games.end() ){
         games.insert(std::pair<std::string, ServerGame *>(nameMatch, new ServerGame(mutexPlayers)));
         return true;
@@ -90,7 +90,7 @@ bool Server::createMatch(std::string nameMatch) {
     return false;
 }
 
-void Server::createAndRunPlayer(Socket *s) {
+void ServerAccess::createAndRunPlayer(Socket *s) {
     ClientRequestHandler *crh = new ClientRequestHandler(s, queueMessagesClient);
     ServerPlayer *serverPlayer = new ServerPlayer(crh, s->getSocket());
 
@@ -103,25 +103,25 @@ void Server::createAndRunPlayer(Socket *s) {
     mutexPlayers.unlock();
 }
 
-std::string Server::getGamesList() {
+std::string ServerAccess::getGamesList() {
     return "games";
 }
 
-void Server::sendGamesListToClient(int clientId) {
+void ServerAccess::sendGamesListToClient(int clientId) {
     std::string games = getGamesList();
     std::string message = MessageFactory::getGamesNotification(clientId, games);
 
     notifyTo(clientId, message);
 }
 
-void Server::notifyTo(int clientId, std::string &message) {
+void ServerAccess::notifyTo(int clientId, std::string &message) {
     mutexPlayers.lock();
     players[clientId]->sendData(message);
     mutexPlayers.unlock();
 }
 
 
-void Server::run() {
+void ServerAccess::run() {
     std::cout << "GameServer: Corriendo, esperando la conexion del algun cliente" << std::endl;
 
     try {
@@ -228,11 +228,11 @@ void Server::run() {
     std::cout << "GameServer: Se murio, se tendria que haber apagado todo" << std::endl;
 }
 
-void Server::removeClient(int id) {
+void ServerAccess::removeClient(int id) {
     players.erase(id);
 }
 
-void Server::startMatch(int clientId, string matchName) {
+void ServerAccess::startMatch(int clientId, string matchName) {
     ServerGame *serverGame = games.at(matchName);
 
     if (serverGame->isPlaying()) {
@@ -252,7 +252,7 @@ void Server::startMatch(int clientId, string matchName) {
     }
 }
 
-void Server::sendElementsToClient(int clientId, string matchName) {
+void ServerAccess::sendElementsToClient(int clientId, string matchName) {
     std::list<std::string> elements = games.at(matchName)->getElements();
 
     std::string message = MessageFactory::getMatchElementsNotification(elements);
@@ -260,7 +260,7 @@ void Server::sendElementsToClient(int clientId, string matchName) {
     notifyTo(clientId, message);
 }
 
-std::vector<std::string> Server::getMatchesNames() {
+std::vector<std::string> ServerAccess::getMatchesNames() {
     std::vector<std::string> matchesNames;
 
     for (std::map<std::string, ServerGame *>::iterator it = games.begin(); it != games.end(); ++it) {
@@ -270,8 +270,7 @@ std::vector<std::string> Server::getMatchesNames() {
     return matchesNames;
 }
 
-void Server::notifyPlayerAdded(int clientId, string matchName) {
-
+void ServerAccess::notifyPlayerAdded(int clientId, string message) {
     std::cout << "Notificando a: " << players.size() << " jugadores" << std::endl;
 
     for (std::pair<unsigned int, ServerPlayer *> player : players) {

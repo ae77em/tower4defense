@@ -1,18 +1,26 @@
+#include <gtkmm.h>
 #include <iostream>
-#include "Game.h"
-#include "Listener.h"
-#include "Sender.h"
+#include "../common/SharedBuffer.h"
+#include "../common/Socket.h"
+#include "ListenerAccess.h"
+#include "SenderAccess.h"
+#include "../common/MessageFactory.h"
 #include "../common/Utils.h"
 #include "../common/TextMessage.h"
-#include "../common/Message.h"
-#include "../common/MessageFactory.h"
 
-int main(int argc, char *argv[]) {
+int main(int argc, char **argv) {
+    SharedBuffer toReceive;
+    SharedBuffer toSend;
+
+    if (argc < 3) {
+        std::cerr << "gameaccess <host> <port>" << std::endl;
+        return 0;
+    }
+
+    Utils::printAsciiGameHeader();
+
     std::string host = std::string(argv[1]);
     uint16_t port = atoi(argv[2]);
-
-    SharedBuffer in;
-    SharedBuffer out;
 
     Socket server;
 
@@ -21,32 +29,39 @@ int main(int argc, char *argv[]) {
     TextMessage textmessage("");
     std::string dataFromServer = textmessage.receiveFrom(server).getMessage();
 
-    std::cout<<"server: "<<dataFromServer<<std::endl;
-
     Message message;
-
     message.deserialize(dataFromServer);
-
     int clientId = MessageFactory::getClientId(message);
 
-    Game game(in, out, clientId);
+    GameAccess gameAccess(server, host, port);
+    gameAccess.setClientId(clientId);
+    ListenerAccess listener(server, gameAccess);
+    SenderAccess sender(server, toSend);
 
-    Listener listener(server, in);
-    Sender sender(server, out);
+    gameAccess.start();
 
-    Utils::printAsciiGameHeader();
+    time_t start = time(0);
+    // wait for 1 second, while the window is setted
+    while (difftime(time(0), start) < 0.5) {}
 
-    game.start();
     listener.start();
+    // sends the initial requests, and inmediatly finishes him
     sender.start();
 
-    game.join();
-    listener.join();
+    std::string mapsRequest = MessageFactory::getExistingMapsRequest(gameAccess.getClientId());
+    toSend.addData(mapsRequest);
+
+    std::string matchesRequest = MessageFactory::getExistingMatchesRequest(gameAccess.getClientId());
+    toSend.addData(matchesRequest);
+
+    toSend.setClientProcessEnded(true);
     sender.join();
+
+    listener.join();
+    gameAccess.join();
 
     server.shutdown();
     server.close();
 
     return 0;
 }
-

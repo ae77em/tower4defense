@@ -3,6 +3,7 @@
 #include "../common/Socket.h"
 #include "../common/TextMessage.h"
 #include "../common/Protocol.h"
+#include "GameWindowHandler.h"
 #include <gtkmm.h>
 #include <iostream>
 
@@ -51,10 +52,10 @@ void GameAccess::run() {
 
     delete pWindow;
 
-    for (unsigned int i = 0; i < gameWindowHandlers.size(); ++i){
+/*    for (unsigned int i = 0; i < gameWindowHandlers.size(); ++i){
         gameWindowHandlers[i]->join();
         delete gameWindowHandlers[i];
-    }
+    }*/
 }
 
 void GameAccess::on_cmbMapas_changed(){
@@ -118,15 +119,21 @@ void GameAccess::on_btnCrearPartida_clicked() {
 }
 
 void GameAccess::on_btnJugar_clicked() {
-    /*GameWindowHandler *gwh = new GameWindowHandler(host, port);
-    gameWindowHandlers.push_back(gwh);
-    gwh->start();*/
-    std::string matchName = entryMatchName->get_text();
+
+    pWindow->hide();
+
+    GameWindowHandler *gwh = new GameWindowHandler(host, port);
+    gwh->run(const_cast<Socket &>(client), clientId);
+
+    pWindow->show();
+
+
+    /*std::string matchName = entryMatchName->get_text();
 
     std::string request = MessageFactory::getStartMatchRequest(clientId, matchName);
 
     TextMessage textMessage(request);
-    textMessage.sendTo(const_cast<Socket &>(client));
+    textMessage.sendTo(const_cast<Socket &>(client));*/
 }
 
 void GameAccess::on_btnUnirse_clicked() {

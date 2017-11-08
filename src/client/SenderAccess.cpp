@@ -1,13 +1,13 @@
 #include <iostream>
-#include "Sender.h"
+#include "SenderAccess.h"
 #include "../common/TextMessage.h"
 
-Sender::Sender(Socket &s, SharedBuffer &b)
+SenderAccess::SenderAccess(Socket &s, SharedBuffer &b)
         : server(s), buffer(b) {}
 
-Sender::~Sender(){}
+SenderAccess::~SenderAccess(){}
 
-void Sender::run(){
+void SenderAccess::run(){
     try {
         std::string dataToSend;
 

@@ -75,11 +75,11 @@ void ActorEnemy::setCurrentPoint(const Point &currentPoint) {
     ActorEnemy::currentPoint = currentPoint;
 }
 
-int ActorEnemy::getXPosition() const {
+int ActorEnemy::getXPosition() {
     return xPosition;
 }
 
-int ActorEnemy::getYPosition() const {
+int ActorEnemy::getYPosition() {
     return yPosition;
 }
 

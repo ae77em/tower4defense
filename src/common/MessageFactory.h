@@ -11,6 +11,7 @@ static const char *const CLIENT_ID_KEY = "clientId";
 #include <list>
 #include "Message.h"
 #include "Point.h"
+#include "../server/GameActor.h"
 
 class MessageFactory {
 public:

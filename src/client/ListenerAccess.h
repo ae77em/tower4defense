@@ -5,15 +5,15 @@
 #include "../common/Socket.h"
 #include "GameAccess.h"
 
-class Listener : public Thread {
+class ListenerAccess : public Thread {
 private:
     Socket &server;
     GameAccess &gameAccess;
 
 public:
-    Listener(Socket &server, GameAccess &b);
+    ListenerAccess(Socket &server, GameAccess &b);
 
-    virtual ~Listener();
+    virtual ~ListenerAccess();
 
     void run();
 };

@@ -16,7 +16,7 @@
 #include "ServerPlayer.h"
 #include "ServerGame.h"
 
-class Server : public Thread {
+class ServerAccess : public Thread {
 
 private:
     std::set<std::string> matches;
@@ -29,7 +29,7 @@ private:
     std::map<std::string,ServerGame*> games;
 
 public:
-    Server(std::mutex& m,ThreadedQueue<Message>& tq);
+    ServerAccess(std::mutex& m,ThreadedQueue<Message>& tq);
 
     void run();
 

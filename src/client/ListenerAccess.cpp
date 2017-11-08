@@ -1,16 +1,16 @@
 #include <iostream>
-#include "Listener.h"
+#include "ListenerAccess.h"
 #include "../common/TextMessage.h"
 #include "../common/SharedBuffer.h"
 #include "../common/MessageFactory.h"
 #include "../common/Message.h"
 #include "../common/Protocol.h"
 
-Listener::Listener(Socket &s, GameAccess &ga) : server(s), gameAccess(ga) { }
+ListenerAccess::ListenerAccess(Socket &s, GameAccess &ga) : server(s), gameAccess(ga) { }
 
-Listener::~Listener() {}
+ListenerAccess::~ListenerAccess() {}
 
-void Listener::run(){
+void ListenerAccess::run(){
     try {
         std::string dataFromServer;
         TextMessage textMessage("");

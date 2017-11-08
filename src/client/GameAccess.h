@@ -2,7 +2,6 @@
 #define TP4_TOWERDEFENSE_GAMEACCESS_H
 
 #include <gtkmm.h>
-#include "AccessGameHandler.h"
 #include "../common/Thread.h"
 #include "ComboColumns.h"
 #include "../common/Socket.h"
@@ -10,7 +9,6 @@
 class GameAccess : public Thread {
 private:
     Gtk::Window *pWindow;
-    std::vector<GameWindowHandler*> gameWindowHandlers;
     Gtk::Button *pBtnCrearPartida = nullptr;
     Gtk::Button *pbtnJugar = nullptr;
     Gtk::Button *pbtnUnirse = nullptr;

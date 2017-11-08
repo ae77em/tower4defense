@@ -428,7 +428,7 @@ std::string MessageFactory::getStartMatchRequest(int clientId, std::string &matc
     Json::Value root(Json::objectValue);
     Message message;
 
-    root[OPERATION_KEY] = CLIENT_REQUEST_NEW_MATCH;
+    root[OPERATION_KEY] = CLIENT_REQUEST_START_MATCH;
     root[CLIENT_ID_KEY] = clientId;
     root["matchName"] = matchName;
 

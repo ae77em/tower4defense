@@ -50,9 +50,9 @@ public:
 
     void gotoNextPathPosition();
 
-    int getXPosition() const;
+    int getXPosition();
 
-    int getYPosition() const;
+    int getYPosition();
 
     void setIsWalking(bool isWalking);
 

@@ -23,7 +23,7 @@ private:
 
     std::list<ActionGame*> actions;
 
-    bool playing;
+    bool playing = false;
 
     std::list<std::string> elements;
 

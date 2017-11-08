@@ -1,5 +1,5 @@
 #include "Listener.h"
-#include "Server.h"
+#include "ServerAccess.h"
 
 #include <vector>
 #include <cstring>
@@ -26,7 +26,7 @@ void Listener::run(){
     //todos los ClientRequestHandler cargaran sus mensajes en esta cola y el servidor estara
     //esperando a tomarlos
     ThreadedQueue<Message> threadedQueue;
-    Server server(mutexPlayers,threadedQueue);
+    ServerAccess server(mutexPlayers,threadedQueue);
 
     try {
         server.start();
