@@ -39,9 +39,18 @@ void WorkerLoopGame::run(){
         }*/
 
         //luego de modificar el estado de cada actor hago que vivan
-        for (GameActor* g : gameActors) {
+        /*for (GameActor* g : gameActors) {
             g->live();
+        }*/
+
+        for (std::map<std::string,std::vector<ActorEnemy*>>::iterator it=hordas.begin(); it!=hordas.end(); ++it){
+            std::vector<ActorEnemy*> vectorActor = it->second;
+
+            for (auto g : vectorActor) {
+                g->live();
+            }
         }
+
         //GET STATUS GAMES
         std::string statusGame = getGameStatus();
 
@@ -83,17 +92,24 @@ void WorkerLoopGame::buildGameContext() {
     camino.push_back(Point(15 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
     camino.push_back(Point(16 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
 
-    for (int x = 0; x < 1; ++x){
-        ActorEnemy* enemy = new ActorEnemy();
-        enemy->setPath(camino);
-        enemy->setId(x);
-        enemy->setCurrentPathPosition(-x * CARTESIAN_TILE_WIDTH / 2);
 
-        gameActors.push_back(enemy);
+    for(int horda = 0; horda < 4; horda++){
+        std::vector<ActorEnemy*> vectorHorda;
+        std::string nameHorda = "horda" + horda;
+
+        for (int x = 0; x < 2; ++x){
+            ActorEnemy* enemy = new ActorEnemy();
+            enemy->setPath(camino);
+            enemy->setId(x);
+            enemy->setCurrentPathPosition(-x * CARTESIAN_TILE_WIDTH / 2);
+
+            vectorHorda.push_back( enemy );
+        }
+        hordas.insert(std::pair<std::string,std::vector<ActorEnemy*>>(nameHorda, vectorHorda));
     }
 }
 
 std::string WorkerLoopGame::getGameStatus() {
     //despues ver como parsear todos los actores
-    return MessageFactory::getStatusMatchNotification(gameActors);
+    return MessageFactory::getStatusMatchNotification(hordas);
 }

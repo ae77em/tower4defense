@@ -524,28 +524,50 @@ std::string MessageFactory::getEnterMatchRequest(int clientId, std::string match
     return message.serialize();
 }
 
-std::string MessageFactory::getStatusMatchNotification(std::vector<ActorEnemy *> actors) {
+std::string MessageFactory::getStatusMatchNotification(std::map<std::string,std::vector<ActorEnemy*>> actors) {
     std::string toReturn;
     Json::Value root(Json::objectValue);
     Message message;
 
     root[OPERATION_KEY] = SERVER_NOTIFICATION_SCENARIO_STATUS;
+    root["scenario"] = Json::arrayValue;
 
-    for (GameActor* g : actors){
-        Json::Value jsonActor(Json::objectValue);
+    //responseRoot["maps"].append("mapa1");
 
-        /*jsonActor["class"] = g->getClass();
-        jsonActor["x"] = g->getXPosition();
-        jsonActor["y"] = g->getYPosition();
-        jsonActor["life"] = g->getEnergy();
+    /*for (std::map<std::string,std::vector<ActorEnemy*>>::iterator it=actors.begin(); it!=actors.end(); ++it){
+        Json::Value aHorda(Json::objectValue);
+        aHorda[it->first] = Json::arrayValue;
 
-        jsonActor[OPERATION_KEY] = SERVER_NOTIFICATION_MOVE_ENEMY;*/
-        jsonActor["enemyId"] = g->getId();
-        jsonActor["xCoord"] = g->getXPosition();
-        jsonActor["yCoord"] = g->getYPosition();
-        jsonActor["direction"] = g->getDirection();
+        std::vector<ActorEnemy*> vectorActor = it->second;
 
-        root["enemies"].append(jsonActor);
+        for (auto g : vectorActor) {
+            Json::Value jsonActor(Json::objectValue);
+
+            jsonActor["enemyId"] = g->getId();
+            jsonActor["xCoord"] = g->getXPosition();
+            jsonActor["yCoord"] = g->getYPosition();
+            jsonActor["direction"] = g->getDirection();
+
+            aHorda[it->first].append(jsonActor);
+        }
+
+        root["scenario"].append(aHorda);
+    }*/
+
+    for (std::map<std::string,std::vector<ActorEnemy*>>::iterator it=actors.begin(); it!=actors.end(); ++it){
+
+        std::vector<ActorEnemy*> vectorActor = it->second;
+
+        for (auto g : vectorActor) {
+            Json::Value aBichito(Json::objectValue);
+
+            aBichito["enemyId"] = g->getId();
+            aBichito["xCoord"] = g->getXPosition();
+            aBichito["yCoord"] = g->getYPosition();
+            aBichito["direction"] = g->getDirection();
+
+            root["scenario"].append(aBichito);
+        }
     }
 
     message.setData(root);
