@@ -13,7 +13,7 @@ private:
     std::vector<ServerPlayer*>& players;
     std::list<GameAction*>& actions;
     std::mutex& mutexActions;
-    std::vector<GameActor*> gameActors;
+    std::vector<ActorEnemy*> gameActors;
 
 public:
     WorkerLoopGame(std::vector<ServerPlayer*>& p,

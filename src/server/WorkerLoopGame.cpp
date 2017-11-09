@@ -83,12 +83,13 @@ void WorkerLoopGame::buildGameContext() {
     camino.push_back(Point(15 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
     camino.push_back(Point(16 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
 
-    for (int x = 0; x < 5; ++x){
+    for (int x = 0; x < 1; ++x){
         ActorEnemy* enemy = new ActorEnemy();
         enemy->setPath(camino);
+        enemy->setId(x);
         enemy->setCurrentPathPosition(-x * CARTESIAN_TILE_WIDTH / 2);
 
-        gameActors.push_back((GameActor*)enemy);
+        gameActors.push_back(enemy);
     }
 }
 

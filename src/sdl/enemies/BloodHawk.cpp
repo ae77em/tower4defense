@@ -105,8 +105,6 @@ void BloodHawk::renderWalk(SDL_Rect &camera) {
         currentDirection = 0;
     }
 
-    std::cout << "current direction blood hawlk  " << std::to_string(currentDirection) << std::endl;
-
     texture->renderSprite(renderer, isox, isoy, &walkingSprites[currentDirection][frameToDraw]);
 
     renderLifeBar(isox, isoy);

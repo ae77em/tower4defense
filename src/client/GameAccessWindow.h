@@ -24,12 +24,12 @@ private:
     /* Connection */
     Socket *client;
     SharedBuffer &toSend;
-    SharedBuffer &toReceive;
+    SharedBuffer *toReceive;
     int clientId;
     std::string matchName;
 
 public:
-    GameAccessWindow(Socket *client, SharedBuffer &toSend, SharedBuffer &toReceive);
+    GameAccessWindow(Socket *client, SharedBuffer &toSend, SharedBuffer *toReceive);
 
     virtual ~GameAccessWindow();
 
@@ -113,6 +113,8 @@ public:
 
     void setJoinedToMatch(int clientId, std::string matchName);
 
+    void startMatch();
+
 private:
     void setCreateMatchButtonEnableStatus();
 
@@ -131,6 +133,7 @@ private:
     void handlePlayButtonsAvailability();
 
     bool hasValidValue(const std::string &match) const;
+
 };
 
 

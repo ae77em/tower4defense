@@ -12,6 +12,7 @@ static const char *const CLIENT_ID_KEY = "clientId";
 #include "Message.h"
 #include "Point.h"
 #include "../server/GameActor.h"
+#include "../server/game-actors/enemies/ActorEnemy.h"
 
 class MessageFactory {
 public:
@@ -142,11 +143,13 @@ public:
 
     static std::string getStartMatchRequest(int clientId, std::string &matchName);
 
-    static std::string getStatusMatchNotification(std::vector<GameActor *> actors);
+    static std::string getStatusMatchNotification(std::vector<ActorEnemy *> actors);
 
     static std::vector<std::string> getMatches(Message &message);
 
     static std::string getEnteredInMatchNotification(int clientId, std::string matchName);
+
+    static std::vector<Message> getMovementNotifications(Message message);
 };
 
 

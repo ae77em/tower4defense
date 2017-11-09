@@ -13,6 +13,8 @@ public:
     virtual int getXPosition() = 0;
     virtual int getYPosition() = 0;
     virtual int getEnergy() = 0;
+    virtual int getDirection() = 0;
+    virtual int getId() = 0;
 
 };
 

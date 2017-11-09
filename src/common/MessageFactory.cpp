@@ -524,7 +524,7 @@ std::string MessageFactory::getEnterMatchRequest(int clientId, std::string match
     return message.serialize();
 }
 
-std::string MessageFactory::getStatusMatchNotification(std::vector<GameActor *> actors) {
+std::string MessageFactory::getStatusMatchNotification(std::vector<ActorEnemy *> actors) {
     std::string toReturn;
     Json::Value root(Json::objectValue);
     Message message;
@@ -534,12 +534,18 @@ std::string MessageFactory::getStatusMatchNotification(std::vector<GameActor *> 
     for (GameActor* g : actors){
         Json::Value jsonActor(Json::objectValue);
 
-        jsonActor["class"] = g->getClass();
+        /*jsonActor["class"] = g->getClass();
         jsonActor["x"] = g->getXPosition();
         jsonActor["y"] = g->getYPosition();
         jsonActor["life"] = g->getEnergy();
 
-        root["actor_enemy"].append(jsonActor);
+        jsonActor[OPERATION_KEY] = SERVER_NOTIFICATION_MOVE_ENEMY;*/
+        jsonActor["enemyId"] = g->getId();
+        jsonActor["xCoord"] = g->getXPosition();
+        jsonActor["yCoord"] = g->getYPosition();
+        jsonActor["direction"] = g->getDirection();
+
+        root["enemies"].append(jsonActor);
     }
 
     message.setData(root);
@@ -559,4 +565,18 @@ std::string MessageFactory::getEnteredInMatchNotification(int clientId, std::str
     message.setData(root);
 
     return message.serialize();
+}
+
+std::vector<Message> MessageFactory::getMovementNotifications(Message message) {
+    std::list<std::string> response;
+    Json::Value &root = message.getData();
+    std::vector<Message> messagesToReturn;
+
+    for (Json::Value &enemy : root["enemies"]){
+        Message m;
+        m.setData(enemy);
+        messagesToReturn.push_back(m);
+    }
+
+    return messagesToReturn;
 }

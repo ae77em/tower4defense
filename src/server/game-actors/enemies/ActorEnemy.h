@@ -10,13 +10,13 @@
 class ActorEnemy : public GameActor {
 private:
     std::vector<Point> path;
-    int currentDirection;
-    int currentPathPosition;
-    int currentShift;
+    int currentDirection = 0;
+    int currentPathPosition = 0;
+    int currentShift = 0;
     Point currentPoint = Point(-1, -1);
-    int xPosition;
-    int yPosition;
-    bool isWalking;
+    int xPosition = 0;
+    int yPosition = 0;
+    bool isWalking = false;
 
     int velocity = 1;
     int initialLifePoints = 200;
@@ -24,6 +24,7 @@ private:
     int isAir = false;
     int isAlive = true;
 
+    int id;
 
 public:
     ActorEnemy();
@@ -42,9 +43,9 @@ public:
 
     void setPath(const std::vector<Point> &path);
 
-    int getCurrentDirection() const;
+    int getDirection();
 
-    void setCurrentDirection(int currentDirection);
+    void setDirection(int currentDirection);
 
     void advance();
 
@@ -57,6 +58,10 @@ public:
     void setIsWalking(bool isWalking);
 
     int getEnergy();
+
+    int getId();
+
+    void setId(int id);
 
     std::string getClass();
 };

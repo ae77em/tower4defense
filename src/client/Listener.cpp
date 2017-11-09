@@ -6,7 +6,7 @@
 #include "../common/Message.h"
 #include "../common/Protocol.h"
 
-Listener::Listener(Socket *s, GameAccessWindow &ga, SharedBuffer &bfr)
+Listener::Listener(Socket *s, GameAccessWindow &ga, SharedBuffer *bfr)
         : server(s), gameAccess(ga), buffer(bfr) { }
 
 Listener::~Listener() {}
@@ -66,7 +66,7 @@ void Listener::run(){
                 case SERVER_NOTIFICATION_START_MATCH:{
                     std::list<std::string> elements = MessageFactory::getElements(message);
 
-                    gameAccess.setAvailableElements(elements);
+                    gameAccess.startMatch();
                     break;
                 }
                 case SERVER_NOTIFICATION_ENTER_EXISTING_MATCH:{
@@ -94,7 +94,8 @@ void Listener::run(){
                  */
                 default:
                     std::cout << "Llegó notificación no de acceso...la mando la juego..." << std::endl;
-                    buffer.addData(dataFromServer);
+                    std::cout << dataFromServer << std::endl;
+                    buffer->addData(dataFromServer);
             }
 
             std::cout << response << "dataFromServer: " << dataFromServer << std::endl;

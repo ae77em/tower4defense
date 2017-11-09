@@ -10,9 +10,6 @@
 #include "../common/TextMessage.h"
 #include "../sdl/enemies/BloodHawk.h"
 #include "../sdl/enemies/Goatman.h"
-#include "../sdl/enemies/GreenDaemon.h"
-#include "../sdl/enemies/Spectre.h"
-#include "../sdl/enemies/Zombie.h"
 
 GamePlayWindow::GamePlayWindow(Socket *s, SharedBuffer *in, SharedBuffer *out, int cId)
         : socket(s), toReceive(in), toSend(out), clientId(cId) {}
@@ -307,6 +304,7 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera, Tower &tower) {
         message.deserialize(notification);
 
         int op = MessageFactory::getOperation(message);
+        std::cout << "llego op: " << std::to_string(op) << " al listener del juego..." << std::endl;
 
         switch (op) {
             case SERVER_NOTIFICATION_PUT_TOWER: {
@@ -317,61 +315,66 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera, Tower &tower) {
                 }
                 break;
             }
-            case SERVER_NOTIFICATION_MOVE_ENEMY: {
-                Point point = MessageFactory::getPoint(message);
-                Point finalPoint(1279, 400);
-                int dir = MessageFactory::getDirection(message);
-                int enemyId = MessageFactory::getEnemyId(message);
+            case SERVER_NOTIFICATION_SCENARIO_STATUS: {
+                std::vector<Message> messages = MessageFactory::getMovementNotifications(message);
 
-                Enemy *enemy = enemies.at(enemyId);
+                for (Message aMessage : messages) {
+                    Point point = MessageFactory::getPoint(aMessage);
+                    Point finalPoint(1279, 400);
+                    int dir = MessageFactory::getDirection(aMessage);
+                    int enemyId = MessageFactory::getEnemyId(aMessage);
 
-                bool towerIsShooting =
-                        enemy->itIsAlive() &&
-                        enemy->getCollisionCircle().hasCollisionWith(tower.getCollisionCircle());
-                if (towerIsShooting) {
-                    tower.setIsShooting(true);
-                    int shotDamage = tower.getShotDamage();
-                    enemy->quitLifePoints(shotDamage);
-                    tower.sumExperiencePoints(shotDamage);
-                    std::cout << "la torre tiene " << tower.getExperiencePoints() << " de experiencia." << std::endl;
-                } else {
-                    tower.setIsShooting(false);
-                }
+                    Enemy *enemy = enemies.at(enemyId);
 
-                if (enemy->itIsAlive()) {
-                    enemy->setDirection(dir);
-                    enemy->moveTo(point.x, point.y);
-                } else if (towerIsShooting) {
-                    tower.sumExperiencePoints(enemy->getBonus());
-                    std::cout << "la torre sumó bonus de " << enemy->getBonus() << " puntos de experiencia."
-                              << std::endl;
+                    bool towerIsShooting =
+                            enemy->itIsAlive() &&
+                            enemy->getCollisionCircle().hasCollisionWith(tower.getCollisionCircle());
+                    if (towerIsShooting) {
+                        tower.setIsShooting(true);
+                        int shotDamage = tower.getShotDamage();
+                        enemy->quitLifePoints(shotDamage);
+                        tower.sumExperiencePoints(shotDamage);
+                        std::cout << "la torre tiene " << tower.getExperiencePoints() << " de experiencia."
+                                  << std::endl;
+                    } else {
+                        tower.setIsShooting(false);
+                    }
 
-                    for (Enemy *enemy1 : enemies){
-                        if (enemy1->itIsAlive()) {
-                            gameWon = false;
-                            break;
-                        } else {
-                            gameWon = true;
+                    if (enemy->itIsAlive()) {
+                        enemy->setDirection(dir);
+                        enemy->moveTo(point.x, point.y);
+                    } else if (towerIsShooting) {
+                        tower.sumExperiencePoints(enemy->getBonus());
+                        std::cout << "la torre sumó bonus de " << enemy->getBonus() << " puntos de experiencia."
+                                  << std::endl;
+
+                        for (Enemy *enemy1 : enemies) {
+                            if (enemy1->itIsAlive()) {
+                                gameWon = false;
+                                break;
+                            } else {
+                                gameWon = true;
+                            }
+
                         }
-
                     }
-                }
 
-                if (enemy->itIsAlive()) {
-                    if (point.x >= finalPoint.x && point.y >= finalPoint.y) {
-                        gameLoose = true;
+                    if (enemy->itIsAlive()) {
+                        if (point.x >= finalPoint.x && point.y >= finalPoint.y) {
+                            gameLoose = true;
+                        }
                     }
-                }
 
-                std::cout << "la torre tiene " << tower.getExperiencePoints() << " de experiencia." << std::endl;
+                    std::cout << "la torre tiene " << tower.getExperiencePoints() << " de experiencia." << std::endl;
+                }
                 break;
+            }
+            default:
+                response = "no reconocida";
         }
-        default:
-            response = "no reconocida";
-    }
 
-    std::cout << "notification: " << notification << std::endl;
-}
+        std::cout << "notification: " << notification << std::endl;
+    }
 
 }
 
@@ -485,7 +488,7 @@ void GamePlayWindow::run() {
 
                 tower.animate(camera);
 
-                for (Enemy *enemy : enemies){
+                for (Enemy *enemy : enemies) {
                     enemy->setRenderer(gRenderer);
                     enemy->animate(camera);
                 }

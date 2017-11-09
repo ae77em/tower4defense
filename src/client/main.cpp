@@ -9,7 +9,7 @@
 #include "Sender.h"
 
 int main(int argc, char **argv) {
-    SharedBuffer toReceive;
+    SharedBuffer *toReceive = new SharedBuffer();
     SharedBuffer toSend;
 
     if (argc < 3) {
@@ -35,6 +35,7 @@ int main(int argc, char **argv) {
 
     GameAccessWindow gameAccess(&server, toSend, toReceive);
     gameAccess.setClientId(clientId);
+
     Listener listener(&server, gameAccess, toReceive);
     Sender sender(&server, toSend);
 

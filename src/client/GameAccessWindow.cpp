@@ -7,7 +7,7 @@
 #include <gtkmm.h>
 #include <iostream>
 
-GameAccessWindow::GameAccessWindow(Socket *c, SharedBuffer &tsnd, SharedBuffer &trcv)
+GameAccessWindow::GameAccessWindow(Socket *c, SharedBuffer &tsnd, SharedBuffer *trcv)
         : client(c), toSend(tsnd), toReceive(trcv) {
     clientId = -1;
 }
@@ -124,16 +124,15 @@ void GameAccessWindow::on_btnCrearPartida_clicked() {
 }
 
 void GameAccessWindow::on_btnJugar_clicked() {
-    pWindow->hide();
+    std::string matchName = entryMatchName->get_text();
 
-    GamePlayWindow game(client, &toReceive, &toSend, clientId);
-    game.run();
+    std::string request =  MessageFactory::getStartMatchRequest(clientId, matchName);
 
-    pWindow->show();
+    TextMessage textMessage(request);
+    textMessage.sendTo(const_cast<Socket &>(*client));
 }
 
 void GameAccessWindow::on_btnUnirse_clicked() {
-    std::cout << "hice click en unirse..." << std::endl;
     std::string matchName = cmbMatchesText->get_active_text();
     std::vector<std::string> elements = getSelectedElements();
 
@@ -335,4 +334,11 @@ bool GameAccessWindow::isNotValidClientId(){
     return clientId == -1;
 }
 
+
+void GameAccessWindow::startMatch(){
+    pWindow->hide();
+
+    GamePlayWindow game(client, toReceive, &toSend, clientId);
+    game.run();
+}
 

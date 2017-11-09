@@ -1,5 +1,4 @@
 #include "ActorEnemy.h"
-#include "../../../sdl/Constants.h"
 #include "../../../common/Utils.h"
 
 
@@ -13,11 +12,11 @@ void ActorEnemy::setPath(const std::vector<Point> &path) {
     ActorEnemy::path = path;
 }
 
-int ActorEnemy::getCurrentDirection() const {
+int ActorEnemy::getDirection() {
     return currentDirection;
 }
 
-void ActorEnemy::setCurrentDirection(int currentDirection) {
+void ActorEnemy::setDirection(int currentDirection) {
     ActorEnemy::currentDirection = currentDirection;
 }
 
@@ -30,35 +29,39 @@ void ActorEnemy::setCurrentPathPosition(int currentPosition) {
 }
 
 void ActorEnemy::advance() {
-    int xFinal, yFinal;
+    if (currentPathPosition >= 0) {
+        int xFinal, yFinal;
 
-    currentPoint = path.at(currentPathPosition);
+        currentPoint = path.at(currentPathPosition);
 
-    if ((unsigned)currentPathPosition < path.size() - 1) {
-        Point point = path.at(currentPathPosition + 1);
-        xFinal = point.x;
-        yFinal = point.y;
+        if ((unsigned) currentPathPosition < path.size() - 1) {
+            Point point = path.at(currentPathPosition + 1);
+            xFinal = point.x;
+            yFinal = point.y;
+        }
+
+        int xMovement = Utils::getNextMapDisplacement(currentPoint.x, xFinal);
+        int yMovement = Utils::getNextMapDisplacement(currentPoint.y, yFinal);
+
+        int x = path.at(currentPathPosition).x + xMovement;
+        int y = path.at(currentPathPosition).y + yMovement;
+
+        currentDirection = Utils::getMovementDirection(Utils::getNextMapDisplacement(x, xFinal),
+                                                       Utils::getNextMapDisplacement(y, yFinal));
+
+        xPosition += xMovement;
+        yPosition += yMovement;
+    } else {
+        ++currentPathPosition;
     }
-
-    int xMovement = Utils::getNextMapDisplacement(currentPoint.x, xFinal);
-    int yMovement = Utils::getNextMapDisplacement(currentPoint.y, yFinal);
-
-    int x = path.at(currentPathPosition).x + xMovement;
-    int y = path.at(currentPathPosition).y + yMovement;
-
-    currentDirection = Utils::getMovementDirection(Utils::getNextMapDisplacement(x, xFinal),
-                                                Utils::getNextMapDisplacement(y, yFinal));
-
-    xPosition += xMovement;
-    yPosition += yMovement;
 }
 
-void ActorEnemy::gotoNextPathPosition(){
+void ActorEnemy::gotoNextPathPosition() {
     ++currentPathPosition;
 }
 
-void ActorEnemy::setIsWalking(bool iw){
-    if (!isWalking){
+void ActorEnemy::setIsWalking(bool iw) {
+    if (!isWalking) {
         isWalking = iw;
         currentPathPosition = 0;
         currentPoint = path.at(currentPathPosition);
@@ -83,14 +86,22 @@ int ActorEnemy::getYPosition() {
     return yPosition;
 }
 
-void ActorEnemy::live(){
+void ActorEnemy::live() {
     advance();
 }
 
-int ActorEnemy::getEnergy(){
+int ActorEnemy::getEnergy() {
     return remainingLifePoints;
 }
 
 std::string ActorEnemy::getClass() {
     return "ActorEnemy";
+}
+
+int ActorEnemy::getId() {
+    return id;
+}
+
+void ActorEnemy::setId(int id) {
+    ActorEnemy::id = id;
 }
