@@ -1,26 +1,13 @@
 #include "Enemy.h"
 #include "../Utils.h"
 
-Enemy::Enemy(int x, int y, SDL_Renderer *r) {
-    Point initialSreenPos = Utils::mapToScreen(x, y);
-
-    walkSpriteWidth = 105;
-    walkSpriteHeight = 119;
-
-    deathSpriteWidth = 200;
-    deathSpriteHeight = 155;
-
-    walkBox.x = initialSreenPos.x;
-    walkBox.y = initialSreenPos.y;
-    walkBox.w = walkSpriteWidth;
-    walkBox.h = walkSpriteHeight;
+Enemy::Enemy(int x, int y, SDL_Renderer *r, LTexture *t) {
+    initializeSpritesData(x, y);
 
     collisionCircle.r = Enemy::getCollisionCircleRadio();
     shiftColliders();
 
-    deathBox = walkBox;
-    walkBox.w = deathSpriteWidth;
-    walkBox.h = deathSpriteHeight;
+    texture = t;
 
     //Initialize the velocity
     velocity = 1;
@@ -33,11 +20,47 @@ Enemy::Enemy(int x, int y, SDL_Renderer *r) {
     setSprites();
 }
 
+void Enemy::initializeSpritesData(int x, int y) {
+    Point initialSreenPos = Utils::mapToScreen(x, y);
+
+    /* datos sprites para caminar */
+    walkSpriteWidth = 105;
+    walkSpriteHeight = 119;
+
+    walkBox.x = initialSreenPos.x;
+    walkBox.y = initialSreenPos.y;
+    walkBox.w = walkSpriteWidth;
+    walkBox.h = walkSpriteHeight;
+
+    walkingStartX = 1765;
+    walkingStartY = 3537;
+    walkSpriteWidth = 105;
+    walkSpriteHeight = 119;
+    numberOfEnemyWalkSprites = 12;// NUMBER_OF_ENEMY_WALK_SPRITES;
+    numberOfEnemyWalkDirections = 4; // NUMBER_OF_ENEMY_WALK_DIRECTIONS;
+
+    /* datos sprites para morir */
+    deathSpriteWidth = 200;
+    deathSpriteHeight = 155;
+
+    deathBox = walkBox;
+
+    walkBox.w = deathSpriteWidth;
+    walkBox.h = deathSpriteHeight;
+
+    deathStartX = 1;
+    deathStartY = 2273;
+    deathSpriteWidth = 200;
+    deathSpriteHeight = 155;
+    numberOfEnemyDeathSprites = 18;// NUMBER_OF_ENEMY_DEATH_SPRITES;
+    numberOfEnemyDeathDirections = 4; // NUMBER_OF_ENEMY_DEATH_DIRECTIONS;
+}
+
 Enemy::~Enemy() {}
 
 bool Enemy::loadMedia() {
     bool success = true;
-    if (!texture.loadFromFile("images/sprites/enemy-abominable.png", renderer, 0xFF, 0x00, 0x99)) {
+    if (!texture->loadFromFile("images/sprites/enemy-abominable.png", renderer, 0xFF, 0x00, 0x99)) {
         printf("Failed to load dot texture!\n");
         success = false;
     }
@@ -101,7 +124,7 @@ void Enemy::renderWalk(SDL_Rect &camera) {
     double isox = screenPoint.x - camera.x;
     double isoy = screenPoint.y - camera.y - offset;
 
-    texture.renderSprite(renderer, isox, isoy, &walkingSprites[currentDirection][frameToDraw]);
+    texture->renderSprite(renderer, isox, isoy, &walkingSprites[currentDirection][frameToDraw]);
 
     renderLifeBar(isox, isoy);
 }
@@ -120,7 +143,7 @@ void Enemy::renderDie(SDL_Rect &camera) {
         double isox = screenPoint.x - camera.x;
         double isoy = screenPoint.y - camera.y - offset;
 
-        texture.renderSprite(renderer, isox, isoy, &deathSprites[currentDirection][frameToDraw]);
+        texture->renderSprite(renderer, isox, isoy, &deathSprites[currentDirection][frameToDraw]);
     }
 }
 

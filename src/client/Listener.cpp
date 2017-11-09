@@ -93,8 +93,8 @@ void Listener::run(){
                  * las cosas las tenía resueltas por separado...
                  */
                 default:
+                    std::cout << "Llegó notificación no de acceso...la mando la juego..." << std::endl;
                     buffer.addData(dataFromServer);
-                    response = "notificación del server no reconocida";
             }
 
             std::cout << response << "dataFromServer: " << dataFromServer << std::endl;

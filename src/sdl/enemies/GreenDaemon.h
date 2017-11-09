@@ -6,7 +6,7 @@
 
 class GreenDaemon : public Enemy{
 public:
-    GreenDaemon(int x, int y, SDL_Renderer *renderer, LTexture &t);
+    GreenDaemon(int x, int y, SDL_Renderer *renderer, LTexture *texture);
 
 };
 

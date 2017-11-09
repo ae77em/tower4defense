@@ -1,5 +1,8 @@
 #include <iostream>
 #include "ListenerLoopGame.h"
+#include "Request.h"
+#include "../common/MessageFactory.h"
+#include "../common/Protocol.h"
 
 ListenerLoopGame::ListenerLoopGame(std::list<GameAction*>& a,
                                    std::mutex& m,
@@ -20,7 +23,22 @@ void ListenerLoopGame::run(){
             Message messageRequest = queueMessagesGame.pop();
             std::string response;
 
-            //hago swirh para identificar el tipo de action a aplicar sobre el game loop
+            Request request(messageRequest);
+            //hago switch para identificar el tipo de action a aplicar sobre el game loop
+            switch (request.getAsInt(OPERATION_KEY)){
+                case CLIENT_REQUEST_PUT_TOWER:{
+                    // poner torre
+                    break;
+                }
+                case CLIENT_REQUEST_MARK_TILE:{
+                    // marcar zona de construcción
+                    break;
+                }
+                case CLIENT_REQUEST_CAST_SPELL:{
+                    // lanzo hechizo
+                    break;
+                }
+            }
 
             mutexActions.lock();
             //actions.push_back(new SpecificAction);

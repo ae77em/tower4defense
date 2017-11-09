@@ -11,7 +11,7 @@
 
 class Enemy {
 public:
-    Enemy(int x, int y, SDL_Renderer *renderer);
+    Enemy(int x, int y, SDL_Renderer *renderer, LTexture *texture);
 
     ~Enemy();
 
@@ -89,7 +89,7 @@ public:
      * Modifica la textura que se utilizará para mostrar el enemigo.
      * texture: referencia a la textura a utilizar.
      * */
-    void setTexture(LTexture &texture);
+    void setTexture(LTexture *texture);
 
     /*
      * Modifica la cámara del juego donde está metido el enemigo, es decir,
@@ -156,14 +156,12 @@ protected:
     int velocity;
     int isAir;
 
-    LTexture texture;
-
     /* ATRIBUTOS RELACIONADOS CON DIBUJO */
     SDL_Rect walkBox;
-    std::array<std::array<SDL_Rect, NUMBER_OF_ENEMY_WALK_DIRECTIONS>, NUMBER_OF_ENEMY_WALK_SPRITES> walkingSprites;
+    std::array<std::array<SDL_Rect,NUMBER_OF_ENEMY_WALK_SPRITES>, NUMBER_OF_ENEMY_WALK_DIRECTIONS> walkingSprites;
 
     SDL_Rect deathBox;
-    std::array<std::array<SDL_Rect, NUMBER_OF_ENEMY_DEATH_DIRECTIONS>, NUMBER_OF_ENEMY_DEATH_SPRITES> deathSprites;
+    std::array<std::array<SDL_Rect, NUMBER_OF_ENEMY_DEATH_SPRITES>, NUMBER_OF_ENEMY_DEATH_DIRECTIONS> deathSprites;
 
     bool firstFrameOfDeathRendered = false;
     bool lastFrameOfDeathRendered = false;
@@ -174,8 +172,12 @@ protected:
     int velocityY;
 
     SDL_Renderer *renderer;
+    LTexture *texture;
 
     int currentDirection = 0;
+
+    /* METHODS */
+    virtual void initializeSpritesData(int x, int y);
 };
 
 

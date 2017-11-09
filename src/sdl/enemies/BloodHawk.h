@@ -5,14 +5,12 @@
 #include "Enemy.h"
 
 class BloodHawk : public Enemy {
-private:
-    LTexture texture;
-
 public:
-    BloodHawk(int x, int y, SDL_Renderer *renderer);
+    BloodHawk(int x, int y, SDL_Renderer *renderer, LTexture *texture);
 
     bool loadMedia();
 
+    void initializeSpritesData(int x, int y);
 };
 
 

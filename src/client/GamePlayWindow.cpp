@@ -8,6 +8,11 @@
 #include "../common/MessageFactory.h"
 #include "../common/Protocol.h"
 #include "../common/TextMessage.h"
+#include "../sdl/enemies/BloodHawk.h"
+#include "../sdl/enemies/Goatman.h"
+#include "../sdl/enemies/GreenDaemon.h"
+#include "../sdl/enemies/Spectre.h"
+#include "../sdl/enemies/Zombie.h"
 
 GamePlayWindow::GamePlayWindow(Socket *s, SharedBuffer *in, SharedBuffer *out, int cId)
         : socket(s), toReceive(in), toSend(out), clientId(cId) {}
@@ -87,10 +92,15 @@ bool GamePlayWindow::loadMedia() {
         }
     }
 
-    gSpriteSheetTexturePortalBlue
-            .loadFromFile("images/sprites/portal-blue2.png", gRenderer);
-    gSpriteSheetTexturePortalRed
-            .loadFromFile("images/sprites/portal-red.png", gRenderer);
+    bluePortalTexture.loadFromFile("images/sprites/portal-blue2.png", gRenderer);
+    redPortalTexture.loadFromFile("images/sprites/portal-red.png", gRenderer);
+
+    abmonibleTexture->loadFromFile("images/sprites/enemy-abominable.png", gRenderer, 0xFF, 0x00, 0x99);
+    blookHawkTexture->loadFromFile("images/sprites/enemy-blood-hawk.png", gRenderer, 0xAA, 0xAA, 0xAA);
+    goatmanTexture->loadFromFile("images/sprites/enemy-goatman.png", gRenderer, 0xFF, 0x00, 0x99);
+    greenDaemonTexture->loadFromFile("images/sprites/enemy-abominable.png", gRenderer, 0xFF, 0x00, 0x99);
+    spectreTexture->loadFromFile("images/sprites/enemy-abominable.png", gRenderer, 0xFF, 0x00, 0x99);
+    zombieTexture->loadFromFile("images/sprites/enemy-abominable.png", gRenderer, 0xFF, 0x00, 0x99);
 
     //Load tile map
     if (!setTiles()) {
@@ -382,12 +392,27 @@ void GamePlayWindow::run() {
     if (!init()) {
         printf("Failed to initializde!\n");
     } else {
-        for (int x= 0; x < 5; ++x){
-            Enemy *abmonible = new Abmonible(0, 0, gRenderer);
-            abmonible->loadMedia();
-            abmonible->setSprites();
-            enemies.push_back(abmonible);
-        }
+        /* Vamos a poner un enemigo de cada tipo para ver las animaciones */
+        Enemy *abmonible = new Abmonible(0, 0, gRenderer, abmonibleTexture);
+        abmonible->setSprites();
+        Enemy *bloodHawk = new BloodHawk(1, 0, gRenderer, blookHawkTexture);
+        /*bloodHawk->setSprites();
+        Enemy *goatman = new Goatman(2, 0, gRenderer, goatmanTexture);
+        bloodHawk->setSprites();
+        Enemy *greenDaemon = new GreenDaemon(3, 0, gRenderer, greenDaemonTexture);
+        greenDaemon->setSprites();
+        Enemy *spectre = new Spectre(4, 0, gRenderer, spectreTexture);
+        greenDaemon->setSprites();
+        Enemy *zombie = new Zombie(5, 0, gRenderer, zombieTexture);
+        zombie->setSprites();*/
+
+        enemies.push_back(abmonible);
+        enemies.push_back(bloodHawk);
+        /*enemies.push_back(goatman);
+        enemies.push_back(greenDaemon);
+        enemies.push_back(spectre);
+        enemies.push_back(zombie);*/
+
 
         Tower tower(0, 0, gRenderer, gSpriteSheetTextureTower);
         tower.loadMedia();

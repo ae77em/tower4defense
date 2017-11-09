@@ -36,16 +36,25 @@ private:
     SDL_Rect gTileClips[TOTAL_TILE_SPRITES];
 
     SDL_Rect gSpriteClipsPortalBlue[30];
-    LTexture gSpriteSheetTexturePortalBlue;
+    LTexture bluePortalTexture;
 
     SDL_Rect gSpriteClipsPortalRed[30];
-    LTexture gSpriteSheetTexturePortalRed;
+    LTexture redPortalTexture;
 
     LTexture gSpriteSheetTextureTower;
 
     //Scene textures
     LTexture gTileTextures[TOTAL_TILE_SPRITES];
 
+    // Enemies textures
+    LTexture *abmonibleTexture = new LTexture();
+    LTexture *blookHawkTexture = new LTexture();
+    LTexture *goatmanTexture = new LTexture();
+    LTexture *greenDaemonTexture = new LTexture();
+    LTexture *spectreTexture = new LTexture();
+    LTexture *zombieTexture = new LTexture();
+
+    // Comunication with the game server
     Socket *socket = nullptr;
     SharedBuffer *toReceive = nullptr;
     SharedBuffer *toSend = nullptr;
