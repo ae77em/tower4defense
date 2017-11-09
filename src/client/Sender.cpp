@@ -2,7 +2,7 @@
 #include "Sender.h"
 #include "../common/TextMessage.h"
 
-Sender::Sender(Socket &s, SharedBuffer &b) : server(s), buffer(b) {}
+Sender::Sender(Socket *s, SharedBuffer &b) : server(s), buffer(b) {}
 
 Sender::~Sender(){}
 
@@ -16,8 +16,9 @@ void Sender::run(){
 
         while (buffer.isProcessingYet()) {
             dataToSend = buffer.getNextData();
+            std::cout << "data que para enviar: " << dataToSend << std::endl;
             TextMessage message(dataToSend);
-            message.sendTo(server);
+            message.sendTo(*server);
         }
     } catch (std::exception) {
         /* Catcheo la excepción que se lanza cuando fuerzo la salida del accept

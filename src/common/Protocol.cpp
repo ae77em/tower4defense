@@ -6,13 +6,13 @@ std::string Protocol::notificationToString(int notificationType) {
 
     switch (notificationType) {
         case CLIENT_REQUEST_ACCESS_GAME_MENU:
-            toReturn.append(" Access GameWindow Menu");
+            toReturn.append(" Access GamePlayWindow Menu");
             break;
         case CLIENT_REQUEST_ACCESS_CONFIGURATION_MENU:
             toReturn.append(" Access Configuration Menu");
             break;
         case CLIENT_REQUEST_NEW_MATCH:
-            toReturn.append(" Create new GameWindow");
+            toReturn.append(" Create new GamePlayWindow");
             break;
         default:
             toReturn.append(" Unknown");
@@ -27,16 +27,16 @@ std::string Protocol::requestToString(int requestType) {
 
     switch (requestType) {
         case CLIENT_REQUEST_ACCESS_GAME_MENU:
-            toReturn.append(" to Access GameWindow");
+            toReturn.append(" to Access GamePlayWindow");
             break;
         case CLIENT_REQUEST_ACCESS_CONFIGURATION_MENU:
             toReturn.append(" to Access Configuration");
             break;
         case CLIENT_REQUEST_NEW_MATCH:
-            toReturn.append(" to Create new GameWindow");
+            toReturn.append(" to Create new GamePlayWindow");
             break;
         case CLIENT_REQUEST_ENTER_EXISTING_MATCH:
-            toReturn.append(" to Enter in exisiting GameWindow");
+            toReturn.append(" to Enter in exisiting GamePlayWindow");
             break;
         case CLIENT_REQUEST_PUT_TOWER:
             toReturn.append(" to Put a Tower");

@@ -22,14 +22,14 @@ private:
     Gtk::CheckButton *pchkTierra = nullptr;
 
     /* Connection */
-    const Socket &client;
-    SharedBuffer& toSend;
-    SharedBuffer& toReceive;
+    Socket *client;
+    SharedBuffer &toSend;
+    SharedBuffer &toReceive;
     int clientId;
     std::string matchName;
 
 public:
-    GameAccessWindow(const Socket &client, SharedBuffer &toSend, SharedBuffer &toReceive);
+    GameAccessWindow(Socket *client, SharedBuffer &toSend, SharedBuffer &toReceive);
 
     virtual ~GameAccessWindow();
 

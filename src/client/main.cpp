@@ -13,7 +13,7 @@ int main(int argc, char **argv) {
     SharedBuffer toSend;
 
     if (argc < 3) {
-        std::cerr << "gameaccess <host> <port>" << std::endl;
+        std::cerr << "game <host> <port>" << std::endl;
         return 0;
     }
 
@@ -33,16 +33,16 @@ int main(int argc, char **argv) {
     message.deserialize(dataFromServer);
     int clientId = MessageFactory::getClientId(message);
 
-    GameAccessWindow gameAccess(server, toSend, toReceive);
+    GameAccessWindow gameAccess(&server, toSend, toReceive);
     gameAccess.setClientId(clientId);
-    Listener listener(server, gameAccess, toReceive);
-    Sender sender(server, toSend);
+    Listener listener(&server, gameAccess, toReceive);
+    Sender sender(&server, toSend);
 
     gameAccess.start();
 
     time_t start = time(0);
     // wait for 1 second, while the window is setted
-    while (difftime(time(0), start) < 1) {}
+    while (difftime(time(0), start) < 1.5) {}
 
     listener.start();
     // sends the initial requests, and inmediatly finishes him

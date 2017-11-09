@@ -49,7 +49,7 @@ private:
     //The tile type
     int type;
 
-    //GameWindow-event dispatched from the tile
+    //GamePlayWindow-event dispatched from the tile
     int gameEvent;
 };
 

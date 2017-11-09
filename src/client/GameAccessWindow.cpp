@@ -3,12 +3,12 @@
 #include "../common/Socket.h"
 #include "../common/TextMessage.h"
 #include "../common/Protocol.h"
-#include "GameWindow.h"
+#include "GamePlayWindow.h"
 #include <gtkmm.h>
 #include <iostream>
 
-GameAccessWindow::GameAccessWindow(const Socket &c, SharedBuffer &tsnd, SharedBuffer &trcv)
-        : client(c), toSend(toSend), toReceive(trcv) {
+GameAccessWindow::GameAccessWindow(Socket *c, SharedBuffer &tsnd, SharedBuffer &trcv)
+        : client(c), toSend(tsnd), toReceive(trcv) {
     clientId = -1;
 }
 
@@ -109,7 +109,7 @@ void GameAccessWindow::on_cmbMatches_changed(){
         std::string request = MessageFactory::getUnavailableElementsRequest(clientId, matchName);
 
         TextMessage textMessage(request);
-        textMessage.sendTo(const_cast<Socket &>(client));
+        textMessage.sendTo(const_cast<Socket &>(*client));
     }
 }
 
@@ -120,13 +120,13 @@ void GameAccessWindow::on_btnCrearPartida_clicked() {
     std::string request =  MessageFactory::getNewMatchRequest(clientId, mapName, matchName);
 
     TextMessage textMessage(request);
-    textMessage.sendTo(const_cast<Socket &>(client));
+    textMessage.sendTo(const_cast<Socket &>(*client));
 }
 
 void GameAccessWindow::on_btnJugar_clicked() {
     pWindow->hide();
 
-    GameWindow game(toReceive, toSend, clientId);
+    GamePlayWindow game(client, &toReceive, &toSend, clientId);
     game.run();
 
     pWindow->show();
@@ -140,7 +140,7 @@ void GameAccessWindow::on_btnUnirse_clicked() {
     std::string request = MessageFactory::getEnterMatchRequest(clientId, matchName, elements);
 
     TextMessage textMessage(request);
-    textMessage.sendTo(const_cast<Socket &>(client));
+    textMessage.sendTo(const_cast<Socket &>(*client));
 }
 
 std::vector<std::string> GameAccessWindow::getSelectedElements(){

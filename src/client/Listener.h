@@ -8,12 +8,12 @@
 
 class Listener : public Thread {
 private:
-    Socket &server;
+    Socket *server;
     GameAccessWindow &gameAccess;
     SharedBuffer &buffer;
 
 public:
-    Listener(Socket &server, GameAccessWindow &b, SharedBuffer&bfr);
+    Listener(Socket *server, GameAccessWindow &b, SharedBuffer&bfr);
 
     virtual ~Listener();
 

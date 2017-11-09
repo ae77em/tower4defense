@@ -1,4 +1,4 @@
-#include "GameWindow.h"
+#include "GamePlayWindow.h"
 
 #include <iostream>
 #include <fstream>
@@ -7,13 +7,14 @@
 #include <SDL2/SDL_image.h>
 #include "../common/MessageFactory.h"
 #include "../common/Protocol.h"
+#include "../common/TextMessage.h"
 
-GameWindow::GameWindow(SharedBuffer &in, SharedBuffer &out, int cId)
-        : dataFromServer(in), dataToServer(out), clientId(cId) {}
+GamePlayWindow::GamePlayWindow(Socket *s, SharedBuffer *in, SharedBuffer *out, int cId)
+        : socket(s), toReceive(in), toSend(out), clientId(cId) {}
 
-GameWindow::~GameWindow() {}
+GamePlayWindow::~GamePlayWindow() {}
 
-bool GameWindow::init() {
+bool GamePlayWindow::init() {
     //Initialization flag
     bool success = true;
 
@@ -68,7 +69,7 @@ bool GameWindow::init() {
     return success;
 }
 
-bool GameWindow::loadMedia() {
+bool GamePlayWindow::loadMedia() {
     //Loading success flag
     bool success = true;
 
@@ -100,7 +101,7 @@ bool GameWindow::loadMedia() {
     return success;
 }
 
-void GameWindow::close() {
+void GamePlayWindow::close() {
     //Deallocate tiles
     for (int i = 0; i < TOTAL_TILES; ++i) {
         if (tileSet[i] == NULL) {
@@ -126,7 +127,7 @@ void GameWindow::close() {
     SDL_Quit();
 }
 
-bool GameWindow::setTiles() {
+bool GamePlayWindow::setTiles() {
     //Success flag
     bool tilesLoaded = true;
 
@@ -200,7 +201,7 @@ bool GameWindow::setTiles() {
     return tilesLoaded;
 }
 
-void GameWindow::loadPortalSprites() {
+void GamePlayWindow::loadPortalSprites() {
     unsigned int x_i = 0;
     unsigned int y_i = 0;
 
@@ -229,7 +230,7 @@ void GameWindow::loadPortalSprites() {
     }
 }
 
-void GameWindow::handleMouseEvents(SDL_Rect camera, std::string mov_description, SDL_Event e) {
+void GamePlayWindow::handleMouseEvents(SDL_Rect camera, std::string mov_description, SDL_Event e) {
     if (e.type == SDL_MOUSEBUTTONDOWN) {
         Point point = Utils::getMouseRelativePoint(camera);
 
@@ -242,7 +243,7 @@ void GameWindow::handleMouseEvents(SDL_Rect camera, std::string mov_description,
             case GAME_EVENT_PUT_TOWER: {
                 std::string request;
                 request = MessageFactory::getPutTowerRequest(clientId, point.x, point.y, true);
-                dataToServer.addData(request);
+                toSend->addData(request);
                 break;
             }
             case GAME_EVENT_KILL_ENEMY: {
@@ -258,7 +259,7 @@ void GameWindow::handleMouseEvents(SDL_Rect camera, std::string mov_description,
     }
 }
 
-void GameWindow::matarBichoSiLeHiceClick(const SDL_Rect &camera, Enemy &enemy) {
+void GamePlayWindow::matarBichoSiLeHiceClick(const SDL_Rect &camera, Enemy &enemy) {
     int mousePosX;
     int mousePosY;
     SDL_GetMouseState(&mousePosX, &mousePosY);
@@ -282,13 +283,13 @@ void GameWindow::matarBichoSiLeHiceClick(const SDL_Rect &camera, Enemy &enemy) {
 
 }
 
-void GameWindow::handleServerNotifications(SDL_Rect camera, Tower &tower) {
+void GamePlayWindow::handleServerNotifications(SDL_Rect camera, Tower &tower) {
     int transactionsCounter = 0;
     std::string notification;
 
-    while (dataFromServer.hasData() && transactionsCounter < MAX_SERVER_NOTIFICATIONS_PER_FRAME) {
+    while (toReceive->hasData() && transactionsCounter < MAX_SERVER_NOTIFICATIONS_PER_FRAME) {
         ++transactionsCounter;
-        notification = dataFromServer.getNextData();
+        notification = toReceive->getNextData();
 
         Message message;
         std::string response;
@@ -364,11 +365,18 @@ void GameWindow::handleServerNotifications(SDL_Rect camera, Tower &tower) {
 
 }
 
-void GameWindow::run() {
+void GamePlayWindow::run() {
     std::string mov_description;
 
     unsigned int gameEndedTime = 0;
     bool gameEnded = false;
+
+    std::string request;
+    request = MessageFactory::getPutTowerRequest(clientId, 10, 10, true);
+    toSend->addData(request);
+
+    TextMessage textMessage(request);
+    textMessage.sendTo(const_cast<Socket &>(*socket));
 
     //Start up SDL and create window
     if (!init()) {
@@ -472,7 +480,7 @@ void GameWindow::run() {
     }
 }
 
-void GameWindow::renderText(SDL_Rect &camera, std::string text) {
+void GamePlayWindow::renderText(SDL_Rect &camera, std::string text) {
     SDL_Color textColor = {0xFF, 0xFF, 0, 0xFF}; // letra amarilla
     SDL_Color bgColor = {0, 0, 0, 0}; // fondo transparente (supuestamente)
 

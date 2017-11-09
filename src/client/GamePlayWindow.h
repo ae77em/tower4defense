@@ -18,7 +18,7 @@ static const int MAX_SERVER_NOTIFICATIONS_PER_FRAME = 1;
 #include "../sdl/enemies/Abmonible.h"
 #include "../sdl/towers/Tower.h"
 
-class GameWindow : public Thread {
+class GamePlayWindow : public Thread {
 private:
     //The window we'll be rendering to
     SDL_Window *gWindow = NULL;
@@ -41,14 +41,14 @@ private:
     SDL_Rect gSpriteClipsPortalRed[30];
     LTexture gSpriteSheetTexturePortalRed;
 
-    LTexture gSpriteSheetTextureEnemyAbominable;
     LTexture gSpriteSheetTextureTower;
 
     //Scene textures
     LTexture gTileTextures[TOTAL_TILE_SPRITES];
 
-    SharedBuffer &dataFromServer;
-    SharedBuffer &dataToServer;
+    Socket *socket = nullptr;
+    SharedBuffer *toReceive = nullptr;
+    SharedBuffer *toSend = nullptr;
 
     int eventDispatched;
     int clientId;
@@ -56,8 +56,8 @@ private:
     std::vector<Enemy*> enemies;
 
 public:
-    GameWindow(SharedBuffer &in, SharedBuffer &out, int clientId);
-    ~GameWindow();
+    GamePlayWindow(Socket *socket, SharedBuffer *in, SharedBuffer *out, int clientId);
+    ~GamePlayWindow();
 
     void run();
     void interactWithServer(Socket &client, std::string text);

@@ -6,7 +6,7 @@
 #include "../common/Message.h"
 #include "../common/Protocol.h"
 
-Listener::Listener(Socket &s, GameAccessWindow &ga, SharedBuffer &bfr)
+Listener::Listener(Socket *s, GameAccessWindow &ga, SharedBuffer &bfr)
         : server(s), gameAccess(ga), buffer(bfr) { }
 
 Listener::~Listener() {}
@@ -19,7 +19,7 @@ void Listener::run(){
         std::cout << "llegue al listener---" << std::endl;
 
         while (true) {
-            dataFromServer = textMessage.receiveFrom(server).getMessage();
+            dataFromServer = textMessage.receiveFrom(*server).getMessage();
 
             Message message;
             std::string response = "";

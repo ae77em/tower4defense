@@ -7,11 +7,11 @@
 
 class Sender : public Thread {
 private:
-    Socket server;
+    Socket *server;
     SharedBuffer &buffer;
 
 public:
-    Sender(Socket &server, SharedBuffer &b);
+    Sender(Socket *server, SharedBuffer &b);
 
     virtual ~Sender();
 
