@@ -11,7 +11,7 @@
 #include "../sdl/enemies/BloodHawk.h"
 #include "../sdl/enemies/Goatman.h"
 
-GamePlayWindow::GamePlayWindow(Socket *s, SharedBuffer *in, SharedBuffer *out, int cId)
+GamePlayWindow::GamePlayWindow(Socket *s, SharedBuffer **in, SharedBuffer *out, int cId)
         : socket(s), toReceive(in), toSend(out), clientId(cId) {}
 
 GamePlayWindow::~GamePlayWindow() {}
@@ -294,9 +294,9 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera, Tower &tower) {
     int transactionsCounter = 0;
     std::string notification;
 
-    while (toReceive->hasData() && transactionsCounter < MAX_SERVER_NOTIFICATIONS_PER_FRAME) {
+    while ((*toReceive)->hasData() && transactionsCounter < MAX_SERVER_NOTIFICATIONS_PER_FRAME) {
         ++transactionsCounter;
-        notification = toReceive->getNextData();
+        notification = (*toReceive)->getNextData();
 
         Message message;
         std::string response;

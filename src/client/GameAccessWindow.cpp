@@ -16,6 +16,9 @@ GameAccessWindow::~GameAccessWindow(){}
 
 
 void GameAccessWindow::run() {
+
+    loadMutex.lock();
+
     auto app = Gtk::Application::create();
 
     //Load the GtkBuilder file and instantiate its widgets:
@@ -48,7 +51,10 @@ void GameAccessWindow::run() {
         initComboMatches(refBuilder);
         initCheckboxElements(refBuilder);
 
+        loadMutex.unlock();
         app->run(*pWindow);
+    } else {
+        loadMutex.unlock();
     }
 
     delete pWindow;
@@ -260,15 +266,19 @@ void GameAccessWindow::initCheckboxElements(Glib::RefPtr<Gtk::Builder> &refBuild
 
 
 void GameAccessWindow::addMapsToCombo(const std::vector<std::string> &maps) {
+    loadMutex.lock();
     for (std::string map : maps){
         cmbMapsText->append(map);
     }
+    loadMutex.unlock();
 }
 
 void GameAccessWindow::addMatchesToCombo(const std::vector<std::string> &matches) {
+    loadMutex.lock();
     for (std::string match : matches){
         cmbMatchesText->append(match);
     }
+    loadMutex.unlock();
 }
 
 void GameAccessWindow::addMatchToCombo(const std::string &mapName, const std::string &matchName) {
@@ -338,7 +348,11 @@ bool GameAccessWindow::isNotValidClientId(){
 void GameAccessWindow::startMatch(){
     pWindow->hide();
 
-    GamePlayWindow game(client, toReceive, &toSend, clientId);
+    GamePlayWindow game(client, &toReceive, &toSend, clientId);
     game.run();
+    /*while (toReceive->hasData() && !toReceive->isEnded()){
+        std::cout << " ------------ "  << std::endl;
+        std::cout << toReceive->getNextData() << std::endl;
+    }*/
 }
 

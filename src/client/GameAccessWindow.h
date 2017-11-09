@@ -8,6 +8,7 @@
 
 class GameAccessWindow : public Thread {
 private:
+    std::mutex loadMutex;
     /* View */
     Gtk::Window *pWindow;
     Gtk::Button *pBtnCrearPartida = nullptr;

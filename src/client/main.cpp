@@ -41,9 +41,9 @@ int main(int argc, char **argv) {
 
     gameAccess.start();
 
-    time_t start = time(0);
+    //time_t start = time(0);
     // wait for 1 second, while the window is setted
-    while (difftime(time(0), start) < 1.5) {}
+    //while (difftime(time(0), start) < 1.5) {}
 
     listener.start();
     // sends the initial requests, and inmediatly finishes him

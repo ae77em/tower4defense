@@ -56,7 +56,7 @@ private:
 
     // Comunication with the game server
     Socket *socket = nullptr;
-    SharedBuffer *toReceive = nullptr;
+    SharedBuffer **toReceive = nullptr;
     SharedBuffer *toSend = nullptr;
 
     int eventDispatched;
@@ -65,7 +65,7 @@ private:
     std::vector<Enemy*> enemies;
 
 public:
-    GamePlayWindow(Socket *socket, SharedBuffer *in, SharedBuffer *out, int clientId);
+    GamePlayWindow(Socket *socket, SharedBuffer **in, SharedBuffer *out, int clientId);
     ~GamePlayWindow();
 
     void run();
