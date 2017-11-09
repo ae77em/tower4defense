@@ -11,6 +11,10 @@ public:
     bool loadMedia();
 
     void initializeSpritesData(int x, int y);
+
+    void setSprites();
+
+    void renderWalk(SDL_Rect &camera);
 };
 
 

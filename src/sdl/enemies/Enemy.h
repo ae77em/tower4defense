@@ -28,7 +28,7 @@ public:
     /*
      * Carga los sprites del monstruo en un array.
      */
-    void setSprites();
+    virtual void setSprites();
 
     /*
      * Toma los datos de configuración del enemigo de un archivo y lo nutre
@@ -45,7 +45,7 @@ public:
      * Renderea un sprite de la animación del enemigo caminando en la pantalla.
      * camera: cuadrado que representa el lugar visible del mapa.
      * */
-    void renderWalk(SDL_Rect &camera);
+    virtual void renderWalk(SDL_Rect &camera);
 
     /*
      * Renderea un sprite de la animación del enemigo muriendo en la pantalla.
@@ -172,7 +172,7 @@ protected:
     int velocityY;
 
     SDL_Renderer *renderer;
-    LTexture *texture;
+    LTexture *texture = new LTexture();
 
     int currentDirection = 0;
 

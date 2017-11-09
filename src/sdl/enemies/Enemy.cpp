@@ -17,6 +17,8 @@ Enemy::Enemy(int x, int y, SDL_Renderer *r, LTexture *t) {
 
     renderer = r;
 
+    currentDirection = 0;
+
     setSprites();
 }
 
@@ -54,6 +56,8 @@ void Enemy::initializeSpritesData(int x, int y) {
     deathSpriteHeight = 155;
     numberOfEnemyDeathSprites = 18;// NUMBER_OF_ENEMY_DEATH_SPRITES;
     numberOfEnemyDeathDirections = 4; // NUMBER_OF_ENEMY_DEATH_DIRECTIONS;
+
+    currentDirection = 0;
 }
 
 Enemy::~Enemy() {}
@@ -123,6 +127,10 @@ void Enemy::renderWalk(SDL_Rect &camera) {
 
     double isox = screenPoint.x - camera.x;
     double isoy = screenPoint.y - camera.y - offset;
+
+    if (currentDirection > 7){
+        currentDirection = 0;
+    }
 
     texture->renderSprite(renderer, isox, isoy, &walkingSprites[currentDirection][frameToDraw]);
 
@@ -249,5 +257,13 @@ int Enemy::getBonus() {
 
 int Enemy::getCollisionCircleRadio(){
     return CARTESIAN_TILE_WIDTH / 2;
+}
+
+void Enemy::setTexture(LTexture *t) {
+    texture = t;
+}
+
+void Enemy::setRenderer(SDL_Renderer *r) {
+    renderer = r;
 }
 

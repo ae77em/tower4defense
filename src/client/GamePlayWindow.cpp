@@ -97,7 +97,7 @@ bool GamePlayWindow::loadMedia() {
 
     abmonibleTexture->loadFromFile("images/sprites/enemy-abominable.png", gRenderer, 0xFF, 0x00, 0x99);
     blookHawkTexture->loadFromFile("images/sprites/enemy-blood-hawk.png", gRenderer, 0xAA, 0xAA, 0xAA);
-    goatmanTexture->loadFromFile("images/sprites/enemy-goatman.png", gRenderer, 0xFF, 0x00, 0x99);
+    goatmanTexture->loadFromFile("images/sprites/enemy-goatman.png", gRenderer, 0xAA, 0xAA, 0xAA);
     greenDaemonTexture->loadFromFile("images/sprites/enemy-abominable.png", gRenderer, 0xFF, 0x00, 0x99);
     spectreTexture->loadFromFile("images/sprites/enemy-abominable.png", gRenderer, 0xFF, 0x00, 0x99);
     zombieTexture->loadFromFile("images/sprites/enemy-abominable.png", gRenderer, 0xFF, 0x00, 0x99);
@@ -396,10 +396,12 @@ void GamePlayWindow::run() {
         Enemy *abmonible = new Abmonible(0, 0, gRenderer, abmonibleTexture);
         abmonible->setSprites();
         Enemy *bloodHawk = new BloodHawk(1, 0, gRenderer, blookHawkTexture);
-        /*bloodHawk->setSprites();
-        Enemy *goatman = new Goatman(2, 0, gRenderer, goatmanTexture);
         bloodHawk->setSprites();
-        Enemy *greenDaemon = new GreenDaemon(3, 0, gRenderer, greenDaemonTexture);
+        bloodHawk->setTexture(blookHawkTexture);
+        Enemy *goatman = new Goatman(2, 0, gRenderer, goatmanTexture);
+        goatman->setSprites();
+        goatman->setTexture(goatmanTexture);
+        /*Enemy *greenDaemon = new GreenDaemon(3, 0, gRenderer, greenDaemonTexture);
         greenDaemon->setSprites();
         Enemy *spectre = new Spectre(4, 0, gRenderer, spectreTexture);
         greenDaemon->setSprites();
@@ -408,8 +410,8 @@ void GamePlayWindow::run() {
 
         enemies.push_back(abmonible);
         enemies.push_back(bloodHawk);
-        /*enemies.push_back(goatman);
-        enemies.push_back(greenDaemon);
+        enemies.push_back(goatman);
+        /*enemies.push_back(greenDaemon);
         enemies.push_back(spectre);
         enemies.push_back(zombie);*/
 
@@ -484,6 +486,7 @@ void GamePlayWindow::run() {
                 tower.animate(camera);
 
                 for (Enemy *enemy : enemies){
+                    enemy->setRenderer(gRenderer);
                     enemy->animate(camera);
                 }
 
