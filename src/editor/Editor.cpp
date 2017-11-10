@@ -70,3 +70,7 @@ void Editor::Editor::save(std::string filename) {
     map_file << map.serialize();
     map_file.close();
 }
+
+void Editor::Editor::new_map(unsigned side) {
+    map = Mapa(side, side);
+}

@@ -29,6 +29,7 @@ class Editor {
     void transition(State *newstate);
     void load(std::string filename);
     void save(std::string filename);
+    void new_map(unsigned side);
 
     Screen& getScreen();
     Mapa& getMap();
