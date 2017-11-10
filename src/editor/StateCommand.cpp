@@ -12,7 +12,7 @@ static std::string quit(Editor::Editor &context, const std::string& command) {
 
 static std::string open(Editor::Editor &context, const std::string& command) {
     try {
-        context.load(command);
+        context.load("resources/maps/" + command);
         return "loaded map: " + command;
     } catch (std::runtime_error) {
         return "could not load map: " + command;
