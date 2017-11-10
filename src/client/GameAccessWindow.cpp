@@ -12,11 +12,12 @@ GameAccessWindow::GameAccessWindow(Socket *c, SharedBuffer &tsnd, SharedBuffer *
     clientId = -1;
 }
 
-GameAccessWindow::~GameAccessWindow(){}
+GameAccessWindow::~GameAccessWindow(){
+    delete game;
+}
 
 
 void GameAccessWindow::run() {
-
     loadMutex.lock();
 
     auto app = Gtk::Application::create();
@@ -348,11 +349,9 @@ bool GameAccessWindow::isNotValidClientId(){
 void GameAccessWindow::startMatch(){
     pWindow->hide();
 
-    GamePlayWindow game(client, &toReceive, &toSend, clientId);
-    game.run();
-    /*while (toReceive->hasData() && !toReceive->isEnded()){
-        std::cout << " ------------ "  << std::endl;
-        std::cout << toReceive->getNextData() << std::endl;
-    }*/
+    std::cout << "posición de memoria de toReceive antes de empezar el juego: ";
+    printf("%p\n", (void *)toReceive);
+    game = new GamePlayWindow(client, toReceive, &toSend, clientId);
+    game->start();
 }
 

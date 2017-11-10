@@ -11,8 +11,13 @@
 #include "../sdl/enemies/BloodHawk.h"
 #include "../sdl/enemies/Goatman.h"
 
-GamePlayWindow::GamePlayWindow(Socket *s, SharedBuffer **in, SharedBuffer *out, int cId)
-        : socket(s), toReceive(in), toSend(out), clientId(cId) {}
+GamePlayWindow::GamePlayWindow(Socket *s, SharedBuffer *in, SharedBuffer *out, int cId)
+        : socket(s), toReceive(in), toSend(out), clientId(cId) {
+
+    std::cout << "posición de memoria de toReceive al construir el juego: ";
+    printf("%p\n", (void *)toReceive);
+
+}
 
 GamePlayWindow::~GamePlayWindow() {}
 
@@ -241,8 +246,6 @@ void GamePlayWindow::handleMouseEvents(SDL_Rect camera, std::string mov_descript
     if (e.type == SDL_MOUSEBUTTONDOWN) {
         Point point = Utils::getMouseRelativePoint(camera);
 
-        //matarBichoSiLeHiceClick(camera, enemy); // para pruebas
-
         /* Si hice click y tengo algún evento marcado para disparar
          * (por ejemplo, marqué un lugar para poner una torre, o quiero
          * poner una torre) manejo dicho evento. */
@@ -266,37 +269,16 @@ void GamePlayWindow::handleMouseEvents(SDL_Rect camera, std::string mov_descript
     }
 }
 
-void GamePlayWindow::matarBichoSiLeHiceClick(const SDL_Rect &camera, Enemy &enemy) {
-    int mousePosX;
-    int mousePosY;
-    SDL_GetMouseState(&mousePosX, &mousePosY);
-
-    mousePosX += camera.x;
-    mousePosY += camera.y;
-
-    DecimalPoint otherPoint = Utils::screenToMapDecimal(mousePosX, mousePosY);
-
-    SDL_Rect pointRect = {int(otherPoint.x * CARTESIAN_TILE_WIDTH), int(otherPoint.y * CARTESIAN_TILE_HEIGHT), 1, 1};
-
-    if (Utils::checkCollision(pointRect, enemy.getWalkBox())) {
-        enemy.quitLifePoints(50);
-
-        if (!enemy.itIsAlive()) {
-            eventDispatched = 3;
-        }
-    } else {
-        eventDispatched = 1;
-    }
-
-}
-
 void GamePlayWindow::handleServerNotifications(SDL_Rect camera, Tower &tower) {
     int transactionsCounter = 0;
     std::string notification;
 
-    while ((*toReceive)->hasData() && transactionsCounter < MAX_SERVER_NOTIFICATIONS_PER_FRAME) {
+    std::cout << "posición de memoria de toReceive durante el juego: ";
+    printf("%p\n", (void *)toReceive);
+
+    while (!toReceive->isEnded() && transactionsCounter < MAX_SERVER_NOTIFICATIONS_PER_FRAME) {
         ++transactionsCounter;
-        notification = (*toReceive)->getNextData();
+        notification = toReceive->getNextData();
 
         Message message;
         std::string response;
@@ -323,7 +305,9 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera, Tower &tower) {
                     Point finalPoint(1279, 400);
                     int dir = MessageFactory::getDirection(aMessage);
                     int enemyId = MessageFactory::getEnemyId(aMessage);
+                    int hordeId = MessageFactory::getHordeId(aMessage);
 
+                    std::vector<Enemy*> enemies = hordes.at(hordeId);
                     Enemy *enemy = enemies.at(enemyId);
 
                     bool towerIsShooting =
@@ -411,9 +395,17 @@ void GamePlayWindow::run() {
         Enemy *zombie = new Zombie(5, 0, gRenderer, zombieTexture);
         zombie->setSprites();*/
 
+        std::vector<Enemy*> enemies;
         enemies.push_back(abmonible);
         enemies.push_back(bloodHawk);
         enemies.push_back(goatman);
+
+        std::pair<int, std::vector<Enemy*>> pair(0,enemies);
+        hordes.insert(pair);
+        std::pair<int, std::vector<Enemy*>> pair2(1,enemies);
+        hordes.insert(pair2);
+
+
         /*enemies.push_back(greenDaemon);
         enemies.push_back(spectre);
         enemies.push_back(zombie);*/
@@ -463,9 +455,7 @@ void GamePlayWindow::run() {
                     //Handle input for the dot
                     dot.handleEvent(e, mov_description);
 
-                    eventDispatched = 1;
                     handleMouseEvents(camera, mov_description, e);
-                    eventDispatched = 0;
                 }
 
                 handleServerNotifications(camera, tower);

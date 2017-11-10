@@ -419,8 +419,14 @@ int MessageFactory::getDirection(Message message) {
 
 int MessageFactory::getEnemyId(Message message) {
     Json::Value &root = message.getData();
-    int direction = root.get("enemyId","-1").asInt();
-    return direction;
+    int enemyId = root.get("enemyId","-1").asInt();
+    return enemyId;
+}
+
+int MessageFactory::getHordeId(Message message) {
+    Json::Value &root = message.getData();
+    int hordeId = root.get("hordeId","-1").asInt();
+    return hordeId;
 }
 
 std::string MessageFactory::getStartMatchRequest(int clientId, std::string &matchName) {
@@ -524,57 +530,6 @@ std::string MessageFactory::getEnterMatchRequest(int clientId, std::string match
     return message.serialize();
 }
 
-std::string MessageFactory::getStatusMatchNotification(std::map<std::string,std::vector<ActorEnemy*>> actors) {
-    std::string toReturn;
-    Json::Value root(Json::objectValue);
-    Message message;
-
-    root[OPERATION_KEY] = SERVER_NOTIFICATION_SCENARIO_STATUS;
-    root["scenario"] = Json::arrayValue;
-
-    //responseRoot["maps"].append("mapa1");
-
-    /*for (std::map<std::string,std::vector<ActorEnemy*>>::iterator it=actors.begin(); it!=actors.end(); ++it){
-        Json::Value aHorda(Json::objectValue);
-        aHorda[it->first] = Json::arrayValue;
-
-        std::vector<ActorEnemy*> vectorActor = it->second;
-
-        for (auto g : vectorActor) {
-            Json::Value jsonActor(Json::objectValue);
-
-            jsonActor["enemyId"] = g->getId();
-            jsonActor["xCoord"] = g->getXPosition();
-            jsonActor["yCoord"] = g->getYPosition();
-            jsonActor["direction"] = g->getDirection();
-
-            aHorda[it->first].append(jsonActor);
-        }
-
-        root["scenario"].append(aHorda);
-    }*/
-
-    for (std::map<std::string,std::vector<ActorEnemy*>>::iterator it=actors.begin(); it!=actors.end(); ++it){
-
-        std::vector<ActorEnemy*> vectorActor = it->second;
-
-        for (auto g : vectorActor) {
-            Json::Value aBichito(Json::objectValue);
-
-            aBichito["enemyId"] = g->getId();
-            aBichito["xCoord"] = g->getXPosition();
-            aBichito["yCoord"] = g->getYPosition();
-            aBichito["direction"] = g->getDirection();
-
-            root["scenario"].append(aBichito);
-        }
-    }
-
-    message.setData(root);
-
-    return message.serialize();
-}
-
 std::string MessageFactory::getEnteredInMatchNotification(int clientId, std::string matchName) {
     std::string toReturn;
     Json::Value root(Json::objectValue);
@@ -589,12 +544,44 @@ std::string MessageFactory::getEnteredInMatchNotification(int clientId, std::str
     return message.serialize();
 }
 
+std::string MessageFactory::getStatusMatchNotification(std::map<int, std::vector<ActorEnemy*>> actors) {
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = SERVER_NOTIFICATION_SCENARIO_STATUS;
+    root["enemies"] = Json::arrayValue;
+
+    for (std::map<int,std::vector<ActorEnemy*>>::iterator it=actors.begin(); it!=actors.end(); ++it){
+
+        std::vector<ActorEnemy*> vectorActor = it->second;
+
+        for (auto g : vectorActor) {
+            Json::Value aBichito(Json::objectValue);
+
+            aBichito["hordeId"] = it->first;
+            aBichito["enemyId"] = g->getId();
+            aBichito["xCoord"] = g->getXPosition();
+            aBichito["yCoord"] = g->getYPosition();
+            aBichito["direction"] = g->getDirection();
+
+            root["enemies"].append(aBichito);
+        }
+    }
+
+    message.setData(root);
+
+    return message.serialize();
+}
+
 std::vector<Message> MessageFactory::getMovementNotifications(Message message) {
     std::list<std::string> response;
     Json::Value &root = message.getData();
     std::vector<Message> messagesToReturn;
 
-    for (Json::Value &enemy : root["enemies"]){
+    Json::Value scenario = root["scenario"];
+
+    for (Json::Value &enemy : scenario["enemies"]){
         Message m;
         m.setData(enemy);
         messagesToReturn.push_back(m);

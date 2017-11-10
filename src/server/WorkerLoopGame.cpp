@@ -18,7 +18,7 @@ WorkerLoopGame::WorkerLoopGame(std::vector<ServerPlayer*>& p,
 
 void WorkerLoopGame::run(){
     std::cout << "WorkerLoopGame: Hilo donde existe la partida arrancando" << std::endl;
-    unsigned int ciclos = 30;
+    unsigned int ciclos = 10000;
 
     //while(isRunning()){
     while (ciclos > 0){
@@ -43,7 +43,7 @@ void WorkerLoopGame::run(){
             g->live();
         }*/
 
-        for (std::map<std::string,std::vector<ActorEnemy*>>::iterator it=hordas.begin(); it!=hordas.end(); ++it){
+        for (std::map<int, std::vector<ActorEnemy*>>::iterator it = hordas.begin(); it != hordas.end(); ++it){
             std::vector<ActorEnemy*> vectorActor = it->second;
 
             for (auto g : vectorActor) {
@@ -61,7 +61,7 @@ void WorkerLoopGame::run(){
 
         ciclos--;
 
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+        //std::this_thread::sleep_for(std::chrono::seconds(0.5));
     }
 
     std::cout << "WorkerLoopGame: Hilo donde existe la partida se termino" << std::endl;
@@ -93,9 +93,9 @@ void WorkerLoopGame::buildGameContext() {
     camino.push_back(Point(16 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
 
 
-    for(int horda = 0; horda < 4; horda++){
+    for(int horda = 0; horda < 2; horda++){
         std::vector<ActorEnemy*> vectorHorda;
-        std::string nameHorda = "horda" + horda;
+        int hordeId = horda;
 
         for (int x = 0; x < 2; ++x){
             ActorEnemy* enemy = new ActorEnemy();
@@ -105,7 +105,7 @@ void WorkerLoopGame::buildGameContext() {
 
             vectorHorda.push_back( enemy );
         }
-        hordas.insert(std::pair<std::string,std::vector<ActorEnemy*>>(nameHorda, vectorHorda));
+        hordas.insert(std::pair<int, std::vector<ActorEnemy*>>(hordeId, vectorHorda));
     }
 }
 

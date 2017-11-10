@@ -8,6 +8,7 @@ static const int MAX_SERVER_NOTIFICATIONS_PER_FRAME = 1;
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_video.h>
 #include <SDL2/SDL_system.h>
+#include <map>
 #include "../sdl/Constants.h"
 #include "../sdl/LTexture.h"
 #include "../sdl/Tile.h"
@@ -55,17 +56,17 @@ private:
     LTexture *zombieTexture = new LTexture();
 
     // Comunication with the game server
-    Socket *socket = nullptr;
-    SharedBuffer **toReceive = nullptr;
-    SharedBuffer *toSend = nullptr;
+    Socket *socket = new Socket();
+    SharedBuffer *toReceive = new SharedBuffer();
+    SharedBuffer *toSend = new SharedBuffer();
 
-    int eventDispatched;
-    int clientId;
+    int eventDispatched = -1;
+    int clientId = -1;
 
-    std::vector<Enemy*> enemies;
+    std::map<int,std::vector<Enemy*>> hordes;
 
 public:
-    GamePlayWindow(Socket *socket, SharedBuffer **in, SharedBuffer *out, int clientId);
+    GamePlayWindow(Socket *socket, SharedBuffer *in, SharedBuffer *out, int clientId);
     ~GamePlayWindow();
 
     void run();

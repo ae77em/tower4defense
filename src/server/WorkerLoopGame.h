@@ -14,7 +14,7 @@ private:
     std::list<GameAction*>& actions;
     std::mutex& mutexActions;
     std::vector<ActorEnemy*> gameActors;
-    std::map<std::string,std::vector<ActorEnemy*>> hordas;
+    std::map<int,std::vector<ActorEnemy*>> hordas;
 
 public:
     WorkerLoopGame(std::vector<ServerPlayer*>& p,

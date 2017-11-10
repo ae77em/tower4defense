@@ -5,10 +5,13 @@
 #include "../common/Thread.h"
 #include "../common/Socket.h"
 #include "../common/SharedBuffer.h"
+#include "GamePlayWindow.h"
 
 class GameAccessWindow : public Thread {
 private:
     std::mutex loadMutex;
+    GamePlayWindow *game = nullptr;
+
     /* View */
     Gtk::Window *pWindow;
     Gtk::Button *pBtnCrearPartida = nullptr;
