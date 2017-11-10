@@ -2,7 +2,7 @@
 #include <SDL2/SDL.h>
 #include <stdexcept>
 
-static std::string quit(const std::string& command) {
+static std::string quit(Editor::Editor &context, const std::string& command) {
     // Signal SDL that the application is done
     SDL_Event e;
     e.type = SDL_QUIT;
@@ -10,12 +10,17 @@ static std::string quit(const std::string& command) {
     return "q";
 }
 
-static std::string open(const std::string& command) {
-    return "open";
+static std::string open(Editor::Editor &context, const std::string& command) {
+    try {
+        context.load(command);
+        return "loaded map: " + command;
+    } catch (std::runtime_error) {
+        return "could not load map: " + command;
+    }
 }
 
 Editor::StateCommand::StateCommand() {
-    dispatch_table["_default_"] = [](const std::string& c){
+    dispatch_table["_default_"] = [](Editor& context, const std::string& c){
         return std::string("command not recognized");
     };
     dispatch_table["q"] = quit;
@@ -56,13 +61,13 @@ void Editor::StateCommand::handle(const SDL_Event &e, Editor &context) {
             // Extract the first word
             size_t sp_index = command.find(' ');
             std::string selector = command.substr(0, sp_index);
-            command.erase(0, sp_index);
+            command.erase(0, sp_index + 1);
 
             command_t c;
             try { c = dispatch_table.at(selector); }
             catch (std::out_of_range) { c = dispatch_table.at("_default_"); }
 
-            context.getScreen().setDialog(c(command));
+            context.getScreen().setDialog(c(context, command));
 
             context.transition(new StateTile());
             return;

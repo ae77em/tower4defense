@@ -58,7 +58,7 @@ class StatePath : public State {
     virtual void preRender(Editor &context);
 };
 
-typedef std::string (*command_t)(const std::string&);
+typedef std::string (*command_t)(Editor&, const std::string&);
 class StateCommand : public State {
     std::string command;
     std::map<std::string, command_t> dispatch_table;
