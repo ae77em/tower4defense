@@ -3,25 +3,29 @@
 
 void Editor::StateCommand::handle(const SDL_Event &e, Editor &context) {
     bool textUpdated = false;
+
+    /* Handle Backspace, Ctrl+C, Ctrl+V, and Ret specially */
     if (e.type == SDL_KEYDOWN) {
+
+        // When deleting everything return to tile mode
         if (e.key.keysym.sym == SDLK_BACKSPACE) {
-            /* When deleting everything, or on Alt+Backspace,
-               return to tile mode */
-            if ((command.length() == 0) || (SDL_GetModState() & KMOD_ALT)) {
+            if ((command.length() == 1) || (SDL_GetModState() & KMOD_ALT)) {
                 context.transition(new StateTile());
                 return;
             }
             command.pop_back();
             textUpdated = true;
+
         } else if ((e.key.keysym.sym == SDLK_c)
                 && (SDL_GetModState() & KMOD_CTRL)) {
-            //Handle copy
             SDL_SetClipboardText( command.c_str() );
+
         } else if ((e.key.keysym.sym == SDLK_v)
                 && (SDL_GetModState() & KMOD_CTRL)) {
-            //Handle paste
             command = SDL_GetClipboardText();
             textUpdated = true;
+
+        //Execute command and return to tile mode
         } else if ((e.key.keysym.sym == SDLK_RETURN)
                 || (e.key.keysym.sym == SDLK_KP_ENTER)) {
             //Execute command and return to tile mode
@@ -30,6 +34,8 @@ void Editor::StateCommand::handle(const SDL_Event &e, Editor &context) {
             context.transition(new StateTile());
             return;
         }
+
+    /* Put text input into the state string and update screen */
     } else if (e.type == SDL_TEXTINPUT) {
         //Not copy or pasting
         if ( !((e.text.text[0] == 'c' || e.text.text[0] == 'C'
@@ -40,5 +46,6 @@ void Editor::StateCommand::handle(const SDL_Event &e, Editor &context) {
             textUpdated = true;
         }
     }
+
     if (textUpdated) context.getScreen().setDialog(command);
 }
