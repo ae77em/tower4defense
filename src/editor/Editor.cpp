@@ -3,13 +3,7 @@
 #include <fstream>
 
 Editor::Editor::Editor(State *state) : state(state), screen(),
-        map(10, 10), keys(default_keybinding) {
-    map.setCasilla('~', 1, 1);
-    map.setCasilla('*', 1, 8);
-    map.setCasilla('!', 8, 1);
-    map.setCasilla('@', 8, 8);
-    map.setCasilla('E', 4, 4);
-}
+        map(10, 10), keys(default_keybinding) {}
 
 void Editor::Editor::transition(State *newstate) {
     state.reset(newstate);
