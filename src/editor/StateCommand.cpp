@@ -1,4 +1,5 @@
 #include "Editor.h"
+#include <SDL2/SDL.h>
 
 void Editor::StateCommand::handle(const SDL_Event &e, Editor &context) {
     bool textUpdated = false;
@@ -10,7 +11,6 @@ void Editor::StateCommand::handle(const SDL_Event &e, Editor &context) {
                 context.transition(new StateTile());
                 return;
             }
-
             command.pop_back();
             textUpdated = true;
         } else if ((e.key.keysym.sym == SDLK_c)
@@ -22,6 +22,13 @@ void Editor::StateCommand::handle(const SDL_Event &e, Editor &context) {
             //Handle paste
             command = SDL_GetClipboardText();
             textUpdated = true;
+        } else if ((e.key.keysym.sym == SDLK_RETURN)
+                || (e.key.keysym.sym == SDLK_KP_ENTER)) {
+            //Execute command and return to tile mode
+            command.erase(command.begin());
+            //XXX execute command
+            context.transition(new StateTile());
+            return;
         }
     } else if (e.type == SDL_TEXTINPUT) {
         //Not copy or pasting
