@@ -1,5 +1,27 @@
 #include "Editor.h"
 #include <SDL2/SDL.h>
+#include <stdexcept>
+
+static std::string quit(const std::string& command) {
+    // Signal SDL that the application is done
+    SDL_Event e;
+    e.type = SDL_QUIT;
+    SDL_PushEvent(&e);
+    return "q";
+}
+
+static std::string open(const std::string& command) {
+    return "open";
+}
+
+Editor::StateCommand::StateCommand() {
+    dispatch_table["_default_"] = [](const std::string& c){
+        return std::string("command not recognized");
+    };
+    dispatch_table["q"] = quit;
+    dispatch_table["quit"] = quit;
+    dispatch_table["open"] = open;
+}
 
 void Editor::StateCommand::handle(const SDL_Event &e, Editor &context) {
     bool textUpdated = false;
@@ -28,9 +50,20 @@ void Editor::StateCommand::handle(const SDL_Event &e, Editor &context) {
         //Execute command and return to tile mode
         } else if ((e.key.keysym.sym == SDLK_RETURN)
                 || (e.key.keysym.sym == SDLK_KP_ENTER)) {
-            //Execute command and return to tile mode
+            // Ignore initial ';'
             command.erase(command.begin());
-            //XXX execute command
+
+            // Extract the first word
+            size_t sp_index = command.find(' ');
+            std::string selector = command.substr(0, sp_index);
+            command.erase(0, sp_index);
+
+            command_t c;
+            try { c = dispatch_table.at(selector); }
+            catch (std::out_of_range) { c = dispatch_table.at("_default_"); }
+
+            context.getScreen().setDialog(c(command));
+
             context.transition(new StateTile());
             return;
         }

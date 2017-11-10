@@ -5,6 +5,7 @@
 #include <SDL2/SDL.h>
 #include <string>
 #include <vector>
+#include <map>
 #include <memory>
 
 #ifndef EDITOR_H
@@ -58,10 +59,13 @@ class StatePath : public State {
     virtual void preRender(Editor &context);
 };
 
+typedef std::string (*command_t)(const std::string&);
 class StateCommand : public State {
     std::string command;
+    std::map<std::string, command_t> dispatch_table;
 
     public:
+    StateCommand();
     virtual void handle(const SDL_Event &e, Editor &context);
 };
 
