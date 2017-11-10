@@ -13,6 +13,7 @@ private:
 public:
     Zombie(int x, int y, SDL_Renderer *renderer, LTexture *texture);
 
+    void initializeSpritesData(int x, int y);
 };
 
 

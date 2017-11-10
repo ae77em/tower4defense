@@ -8,6 +8,7 @@ class GreenDaemon : public Enemy{
 public:
     GreenDaemon(int x, int y, SDL_Renderer *renderer, LTexture *texture);
 
+    void initializeSpritesData(int x, int y);
 };
 
 

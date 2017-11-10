@@ -4,4 +4,6 @@ Abmonible::Abmonible(int x, int y, SDL_Renderer *renderer, LTexture *texture) : 
     initialLifePoints = 200;
     isAir = false;
     velocity = 1;
+
+    separationBetweenSprites = 1;
 }

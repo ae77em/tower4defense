@@ -5,7 +5,13 @@ Goatman::Goatman(int x, int y, SDL_Renderer *renderer, LTexture *texture) : Enem
     initialLifePoints = 100;
     isAir = false;
     velocity = 2;
+
+    currentDirection = 0;
+
+    initializeSpritesData(x, y);
 }
+
+Goatman::~Goatman() {}
 
 void Goatman::initializeSpritesData(int x, int y) {
     Point initialSreenPos = Utils::mapToScreen(x, y);
@@ -37,5 +43,6 @@ void Goatman::initializeSpritesData(int x, int y) {
     deathBox.h = deathSpriteHeight;
 
     currentDirection = 0;
+    separationBetweenSprites = 1;
 }
 

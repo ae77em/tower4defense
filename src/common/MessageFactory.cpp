@@ -579,9 +579,7 @@ std::vector<Message> MessageFactory::getMovementNotifications(Message message) {
     Json::Value &root = message.getData();
     std::vector<Message> messagesToReturn;
 
-    Json::Value scenario = root["scenario"];
-
-    for (Json::Value &enemy : scenario["enemies"]){
+    for (Json::Value &enemy : root["enemies"]){
         Message m;
         m.setData(enemy);
         messagesToReturn.push_back(m);

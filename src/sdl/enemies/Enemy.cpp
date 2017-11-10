@@ -82,8 +82,8 @@ void Enemy::setPosition(int x, int y) {
 }
 
 void Enemy::setSprites() {
-    int spriteWidth = walkSpriteWidth + 1;
-    int spriteHeight = walkSpriteHeight + 1;
+    int spriteWidth = walkSpriteWidth + separationBetweenSprites;
+    int spriteHeight = walkSpriteHeight + separationBetweenSprites;
 
     int spritesRow;
 
@@ -99,8 +99,8 @@ void Enemy::setSprites() {
     }
 
     // seteo los sprites para morir...
-    spriteWidth = deathSpriteWidth + 1;
-    spriteHeight = deathSpriteHeight + 1;
+    spriteWidth = deathSpriteWidth + separationBetweenSprites;
+    spriteHeight = deathSpriteHeight + separationBetweenSprites;
 
     for (int i = 0; i < numberOfEnemyDeathDirections; ++i) {
         for (int j = 0; j < numberOfEnemyDeathSprites; ++j) {
@@ -143,7 +143,7 @@ void Enemy::renderDie(SDL_Rect &camera) {
     firstFrameOfDeathRendered = (firstFrameOfDeathRendered || frameToDraw == 0);
     lastFrameOfDeathRendered = (lastFrameOfDeathRendered || frameToDraw == NUMBER_OF_ENEMY_DEATH_SPRITES - 1);
 
-    if (!(firstFrameOfDeathRendered and lastFrameOfDeathRendered)) {
+    //if (!(firstFrameOfDeathRendered and lastFrameOfDeathRendered)) {
         DecimalPoint screenPoint = Utils::cartesianToIso(deathBox.x, deathBox.y);
 
         int offset = walkBox.h - ISO_TILE_HEIGHT;
@@ -152,7 +152,7 @@ void Enemy::renderDie(SDL_Rect &camera) {
         double isoy = screenPoint.y - camera.y - offset;
 
         texture->renderSprite(renderer, isox, isoy, &deathSprites[currentDirection][frameToDraw]);
-    }
+    //}
 }
 
 void Enemy::animate(SDL_Rect &camera) {

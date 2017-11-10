@@ -18,7 +18,7 @@ WorkerLoopGame::WorkerLoopGame(std::vector<ServerPlayer*>& p,
 
 void WorkerLoopGame::run(){
     std::cout << "WorkerLoopGame: Hilo donde existe la partida arrancando" << std::endl;
-    unsigned int ciclos = 10000;
+    unsigned int ciclos = 1000;
 
     //while(isRunning()){
     while (ciclos > 0){

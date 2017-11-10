@@ -349,8 +349,6 @@ bool GameAccessWindow::isNotValidClientId(){
 void GameAccessWindow::startMatch(){
     pWindow->hide();
 
-    std::cout << "posición de memoria de toReceive antes de empezar el juego: ";
-    printf("%p\n", (void *)toReceive);
     game = new GamePlayWindow(client, toReceive, &toSend, clientId);
     game->start();
 }

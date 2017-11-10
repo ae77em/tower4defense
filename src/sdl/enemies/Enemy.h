@@ -148,6 +148,10 @@ protected:
     int numberOfEnemyDeathSprites = NUMBER_OF_ENEMY_DEATH_SPRITES;
     int numberOfEnemyDeathDirections = NUMBER_OF_ENEMY_DEATH_DIRECTIONS;
 
+    /**********/
+    int currentDirection = 0;
+    int separationBetweenSprites = 0;
+
     const int MAX_VELOCITY = 10;
 
     bool isAlive;
@@ -173,8 +177,6 @@ protected:
 
     SDL_Renderer *renderer;
     LTexture *texture = new LTexture();
-
-    int currentDirection = 0;
 
     /* METHODS */
     virtual void initializeSpritesData(int x, int y);

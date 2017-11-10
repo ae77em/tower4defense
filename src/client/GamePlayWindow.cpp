@@ -10,14 +10,11 @@
 #include "../common/TextMessage.h"
 #include "../sdl/enemies/BloodHawk.h"
 #include "../sdl/enemies/Goatman.h"
+#include "../sdl/enemies/GreenDaemon.h"
+#include "../sdl/enemies/Zombie.h"
 
 GamePlayWindow::GamePlayWindow(Socket *s, SharedBuffer *in, SharedBuffer *out, int cId)
-        : socket(s), toReceive(in), toSend(out), clientId(cId) {
-
-    std::cout << "posición de memoria de toReceive al construir el juego: ";
-    printf("%p\n", (void *)toReceive);
-
-}
+        : socket(s), toReceive(in), toSend(out), clientId(cId) {}
 
 GamePlayWindow::~GamePlayWindow() {}
 
@@ -100,9 +97,9 @@ bool GamePlayWindow::loadMedia() {
     abmonibleTexture->loadFromFile("images/sprites/enemy-abominable.png", gRenderer, 0xFF, 0x00, 0x99);
     blookHawkTexture->loadFromFile("images/sprites/enemy-blood-hawk.png", gRenderer, 0xAA, 0xAA, 0xAA);
     goatmanTexture->loadFromFile("images/sprites/enemy-goatman.png", gRenderer, 0xAA, 0xAA, 0xAA);
-    greenDaemonTexture->loadFromFile("images/sprites/enemy-abominable.png", gRenderer, 0xFF, 0x00, 0x99);
+    greenDaemonTexture->loadFromFile("images/sprites/enemy-green-daemon.png", gRenderer, 0xAA, 0xAA, 0xAA);
     spectreTexture->loadFromFile("images/sprites/enemy-abominable.png", gRenderer, 0xFF, 0x00, 0x99);
-    zombieTexture->loadFromFile("images/sprites/enemy-abominable.png", gRenderer, 0xFF, 0x00, 0x99);
+    zombieTexture->loadFromFile("images/sprites/enemy-zombie.png", gRenderer, 0xAA, 0xAA, 0xAA);
 
     //Load tile map
     if (!setTiles()) {
@@ -273,9 +270,6 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera, Tower &tower) {
     int transactionsCounter = 0;
     std::string notification;
 
-    std::cout << "posición de memoria de toReceive durante el juego: ";
-    printf("%p\n", (void *)toReceive);
-
     while (!toReceive->isEnded() && transactionsCounter < MAX_SERVER_NOTIFICATIONS_PER_FRAME) {
         ++transactionsCounter;
         notification = toReceive->getNextData();
@@ -388,28 +382,25 @@ void GamePlayWindow::run() {
         Enemy *goatman = new Goatman(2, 0, gRenderer, goatmanTexture);
         goatman->setSprites();
         goatman->setTexture(goatmanTexture);
-        /*Enemy *greenDaemon = new GreenDaemon(3, 0, gRenderer, greenDaemonTexture);
+        Enemy *greenDaemon = new GreenDaemon(3, 0, gRenderer, greenDaemonTexture);
         greenDaemon->setSprites();
-        Enemy *spectre = new Spectre(4, 0, gRenderer, spectreTexture);
-        greenDaemon->setSprites();
+        greenDaemon->setTexture(greenDaemonTexture);
+        /*Enemy *spectre = new Spectre(4, 0, gRenderer, spectreTexture);
+        greenDaemon->setSprites();*/
         Enemy *zombie = new Zombie(5, 0, gRenderer, zombieTexture);
-        zombie->setSprites();*/
+        zombie->setSprites();
 
         std::vector<Enemy*> enemies;
         enemies.push_back(abmonible);
         enemies.push_back(bloodHawk);
         enemies.push_back(goatman);
+        enemies.push_back(greenDaemon);
+        enemies.push_back(zombie);
 
         std::pair<int, std::vector<Enemy*>> pair(0,enemies);
         hordes.insert(pair);
         std::pair<int, std::vector<Enemy*>> pair2(1,enemies);
         hordes.insert(pair2);
-
-
-        /*enemies.push_back(greenDaemon);
-        enemies.push_back(spectre);
-        enemies.push_back(zombie);*/
-
 
         Tower tower(0, 0, gRenderer, gSpriteSheetTextureTower);
         tower.loadMedia();
@@ -458,7 +449,7 @@ void GamePlayWindow::run() {
                     handleMouseEvents(camera, mov_description, e);
                 }
 
-                handleServerNotifications(camera, tower);
+                //handleServerNotifications(camera, tower);
 
                 //Move the dot
                 dot.move();
