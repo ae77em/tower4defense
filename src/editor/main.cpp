@@ -9,7 +9,6 @@ int main(int argc, char *argv[]) {
         throw std::runtime_error("TTF init failed");
 
     Editor::Editor editor(new Editor::StateTile());
-    editor.load("resources/maps/mapa.json");
     editor.run();
 
     TTF_Quit();

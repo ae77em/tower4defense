@@ -24,6 +24,16 @@ static std::string save(Editor::Editor &context, const std::string& command) {
     return "saved " + command;
 }
 
+static std::string new_map(Editor::Editor &context,
+        const std::string& command) {
+    unsigned size;
+    try { size = stoul(command); }
+    catch (std::invalid_argument) { return "bad argument to new: " + command; }
+
+    context.new_map(size);
+    return "";
+}
+
 Editor::StateCommand::StateCommand() {
     dispatch_table["_default_"] = [](Editor& context, const std::string& c){
         return std::string("command not recognized");
@@ -32,6 +42,8 @@ Editor::StateCommand::StateCommand() {
     dispatch_table["quit"] = quit;
     dispatch_table["open"] = open;
     dispatch_table["save"] = save;
+    dispatch_table["n"] = new_map;
+    dispatch_table["new"] = new_map;
 }
 
 void Editor::StateCommand::handle(const SDL_Event &e, Editor &context) {
