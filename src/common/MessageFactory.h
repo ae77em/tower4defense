@@ -152,6 +152,8 @@ public:
     static std::vector<Message> getMovementNotifications(Message message);
 
     static int getHordeId(Message message);
+
+    static std::string getMatchEndedNotification();
 };
 
 

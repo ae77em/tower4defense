@@ -19,6 +19,7 @@ WorkerLoopGame::WorkerLoopGame(std::vector<ServerPlayer*>& p,
 void WorkerLoopGame::run(){
     std::cout << "WorkerLoopGame: Hilo donde existe la partida arrancando" << std::endl;
     unsigned int ciclos = 1000;
+    std::string statusGame;
 
     //while(isRunning()){
     while (ciclos > 0){
@@ -52,7 +53,7 @@ void WorkerLoopGame::run(){
         }
 
         //GET STATUS GAMES
-        std::string statusGame = getGameStatus();
+        statusGame = getGameStatus();
 
         //NOTIFICO EL ESTADO DEL JUEGO A TODOS LO JUGADORES LUEGO DE LA MODIFICACION DE MODELO
         for(ServerPlayer* s : players){
@@ -65,6 +66,11 @@ void WorkerLoopGame::run(){
     }
 
     std::cout << "WorkerLoopGame: Hilo donde existe la partida se termino" << std::endl;
+    std::cout << "WorkerLoopGame: Aviso que terminó la partida." << std::endl;
+    statusGame = MessageFactory::getMatchEndedNotification();
+    for(ServerPlayer* s : players){
+        s->sendData(statusGame);
+    }
 }
 
 void WorkerLoopGame::buildGameContext() {
@@ -97,7 +103,7 @@ void WorkerLoopGame::buildGameContext() {
         std::vector<ActorEnemy*> vectorHorda;
         int hordeId = horda;
 
-        for (int x = 0; x < 2; ++x){
+        for (int x = 0; x < 5; ++x){
             ActorEnemy* enemy = new ActorEnemy();
             enemy->setPath(camino);
             enemy->setId(x);

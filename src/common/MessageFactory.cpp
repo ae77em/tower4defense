@@ -587,3 +587,15 @@ std::vector<Message> MessageFactory::getMovementNotifications(Message message) {
 
     return messagesToReturn;
 }
+
+std::string MessageFactory::getMatchEndedNotification() {
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = SERVER_NOTIFICATION_MATCH_ENDED;
+
+    message.setData(root);
+
+    return message.serialize();
+}

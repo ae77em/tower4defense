@@ -81,7 +81,7 @@ void Server::addPlayerToMatch(std::string nameMatch, ServerPlayer *sp) {
     games.at(nameMatch)->addPlayer(sp);
 }
 
-//crea el juego y retorna el id del mismo, EL ID ES EL INDICE DENTRO DEL VECTOR
+//crea el juego y retorna el id del mismo, el id es el nombre del match...
 bool Server::createMatch(std::string nameMatch) {
     if( games.find(nameMatch) == games.end() ){
         games.insert(std::pair<std::string, ServerGame *>(nameMatch, new ServerGame(mutexPlayers)));
