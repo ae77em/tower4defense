@@ -58,6 +58,13 @@ class StatePath : public State {
     virtual void preRender(Editor &context);
 };
 
+class StateCommand : public State {
+    std::string command;
+
+    public:
+    virtual void handle(const SDL_Event &e, Editor &context);
+};
+
 } //namespace Editor
 
 #endif
