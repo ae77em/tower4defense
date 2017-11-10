@@ -47,7 +47,6 @@ class StateTile : public State {
 
     public:
     virtual void handle(const SDL_Event &e, Editor &context);
-    virtual void onTransition(Editor &context);
 };
 
 class StatePath : public State {

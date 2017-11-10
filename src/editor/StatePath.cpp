@@ -35,6 +35,7 @@ void Editor::StatePath::handle(const SDL_Event &e, Editor &context) {
 
     // Change mode
     if (e.type == SDL_KEYDOWN && e.key.keysym.sym == keys.road) {
+        context.getScreen().setDialog("");
         context.transition(new StateTile());
     }
 }
