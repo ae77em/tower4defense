@@ -24,7 +24,6 @@ class Editor {
 
     public:
     Editor(State *state);
-    ~Editor();
 
     void run();
     void transition(State *newstate);
