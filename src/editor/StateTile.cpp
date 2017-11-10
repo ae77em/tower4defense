@@ -25,3 +25,7 @@ void Editor::StateTile::handle(const SDL_Event &e, Editor &context) {
         context.transition(new StatePath());
     }
 }
+
+void Editor::StateTile::onTransition(Editor &context) {
+    context.getScreen().setDialog("");
+}

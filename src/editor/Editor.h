@@ -39,6 +39,7 @@ class Editor {
 class State {
     public:
     virtual void handle(const SDL_Event &e, Editor &context) = 0;
+    virtual void onTransition(Editor &context) {}
 };
 
 class StateTile : public State {
@@ -46,6 +47,7 @@ class StateTile : public State {
 
     public:
     virtual void handle(const SDL_Event &e, Editor &context);
+    virtual void onTransition(Editor &context);
 };
 
 class StatePath : public State {
@@ -53,6 +55,7 @@ class StatePath : public State {
 
     public:
     virtual void handle(const SDL_Event &e, Editor &context);
+    virtual void onTransition(Editor &context);
 };
 
 } //namespace Editor

@@ -38,3 +38,7 @@ void Editor::StatePath::handle(const SDL_Event &e, Editor &context) {
         context.transition(new StateTile());
     }
 }
+
+void Editor::StatePath::onTransition(Editor &context) {
+    context.getScreen().setDialog("-- PATH --");
+}

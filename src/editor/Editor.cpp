@@ -13,6 +13,7 @@ Editor::Editor::Editor(State *state) : state(state), screen(),
 
 void Editor::Editor::transition(State *newstate) {
     state.reset(newstate);
+    state->onTransition(*this);
 }
 
 void Editor::Editor::run() {
