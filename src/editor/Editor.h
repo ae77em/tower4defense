@@ -14,8 +14,6 @@ namespace Editor {
 
 class Editor;
 class State;
-class StateTile;
-class StatePath;
 
 class Editor {
     std::unique_ptr<State> state;
