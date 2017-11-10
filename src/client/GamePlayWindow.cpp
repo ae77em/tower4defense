@@ -449,7 +449,7 @@ void GamePlayWindow::run() {
                     handleMouseEvents(camera, mov_description, e);
                 }
 
-                //handleServerNotifications(camera, tower);
+                handleServerNotifications(camera, tower);
 
                 //Move the dot
                 dot.move();

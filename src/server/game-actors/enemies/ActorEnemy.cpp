@@ -1,5 +1,6 @@
 #include "ActorEnemy.h"
 #include "../../../common/Utils.h"
+#include "../../../sdl/Constants.h"
 
 
 ActorEnemy::ActorEnemy() {}
@@ -29,8 +30,14 @@ void ActorEnemy::setCurrentPathPosition(int currentPosition) {
 }
 
 void ActorEnemy::advance() {
-    if (currentPathPosition >= 0) {
+    if (currentPathPosition >= 0 && currentPathPosition < (int)path.size()) {
         int xFinal, yFinal;
+
+        if (xPositionIntoTile > CARTESIAN_TILE_WIDTH || yPositionIntoTile > CARTESIAN_TILE_HEIGHT){
+            ++currentPathPosition;
+            xPositionIntoTile = 0;
+            yPositionIntoTile = 0;
+        }
 
         currentPoint = path.at(currentPathPosition);
 
@@ -49,8 +56,11 @@ void ActorEnemy::advance() {
         currentDirection = Utils::getMovementDirection(Utils::getNextMapDisplacement(x, xFinal),
                                                        Utils::getNextMapDisplacement(y, yFinal));
 
-        xPosition += xMovement;
-        yPosition += yMovement;
+        xPositionIntoTile += xMovement;
+        yPositionIntoTile += yMovement;
+
+        xPosition = path.at(currentPathPosition).x + xPositionIntoTile;
+        yPosition = path.at(currentPathPosition).y + yPositionIntoTile;
     } else {
         ++currentPathPosition;
     }
@@ -65,8 +75,8 @@ void ActorEnemy::setIsWalking(bool iw) {
         isWalking = iw;
         currentPathPosition = 0;
         currentPoint = path.at(currentPathPosition);
-        xPosition = currentPoint.x;
-        yPosition = currentPoint.y;
+        xPositionIntoTile = currentPoint.x;
+        yPositionIntoTile = currentPoint.y;
     }
 }
 
@@ -76,6 +86,15 @@ const Point &ActorEnemy::getCurrentPoint() const {
 
 void ActorEnemy::setCurrentPoint(const Point &currentPoint) {
     ActorEnemy::currentPoint = currentPoint;
+}
+
+
+int ActorEnemy::getXPositionIntoTile() {
+    return xPositionIntoTile;
+}
+
+int ActorEnemy::getYPositionIntoTile() {
+    return yPositionIntoTile;
 }
 
 int ActorEnemy::getXPosition() {

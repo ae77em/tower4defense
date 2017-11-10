@@ -14,6 +14,8 @@ private:
     int currentPathPosition = 0;
     int currentShift = 0;
     Point currentPoint = Point(-1, -1);
+    int xPositionIntoTile = 0;
+    int yPositionIntoTile = 0;
     int xPosition = 0;
     int yPosition = 0;
     bool isWalking = false;
@@ -64,6 +66,10 @@ public:
     void setId(int id);
 
     std::string getClass();
+
+    int getXPositionIntoTile();
+
+    int getYPositionIntoTile();
 };
 
 #endif //TP4_TOWERDEFENSE_SERVER_ENEMY_H
