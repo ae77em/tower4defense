@@ -28,12 +28,12 @@ private:
     /* Connection */
     Socket *client;
     SharedBuffer &toSend;
-    SharedBuffer *toReceive;
+    SharedBuffer &toReceive;
     int clientId;
     std::string matchName;
 
 public:
-    GameAccessWindow(Socket *client, SharedBuffer &toSend, SharedBuffer *toReceive);
+    GameAccessWindow(Socket *client, SharedBuffer &toSend, SharedBuffer &toReceive);
 
     virtual ~GameAccessWindow();
 

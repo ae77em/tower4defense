@@ -351,6 +351,7 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera, Tower &tower) {
                 break;
             }
             case SERVER_NOTIFICATION_MATCH_ENDED: {
+                toReceive->setClientProcessEnded(true);
                 gameWon = true;
                 break;
             }

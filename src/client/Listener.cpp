@@ -6,7 +6,7 @@
 #include "../common/Message.h"
 #include "../common/Protocol.h"
 
-Listener::Listener(Socket *s, GameAccessWindow &ga, SharedBuffer *bfr)
+Listener::Listener(Socket *s, GameAccessWindow &ga, SharedBuffer &bfr)
         : server(s), gameAccess(ga), buffer(bfr) { }
 
 Listener::~Listener() {}
@@ -95,7 +95,7 @@ void Listener::run(){
                 default:
                     std::cout << "Llegó notificación no de acceso...la mando la juego..." << std::endl;
                     std::cout << dataFromServer << std::endl;
-                    buffer->addData(dataFromServer);
+                    buffer.addData(dataFromServer);
             }
 
             std::cout << response << "dataFromServer: " << dataFromServer << std::endl;

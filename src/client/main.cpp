@@ -9,7 +9,7 @@
 #include "Sender.h"
 
 int main(int argc, char **argv) {
-    SharedBuffer *toReceive = new SharedBuffer();
+    SharedBuffer toReceive;
     SharedBuffer toSend;
 
     if (argc < 3) {

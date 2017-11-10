@@ -11,16 +11,6 @@ const int NUMBER_OF_IDLE_SPRITES = 8;
 const int NUMBER_OF_SHOT_SPRITES = 8;
 
 class Tower {
-private:
-    //Collision box of the enemy
-    SDL_Rect idleBox;
-    SDL_Rect shotBox;
-
-    LTexture &texture;
-    SDL_Renderer *renderer;
-    SDL_Rect idleSprites[NUMBER_OF_IDLE_SPRITES];
-    SDL_Rect shotSprites[NUMBER_OF_SHOT_SPRITES];
-
 public:
     Tower(int x, int y, SDL_Renderer *renderer, LTexture &t);
 
@@ -121,6 +111,29 @@ protected:
 
     const int SHOT_SPRITE_WIDTH = 104;
     const int SHOT_SPRITE_HEIGHT = 127;
+
+    SDL_Rect idleBox;
+    SDL_Rect shotBox;
+
+    LTexture &texture;
+    SDL_Renderer *renderer;
+    SDL_Rect idleSprites[NUMBER_OF_IDLE_SPRITES];
+    SDL_Rect shotSprites[NUMBER_OF_SHOT_SPRITES];
+
+    int idleSpriteWidth = IDLE_SPRITE_WIDTH + 1;
+    int idleSpriteHeight = IDLE_SPRITE_HEIGHT + 1;
+
+    int shotSpriteWidth = SHOT_SPRITE_WIDTH + 1;
+    int shotSpriteHeight = SHOT_SPRITE_HEIGHT + 1;
+
+    int numberOfIdleSprites = NUMBER_OF_IDLE_SPRITES;
+    int numberOfShotSprites = NUMBER_OF_SHOT_SPRITES;
+
+    // seteo los sprites para espera...
+    int idleStartX = 1;
+    int idleStartY = 16;
+    int shotStartX = 1;
+    int shotStartY = 287;
 
     int shotRatio;
 

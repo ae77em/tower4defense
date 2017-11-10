@@ -58,30 +58,20 @@ void Tower::setPosition(int x, int y) {
 }
 
 void Tower::setSprites() {
-    int spriteWidth = IDLE_SPRITE_WIDTH + 1;
 
-    // seteo los sprites para espera...
-    int idleStartX = 1;
-    int idleStartY = 16;
-
-    for (int i = 0; i < NUMBER_OF_IDLE_SPRITES; ++i) {
-        idleSprites[i].x = idleStartX + (i * spriteWidth);
+    for (int i = 0; i < numberOfIdleSprites; ++i) {
+        idleSprites[i].x = idleStartX + (i * idleSpriteWidth);
         idleSprites[i].y = idleStartY;
-        idleSprites[i].w = IDLE_SPRITE_WIDTH;
-        idleSprites[i].h = IDLE_SPRITE_HEIGHT;
+        idleSprites[i].w = idleSpriteWidth;
+        idleSprites[i].h = idleSpriteHeight;
     }
 
     // seteo los sprites para disparo...
-    spriteWidth = SHOT_SPRITE_WIDTH + 1;
-
-    int shotStartX = 1;
-    int shotStartY = 287;
-
-    for (int i = 0; i < NUMBER_OF_SHOT_SPRITES; ++i) {
-        shotSprites[i].x = shotStartX + (i * spriteWidth);
+    for (int i = 0; i < numberOfShotSprites; ++i) {
+        shotSprites[i].x = shotStartX + (i * shotSpriteWidth);
         shotSprites[i].y = shotStartY;
-        shotSprites[i].w = SHOT_SPRITE_WIDTH;
-        shotSprites[i].h = SHOT_SPRITE_HEIGHT;
+        shotSprites[i].w = shotSpriteWidth;
+        shotSprites[i].h = shotSpriteHeight;
     }
 }
 

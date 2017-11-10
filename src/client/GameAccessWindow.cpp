@@ -7,7 +7,7 @@
 #include <gtkmm.h>
 #include <iostream>
 
-GameAccessWindow::GameAccessWindow(Socket *c, SharedBuffer &tsnd, SharedBuffer *trcv)
+GameAccessWindow::GameAccessWindow(Socket *c, SharedBuffer &tsnd, SharedBuffer &trcv)
         : client(c), toSend(tsnd), toReceive(trcv) {
     clientId = -1;
 }
@@ -349,7 +349,7 @@ bool GameAccessWindow::isNotValidClientId(){
 void GameAccessWindow::startMatch(){
     pWindow->hide();
 
-    game = new GamePlayWindow(client, toReceive, &toSend, clientId);
+    game = new GamePlayWindow(client, &toReceive, &toSend, clientId);
     game->start();
 }
 

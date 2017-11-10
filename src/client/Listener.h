@@ -10,10 +10,10 @@ class Listener : public Thread {
 private:
     Socket *server;
     GameAccessWindow &gameAccess;
-    SharedBuffer *buffer;
+    SharedBuffer &buffer;
 
 public:
-    Listener(Socket *server, GameAccessWindow &b, SharedBuffer *bfr);
+    Listener(Socket *server, GameAccessWindow &b, SharedBuffer &bfr);
 
     virtual ~Listener();
 
