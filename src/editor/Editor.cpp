@@ -1,5 +1,6 @@
 #include "Editor.h"
 #include <SDL2/SDL_image.h>
+#include <fstream>
 
 Editor::Editor::Editor(State *state) : state(state), screen(),
         map(10, 10), keys(default_keybinding) {
@@ -47,4 +48,27 @@ Mapa& Editor::Editor::getMap() {
 
 const Keybinding& Editor::Editor::getKeys() {
     return keys;
+}
+
+void Editor::Editor::load(std::string filename) {
+	std::fstream map_file;
+    map_file.open(filename, std::ios::in | std::ios::binary);
+    if (!map_file) throw std::runtime_error("Could not open file " + filename);
+
+    // Load file contents into string
+    std::string contents;
+    map_file.seekg(0, std::ios::end);
+    contents.resize(map_file.tellg());
+    map_file.seekg(0, std::ios::beg);
+    map_file.read(&contents[0], contents.size());
+
+    map_file.close();
+    map = Mapa(contents);
+}
+
+void Editor::Editor::save(std::string filename) {
+	std::fstream map_file;
+	map_file.open(filename, std::ios::out | std::ios::binary);
+    map_file << map.serialize();
+    map_file.close();
 }

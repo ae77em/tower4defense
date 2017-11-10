@@ -3,6 +3,7 @@
 #include "../common/modelo/Mapa.h"
 #include "../common/Point.h"
 #include <SDL2/SDL.h>
+#include <string>
 #include <vector>
 #include <memory>
 
@@ -27,6 +28,8 @@ class Editor {
 
     void run();
     void transition(State *newstate);
+    void load(std::string filename);
+    void save(std::string filename);
 
     Screen& getScreen();
     Mapa& getMap();
