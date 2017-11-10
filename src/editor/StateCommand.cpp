@@ -19,6 +19,11 @@ static std::string open(Editor::Editor &context, const std::string& command) {
     }
 }
 
+static std::string save(Editor::Editor &context, const std::string& command) {
+    context.save("resources/maps/" + command);
+    return "saved " + command;
+}
+
 Editor::StateCommand::StateCommand() {
     dispatch_table["_default_"] = [](Editor& context, const std::string& c){
         return std::string("command not recognized");
@@ -26,6 +31,7 @@ Editor::StateCommand::StateCommand() {
     dispatch_table["q"] = quit;
     dispatch_table["quit"] = quit;
     dispatch_table["open"] = open;
+    dispatch_table["save"] = save;
 }
 
 void Editor::StateCommand::handle(const SDL_Event &e, Editor &context) {
