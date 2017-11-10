@@ -8,6 +8,9 @@
 #include <chrono>
 #include <thread>
 
+
+//HAY QUE AGREGAR MUTEX PLAYERD PARA QUE BLOQUEE LA LISTA DE SERVER PLAYERS
+//PUEDE SER QUE SE ESTE REMOVIENDO ALGUNO EN OTRO HILO Y LUEGO EXPLOTE
 WorkerLoopGame::WorkerLoopGame(std::vector<ServerPlayer*>& p,
                                std::list<GameAction*>& a,
                                std::mutex& m):

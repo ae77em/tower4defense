@@ -59,6 +59,7 @@ void ClientRequestHandler::run() {
             std::cout << "CRH: cliente: "<< client->getSocket() <<" TERMINO CONEXION"<<std::endl;
             break;
         }
+        //esta cola es la del server, no debe morir junto con le liente
         queueSharedMessage.push(message);
     }
 

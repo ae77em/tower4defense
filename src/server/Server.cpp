@@ -35,6 +35,7 @@ void Server::addPlayerToGame(int clientId, std::string mName, vector<string> ele
     if (serverGame->elementsAreAvailables(elements)) {
         //obtengo el jugador, le seteo el gameID y lo uno a la partida
         serverPlayer->setGameId(mName);
+        serverPlayer->setStatus(JOINED);
         serverPlayer->setElements(elements);
         serverGame->addPlayer(serverPlayer);
 
@@ -194,15 +195,23 @@ void Server::run() {
                     notifyAll(response);
                     break;
                 }
-                case SERVER_NOTIFICATION_END_CLIENT_CONNECTION:
+                case SERVER_NOTIFICATION_END_CLIENT_CONNECTION: {
                     std::cout
                             << "el cliente "
                             << std::to_string(MessageFactory::getClientId(messageRequest))
                             << " se desconectó."
                             << std::endl;
 
-                    removeClient(MessageFactory::getClientId(messageRequest));
+                    int id = 0;
+                    id = MessageFactory::getClientId(messageRequest);
+
+                    removeClient(id);
+
+                    std::cout << "GameServer: se termino de matar al cliennte " << id << std::endl;
+                    std::cout << "Ahora hay " << players.size() << " clientes" << std::endl;
+
                     break;
+                }
                 default: {
                     int clientId = MessageFactory::getClientId(messageRequest);
                     response = "No se reconoce codigo de operación ";
@@ -220,9 +229,7 @@ void Server::run() {
     std::cout << "GameServer: Se murio, se tendria que haber apagado todo" << std::endl;
 }
 
-void Server::removeClient(int id) {
-    players.erase(id);
-}
+
 
 void Server::startMatch(int clientId, string matchName) {
     ServerGame *serverGame = games.at(matchName);
@@ -269,4 +276,35 @@ void Server::notifyPlayerAdded(int clientId, string message) {
         player.second->sendData(message);
     }
 
+}
+
+void Server::removeClient(int id) {
+    std::cout << "GameServer: Matando al cliennte "<< id << std::endl;
+
+    mutexPlayers.lock();
+
+    ServerPlayer* sp = players.at(id);
+
+    if( sp->getStatus() == PLAYING ){
+
+    }else if( sp->getStatus() == JOINED ){
+        std::string gameId = sp->getGameId();
+
+        ServerGame* sg = games.at(gameId);
+
+        sg->enableElements(id);
+        sg->removePlayer(id);
+
+        std::cout<<"se saco jugador que estaba unido con id: "<<id<<std::endl;
+    }
+    else{
+        //VER DESPUES SI HAY ALGO QUE HACER CUANDO EL STATUS DEL CLIENTE ES NOTPLAYING
+    }
+
+    sp->kill();
+
+    delete sp;
+    players.erase(id);
+
+    mutexPlayers.unlock();
 }

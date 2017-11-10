@@ -88,3 +88,13 @@ std::list<std::string> ServerGame::getUnavailableElements() {
 
     return toReturn;
 }
+
+void ServerGame::enableElements(int idPlayer) {
+    //Cambiar a hash el contenedor de jugadores para remover por elementos ID
+    //TOMAR ELEMENTOS PARA CARGARLOS A LA LISTA DE ELMENTOS
+
+}
+
+void ServerGame::removePlayer(int i) {
+    //QUITAR JUGADOR DEL HASH
+}

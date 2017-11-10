@@ -52,6 +52,10 @@ public:
     void removeElement(string elementName);
 
     list<string> getUnavailableElements();
+
+    void enableElements(int idPlayer);
+
+    void removePlayer(int i);
 };
 
 

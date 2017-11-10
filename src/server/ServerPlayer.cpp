@@ -34,3 +34,14 @@ std::vector<std::string> & ServerPlayer::getElements() {
 void ServerPlayer::setElements(std::vector<std::string> els) {
     elements = els;
 }
+
+// si esta jugando no notifico disponibilidad de elementos libres, o queda asi, nose
+void ServerPlayer::kill() {
+    std::cout << "GameServer: Esperando que termine el reciever del cliennte "<< id << std::endl;
+
+    clientRequestHandler->join();
+
+    std::cout << "GameServer: Termino el reciever del cliennte "<< id << std::endl;
+
+    delete clientRequestHandler;
+}

@@ -3,6 +3,7 @@
 
 #define PLAYING 1
 #define NOT_PLAYING 2
+#define JOINED 3
 
 #include <iostream>
 
@@ -33,9 +34,15 @@ public:
 
     void setGameId(std::string gameId);
 
+    std::string getGameId(){
+        return gameId;
+    }
+
     void setStatus(unsigned int status);
 
     unsigned int getStatus();
+
+    void kill();
 };
 
 #endif //TP4_TOWERDEFENSE_SERVERPLAYER_H

@@ -26,9 +26,8 @@ void Listener::run() {
     ThreadedQueue<Message> threadedQueue;
     Server server(mutexPlayers, threadedQueue);
 
+    server.start();
     try {
-        server.start();
-
         while (true) {
             std::cout << "Listener escuchando esperando conexion: " << std::endl;
 
