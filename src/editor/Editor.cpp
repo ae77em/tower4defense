@@ -35,6 +35,9 @@ void Editor::Editor::run() {
         //TODO move path tracing to screen::put(map)
         for (const auto& camino : map.getCaminos())
             screen.trace(camino);
+
+        state->preRender(*this);
+
         screen.draw();
     }
 }

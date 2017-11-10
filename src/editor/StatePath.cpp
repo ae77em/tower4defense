@@ -42,3 +42,7 @@ void Editor::StatePath::handle(const SDL_Event &e, Editor &context) {
 void Editor::StatePath::onTransition(Editor &context) {
     context.getScreen().setDialog("-- PATH --");
 }
+
+void Editor::StatePath::preRender(Editor &context) {
+    context.getScreen().trace(path);
+}
