@@ -3,7 +3,7 @@
 
 #include <SDL2/SDL_rect.h>
 #include "../common/Point.h"
-#include "Circle.h"
+#include "../common/Circle.h"
 #include "Animable.h"
 
 class Utils {

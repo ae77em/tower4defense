@@ -2,7 +2,6 @@
 #include "../../../common/Utils.h"
 #include "../../../sdl/Constants.h"
 
-
 ActorEnemy::ActorEnemy() {}
 
 const std::vector<Point> &ActorEnemy::getPath() const {

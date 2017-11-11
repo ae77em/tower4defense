@@ -11,9 +11,9 @@ file(GLOB EDITOR_SOURCES "src/editor/*.cpp" "src/common/**/*.cpp"
 file(GLOB TEST_SOURCES "tests/unit/*.cpp" "src/common/**/*.cpp")
 file(GLOB SOCKMAN_SOURCES "tests/sockman.cpp" "src/common/*.cpp")
 
-add_executable(game.exe ${CLIENT_SOURCES} src/client/AnimablesContainer.cpp src/client/AnimablesContainer.h src/sdl/Animable.h)
+add_executable(game.exe ${CLIENT_SOURCES} src/sdl/Animable.h)
 add_executable(server.exe ${SERVER_SOURCES})
-add_executable(editor.exe ${EDITOR_SOURCES})
+add_executable(editor.exe ${EDITOR_SOURCES} src/server/game-actors/towers/ActorTower.cpp src/server/game-actors/towers/ActorTower.h)
 add_executable(unit.exe ${TEST_SOURCES})
 add_executable(integration_sockman.exe ${SOCKMAN_SOURCES})
 

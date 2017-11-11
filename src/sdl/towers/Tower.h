@@ -5,7 +5,7 @@
 #include "../LTexture.h"
 #include "../../common/Point.h"
 #include "../Constants.h"
-#include "../Circle.h"
+#include "../../common/Circle.h"
 #include "../Animable.h"
 
 const int NUMBER_OF_IDLE_SPRITES = 8;
@@ -78,25 +78,15 @@ public:
 
     const SDL_Rect &getIdleBox() const;
 
-    Circle &getCollisionCircle();
-
     Point getPoint();
-
-    int getShotDamage();
-
-    void setIsShooting(bool isShooting);
 
     void shiftColliders();
 
-    void sumExperiencePoints(int points);
+    Circle &getCollisionCircle();
 
-    int getExperiencePoints();
-
+    void setIsShooting(bool isShooting);
 
 protected:
-    // abominable como monstruo default...porque sí... :D
-    const std::string TEXTURE_FILE_PATH = "images/sprites/enemy-abominable-idle.png";
-
     const int FRONT_LEFT_SPRITE_ROW = 1;
     const int BACK_LEFT_SPRITE_ROW = 3;
     const int BACK_RIGHT_SPRITE_ROW = 5;
@@ -138,21 +128,10 @@ protected:
     int shotStartX = 1;
     int shotStartY = 287;
 
-    int shotRatio;
-
-    int shotMsTimeGap;
-
-    bool isShooting;
-
-    int lastShotTime = 0;
-
-    int shotDamage;
-
-    int experiencePoints;
-
+    Point currentPoint;
     Circle collisionCircle;
 
-    Point currentPoint;
+    bool isShooting;
 };
 
 #endif //TP4_TOWERDEFENSE_TOWER_H

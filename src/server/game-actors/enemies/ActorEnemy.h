@@ -8,6 +8,49 @@
 #include "../../GameActor.h"
 
 class ActorEnemy : public GameActor {
+public:
+    ActorEnemy();
+
+    std::string getClass();
+
+    void live();
+
+    int getDirection();
+
+    int getXPosition();
+
+    int getYPosition();
+
+    int getEnergy();
+
+    int getId();
+
+    const Point &getCurrentPoint() const;
+
+    void setCurrentPoint(const Point &currentPoint);
+
+    int getCurrentPosition() const;
+
+    void setCurrentPathPosition(int currentPosition);
+
+    const std::vector<Point> &getPath() const;
+
+    void setPath(const std::vector<Point> &path);
+
+    void setDirection(int currentDirection);
+
+    void advance();
+
+    void gotoNextPathPosition();
+
+    void setIsWalking(bool isWalking);
+
+    void setId(int id);
+
+    int getXPositionIntoTile();
+
+    int getYPositionIntoTile();
+
 private:
     std::vector<Point> path;
     int currentDirection = 0;
@@ -27,49 +70,6 @@ private:
     int isAlive = true;
 
     int id;
-
-public:
-    ActorEnemy();
-
-    void live();
-
-    const Point &getCurrentPoint() const;
-
-    void setCurrentPoint(const Point &currentPoint);
-
-    int getCurrentPosition() const;
-
-    void setCurrentPathPosition(int currentPosition);
-
-    const std::vector<Point> &getPath() const;
-
-    void setPath(const std::vector<Point> &path);
-
-    int getDirection();
-
-    void setDirection(int currentDirection);
-
-    void advance();
-
-    void gotoNextPathPosition();
-
-    int getXPosition();
-
-    int getYPosition();
-
-    void setIsWalking(bool isWalking);
-
-    int getEnergy();
-
-    int getId();
-
-    void setId(int id);
-
-    std::string getClass();
-
-    int getXPositionIntoTile();
-
-    int getYPositionIntoTile();
 };
 
 #endif //TP4_TOWERDEFENSE_SERVER_ENEMY_H

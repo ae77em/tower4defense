@@ -48,10 +48,10 @@ void WorkerLoopGame::run(){
         }*/
 
         for (std::map<int, std::vector<ActorEnemy*>>::iterator it = hordas.begin(); it != hordas.end(); ++it){
-            std::vector<ActorEnemy*> vectorActor = it->second;
+            std::vector<ActorEnemy*> enemies = it->second;
 
-            for (auto g : vectorActor) {
-                g->live();
+            for (auto enemy : enemies) {
+                enemy->live();
             }
         }
 
@@ -116,6 +116,49 @@ void WorkerLoopGame::buildGameContext() {
         }
         hordas.insert(std::pair<int, std::vector<ActorEnemy*>>(hordeId, vectorHorda));
     }
+
+    /* ESTA ES LÓGICA DE NEGOCIO, Y VA EN EL SERVER...
+     * bool towerIsShooting =
+            enemy->itIsAlive() &&
+            enemy->getCollisionCircle().hasCollisionWith(tower.getCollisionCircle());
+    if (towerIsShooting) {
+        tower.setIsShooting(true);
+        int shotDamage = tower.getShotDamage();
+        enemy->quitLifePoints(shotDamage);
+        tower.sumExperiencePoints(shotDamage);
+        std::cout << "la torre tiene " << tower.getExperiencePoints() << " de experiencia."
+                  << std::endl;
+    } else {
+        tower.setIsShooting(false);
+    }
+
+    if (enemy->itIsAlive()) {
+        enemy->setDirection(dir);
+        enemy->moveTo(point.x, point.y);
+    } else if (towerIsShooting) {
+        tower.sumExperiencePoints(enemy->getBonus());
+        std::cout << "la torre sumó bonus de " << enemy->getBonus() << " puntos de experiencia."
+                  << std::endl;
+
+        std::vector<Enemy*> enemies = static_cast<std::vector<Enemy *> &&>(horde->getEnemies());
+        for (Enemy *enemy1 : enemies) {
+            if (enemy1->itIsAlive()) {
+                gameWon = false;
+                break;
+            } else {
+                gameWon = true;
+            }
+        }
+    }
+
+    if (enemy->itIsAlive()) {
+        if (point.x >= finalPoint.x && point.y >= finalPoint.y) {
+            gameLoose = true;
+        }
+    }
+
+    std::cout << "la torre tiene " << tower.getExperiencePoints() << " de experiencia." << std::endl;
+     */
 }
 
 std::string WorkerLoopGame::getGameStatus() {

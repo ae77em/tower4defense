@@ -11,10 +11,6 @@ Tower::Tower(int x, int y, SDL_Renderer *r, LTexture &t) : texture(t), currentPo
     idleBox.w = SHOT_SPRITE_WIDTH;
     idleBox.h = SHOT_SPRITE_HEIGHT;
 
-    shotRatio = 2;
-    shotDamage = 50;
-    shotMsTimeGap = 3000; //miliseconds
-    collisionCircle.r = (CARTESIAN_TILE_WIDTH / 2) * shotRatio;
     shiftColliders();
 
     isShooting = false;
@@ -22,20 +18,6 @@ Tower::Tower(int x, int y, SDL_Renderer *r, LTexture &t) : texture(t), currentPo
     renderer = r;
 
     setSprites();
-}
-
-int Tower::getShotDamage() {
-    int toReturn;
-    if (lastShotTime == 0){
-        lastShotTime = SDL_GetTicks();
-        toReturn = shotDamage;
-    } else if ((int)(SDL_GetTicks() - lastShotTime) >= shotMsTimeGap){
-        lastShotTime = SDL_GetTicks();
-        toReturn = shotDamage;
-    } else {
-        toReturn = 0;
-    }
-    return toReturn;
 }
 
 Tower::~Tower(){}
@@ -57,7 +39,6 @@ void Tower::setPosition(int x, int y) {
 }
 
 void Tower::setSprites() {
-
     for (int i = 0; i < numberOfIdleSprites; ++i) {
         idleSprites[i].x = idleStartX + (i * idleSpriteWidth);
         idleSprites[i].y = idleStartY;
@@ -125,14 +106,6 @@ void Tower::shiftColliders() {
 
 Circle &Tower::getCollisionCircle() {
     return collisionCircle;
-}
-
-void Tower::sumExperiencePoints(int p) {
-    experiencePoints += p;
-}
-
-int Tower::getExperiencePoints() {
-    return experiencePoints;
 }
 
 Point Tower::getPoint() {

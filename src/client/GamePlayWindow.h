@@ -107,6 +107,8 @@ private:
     TTF_Font *font;
 
     void initializeGameActors();
+
+    void handleLeftButtonClick(const Point &point) const;
 };
 
 #endif //TP4_TOWERDEFENSE_GAME_H

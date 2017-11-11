@@ -109,12 +109,14 @@ void GamePlayWindow::run() {
                     tileSet[i]->render(camera, gTileClips, gRenderer, gTileTextures);
                 }
 
-                //Render dot
+                // Rendereo punto para mover pantalla
                 dot.render(dotTexture, camera, gRenderer);
 
+                /* Limpio los animables, ya que pueden ir cambiando de posición en cada iteración,
+                 * y los vuelvo a cargar y ordenar, para volver a mostrarlos bien
+                 */
                 animables.clear();
                 for (Tower *tower : towers) {
-                    //tower->animate(camera);
                     animables.push_back(reinterpret_cast<Animable *&&>(tower));
                 }
 
@@ -122,7 +124,6 @@ void GamePlayWindow::run() {
                     Horde *horde = it->second;
 
                     for (auto enemy : horde->getEnemies()) {
-                        //enemy->animate(camera);
                         animables.push_back(reinterpret_cast<Animable *&&>(enemy));
                     }
                 }
@@ -133,7 +134,8 @@ void GamePlayWindow::run() {
                     animable->animate(camera);
                 }
 
-                towerButtonsTexture.renderSprite(gRenderer, 1, 1, &towerButtonsClips);
+                // Muestro los botones de las torres que puedo poner
+                towerButtonsTexture.render(gRenderer, 1, 1);
 
                 if (gameEnded) {
                     if (gameWon) {
@@ -405,9 +407,7 @@ void GamePlayWindow::handleMouseEvents(SDL_Rect camera, std::string mov_descript
         switch (e.button.button) {
             //case GAME_EVENT_PUT_TOWER: {
             case SDL_BUTTON_LEFT: {
-                std::string request;
-                request = MessageFactory::getPutTowerRequest(clientId, point.x, point.y, true);
-                toSend->addData(request);
+                handleLeftButtonClick(point);
                 break;
             }
             case SDL_BUTTON_RIGHT: {
@@ -421,6 +421,27 @@ void GamePlayWindow::handleMouseEvents(SDL_Rect camera, std::string mov_descript
                     tileSet[tilePos]->handleEvent(e, mov_description);
                 }*/
         }
+    }
+}
+
+void GamePlayWindow::handleLeftButtonClick(const Point &point) const {
+    int mousePosX, mousePosY;
+    SDL_GetMouseState(&mousePosX, &mousePosY);
+
+    std::string request;
+    if ((mousePosX >= 1 && mousePosX <= 321) && (mousePosY >= 1 && mousePosY <= 81)){
+        if (mousePosX <= 80){
+           std::cout << "click en 1er boton" << std::endl;
+        } else if (mousePosX <= 160){
+            std::cout << "click en 2do boton" << std::endl;
+        } else if (mousePosX <= 240){
+            std::cout << "click en 3er boton" << std::endl;
+        } else {
+            std::cout << "click en 4to boton" << std::endl;
+        }
+    } else {
+        request = MessageFactory::getPutTowerRequest(clientId, point.x, point.y, true);
+        toSend->addData(request);
     }
 }
 
@@ -455,64 +476,23 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
                 std::vector<Message> messages = MessageFactory::getMovementNotifications(message);
 
                 for (Message aMessage : messages) {
-                    Point point = MessageFactory::getPoint(aMessage);
-                    Point finalPoint(1279, 400);
-                    int dir = MessageFactory::getDirection(aMessage);
-                    int enemyId = MessageFactory::getEnemyId(aMessage);
-                    int hordeId = MessageFactory::getHordeId(aMessage);
+                    Point scenarioPoint = MessageFactory::getPoint(aMessage);
+                    if (scenarioPoint.isPositive()){ // no dibujo cosas fuera del escenario...
+                        Point finalPoint(1279, 400);
+                        int dir = MessageFactory::getDirection(aMessage);
+                        int enemyId = MessageFactory::getEnemyId(aMessage);
+                        int hordeId = MessageFactory::getHordeId(aMessage);
 
-                    try {
-                        Horde *horde = hordes.at(hordeId);
-                        Enemy *enemy = horde->getEnemieAt(enemyId);
-                        enemy->setDirection(dir);
-                        enemy->moveTo(point.x, point.y);
-                    } catch (...) {
-                        std::cerr << "No es posible mover el enemigo " << std::to_string(enemyId);
-                        std::cerr << " de la horda " << std::to_string(hordeId);
-                    }
-
-                    /* ESTA ES LÓGICA DE NEGOCIO, Y VA EN EL SERVER...
-                     * bool towerIsShooting =
-                            enemy->itIsAlive() &&
-                            enemy->getCollisionCircle().hasCollisionWith(tower.getCollisionCircle());
-                    if (towerIsShooting) {
-                        tower.setIsShooting(true);
-                        int shotDamage = tower.getShotDamage();
-                        enemy->quitLifePoints(shotDamage);
-                        tower.sumExperiencePoints(shotDamage);
-                        std::cout << "la torre tiene " << tower.getExperiencePoints() << " de experiencia."
-                                  << std::endl;
-                    } else {
-                        tower.setIsShooting(false);
-                    }
-
-                    if (enemy->itIsAlive()) {
-                        enemy->setDirection(dir);
-                        enemy->moveTo(point.x, point.y);
-                    } else if (towerIsShooting) {
-                        tower.sumExperiencePoints(enemy->getBonus());
-                        std::cout << "la torre sumó bonus de " << enemy->getBonus() << " puntos de experiencia."
-                                  << std::endl;
-
-                        std::vector<Enemy*> enemies = static_cast<std::vector<Enemy *> &&>(horde->getEnemies());
-                        for (Enemy *enemy1 : enemies) {
-                            if (enemy1->itIsAlive()) {
-                                gameWon = false;
-                                break;
-                            } else {
-                                gameWon = true;
-                            }
+                        try {
+                            Horde *horde = hordes.at(hordeId);
+                            Enemy *enemy = horde->getEnemieAt(enemyId);
+                            enemy->setDirection(dir);
+                            enemy->moveTo(scenarioPoint.x, scenarioPoint.y);
+                        } catch (...) {
+                            std::cerr << "No es posible mover el enemigo " << std::to_string(enemyId);
+                            std::cerr << " de la horda " << std::to_string(hordeId);
                         }
                     }
-
-                    if (enemy->itIsAlive()) {
-                        if (point.x >= finalPoint.x && point.y >= finalPoint.y) {
-                            gameLoose = true;
-                        }
-                    }
-
-                    std::cout << "la torre tiene " << tower.getExperiencePoints() << " de experiencia." << std::endl;
-                     */
                 }
                 break;
             }
