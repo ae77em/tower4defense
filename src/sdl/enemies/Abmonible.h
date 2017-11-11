@@ -10,5 +10,4 @@ public:
 
 };
 
-
 #endif //TP4_TOWERDEFENSE_ABMONIBLE_H

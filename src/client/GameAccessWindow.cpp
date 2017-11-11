@@ -131,7 +131,7 @@ void GameAccessWindow::on_btnCrearPartida_clicked() {
 }
 
 void GameAccessWindow::on_btnJugar_clicked() {
-    std::string matchName = entryMatchName->get_text();
+    std::string matchName = cmbMatchesText->get_active_text();
 
     std::string request =  MessageFactory::getStartMatchRequest(clientId, matchName);
 

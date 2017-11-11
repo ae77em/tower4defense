@@ -150,7 +150,7 @@ protected:
 
     /**********/
     int currentDirection = 0;
-    int separationBetweenSprites = 0;
+    int separationBetweenSprites = 1;
 
     const int MAX_VELOCITY = 10;
 

@@ -62,7 +62,7 @@ int main(int argc, char **argv) {
     listener.join();
     gameAccess.join();
 
-    //server.shutdown();
+    server.shutdown();
     server.close();
 
     return 0;
