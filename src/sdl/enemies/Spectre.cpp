@@ -1,13 +1,9 @@
 #include "Spectre.h"
 #include "../Utils.h"
 
-Spectre::Spectre(int x, int y, SDL_Renderer *renderer, LTexture *texture) : Enemy(x, y, renderer, texture) {
-    initialLifePoints = 100;
-    isAir = true;
-    velocity = 6;
-
+Spectre::Spectre(int x, int y, SDL_Renderer *renderer, LTexture *texture)
+    : Enemy(model::Enemy(100, 6, "spectre"), x, y, renderer, texture) {
     currentDirection = 0;
-
     initializeSpritesData();
 }
 

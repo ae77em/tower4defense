@@ -2,6 +2,7 @@
 #define TP4_TOWERDEFENSE_SDL_ENEMY_H
 
 
+#include "../../common/modelo/Enemies.h"
 #include <vector>
 #include <array>
 #include "../LTexture.h"
@@ -12,7 +13,8 @@
 
 class Enemy : public Animable {
 public:
-    Enemy(int x, int y, SDL_Renderer *renderer, LTexture *texture);
+    Enemy(model::Enemy&& base, int x, int y,
+            SDL_Renderer *renderer, LTexture *texture);
 
     virtual ~Enemy();
 
@@ -20,11 +22,6 @@ public:
      * Carga la imagen que contiene los sprites del monstruo.
      */
     virtual bool loadMedia();
-
-    /*
-     * Setea la posición del monstruo en la pantalla.
-     */
-    void setPosition(int x, int y);
 
     /*
      * Carga los sprites del monstruo en un array.
@@ -60,9 +57,6 @@ public:
      * */
     void animate(SDL_Rect &camera);
 
-    /*
-     * Setea la propiedad isAlive en false del enemigo.
-     * */
     void kill();
 
     /*
@@ -79,13 +73,10 @@ public:
 
     bool itIsAlive()const;
 
-    int getLifePoints() const;
-
     void quitLifePoints(int points);
 
     int getVelocity() const;
 
-    int getIsAir() const;
     /*
      * Modifica la textura que se utilizará para mostrar el enemigo.
      * texture: referencia a la textura a utilizar.
@@ -133,6 +124,8 @@ public:
     Point getPoint();
 
 protected:
+    model::Enemy enemy_base;
+
     // Defino este monstruo por default...
     const std::string TEXTURE_FILE_PATH = "images/sprites/enemy-abominable-walk.png";
 
@@ -155,12 +148,6 @@ protected:
     int separationBetweenSprites = 1;
 
     const int MAX_VELOCITY = 10;
-
-    bool isAlive;
-    int initialLifePoints;
-    int remainingLifePoints;
-    int velocity;
-    int isAir;
 
     /* ATRIBUTOS RELACIONADOS CON DIBUJO */
     SDL_Rect walkBox;
