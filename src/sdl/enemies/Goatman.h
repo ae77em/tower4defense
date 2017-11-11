@@ -9,7 +9,7 @@ public:
     Goatman(int x, int y, SDL_Renderer *renderer, LTexture *texture);
     virtual ~Goatman();
 
-    void initializeSpritesData(int x, int y);
+    void initializeSpritesData();
 };
 
 

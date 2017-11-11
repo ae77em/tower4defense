@@ -1,8 +1,8 @@
 #include "Enemy.h"
 #include "../Utils.h"
 
-Enemy::Enemy(int x, int y, SDL_Renderer *r, LTexture *t) {
-    initializeSpritesData(x, y);
+Enemy::Enemy(int x, int y, SDL_Renderer *r, LTexture *t) : currentPoint(Utils::mapToScreen(x, y)) {
+    initializeSpritesData();
 
     collisionCircle.r = Enemy::getCollisionCircleRadio();
     shiftColliders();
@@ -22,15 +22,13 @@ Enemy::Enemy(int x, int y, SDL_Renderer *r, LTexture *t) {
     setSprites();
 }
 
-void Enemy::initializeSpritesData(int x, int y) {
-    Point initialSreenPos = Utils::mapToScreen(x, y);
-
+void Enemy::initializeSpritesData() {
     /* datos sprites para caminar */
     walkSpriteWidth = 105;
     walkSpriteHeight = 119;
 
-    walkBox.x = initialSreenPos.x;
-    walkBox.y = initialSreenPos.y;
+    walkBox.x = currentPoint.x;
+    walkBox.y = currentPoint.y;
     walkBox.w = walkSpriteWidth;
     walkBox.h = walkSpriteHeight;
 
@@ -76,9 +74,9 @@ void Enemy::kill() {
 }
 
 void Enemy::setPosition(int x, int y) {
-    Point sreenPos = Utils::mapToScreen(x, y);
-    walkBox.x = sreenPos.x;
-    walkBox.y = sreenPos.y;
+    currentPoint = Utils::mapToScreen(x, y);
+    walkBox.x = currentPoint.x;
+    walkBox.y = currentPoint.y;
 }
 
 void Enemy::setSprites() {
@@ -265,5 +263,9 @@ void Enemy::setTexture(LTexture *t) {
 
 void Enemy::setRenderer(SDL_Renderer *r) {
     renderer = r;
+}
+
+Point Enemy::getPoint() {
+    return currentPoint;
 }
 

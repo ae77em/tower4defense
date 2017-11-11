@@ -1,0 +1,10 @@
+#ifndef TP4_TOWERDEFENSE_DRAWABLE_H
+#define TP4_TOWERDEFENSE_DRAWABLE_H
+
+
+class AnimablesContainer {
+
+};
+
+
+#endif //TP4_TOWERDEFENSE_DRAWABLE_H

@@ -6,11 +6,12 @@
 #include "../../common/Point.h"
 #include "../Constants.h"
 #include "../Circle.h"
+#include "../Animable.h"
 
 const int NUMBER_OF_IDLE_SPRITES = 8;
 const int NUMBER_OF_SHOT_SPRITES = 8;
 
-class Tower {
+class Tower : public Animable {
 public:
     Tower(int x, int y, SDL_Renderer *renderer, LTexture &t);
 
@@ -77,8 +78,9 @@ public:
 
     const SDL_Rect &getIdleBox() const;
 
-
     Circle &getCollisionCircle();
+
+    Point getPoint();
 
     int getShotDamage();
 
@@ -89,6 +91,7 @@ public:
     void sumExperiencePoints(int points);
 
     int getExperiencePoints();
+
 
 protected:
     // abominable como monstruo default...porque sí... :D
@@ -149,6 +152,7 @@ protected:
 
     Circle collisionCircle;
 
+    Point currentPoint;
 };
 
 #endif //TP4_TOWERDEFENSE_TOWER_H

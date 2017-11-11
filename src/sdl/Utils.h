@@ -4,6 +4,7 @@
 #include <SDL2/SDL_rect.h>
 #include "../common/Point.h"
 #include "Circle.h"
+#include "Animable.h"
 
 class Utils {
 public:
@@ -42,6 +43,8 @@ public:
     static bool hasCircleCollision(Circle &a, Circle &b);
 
     static double distanceSquared(int x1, int y1, int x2, int y2);
+
+    static bool animablesPositionComparator(Animable *a, Animable *b);
 };
 
 

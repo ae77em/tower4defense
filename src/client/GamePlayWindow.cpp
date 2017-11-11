@@ -5,14 +5,9 @@
 #include "../sdl/Dot.h"
 #include "../sdl/Utils.h"
 #include <SDL2/SDL_image.h>
+#include <algorithm>
 #include "../common/MessageFactory.h"
 #include "../common/Protocol.h"
-#include "../common/TextMessage.h"
-#include "../sdl/enemies/BloodHawk.h"
-#include "../sdl/enemies/Goatman.h"
-#include "../sdl/enemies/GreenDaemon.h"
-#include "../sdl/enemies/Zombie.h"
-#include "../sdl/enemies/Spectre.h"
 
 GamePlayWindow::GamePlayWindow(Socket *s, SharedBuffer *in, SharedBuffer *out, int cId)
         : server(s), toReceive(in), toSend(out), clientId(cId) {
@@ -26,7 +21,6 @@ GamePlayWindow::GamePlayWindow(Socket *s, SharedBuffer *in, SharedBuffer *out, i
 }
 
 GamePlayWindow::~GamePlayWindow() {
-
     delete abmonibleTexture;
     delete blookHawkTexture;
     delete goatmanTexture;
@@ -34,11 +28,12 @@ GamePlayWindow::~GamePlayWindow() {
     delete spectreTexture;
     delete zombieTexture;
 
-    for (unsigned i = 0; i < hordes.size(); ++i){
+    for (unsigned i = 0; i < hordes.size(); ++i) {
         std::vector<Enemy *> enemies = static_cast<std::vector<Enemy *> &&>(hordes[i]->getEnemies());
-        for (unsigned j = 0; j < enemies.size(); ++j){
+        for (unsigned j = 0; j < enemies.size(); ++j) {
             delete enemies[j];
         }
+        delete hordes[i];
     }
 }
 
@@ -314,7 +309,7 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
     int transactionsCounter = 0;
     std::string notification;
 
-    Tower tower = *towers.at(0);
+    Tower *tower = towers.at(0);
 
     while (toReceive->isProcessingYet() && transactionsCounter < MAX_SERVER_NOTIFICATIONS_PER_FRAME) {
         ++transactionsCounter;
@@ -333,7 +328,7 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
                 Point point = MessageFactory::getPoint(message);
 
                 if (point.isPositive()) {
-                    tower.setPosition(point.x, point.y);
+                    tower->setPosition(point.x, point.y);
                 }
                 break;
             }
@@ -352,7 +347,7 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
                         Enemy *enemy = horde->getEnemieAt(enemyId);
                         enemy->setDirection(dir);
                         enemy->moveTo(point.x, point.y);
-                    } catch (...){
+                    } catch (...) {
                         std::cerr << "No es posible mover el enemigo " << std::to_string(enemyId);
                         std::cerr << " de la horda " << std::to_string(hordeId);
                     }
@@ -422,6 +417,8 @@ void GamePlayWindow::run() {
     unsigned int gameEndedTime = 0;
     bool gameEnded = false;
 
+    std::vector<Animable *> animables;
+
     //Start up SDL and create window
     if (!init()) {
         printf("Failed to initializde!\n");
@@ -441,12 +438,6 @@ void GamePlayWindow::run() {
 
             //Level camera
             SDL_Rect camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
-
-            Tower *tower = new Tower(0, 0, gRenderer, gSpriteSheetTextureTower);
-            tower->loadMedia();
-            tower->setSprites();
-
-            towers.push_back(tower);
 
             initializeGameActors();
 
@@ -495,17 +486,25 @@ void GamePlayWindow::run() {
                 //Render dot
                 dot.render(dotTexture, camera, gRenderer);
 
+                animables.clear();
                 for (Tower *tower : towers) {
-                    tower->animate(camera);
+                    //tower->animate(camera);
+                    animables.push_back(reinterpret_cast<Animable *&&>(tower));
                 }
 
-                for (std::map<int, Horde*>::iterator it = hordes.begin(); it != hordes.end(); ++it) {
+                for (std::map<int, Horde *>::iterator it = hordes.begin(); it != hordes.end(); ++it) {
                     Horde *horde = it->second;
 
                     for (auto enemy : horde->getEnemies()) {
-                        enemy->setRenderer(gRenderer);
-                        enemy->animate(camera);
+                        //enemy->animate(camera);
+                        animables.push_back(reinterpret_cast<Animable *&&>(enemy));
                     }
+                }
+
+                std::sort(animables.begin(), animables.end(), Utils::animablesPositionComparator);
+
+                for (Animable *animable : animables) {
+                    animable->animate(camera);
                 }
 
                 if (gameEnded) {
@@ -529,8 +528,7 @@ void GamePlayWindow::run() {
 }
 
 void GamePlayWindow::initializeGameActors() {
-
-    Tower *tower = new Tower(0, 0, gRenderer, gSpriteSheetTextureTower);
+    Tower *tower = new Tower(10, 3, gRenderer, gSpriteSheetTextureTower);
     tower->loadMedia();
     tower->setSprites();
 
@@ -539,12 +537,12 @@ void GamePlayWindow::initializeGameActors() {
     for (int i = 0; i < 2; ++i) {
         Horde *horde = new Horde();
         for (int j = 0; j < 3; ++j) {
-            Enemy *abmonible = new Abmonible(0, 0, gRenderer, abmonibleTexture);
+            Enemy *abmonible = new Abmonible(-1, -1, gRenderer, abmonibleTexture);
             abmonible->setSprites();
             abmonible->setTexture(abmonibleTexture);
             horde->addEnemy(abmonible);
         }
-        std::pair<int, Horde*> pair(i, horde);
+        std::pair<int, Horde *> pair(i, horde);
         hordes.insert(pair);
     }
 

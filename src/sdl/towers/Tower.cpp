@@ -1,10 +1,9 @@
 #include "Tower.h"
 #include "../Utils.h"
 
-Tower::Tower(int x, int y, SDL_Renderer *r, LTexture &t) : texture(t) {
-    Point initialSreenPos = Utils::mapToScreen(x, y);
-    idleBox.x = initialSreenPos.x;
-    idleBox.y = initialSreenPos.y;
+Tower::Tower(int x, int y, SDL_Renderer *r, LTexture &t) : texture(t), currentPoint(Utils::mapToScreen(x, y)) {
+    idleBox.x = currentPoint.x;
+    idleBox.y = currentPoint.y;
     idleBox.w = IDLE_SPRITE_WIDTH;
     idleBox.h = IDLE_SPRITE_HEIGHT;
 
@@ -134,4 +133,8 @@ void Tower::sumExperiencePoints(int p) {
 
 int Tower::getExperiencePoints() {
     return experiencePoints;
+}
+
+Point Tower::getPoint() {
+    return currentPoint;
 }

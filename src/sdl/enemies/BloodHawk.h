@@ -9,7 +9,7 @@ public:
     BloodHawk(int x, int y, SDL_Renderer *renderer, LTexture *texture);
     virtual ~BloodHawk();
 
-    void initializeSpritesData(int x, int y);
+    void initializeSpritesData();
 };
 
 

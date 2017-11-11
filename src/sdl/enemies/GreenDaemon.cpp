@@ -8,12 +8,10 @@ GreenDaemon::GreenDaemon(int x, int y, SDL_Renderer *renderer, LTexture *texture
 
     currentDirection = 0;
 
-    initializeSpritesData(x, y);
+    initializeSpritesData();
 }
 
-void GreenDaemon::initializeSpritesData(int x, int y) {
-    Point initialSreenPos = Utils::mapToScreen(x, y);
-
+void GreenDaemon::initializeSpritesData() {
     /* datos sprites para caminar */
     walkingStartX = 1729;
     walkingStartY = 3364;
@@ -22,8 +20,8 @@ void GreenDaemon::initializeSpritesData(int x, int y) {
     numberOfEnemyWalkSprites = 10;// NUMBER_OF_ENEMY_WALK_SPRITES;
     numberOfEnemyWalkDirections = 4; // NUMBER_OF_ENEMY_WALK_DIRECTIONS;
 
-    walkBox.x = initialSreenPos.x;
-    walkBox.y = initialSreenPos.y;
+    walkBox.x = currentPoint.x;
+    walkBox.y = currentPoint.y;
     walkBox.w = walkSpriteWidth;
     walkBox.h = walkSpriteHeight;
 
@@ -35,8 +33,8 @@ void GreenDaemon::initializeSpritesData(int x, int y) {
     numberOfEnemyDeathSprites = 16;// NUMBER_OF_ENEMY_DEATH_SPRITES;
     numberOfEnemyDeathDirections = 4; // NUMBER_OF_ENEMY_DEATH_DIRECTIONS;
 
-    deathBox.x = initialSreenPos.x;
-    deathBox.y = initialSreenPos.y;
+    deathBox.x = currentPoint.x;
+    deathBox.y = currentPoint.y;
     deathBox.w = deathSpriteWidth;
     deathBox.h = deathSpriteHeight;
 

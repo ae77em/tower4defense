@@ -8,8 +8,9 @@
 #include "../../common/Point.h"
 #include "../Constants.h"
 #include "../Circle.h"
+#include "../Animable.h"
 
-class Enemy {
+class Enemy : public Animable {
 public:
     Enemy(int x, int y, SDL_Renderer *renderer, LTexture *texture);
 
@@ -129,6 +130,8 @@ public:
 
     void shiftColliders();
 
+    Point getPoint();
+
 protected:
     // Defino este monstruo por default...
     const std::string TEXTURE_FILE_PATH = "images/sprites/enemy-abominable-walk.png";
@@ -148,7 +151,6 @@ protected:
     int numberOfEnemyDeathSprites = NUMBER_OF_ENEMY_DEATH_SPRITES;
     int numberOfEnemyDeathDirections = NUMBER_OF_ENEMY_DEATH_DIRECTIONS;
 
-    /**********/
     int currentDirection = 0;
     int separationBetweenSprites = 1;
 
@@ -178,8 +180,10 @@ protected:
     SDL_Renderer *renderer;
     LTexture *texture = new LTexture();
 
+    Point currentPoint;
+
     /* METHODS */
-    virtual void initializeSpritesData(int x, int y);
+    virtual void initializeSpritesData();
 };
 
 

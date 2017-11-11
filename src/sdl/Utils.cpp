@@ -1,6 +1,7 @@
 #include <SDL2/SDL_mouse.h>
 #include "Utils.h"
 #include "../sdl/Constants.h"
+#include "Animable.h"
 
 bool Utils::checkCollision(SDL_Rect a, SDL_Rect b) {
     //The sides of the rectangles
@@ -172,3 +173,23 @@ bool Utils::hasCircleCollision(Circle &a, Circle &b) {
     return (distanceSquared(a.x, a.y, b.x, b.y) < (totalRadiusSquared));
 }
 
+bool Utils::animablesPositionComparator(Animable *a, Animable *b) {
+    bool toReturn = false;
+
+    Point A = a->getPoint();
+    Point B = b->getPoint();
+
+    if (A.x < B.x){
+        toReturn = true;
+    } else if (A.x > B.x){
+        toReturn = false;
+    } else {
+        if (A.y <= B.y){
+            toReturn = true;
+        } else {
+            toReturn = false;
+        }
+    }
+
+    return toReturn;
+}
