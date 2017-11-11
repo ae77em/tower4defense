@@ -381,45 +381,47 @@ void GamePlayWindow::run() {
     unsigned int gameEndedTime = 0;
     bool gameEnded = false;
 
+    /* Vamos a poner un enemigo de cada tipo para ver las animaciones */
+    Enemy *abmonible = new Abmonible(0, 0, gRenderer, abmonibleTexture);
+    abmonible->setSprites();
+    abmonible->setTexture(abmonibleTexture);
+    Enemy *bloodHawk = new BloodHawk(1, 0, gRenderer, blookHawkTexture);
+    bloodHawk->setSprites();
+    bloodHawk->setTexture(blookHawkTexture);
+    Enemy *goatman = new Goatman(2, 0, gRenderer, goatmanTexture);
+    goatman->setSprites();
+    goatman->setTexture(goatmanTexture);
+    Enemy *greenDaemon = new GreenDaemon(3, 0, gRenderer, greenDaemonTexture);
+    greenDaemon->setSprites();
+    greenDaemon->setTexture(greenDaemonTexture);
+    Enemy *spectre = new Spectre(4, 0, gRenderer, spectreTexture);
+    spectre->setSprites();
+    spectre->setTexture(spectreTexture);
+    Enemy *zombie = new Zombie(5, 0, gRenderer, zombieTexture);
+    zombie->setSprites();
+    zombie->setTexture(zombieTexture);
+
+    std::vector<Enemy*> enemies;
+    enemies.push_back(abmonible);
+    enemies.push_back(bloodHawk);
+    enemies.push_back(goatman);
+    enemies.push_back(greenDaemon);
+    enemies.push_back(spectre);
+    enemies.push_back(zombie);
+
+    std::pair<int, std::vector<Enemy*>> pair(0,enemies);
+    hordes.insert(pair);
+    std::pair<int, std::vector<Enemy*>> pair2(1,enemies);
+    hordes.insert(pair2);
+
+    Tower tower(0, 0, gRenderer, gSpriteSheetTextureTower);
+    tower.loadMedia();
+    tower.setSprites();
+
     //Start up SDL and create window
     if (!init()) {
         printf("Failed to initializde!\n");
     } else {
-        /* Vamos a poner un enemigo de cada tipo para ver las animaciones */
-        Enemy *abmonible = new Abmonible(0, 0, gRenderer, abmonibleTexture);
-        abmonible->setSprites();
-        Enemy *bloodHawk = new BloodHawk(1, 0, gRenderer, blookHawkTexture);
-        bloodHawk->setSprites();
-        bloodHawk->setTexture(blookHawkTexture);
-        Enemy *goatman = new Goatman(2, 0, gRenderer, goatmanTexture);
-        goatman->setSprites();
-        goatman->setTexture(goatmanTexture);
-        Enemy *greenDaemon = new GreenDaemon(3, 0, gRenderer, greenDaemonTexture);
-        greenDaemon->setSprites();
-        greenDaemon->setTexture(greenDaemonTexture);
-        Enemy *spectre = new Spectre(4, 0, gRenderer, spectreTexture);
-        spectre->setSprites();
-        spectre->setTexture(spectreTexture);
-        Enemy *zombie = new Zombie(5, 0, gRenderer, zombieTexture);
-        zombie->setSprites();
-
-        std::vector<Enemy*> enemies;
-        enemies.push_back(abmonible);
-        enemies.push_back(bloodHawk);
-        enemies.push_back(goatman);
-        enemies.push_back(greenDaemon);
-        enemies.push_back(spectre);
-        enemies.push_back(zombie);
-
-        std::pair<int, std::vector<Enemy*>> pair(0,enemies);
-        hordes.insert(pair);
-        std::pair<int, std::vector<Enemy*>> pair2(1,enemies);
-        hordes.insert(pair2);
-
-        Tower tower(0, 0, gRenderer, gSpriteSheetTextureTower);
-        tower.loadMedia();
-        tower.setSprites();
-
         //Load media
         if (!loadMedia()) {
             printf("Failed to load media!\n");
