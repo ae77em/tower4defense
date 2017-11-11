@@ -29,8 +29,9 @@ public:
     void setCamera(SDL_Rect &camera);
 
     //Shows the dot on the screen
-    void render(LTexture &gDotTexture, SDL_Rect &camera, SDL_Renderer
-    *gRenderer);
+    void render(LTexture &gDotTexture,
+                SDL_Rect &camera,
+                SDL_Renderer *gRenderer);
 
 private:
     //Collision box of the dot

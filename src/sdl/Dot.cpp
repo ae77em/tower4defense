@@ -1,3 +1,4 @@
+#include <sys/param.h>
 #include "Dot.h"
 #include "Constants.h"
 #include "../common/Point.h"
@@ -67,26 +68,24 @@ void Dot::setCamera(SDL_Rect &camera) {
     camera.x = (mBox.x + DOT_WIDTH / 2) - SCREEN_WIDTH / 2;
     camera.y = (mBox.y + DOT_HEIGHT / 2) - SCREEN_HEIGHT / 2;
 
-    int max_y_pos = ((TILES_COLUMNS - 2) * ISO_TILE_HEIGHT) - camera.h;
-    int max_x_pos = ((TILES_ROWS + 2) * ISO_TILE_WIDTH) - camera.w;
+    //int max_x_pos = ((TILES_ROWS + 2) * ISO_TILE_WIDTH) - camera.w;
 
     //Keep the camera in bounds
-    if (camera.x < -max_x_pos) {
-        camera.x = -max_x_pos;
+    if (camera.x < -(((CARTESIAN_TILE_WIDTH * MAX(TILES_COLUMNS,TILES_ROWS))/2)+camera.w)) {
+        camera.x = -((CARTESIAN_TILE_WIDTH * MAX(TILES_COLUMNS,TILES_ROWS))/2+camera.w);
     }
-    if (camera.y < -max_y_pos) {
-        camera.y = -max_y_pos;
+    if (camera.y < -CARTESIAN_TILE_HEIGHT) {
+        camera.y = -CARTESIAN_TILE_HEIGHT;
     }
-    if (camera.x > max_x_pos) {
-        camera.x = max_x_pos;
+    if (camera.x > (CARTESIAN_TILE_WIDTH * MAX(TILES_COLUMNS,TILES_ROWS))/2) {
+        camera.x = (CARTESIAN_TILE_WIDTH * MAX(TILES_COLUMNS,TILES_ROWS))/2;
     }
-    if (camera.y > max_y_pos) {
-        camera.y = max_y_pos;
+    if (camera.y > CARTESIAN_TILE_HEIGHT * MAX(TILES_COLUMNS,TILES_ROWS)) {
+        camera.y = CARTESIAN_TILE_HEIGHT * MAX(TILES_COLUMNS,TILES_ROWS);
     }
 }
 
-void Dot::render(LTexture &gDotTexture, SDL_Rect &camera, SDL_Renderer
-*gRenderer) {
+void Dot::render(LTexture &gDotTexture, SDL_Rect &camera, SDL_Renderer *gRenderer) {
     //Show the dot
     gDotTexture.render(gRenderer, mBox.x - camera.x, mBox.y - camera.y);
 }

@@ -45,6 +45,9 @@ private:
 
     LTexture gSpriteSheetTextureTower;
 
+    SDL_Rect towerButtonsClips = {0, 0, 320, 80 };
+    LTexture towerButtonsTexture;
+
     //Scene textures
     LTexture gTileTextures[TOTAL_TILE_SPRITES];
 

@@ -37,6 +37,125 @@ GamePlayWindow::~GamePlayWindow() {
     }
 }
 
+void GamePlayWindow::run() {
+    std::string mov_description;
+
+    unsigned int gameEndedTime = 0;
+    bool gameEnded;
+
+    std::vector<Animable *> animables;
+
+    //Start up SDL and create window
+    if (!init()) {
+        printf("Failed to initializde!\n");
+    } else {
+        //Load media
+        if (!loadMedia()) {
+            printf("Failed to load media!\n");
+        } else {
+            //Main loop flag
+            bool quit = false;
+
+            //Event handler
+            SDL_Event e;
+
+            //The dot that will be moving around on the screen
+            Dot dot;
+
+            //Level camera
+            SDL_Rect camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+
+            initializeGameActors();
+
+            //While application is running
+            while (!quit) {
+                gameEnded = gameWon || gameLoose;
+                if (gameEnded && gameEndedTime == 0) {
+                    gameEndedTime = SDL_GetTicks();
+                }
+
+                //Handle events on queue
+                mov_description = "";
+                while (SDL_PollEvent(&e) != 0) {
+                    //User requests quit
+                    if (e.type == SDL_QUIT) {
+                        quit = true;
+                    }
+
+                    if (gameEnded) {
+                        if (SDL_GetTicks() - gameEndedTime > 3000) {
+                            quit = true;
+                        }
+                    }
+
+                    //Handle input for the dot
+                    dot.handleEvent(e, mov_description);
+
+                    handleMouseEvents(camera, mov_description, e);
+                }
+
+                handleServerNotifications(camera);
+
+                //Move the dot
+                dot.move();
+                dot.setCamera(camera);
+
+                //Clear screen
+                SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 0xFF);
+                SDL_RenderClear(gRenderer);
+
+                //Render level
+                for (int i = 0; i < TOTAL_TILES; ++i) {
+                    tileSet[i]->render(camera, gTileClips, gRenderer, gTileTextures);
+                }
+
+                //Render dot
+                dot.render(dotTexture, camera, gRenderer);
+
+                animables.clear();
+                for (Tower *tower : towers) {
+                    //tower->animate(camera);
+                    animables.push_back(reinterpret_cast<Animable *&&>(tower));
+                }
+
+                for (std::map<int, Horde *>::iterator it = hordes.begin(); it != hordes.end(); ++it) {
+                    Horde *horde = it->second;
+
+                    for (auto enemy : horde->getEnemies()) {
+                        //enemy->animate(camera);
+                        animables.push_back(reinterpret_cast<Animable *&&>(enemy));
+                    }
+                }
+
+                std::sort(animables.begin(), animables.end(), Utils::animablesPositionComparator);
+
+                for (Animable *animable : animables) {
+                    animable->animate(camera);
+                }
+
+                towerButtonsTexture.renderSprite(gRenderer, 1, 1, &towerButtonsClips);
+
+                if (gameEnded) {
+                    if (gameWon) {
+                        renderText(camera, "Partida ganada...");
+                    } else {
+                        renderText(camera, "Partida perdida...");
+                    }
+                }
+
+                //Update screen
+                SDL_RenderPresent(gRenderer);
+            }
+        }
+
+        //Free resources and close SDL
+        close();
+    }
+
+    server->shutdown(); // TODO ver si esto corresponde hacerlo acá...
+}
+
+
 bool GamePlayWindow::init() {
     //Initialization flag
     bool success = true;
@@ -112,6 +231,8 @@ bool GamePlayWindow::loadMedia() {
 
     bluePortalTexture.loadFromFile("images/sprites/portal-blue2.png", gRenderer);
     redPortalTexture.loadFromFile("images/sprites/portal-red.png", gRenderer);
+
+    towerButtonsTexture.loadFromFile("images/sprites/towers-buttons.png", gRenderer);
 
     abmonibleTexture->loadFromFile("images/sprites/enemy-abominable.png", gRenderer, 0xFF, 0x00, 0x99);
     blookHawkTexture->loadFromFile("images/sprites/enemy-blood-hawk.png", gRenderer, 0xAA, 0xAA, 0xAA);
@@ -193,8 +314,6 @@ bool GamePlayWindow::setTiles() {
                     tilesLoaded = false;
                     break;
                 }
-
-                //Move to next tile spot
 
                 //If the number is a valid tile number
                 if ((tileType >= 0)) {
@@ -411,122 +530,6 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
 
 }
 
-void GamePlayWindow::run() {
-    std::string mov_description;
-
-    unsigned int gameEndedTime = 0;
-    bool gameEnded = false;
-
-    std::vector<Animable *> animables;
-
-    //Start up SDL and create window
-    if (!init()) {
-        printf("Failed to initializde!\n");
-    } else {
-        //Load media
-        if (!loadMedia()) {
-            printf("Failed to load media!\n");
-        } else {
-            //Main loop flag
-            bool quit = false;
-
-            //Event handler
-            SDL_Event e;
-
-            //The dot that will be moving around on the screen
-            Dot dot;
-
-            //Level camera
-            SDL_Rect camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
-
-            initializeGameActors();
-
-            //While application is running
-            while (!quit) {
-                gameEnded = gameWon || gameLoose;
-                if (gameEnded && gameEndedTime == 0) {
-                    gameEndedTime = SDL_GetTicks();
-                }
-
-                //Handle events on queue
-                mov_description = "";
-                while (SDL_PollEvent(&e) != 0) {
-                    //User requests quit
-                    if (e.type == SDL_QUIT) {
-                        quit = true;
-                    }
-
-                    if (gameEnded) {
-                        if (SDL_GetTicks() - gameEndedTime > 3000) {
-                            quit = true;
-                        }
-                    }
-
-                    //Handle input for the dot
-                    dot.handleEvent(e, mov_description);
-
-                    handleMouseEvents(camera, mov_description, e);
-                }
-
-                handleServerNotifications(camera);
-
-                //Move the dot
-                dot.move();
-                dot.setCamera(camera);
-
-                //Clear screen
-                SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 0xFF);
-                SDL_RenderClear(gRenderer);
-
-                //Render level
-                for (int i = 0; i < TOTAL_TILES; ++i) {
-                    tileSet[i]->render(camera, gTileClips, gRenderer, gTileTextures);
-                }
-
-                //Render dot
-                dot.render(dotTexture, camera, gRenderer);
-
-                animables.clear();
-                for (Tower *tower : towers) {
-                    //tower->animate(camera);
-                    animables.push_back(reinterpret_cast<Animable *&&>(tower));
-                }
-
-                for (std::map<int, Horde *>::iterator it = hordes.begin(); it != hordes.end(); ++it) {
-                    Horde *horde = it->second;
-
-                    for (auto enemy : horde->getEnemies()) {
-                        //enemy->animate(camera);
-                        animables.push_back(reinterpret_cast<Animable *&&>(enemy));
-                    }
-                }
-
-                std::sort(animables.begin(), animables.end(), Utils::animablesPositionComparator);
-
-                for (Animable *animable : animables) {
-                    animable->animate(camera);
-                }
-
-                if (gameEnded) {
-                    if (gameWon) {
-                        renderText(camera, "Partida ganada...");
-                    } else {
-                        renderText(camera, "Partida perdida...");
-                    }
-                }
-
-                //Update screen
-                SDL_RenderPresent(gRenderer);
-            }
-        }
-
-        //Free resources and close SDL
-        close();
-    }
-
-    server->shutdown(); // TODO ver si esto corresponde hacerlo acá...
-}
-
 void GamePlayWindow::initializeGameActors() {
     Tower *tower = new Tower(10, 3, gRenderer, gSpriteSheetTextureTower);
     tower->loadMedia();
@@ -539,14 +542,11 @@ void GamePlayWindow::initializeGameActors() {
         for (int j = 0; j < 3; ++j) {
             Enemy *abmonible = new Abmonible(-1, -1, gRenderer, abmonibleTexture);
             abmonible->setSprites();
-            abmonible->setTexture(abmonibleTexture);
             horde->addEnemy(abmonible);
         }
         std::pair<int, Horde *> pair(i, horde);
         hordes.insert(pair);
     }
-
-
 
     /*std::pair<int, std::vector<Enemy *>> pair2(1, *enemies);
     hordes.insert(pair2);*/
