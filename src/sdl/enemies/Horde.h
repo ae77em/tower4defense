@@ -6,7 +6,7 @@
 class Horde {
 private:
     std::vector<Enemy*> enemies;
-    int enemySeparartion; // in pixels, in cartesian coords
+    int enemySeparation; // in pixels, in cartesian coords
 
 public:
     Horde();

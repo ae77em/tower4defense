@@ -18,7 +18,7 @@ Horde::Horde(int enemyType, size_t size, int x, int y, SDL_Renderer *r, LTexture
 Horde::~Horde() {}
 
 void Horde::loadAbmonibles(size_t size, int x, int y, SDL_Renderer *r) {
-    enemySeparartion = Abmonible::getCollisionCircleRadio();
+    enemySeparation = Abmonible::getCollisionCircleRadio();
     for (unsigned i = 0; i < size; ++i){
         enemies.push_back(new Abmonible(x, y, r, nullptr));
     }
