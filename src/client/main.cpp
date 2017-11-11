@@ -19,6 +19,7 @@ int main(int argc, char **argv) {
 
     Utils::printAsciiGameHeader();
 
+    /* me conecto al server, y le pido mi id de jugador */
     std::string host = std::string(argv[1]);
     uint16_t port = atoi(argv[2]);
 
@@ -33,31 +34,35 @@ int main(int argc, char **argv) {
     message.deserialize(dataFromServer);
     int clientId = MessageFactory::getClientId(message);
 
+    /* instancio el juego con el id de jugador ya obtenido */
     GameAccessWindow gameAccess(&server, toSend, toReceive);
     gameAccess.setClientId(clientId);
 
+    /* instancio los canales de comunicación con el server */
     Listener listener(&server, gameAccess, toReceive);
     Sender sender(&server, toSend);
 
+    /* inicio el juego */
     gameAccess.start();
 
     listener.start();
-    // sends the initial requests, and inmediatly finishes him
     sender.start();
 
+    /* pido los datos iniciales para cargar la pantalla de acceso */
     std::string mapsRequest = MessageFactory::getExistingMapsRequest(gameAccess.getClientId());
     toSend.addData(mapsRequest);
 
     std::string matchesRequest = MessageFactory::getExistingMatchesRequest(gameAccess.getClientId());
     toSend.addData(matchesRequest);
 
+    /* cierro sender, ya que no voy a usarlo más */
     toSend.setClientProcessEnded(true);
     sender.join();
 
     listener.join();
     gameAccess.join();
 
-    server.shutdown();
+    //server.shutdown();
     server.close();
 
     return 0;

@@ -15,7 +15,7 @@
 #include "../sdl/enemies/Spectre.h"
 
 GamePlayWindow::GamePlayWindow(Socket *s, SharedBuffer *in, SharedBuffer *out, int cId)
-        : socket(s), toReceive(in), toSend(out), clientId(cId) {}
+        : server(s), toReceive(in), toSend(out), clientId(cId) {}
 
 GamePlayWindow::~GamePlayWindow() {}
 
@@ -238,6 +238,17 @@ void GamePlayWindow::loadPortalSprites() {
             y_i = 2;
         }
     }
+}
+
+void GamePlayWindow::renderText(SDL_Rect &camera, std::string text) {
+    SDL_Color textColor = {0xFF, 0xFF, 0, 0xFF}; // letra amarilla
+    SDL_Color bgColor = {0, 0, 0, 0}; // fondo transparente (supuestamente)
+
+    TTF_SetFontStyle(font, TTF_STYLE_BOLD);
+
+    gPromptTextTexture.generateFromText(text, gRenderer, font, textColor, bgColor);
+
+    gPromptTextTexture.render(gRenderer, 50, 50);
 }
 
 void GamePlayWindow::handleMouseEvents(SDL_Rect camera, std::string mov_description, SDL_Event e) {
@@ -479,7 +490,7 @@ void GamePlayWindow::run() {
 
                 if (gameEnded) {
                     if (gameWon) {
-                        renderText(camera, "Partida ganada :)");
+                        renderText(camera, "Partida ganada...");
                     } else {
                         renderText(camera, "Partida perdida...");
                     }
@@ -493,16 +504,8 @@ void GamePlayWindow::run() {
         //Free resources and close SDL
         close();
     }
+
+    server->shutdown(); // TODO ver si esto corresponde hacerlo acá...
 }
 
-void GamePlayWindow::renderText(SDL_Rect &camera, std::string text) {
-    SDL_Color textColor = {0xFF, 0xFF, 0, 0xFF}; // letra amarilla
-    SDL_Color bgColor = {0, 0, 0, 0}; // fondo transparente (supuestamente)
-
-    TTF_SetFontStyle(font, TTF_STYLE_BOLD);
-
-    gPromptTextTexture.generateFromText(text, gRenderer, font, textColor, bgColor);
-
-    gPromptTextTexture.render(gRenderer, 50, 50);
-}
 

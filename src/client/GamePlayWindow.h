@@ -56,7 +56,7 @@ private:
     LTexture *zombieTexture = new LTexture();
 
     // Comunication with the game server
-    Socket *socket = new Socket();
+    Socket *server = new Socket();
     SharedBuffer *toReceive = new SharedBuffer();
     SharedBuffer *toSend = new SharedBuffer();
 

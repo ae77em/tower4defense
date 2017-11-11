@@ -101,6 +101,7 @@ void Listener::run(){
             std::cout << response << "dataFromServer: " << dataFromServer << std::endl;
         }
     } catch (std::exception) {
+        std::cout << "se cierra el listener del cliente del juego" << std::endl;
         /* Catcheo la excepción que se lanza cuando fuerzo la salida del accept
          * que queda sin recibir ningún request. No hago nada...
          */

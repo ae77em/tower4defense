@@ -26,7 +26,7 @@ private:
     Gtk::CheckButton *pchkTierra = nullptr;
 
     /* Connection */
-    Socket *client;
+    Socket *server;
     SharedBuffer &toSend;
     SharedBuffer &toReceive;
     int clientId;

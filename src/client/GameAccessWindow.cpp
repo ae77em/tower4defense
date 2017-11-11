@@ -8,7 +8,7 @@
 #include <iostream>
 
 GameAccessWindow::GameAccessWindow(Socket *c, SharedBuffer &tsnd, SharedBuffer &trcv)
-        : client(c), toSend(tsnd), toReceive(trcv) {
+        : server(c), toSend(tsnd), toReceive(trcv) {
     clientId = -1;
 }
 
@@ -116,7 +116,7 @@ void GameAccessWindow::on_cmbMatches_changed(){
         std::string request = MessageFactory::getUnavailableElementsRequest(clientId, matchName);
 
         TextMessage textMessage(request);
-        textMessage.sendTo(const_cast<Socket &>(*client));
+        textMessage.sendTo(const_cast<Socket &>(*server));
     }
 }
 
@@ -127,7 +127,7 @@ void GameAccessWindow::on_btnCrearPartida_clicked() {
     std::string request =  MessageFactory::getNewMatchRequest(clientId, mapName, matchName);
 
     TextMessage textMessage(request);
-    textMessage.sendTo(const_cast<Socket &>(*client));
+    textMessage.sendTo(const_cast<Socket &>(*server));
 }
 
 void GameAccessWindow::on_btnJugar_clicked() {
@@ -136,7 +136,7 @@ void GameAccessWindow::on_btnJugar_clicked() {
     std::string request =  MessageFactory::getStartMatchRequest(clientId, matchName);
 
     TextMessage textMessage(request);
-    textMessage.sendTo(const_cast<Socket &>(*client));
+    textMessage.sendTo(const_cast<Socket &>(*server));
 }
 
 void GameAccessWindow::on_btnUnirse_clicked() {
@@ -146,7 +146,7 @@ void GameAccessWindow::on_btnUnirse_clicked() {
     std::string request = MessageFactory::getEnterMatchRequest(clientId, matchName, elements);
 
     TextMessage textMessage(request);
-    textMessage.sendTo(const_cast<Socket &>(*client));
+    textMessage.sendTo(const_cast<Socket &>(*server));
 }
 
 std::vector<std::string> GameAccessWindow::getSelectedElements(){
@@ -349,7 +349,9 @@ bool GameAccessWindow::isNotValidClientId(){
 void GameAccessWindow::startMatch(){
     pWindow->hide();
 
-    game = new GamePlayWindow(client, &toReceive, &toSend, clientId);
+    game = new GamePlayWindow(server, &toReceive, &toSend, clientId);
     game->start();
+
+    //pWindow->show();
 }
 
