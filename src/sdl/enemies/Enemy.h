@@ -13,7 +13,7 @@ class Enemy {
 public:
     Enemy(int x, int y, SDL_Renderer *renderer, LTexture *texture);
 
-    ~Enemy();
+    virtual ~Enemy();
 
     /*
      * Carga la imagen que contiene los sprites del monstruo.

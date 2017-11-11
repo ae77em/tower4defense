@@ -106,7 +106,7 @@ void WorkerLoopGame::buildGameContext() {
         std::vector<ActorEnemy*> vectorHorda;
         int hordeId = horda;
 
-        for (int x = 0; x < 5; ++x){
+        for (int x = 0; x < 3; ++x){
             ActorEnemy* enemy = new ActorEnemy();
             enemy->setPath(camino);
             enemy->setId(x);

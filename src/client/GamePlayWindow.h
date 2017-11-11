@@ -18,19 +18,20 @@ static const int MAX_SERVER_NOTIFICATIONS_PER_FRAME = 1;
 #include "../sdl/enemies/Enemy.h"
 #include "../sdl/enemies/Abmonible.h"
 #include "../sdl/towers/Tower.h"
+#include "../sdl/enemies/Horde.h"
 
 class GamePlayWindow : public Thread {
 private:
     //The window we'll be rendering to
-    SDL_Window *gWindow = NULL;
+    SDL_Window *gWindow = nullptr;
 
     //The window renderer
-    SDL_Renderer *gRenderer = NULL;
+    SDL_Renderer *gRenderer = nullptr;
 
     //The level tiles
     Tile *tileSet[TOTAL_TILES];
 
-    LTexture gDotTexture;
+    LTexture dotTexture;
 
     LTexture gPromptTextTexture;
 
@@ -48,22 +49,22 @@ private:
     LTexture gTileTextures[TOTAL_TILE_SPRITES];
 
     // Enemies textures
-    LTexture *abmonibleTexture = new LTexture();
-    LTexture *blookHawkTexture = new LTexture();
-    LTexture *goatmanTexture = new LTexture();
-    LTexture *greenDaemonTexture = new LTexture();
-    LTexture *spectreTexture = new LTexture();
-    LTexture *zombieTexture = new LTexture();
+    LTexture *abmonibleTexture = nullptr;
+    LTexture *blookHawkTexture = nullptr;
+    LTexture *goatmanTexture = nullptr;
+    LTexture *greenDaemonTexture = nullptr;
+    LTexture *spectreTexture = nullptr;
+    LTexture *zombieTexture = nullptr;
 
     // Comunication with the game server
-    Socket *server = new Socket();
-    SharedBuffer *toReceive = new SharedBuffer();
-    SharedBuffer *toSend = new SharedBuffer();
+    Socket *server = nullptr;
+    SharedBuffer *toReceive = nullptr;
+    SharedBuffer *toSend = nullptr;
 
-    int eventDispatched = -1;
-    int clientId = -1;
+    int clientId;
 
-    std::map<int,std::vector<Enemy*>> hordes;
+    std::map<int, Horde*> hordes;
+    std::vector<Tower*> towers;
 
 public:
     GamePlayWindow(Socket *socket, SharedBuffer *in, SharedBuffer *out, int clientId);
@@ -80,7 +81,7 @@ private:
     void handleMouseEvents(SDL_Rect camera, std::string mov_description, SDL_Event e);
     void loadServerNotifications(std::string notification);
 
-    void handleServerNotifications(SDL_Rect rect, Tower &tower);
+    void handleServerNotifications(SDL_Rect rect);
 
     enum GameEvents {
         GAME_EVENT_PUT_TOWER = 1,
@@ -101,6 +102,8 @@ private:
     void renderText(SDL_Rect &camera, std::string text);
 
     TTF_Font *font;
+
+    void initializeGameActors();
 };
 
 #endif //TP4_TOWERDEFENSE_GAME_H

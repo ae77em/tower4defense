@@ -15,9 +15,32 @@
 #include "../sdl/enemies/Spectre.h"
 
 GamePlayWindow::GamePlayWindow(Socket *s, SharedBuffer *in, SharedBuffer *out, int cId)
-        : server(s), toReceive(in), toSend(out), clientId(cId) {}
+        : server(s), toReceive(in), toSend(out), clientId(cId) {
 
-GamePlayWindow::~GamePlayWindow() {}
+    abmonibleTexture = new LTexture();
+    blookHawkTexture = new LTexture();
+    goatmanTexture = new LTexture();
+    greenDaemonTexture = new LTexture();
+    spectreTexture = new LTexture();
+    zombieTexture = new LTexture();
+}
+
+GamePlayWindow::~GamePlayWindow() {
+
+    delete abmonibleTexture;
+    delete blookHawkTexture;
+    delete goatmanTexture;
+    delete greenDaemonTexture;
+    delete spectreTexture;
+    delete zombieTexture;
+
+    for (unsigned i = 0; i < hordes.size(); ++i){
+        std::vector<Enemy *> enemies = static_cast<std::vector<Enemy *> &&>(hordes[i]->getEnemies());
+        for (unsigned j = 0; j < enemies.size(); ++j){
+            delete enemies[j];
+        }
+    }
+}
 
 bool GamePlayWindow::init() {
     //Initialization flag
@@ -79,7 +102,7 @@ bool GamePlayWindow::loadMedia() {
     bool success = true;
 
     //Load dot texture
-    if (!gDotTexture.loadFromFile("dot.bmp", gRenderer, 0x00, 0xFF, 0xFF)) {
+    if (!dotTexture.loadFromFile("dot.bmp", gRenderer, 0x00, 0xFF, 0xFF)) {
         printf("Failed to load dot texture!\n");
         success = false;
     }
@@ -121,10 +144,17 @@ void GamePlayWindow::close() {
     }
 
     //Free loaded images
-    gDotTexture.free();
+    dotTexture.free();
     for (int i = 0; i < TOTAL_TILE_SPRITES; ++i) {
         gTileTextures[i].free();
     }
+
+    abmonibleTexture->free();
+    blookHawkTexture->free();
+    goatmanTexture->free();
+    greenDaemonTexture->free();
+    spectreTexture->free();
+    zombieTexture->free();
 
     //Destroy window
     SDL_DestroyRenderer(gRenderer);
@@ -280,9 +310,11 @@ void GamePlayWindow::handleMouseEvents(SDL_Rect camera, std::string mov_descript
     }
 }
 
-void GamePlayWindow::handleServerNotifications(SDL_Rect camera, Tower &tower) {
+void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
     int transactionsCounter = 0;
     std::string notification;
+
+    Tower tower = *towers.at(0);
 
     while (toReceive->isProcessingYet() && transactionsCounter < MAX_SERVER_NOTIFICATIONS_PER_FRAME) {
         ++transactionsCounter;
@@ -315,10 +347,18 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera, Tower &tower) {
                     int enemyId = MessageFactory::getEnemyId(aMessage);
                     int hordeId = MessageFactory::getHordeId(aMessage);
 
-                    std::vector<Enemy*> enemies = hordes.at(hordeId);
-                    Enemy *enemy = enemies.at(enemyId);
+                    try {
+                        Horde *horde = hordes.at(hordeId);
+                        Enemy *enemy = horde->getEnemieAt(enemyId);
+                        enemy->setDirection(dir);
+                        enemy->moveTo(point.x, point.y);
+                    } catch (...){
+                        std::cerr << "No es posible mover el enemigo " << std::to_string(enemyId);
+                        std::cerr << " de la horda " << std::to_string(hordeId);
+                    }
 
-                    bool towerIsShooting =
+                    /* ESTA ES LÓGICA DE NEGOCIO, Y VA EN EL SERVER...
+                     * bool towerIsShooting =
                             enemy->itIsAlive() &&
                             enemy->getCollisionCircle().hasCollisionWith(tower.getCollisionCircle());
                     if (towerIsShooting) {
@@ -340,6 +380,7 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera, Tower &tower) {
                         std::cout << "la torre sumó bonus de " << enemy->getBonus() << " puntos de experiencia."
                                   << std::endl;
 
+                        std::vector<Enemy*> enemies = static_cast<std::vector<Enemy *> &&>(horde->getEnemies());
                         for (Enemy *enemy1 : enemies) {
                             if (enemy1->itIsAlive()) {
                                 gameWon = false;
@@ -347,7 +388,6 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera, Tower &tower) {
                             } else {
                                 gameWon = true;
                             }
-
                         }
                     }
 
@@ -358,6 +398,7 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera, Tower &tower) {
                     }
 
                     std::cout << "la torre tiene " << tower.getExperiencePoints() << " de experiencia." << std::endl;
+                     */
                 }
                 break;
             }
@@ -381,43 +422,6 @@ void GamePlayWindow::run() {
     unsigned int gameEndedTime = 0;
     bool gameEnded = false;
 
-    /* Vamos a poner un enemigo de cada tipo para ver las animaciones */
-    Enemy *abmonible = new Abmonible(0, 0, gRenderer, abmonibleTexture);
-    abmonible->setSprites();
-    abmonible->setTexture(abmonibleTexture);
-    Enemy *bloodHawk = new BloodHawk(1, 0, gRenderer, blookHawkTexture);
-    bloodHawk->setSprites();
-    bloodHawk->setTexture(blookHawkTexture);
-    Enemy *goatman = new Goatman(2, 0, gRenderer, goatmanTexture);
-    goatman->setSprites();
-    goatman->setTexture(goatmanTexture);
-    Enemy *greenDaemon = new GreenDaemon(3, 0, gRenderer, greenDaemonTexture);
-    greenDaemon->setSprites();
-    greenDaemon->setTexture(greenDaemonTexture);
-    Enemy *spectre = new Spectre(4, 0, gRenderer, spectreTexture);
-    spectre->setSprites();
-    spectre->setTexture(spectreTexture);
-    Enemy *zombie = new Zombie(5, 0, gRenderer, zombieTexture);
-    zombie->setSprites();
-    zombie->setTexture(zombieTexture);
-
-    std::vector<Enemy*> enemies;
-    enemies.push_back(abmonible);
-    enemies.push_back(bloodHawk);
-    enemies.push_back(goatman);
-    enemies.push_back(greenDaemon);
-    enemies.push_back(spectre);
-    enemies.push_back(zombie);
-
-    std::pair<int, std::vector<Enemy*>> pair(0,enemies);
-    hordes.insert(pair);
-    std::pair<int, std::vector<Enemy*>> pair2(1,enemies);
-    hordes.insert(pair2);
-
-    Tower tower(0, 0, gRenderer, gSpriteSheetTextureTower);
-    tower.loadMedia();
-    tower.setSprites();
-
     //Start up SDL and create window
     if (!init()) {
         printf("Failed to initializde!\n");
@@ -437,6 +441,14 @@ void GamePlayWindow::run() {
 
             //Level camera
             SDL_Rect camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+
+            Tower *tower = new Tower(0, 0, gRenderer, gSpriteSheetTextureTower);
+            tower->loadMedia();
+            tower->setSprites();
+
+            towers.push_back(tower);
+
+            initializeGameActors();
 
             //While application is running
             while (!quit) {
@@ -465,7 +477,7 @@ void GamePlayWindow::run() {
                     handleMouseEvents(camera, mov_description, e);
                 }
 
-                handleServerNotifications(camera, tower);
+                handleServerNotifications(camera);
 
                 //Move the dot
                 dot.move();
@@ -481,13 +493,19 @@ void GamePlayWindow::run() {
                 }
 
                 //Render dot
-                dot.render(gDotTexture, camera, gRenderer);
+                dot.render(dotTexture, camera, gRenderer);
 
-                tower.animate(camera);
+                for (Tower *tower : towers) {
+                    tower->animate(camera);
+                }
 
-                for (Enemy *enemy : enemies) {
-                    enemy->setRenderer(gRenderer);
-                    enemy->animate(camera);
+                for (std::map<int, Horde*>::iterator it = hordes.begin(); it != hordes.end(); ++it) {
+                    Horde *horde = it->second;
+
+                    for (auto enemy : horde->getEnemies()) {
+                        enemy->setRenderer(gRenderer);
+                        enemy->animate(camera);
+                    }
                 }
 
                 if (gameEnded) {
@@ -508,6 +526,56 @@ void GamePlayWindow::run() {
     }
 
     server->shutdown(); // TODO ver si esto corresponde hacerlo acá...
+}
+
+void GamePlayWindow::initializeGameActors() {
+
+    Tower *tower = new Tower(0, 0, gRenderer, gSpriteSheetTextureTower);
+    tower->loadMedia();
+    tower->setSprites();
+
+    towers.push_back(tower);
+
+    for (int i = 0; i < 2; ++i) {
+        Horde *horde = new Horde();
+        for (int j = 0; j < 3; ++j) {
+            Enemy *abmonible = new Abmonible(0, 0, gRenderer, abmonibleTexture);
+            abmonible->setSprites();
+            abmonible->setTexture(abmonibleTexture);
+            horde->addEnemy(abmonible);
+        }
+        std::pair<int, Horde*> pair(i, horde);
+        hordes.insert(pair);
+    }
+
+
+
+    /*std::pair<int, std::vector<Enemy *>> pair2(1, *enemies);
+    hordes.insert(pair2);*/
+
+    /*Enemy *bloodHawk = new BloodHawk(1, 0, gRenderer, blookHawkTexture);
+    bloodHawk->setSprites();
+    bloodHawk->setTexture(blookHawkTexture);
+    Enemy *goatman = new Goatman(2, 0, gRenderer, goatmanTexture);
+    goatman->setSprites();
+    goatman->setTexture(goatmanTexture);
+    Enemy *greenDaemon = new GreenDaemon(3, 0, gRenderer, greenDaemonTexture);
+    greenDaemon->setSprites();
+    greenDaemon->setTexture(greenDaemonTexture);
+    Enemy *spectre = new Spectre(4, 0, gRenderer, spectreTexture);
+    spectre->setSprites();
+    spectre->setTexture(spectreTexture);
+    Enemy *zombie = new Zombie(5, 0, gRenderer, zombieTexture);
+    zombie->setSprites();
+    zombie->setTexture(zombieTexture);
+
+    enemies.push_back(bloodHawk);
+    enemies.push_back(goatman);
+    enemies.push_back(greenDaemon);
+    enemies.push_back(spectre);
+    enemies.push_back(zombie);*/
+
+
 }
 
 

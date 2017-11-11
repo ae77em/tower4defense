@@ -9,10 +9,15 @@ private:
     int enemySeparartion; // in pixels, in cartesian coords
 
 public:
+    Horde();
     Horde(int enemyType, size_t size, int x, int y, SDL_Renderer *renderer, LTexture &texture);
-    ~Horde();
+    virtual ~Horde();
 
     std::vector<Enemy *> &getEnemies();
+
+    void addEnemy(Enemy *e);
+
+    Enemy *&getEnemieAt(unsigned int i);
 
 private:
     void loadAbmonibles(size_t size, int x, int y, SDL_Renderer *r);
@@ -21,6 +26,7 @@ private:
     void loadGreenDaemons(size_t size);
     void loadSpectres(size_t size);
     void loadZombies(size_t size);
+
 };
 
 

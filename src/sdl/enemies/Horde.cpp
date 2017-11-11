@@ -1,6 +1,8 @@
 #include "Horde.h"
 #include "Abmonible.h"
 
+Horde::Horde() {}
+
 Horde::Horde(int enemyType, size_t size, int x, int y, SDL_Renderer *r, LTexture &t) {
     switch (enemyType){
         case ABMONIBLE:{
@@ -42,6 +44,14 @@ void Horde::loadZombies(size_t size) {
 
 }
 
+void Horde::addEnemy(Enemy *e){
+    enemies.push_back(e);
+}
+
 std::vector<Enemy *> &Horde::getEnemies() {
     return enemies;
+}
+
+Enemy* &Horde::getEnemieAt(unsigned i) {
+    return enemies.at(i);
 }
