@@ -1,13 +1,9 @@
 #include "Goatman.h"
 #include "../Utils.h"
 
-Goatman::Goatman(int x, int y, SDL_Renderer *renderer, LTexture *texture) : Enemy(x, y, renderer, texture) {
-    initialLifePoints = 100;
-    isAir = false;
-    velocity = 2;
-
+Goatman::Goatman(int x, int y, SDL_Renderer *renderer, LTexture *texture)
+        : Enemy(model::Enemy(100, 2, "goatman"), x, y, renderer, texture) {
     currentDirection = 0;
-
     initializeSpritesData();
 }
 

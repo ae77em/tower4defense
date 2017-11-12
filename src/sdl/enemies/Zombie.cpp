@@ -1,12 +1,9 @@
 #include "Zombie.h"
 #include "../Utils.h"
 
-Zombie::Zombie(int x, int y, SDL_Renderer *renderer, LTexture *texture) : Enemy(x, y, renderer, texture) {
-    initialLifePoints = 20;
-    isAir = false;
-    velocity = 10;
+Zombie::Zombie(int x, int y, SDL_Renderer *renderer, LTexture *texture)
+    : Enemy(model::Enemy(20, 10, "zombie"), x, y, renderer, texture) {
     currentDirection = 0;
-
     initializeSpritesData();
 }
 

@@ -32,7 +32,7 @@ public:
     ~Screen();
 
     void clear();
-    void put(Mapa &map);
+    void put(model::Mapa &map);
     void trace(const std::vector<Point> &path);
     void setDialog(const std::string &text);
     void draw();

@@ -40,7 +40,7 @@ Screen& Editor::Editor::getScreen() {
     return screen;
 }
 
-Mapa& Editor::Editor::getMap() {
+model::Mapa& Editor::Editor::getMap() {
     return map;
 }
 
@@ -61,7 +61,7 @@ void Editor::Editor::load(std::string filename) {
     map_file.read(&contents[0], contents.size());
 
     map_file.close();
-    map = Mapa(contents);
+    map = model::Mapa(contents);
 }
 
 void Editor::Editor::save(std::string filename) {
@@ -72,5 +72,5 @@ void Editor::Editor::save(std::string filename) {
 }
 
 void Editor::Editor::new_map(unsigned side) {
-    map = Mapa(side, side);
+    map = model::Mapa(side, side);
 }

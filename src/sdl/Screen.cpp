@@ -105,7 +105,7 @@ void Screen::clear() {
     SDL_RenderClear(renderer);
 }
 
-void Screen::put(Mapa &map) {
+void Screen::put(model::Mapa &map) {
     Point dimensions = map.dimensiones();
     for (int x = 0; x < dimensions.x; ++x)
         for (int y = 0; y < dimensions.y; ++y)
