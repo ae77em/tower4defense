@@ -34,11 +34,9 @@ void WorkerLoopGame::run(){
         mutexActions.lock();
         //GRONCHADA PARA REFACTORIZAR
         if(endSignal == true){
-            mutexActions.unlock();
             std::cout << "WorkerLoopGame: Me acaban de avisar que se termino todo que bueno" << std::endl;
-
+            mutexActions.unlock();
             break;
-
         }
 
         for (GameAction* a : this->actions) {
@@ -76,7 +74,7 @@ void WorkerLoopGame::run(){
 
         ciclos--;
 
-        //std::this_thread::sleep_for(std::chrono::seconds(0.5));
+        std::this_thread::sleep_for(std::chrono::milliseconds(400));
     }
 
     //ESTA PARTE NO SE SI TIENE SENTIDO, DEBERIA DEE HABER SALIDO TODOS LOS CLIENTES
