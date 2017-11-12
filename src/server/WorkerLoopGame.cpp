@@ -77,45 +77,74 @@ void WorkerLoopGame::run(){
 }
 
 void WorkerLoopGame::buildGameContext() {
-    std::vector<Point> camino;
+    std::vector<Point> camino1;
     // supongo que recorro una matriz de baldosas de CARTESIAN_TILE_WIDTH x CARTESIAN_TILE_HEIGHT
-    camino.push_back(Point(0 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
-    camino.push_back(Point(1 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
-    camino.push_back(Point(2 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
-    camino.push_back(Point(3 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
-    camino.push_back(Point(4 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
-    camino.push_back(Point(4 * CARTESIAN_TILE_WIDTH,6 * CARTESIAN_TILE_HEIGHT));
-    camino.push_back(Point(4 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
-    camino.push_back(Point(5 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
-    camino.push_back(Point(6 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
-    camino.push_back(Point(7 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
-    camino.push_back(Point(8 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
-    camino.push_back(Point(9 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
-    camino.push_back(Point(10 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
-    camino.push_back(Point(11 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
-    camino.push_back(Point(12 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
-    camino.push_back(Point(12 * CARTESIAN_TILE_WIDTH,6 * CARTESIAN_TILE_HEIGHT));
-    camino.push_back(Point(12 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
-    camino.push_back(Point(13 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
-    camino.push_back(Point(14 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
-    camino.push_back(Point(15 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
-    camino.push_back(Point(16 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
+    camino1.push_back(Point(0 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
+    camino1.push_back(Point(1 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
+    camino1.push_back(Point(2 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
+    camino1.push_back(Point(3 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
+    camino1.push_back(Point(4 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
+    camino1.push_back(Point(4 * CARTESIAN_TILE_WIDTH,6 * CARTESIAN_TILE_HEIGHT));
+    camino1.push_back(Point(4 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
+    camino1.push_back(Point(5 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
+    camino1.push_back(Point(6 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
+    camino1.push_back(Point(7 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
+    camino1.push_back(Point(8 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
+    camino1.push_back(Point(9 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
+    camino1.push_back(Point(10 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
+    camino1.push_back(Point(11 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
+    camino1.push_back(Point(12 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
+    camino1.push_back(Point(12 * CARTESIAN_TILE_WIDTH,6 * CARTESIAN_TILE_HEIGHT));
+    camino1.push_back(Point(12 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
+    camino1.push_back(Point(13 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
+    camino1.push_back(Point(14 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
+    camino1.push_back(Point(15 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
+    camino1.push_back(Point(16 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
 
+    std::vector<ActorEnemy*> horda1;
 
-    for(int horda = 0; horda < 2; horda++){
-        std::vector<ActorEnemy*> vectorHorda;
-        int hordeId = horda;
+    for (int x = 0; x < 3; ++x){
+        ActorEnemy* enemy = new ActorEnemy();
+        enemy->setPath(camino1);
+        enemy->setId(x);
+        enemy->setCurrentPathPosition(-x * CARTESIAN_TILE_WIDTH / 2);
 
-        for (int x = 0; x < 3; ++x){
-            ActorEnemy* enemy = new ActorEnemy();
-            enemy->setPath(camino);
-            enemy->setId(x);
-            enemy->setCurrentPathPosition(-x * CARTESIAN_TILE_WIDTH / 2);
-
-            vectorHorda.push_back( enemy );
-        }
-        hordas.insert(std::pair<int, std::vector<ActorEnemy*>>(hordeId, vectorHorda));
+        horda1.push_back( enemy );
     }
+    hordas.insert(std::pair<int, std::vector<ActorEnemy*>>(0, horda1));
+
+    std::vector<Point> camino2;
+    // supongo que recorro una matriz de baldosas de CARTESIAN_TILE_WIDTH x CARTESIAN_TILE_HEIGHT
+    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 0 * CARTESIAN_TILE_HEIGHT));
+    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 1 * CARTESIAN_TILE_HEIGHT));
+    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 2 * CARTESIAN_TILE_HEIGHT));
+    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 3 * CARTESIAN_TILE_HEIGHT));
+    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 4 * CARTESIAN_TILE_HEIGHT));
+    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 5 * CARTESIAN_TILE_HEIGHT));
+    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 6 * CARTESIAN_TILE_HEIGHT));
+    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 7 * CARTESIAN_TILE_HEIGHT));
+    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 8 * CARTESIAN_TILE_HEIGHT));
+    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 9 * CARTESIAN_TILE_HEIGHT));
+    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 10 * CARTESIAN_TILE_HEIGHT));
+    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 11 * CARTESIAN_TILE_HEIGHT));
+    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 12 * CARTESIAN_TILE_HEIGHT));
+    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 13 * CARTESIAN_TILE_HEIGHT));
+    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 14 * CARTESIAN_TILE_HEIGHT));
+    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 15 * CARTESIAN_TILE_HEIGHT));
+
+
+    std::vector<ActorEnemy*> horda2;
+
+    for (int x = 0; x < 3; ++x){
+        ActorEnemy* enemy = new ActorEnemy();
+        enemy->setPath(camino2);
+        enemy->setId(x);
+        enemy->setCurrentPathPosition(-x * CARTESIAN_TILE_WIDTH / 2);
+
+        horda2.push_back( enemy );
+    }
+    hordas.insert(std::pair<int, std::vector<ActorEnemy*>>(1, horda2));
+
 
     /* ESTA ES LÓGICA DE NEGOCIO, Y VA EN EL SERVER...
      * bool towerIsShooting =

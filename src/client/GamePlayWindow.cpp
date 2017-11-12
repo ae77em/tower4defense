@@ -9,6 +9,7 @@
 #include "../common/MessageFactory.h"
 #include "../common/Protocol.h"
 #include "../sdl/enemies/GreenDaemon.h"
+#include "../sdl/enemies/Zombie.h"
 
 GamePlayWindow::GamePlayWindow(Socket *s,
                                SharedBuffer *in,
@@ -619,6 +620,16 @@ void GamePlayWindow::initializeGameActors() {
         }
         std::pair<int, Horde *> pair(i, horde);
         hordes.insert(pair);
+
+        Horde *horde2 = new Horde();
+        for (int j = 0; j < 3; ++j) {
+            Enemy *zombie = new Zombie(-1, -1, gRenderer,
+                                                 zombieTexture);
+            zombie->setSprites();
+            horde2->addEnemy(zombie);
+        }
+        std::pair<int, Horde *> pair2(i+1, horde2);
+        hordes.insert(pair2);
     }
 }
 
