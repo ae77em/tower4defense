@@ -5,10 +5,10 @@
 #include <vector>
 #include "../Point.h"
 
-/* Representa el terrento del juego, independiente de su representacion
- * visual o de las criaturas que se encuentren en el.
- */
+namespace model {
 
+/* Representa el terrento del juego, independiente de su representacion
+   visual o de las criaturas que se encuentren en el. */
 class Mapa {
     unsigned extension_x, extension_y;
     std::vector<char> casillas;
@@ -45,4 +45,5 @@ public:
     void agregarCamino(const std::vector<Point> &camino);
 };
 
+} // namespace model
 #endif

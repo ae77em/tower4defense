@@ -19,7 +19,7 @@ class State;
 class Editor {
     std::unique_ptr<State> state;
     Screen screen;
-    Mapa map;
+    model::Mapa map;
     Keybinding keys;
 
     public:
@@ -32,7 +32,7 @@ class Editor {
     void new_map(unsigned side);
 
     Screen& getScreen();
-    Mapa& getMap();
+    model::Mapa& getMap();
     const Keybinding& getKeys();
 };
 

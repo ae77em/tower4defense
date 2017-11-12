@@ -5,6 +5,8 @@
 #include <stdexcept>
 #include <jsoncpp/json/json.h>
 
+using namespace model;
+
 Mapa::Mapa(unsigned x, unsigned y) :extension_x(x), extension_y(y),
         casillas(x * y, '.'), caminos() {}
 
