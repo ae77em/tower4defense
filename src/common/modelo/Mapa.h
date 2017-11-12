@@ -4,15 +4,17 @@
 #include <string>
 #include <vector>
 #include "../Point.h"
+#include "../modelo/Enemies.h"
+
+namespace model {
 
 /* Representa el terrento del juego, independiente de su representacion
- * visual o de las criaturas que se encuentren en el.
- */
-
+   visual o de las criaturas que se encuentren en el. */
 class Mapa {
     unsigned extension_x, extension_y;
     std::vector<char> casillas;
     std::vector<std::vector<Point>> caminos;
+    std::vector<std::vector<model::Enemy>> enemigos;
 
 public:
     Mapa(unsigned x, unsigned y);
@@ -43,6 +45,9 @@ public:
 
     std::vector<std::vector<Point>>& getCaminos();
     void agregarCamino(const std::vector<Point> &camino);
+    std::vector<std::vector<model::Enemy>>& getEnemigos();
+    void agregarEnemigo(int indice_camino, const Enemy &e);
 };
 
+} // namespace model
 #endif

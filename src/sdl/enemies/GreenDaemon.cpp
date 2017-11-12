@@ -1,13 +1,10 @@
 #include "GreenDaemon.h"
 #include "../Utils.h"
 
-GreenDaemon::GreenDaemon(int x, int y, SDL_Renderer *renderer, LTexture *texture) : Enemy(x, y, renderer, texture) {
-    initialLifePoints = 300;
-    velocity = 1;
-    isAir = false;
-
+GreenDaemon::GreenDaemon(int x, int y, SDL_Renderer *renderer,
+    LTexture *texture) : Enemy(model::Enemy(300, 1, "greendaemon"), x, y,
+        renderer, texture) {
     currentDirection = 0;
-
     initializeSpritesData();
 }
 

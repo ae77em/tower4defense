@@ -1,19 +1,14 @@
 #include "Enemy.h"
 #include "../Utils.h"
 
-Enemy::Enemy(int x, int y, SDL_Renderer *r, LTexture *t) : currentPoint(Utils::mapToScreen(x, y)) {
+Enemy::Enemy(model::Enemy&& base, int x, int y, SDL_Renderer *r, LTexture *t)
+        : enemy_base(base), currentPoint(Utils::mapToScreen(x, y)) {
     initializeSpritesData();
 
     collisionCircle.r = Enemy::getCollisionCircleRadio();
     shiftColliders();
 
     texture = t;
-
-    //Initialize the velocity
-    velocity = 1;
-    initialLifePoints = remainingLifePoints = 200;
-    isAir = false;
-    isAlive = true;
 
     renderer = r;
 
@@ -70,13 +65,7 @@ bool Enemy::loadMedia() {
 }
 
 void Enemy::kill() {
-    isAlive = false;
-}
-
-void Enemy::setPosition(int x, int y) {
-    currentPoint = Utils::mapToScreen(x, y);
-    walkBox.x = currentPoint.x;
-    walkBox.y = currentPoint.y;
+    enemy_base.setLife(0);
 }
 
 void Enemy::setSprites() {
@@ -154,7 +143,7 @@ void Enemy::renderDie(SDL_Rect &camera) {
 }
 
 void Enemy::animate(SDL_Rect &camera) {
-    if (isAlive) {
+    if (itIsAlive()) {
         renderWalk(camera);
     } else {
         renderDie(camera);
@@ -193,28 +182,17 @@ const SDL_Rect &Enemy::getWalkBox() const {
     return walkBox;
 }
 
-int Enemy::getLifePoints() const {
-    return initialLifePoints;
-}
-
 int Enemy::getVelocity() const {
-    return velocity;
-}
-
-int Enemy::getIsAir() const {
-    return isAir;
+    return enemy_base.getVelocity();
 }
 
 bool Enemy::itIsAlive() const {
-    return isAlive;
+    return enemy_base.getLife() != 0;
 }
 
 void Enemy::quitLifePoints(int points) {
-    remainingLifePoints -= points;
-
-    if (remainingLifePoints <= 0) {
-        isAlive = false;
-    }
+    int current = enemy_base.getLife();
+    enemy_base.setLife( (current <= points) ? 0 : current - points );
 }
 
 void Enemy::shiftColliders() {
@@ -231,7 +209,8 @@ Circle &Enemy::getCollisionCircle() {
 void Enemy::renderLifeBar(int x, int y) {
     int w = 50; // porque sí
     int h = 4; // porque también (?)...
-    double percent = double(remainingLifePoints) / double(initialLifePoints);
+    double percent = double(enemy_base.getLife())
+        / double(enemy_base.getMaxLife());
     SDL_Color FGColor = {0x00, 0xFF, 0x00, 0xFF}; // green
     SDL_Color BGColor = {0xFF, 0x00, 0x00, 0xFF}; // red
 
@@ -250,7 +229,7 @@ void Enemy::renderLifeBar(int x, int y) {
 }
 
 int Enemy::getBonus() {
-    return initialLifePoints / 2;
+    return enemy_base.getMaxLife() / 2;
 }
 
 int Enemy::getCollisionCircleRadio(){
