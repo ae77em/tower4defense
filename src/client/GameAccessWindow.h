@@ -11,6 +11,7 @@ class GameAccessWindow : public Thread {
 private:
     std::mutex loadMutex;
     GamePlayWindow *game = nullptr;
+    bool gameStarted;
 
     /* View */
     Gtk::Window *pWindow;
@@ -59,7 +60,7 @@ public:
      * map: mapa donde se jugará la partida.
      * match: nombre de la partida.
      */
-    void addMatchToCombo(const std::string &mapName, const std::string &matchName);
+    void addMatchToCombo(int clientId, const std::string &matchName);
 
     /*
      * Setea el id del cliente (socket) con el cual me estoy conectando al server.

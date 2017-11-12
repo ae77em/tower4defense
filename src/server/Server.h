@@ -35,7 +35,7 @@ public:
 
     std::string getGamesList();
 
-    void createGame(string matchName);
+    void createGame(int clientId, string matchName);
     bool createMatch(string basicString);
     void notifyAllCreationGame(int gameId,int clientIdWhoCreatedGame);
 

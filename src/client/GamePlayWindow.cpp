@@ -278,6 +278,37 @@ bool GamePlayWindow::loadMedia() {
     return success;
 }
 
+void GamePlayWindow::initializeGameActors() {
+    Tower *tower = new Tower(10, 3, gRenderer, gSpriteSheetTextureTower);
+    tower->loadMedia();
+    tower->setSprites();
+
+    towers.push_back(tower);
+
+    for (int i = 0; i < 2; ++i) {
+        Horde *horde = new Horde();
+        for (int j = 0; j < 3; ++j) {
+            Enemy *greenDaemon = new GreenDaemon(-1, -1, gRenderer,
+                                                 greenDaemonTexture);
+            greenDaemon->setSprites();
+            horde->addEnemy(greenDaemon);
+        }
+        std::pair<int, Horde *> pair(i, horde);
+        hordes.insert(pair);
+
+        Horde *horde2 = new Horde();
+        for (int j = 0; j < 3; ++j) {
+            Enemy *zombie = new Zombie(-1, -1, gRenderer,
+                                       zombieTexture);
+            zombie->setSprites();
+            horde2->addEnemy(zombie);
+        }
+        std::pair<int, Horde *> pair2(i+1, horde2);
+        hordes.insert(pair2);
+    }
+}
+
+
 void GamePlayWindow::close() {
     //Deallocate tiles
     for (int i = 0; i < TOTAL_TILES; ++i) {
@@ -450,7 +481,7 @@ GamePlayWindow::handleMouseEvents(SDL_Rect camera, SDL_Event e) {
                 break;
             }
             case SDL_BUTTON_RIGHT: {
-                //enemy.kill();
+                handleRightButtonClick(point);
                 break;
             }
             default:
@@ -506,16 +537,14 @@ void GamePlayWindow::handleLeftButtonClick(Point &point) {
     }
 }
 
-bool GamePlayWindow::isClickOnTowerButton(int mousePosX, int mousePosY) const {
-    return (
-                mousePosX >= TOWER_BUTTONS_X_POS
-                && mousePosX <= TOWER_BUTTONS_WIDTH + TOWER_BUTTONS_Y_POS
-           )
-           &&
-           (
-                mousePosY >= TOWER_BUTTONS_Y_POS
-                && mousePosY <= TOWBER_BUTTONS_HEIGHT + TOWER_BUTTONS_Y_POS
-           );
+void GamePlayWindow::handleRightButtonClick(Point point) {
+    if (isFirmTerrain(point)) {
+        std::string request =
+                MessageFactory::getMarkTileRequest(clientId,
+                                                   point.x,
+                                                   point.y);
+        toSend->addData(request);
+    }
 }
 
 void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
@@ -603,34 +632,16 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
     }
 }
 
-void GamePlayWindow::initializeGameActors() {
-    Tower *tower = new Tower(10, 3, gRenderer, gSpriteSheetTextureTower);
-    tower->loadMedia();
-    tower->setSprites();
-
-    towers.push_back(tower);
-
-    for (int i = 0; i < 2; ++i) {
-        Horde *horde = new Horde();
-        for (int j = 0; j < 3; ++j) {
-            Enemy *greenDaemon = new GreenDaemon(-1, -1, gRenderer,
-                                                 greenDaemonTexture);
-            greenDaemon->setSprites();
-            horde->addEnemy(greenDaemon);
-        }
-        std::pair<int, Horde *> pair(i, horde);
-        hordes.insert(pair);
-
-        Horde *horde2 = new Horde();
-        for (int j = 0; j < 3; ++j) {
-            Enemy *zombie = new Zombie(-1, -1, gRenderer,
-                                                 zombieTexture);
-            zombie->setSprites();
-            horde2->addEnemy(zombie);
-        }
-        std::pair<int, Horde *> pair2(i+1, horde2);
-        hordes.insert(pair2);
-    }
+bool GamePlayWindow::isClickOnTowerButton(int mousePosX, int mousePosY) const {
+    return (
+                   mousePosX >= TOWER_BUTTONS_X_POS
+                   && mousePosX <= TOWER_BUTTONS_WIDTH + TOWER_BUTTONS_Y_POS
+           )
+           &&
+           (
+                   mousePosY >= TOWER_BUTTONS_Y_POS
+                   && mousePosY <= TOWBER_BUTTONS_HEIGHT + TOWER_BUTTONS_Y_POS
+           );
 }
 
 bool GamePlayWindow::isFirmTerrain(Point &point) {
@@ -675,5 +686,6 @@ bool GamePlayWindow::isGroundTerrain(Point &point) {
 
     return isGroundTerrain;
 }
+
 
 

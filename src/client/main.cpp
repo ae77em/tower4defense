@@ -43,24 +43,33 @@ int main(int argc, char **argv) {
     Sender sender(&server, toSend);
 
     /* inicio el juego */
-    gameAccess.start();
+    try {
+        gameAccess.start();
 
-    listener.start();
-    sender.start();
+        listener.start();
+        sender.start();
 
-    /* pido los datos iniciales para cargar la pantalla de acceso */
-    std::string mapsRequest = MessageFactory::getExistingMapsRequest(gameAccess.getClientId());
-    toSend.addData(mapsRequest);
+        /* pido los datos iniciales para cargar la pantalla de acceso */
+        std::string mapsRequest =
+            MessageFactory::getExistingMapsRequest(gameAccess.getClientId());
+        toSend.addData(mapsRequest);
 
-    std::string matchesRequest = MessageFactory::getExistingMatchesRequest(gameAccess.getClientId());
-    toSend.addData(matchesRequest);
+        std::string matchesRequest =
+            MessageFactory::getExistingMatchesRequest(gameAccess.getClientId());
 
-    /* cierro sender, ya que no voy a usarlo más */
-    toSend.setClientProcessEnded(true);
-    sender.join();
+        toSend.addData(matchesRequest);
 
-    listener.join();
-    gameAccess.join();
+        /* cierro sender, ya que no voy a usarlo más */
+        toSend.setClientProcessEnded(true);
+        sender.join();
+
+        listener.join();
+        gameAccess.join();
+    } catch (...) {
+        std::cerr << "Ocurrió una excepción mientras se ejecutaba el juego."
+                " El mismo se cerrará."
+                  << std::endl;
+    }
 
     server.shutdown();
     server.close();

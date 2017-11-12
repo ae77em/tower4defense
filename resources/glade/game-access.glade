@@ -7,7 +7,7 @@
     <property name="title" translatable="yes">Tower4Defense</property>
     <property name="window_position">center</property>
     <property name="default_width">525</property>
-    <property name="default_height">300</property>
+    <property name="default_height">310</property>
     <property name="icon_name">applications-games</property>
     <child>
       <object class="GtkLayout" id="layout">
@@ -28,7 +28,7 @@
           </object>
           <packing>
             <property name="x">376</property>
-            <property name="y">192</property>
+            <property name="y">215</property>
           </packing>
         </child>
         <child>
@@ -47,14 +47,14 @@
         </child>
         <child>
           <object class="GtkComboBoxText" id="cmbPartidas">
-            <property name="width_request">100</property>
+            <property name="width_request">155</property>
             <property name="height_request">40</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
           </object>
           <packing>
-            <property name="x">69</property>
-            <property name="y">163</property>
+            <property name="x">23</property>
+            <property name="y">168</property>
           </packing>
         </child>
         <child>
@@ -117,8 +117,8 @@
             <property name="label" translatable="yes">Unirse a partida existente</property>
           </object>
           <packing>
-            <property name="x">26</property>
-            <property name="y">116</property>
+            <property name="x">23</property>
+            <property name="y">113</property>
           </packing>
         </child>
         <child>
@@ -130,21 +130,21 @@
             <property name="label" translatable="yes">Partida</property>
           </object>
           <packing>
-            <property name="x">6</property>
-            <property name="y">165</property>
+            <property name="x">5</property>
+            <property name="y">137</property>
           </packing>
         </child>
         <child>
           <object class="GtkLabel" id="label2">
-            <property name="width_request">73</property>
+            <property name="width_request">125</property>
             <property name="height_request">37</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">Elementos disponibles</property>
           </object>
           <packing>
-            <property name="x">194</property>
-            <property name="y">115</property>
+            <property name="x">198</property>
+            <property name="y">137</property>
           </packing>
         </child>
         <child>
@@ -159,7 +159,7 @@
           </object>
           <packing>
             <property name="x">376</property>
-            <property name="y">131</property>
+            <property name="y">174</property>
           </packing>
         </child>
         <child>
@@ -174,8 +174,8 @@
             <property name="draw_indicator">True</property>
           </object>
           <packing>
-            <property name="x">196</property>
-            <property name="y">155</property>
+            <property name="x">199</property>
+            <property name="y">177</property>
           </packing>
         </child>
         <child>
@@ -190,8 +190,8 @@
             <property name="draw_indicator">True</property>
           </object>
           <packing>
-            <property name="x">196</property>
-            <property name="y">185</property>
+            <property name="x">199</property>
+            <property name="y">207</property>
           </packing>
         </child>
         <child>
@@ -206,8 +206,8 @@
             <property name="draw_indicator">True</property>
           </object>
           <packing>
-            <property name="x">196</property>
-            <property name="y">215</property>
+            <property name="x">199</property>
+            <property name="y">235</property>
           </packing>
         </child>
         <child>
@@ -222,8 +222,8 @@
             <property name="draw_indicator">True</property>
           </object>
           <packing>
-            <property name="x">196</property>
-            <property name="y">245</property>
+            <property name="x">199</property>
+            <property name="y">265</property>
           </packing>
         </child>
       </object>

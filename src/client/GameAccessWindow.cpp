@@ -7,6 +7,7 @@ GameAccessWindow::GameAccessWindow(Socket *c, SharedBuffer &tsnd,
                                    SharedBuffer &trcv)
         : server(c), toSend(tsnd), toReceive(trcv) {
     clientId = -1;
+    gameStarted = false;
 }
 
 GameAccessWindow::~GameAccessWindow() {
@@ -56,6 +57,11 @@ void GameAccessWindow::run() {
     }
 
     delete pWindow;
+
+    // les aviso a los encargados de comunicación que terminé
+    if (!gameStarted){
+        server->shutdown();
+    }
 }
 
 void GameAccessWindow::on_cmbMapas_changed() {
@@ -284,28 +290,42 @@ GameAccessWindow::initCheckboxElements(Glib::RefPtr<Gtk::Builder> &refBuilder) {
 
 void GameAccessWindow::addMapsToCombo(const std::vector<std::string> &maps) {
     loadMutex.lock();
+
     for (std::string map : maps) {
         cmbMapsText->append(map);
     }
+
     loadMutex.unlock();
 }
 
-void
-GameAccessWindow::addMatchesToCombo(const std::vector<std::string> &matches) {
+void GameAccessWindow::addMatchesToCombo(
+        const std::vector<std::string> &matches) {
     loadMutex.lock();
+
     for (std::string match : matches) {
         cmbMatchesText->append(match);
     }
+
     loadMutex.unlock();
 }
 
-void GameAccessWindow::addMatchToCombo(const std::string &mapName,
+void GameAccessWindow::addMatchToCombo(int clientId,
                                        const std::string &matchName) {
-    cmbMatchesText->append(mapName, matchName);
+    loadMutex.lock();
+
+    cmbMatchesText->append(matchName);
+
+    if (clientId == getClientId()){
+        cmbMatchesText->set_active_text(matchName);
+    }
+
+    loadMutex.unlock();
 }
 
 void GameAccessWindow::setAvailableElements(
         const std::list<std::string> &unavailableElements) {
+    loadMutex.lock();
+
     pchkAire->set_sensitive(true);
     pchkFuego->set_sensitive(true);
     pchkTierra->set_sensitive(true);
@@ -322,25 +342,31 @@ void GameAccessWindow::setAvailableElements(
             pchkAgua->set_sensitive(false);
         }
     }
+
+    loadMutex.unlock();
 }
 
 void GameAccessWindow::setAvailableElementsForJoin(
         const std::list<std::string> &unavailableElements) {
+    loadMutex.lock();
+
     for (std::string element : unavailableElements) {
         if (STR_AIR.compare(element) == 0) {
             pchkAire->set_active(false);
             pchkAire->set_sensitive(false);
         } else if (STR_FIRE.compare(element) == 0) {
-            pchkAire->set_active(false);
+            pchkFuego->set_active(false);
             pchkFuego->set_sensitive(false);
         } else if (STR_TERRAIN.compare(element) == 0) {
-            pchkAire->set_active(false);
+            pchkTierra->set_active(false);
             pchkTierra->set_sensitive(false);
         } else if (STR_WATER.compare(element) == 0) {
-            pchkAire->set_active(false);
+            pchkAgua->set_active(false);
             pchkAgua->set_sensitive(false);
         }
     }
+
+    loadMutex.unlock();
 }
 
 void GameAccessWindow::setJoinedToMatch(int clientId, std::string mName) {
@@ -351,7 +377,6 @@ void GameAccessWindow::setJoinedToMatch(int clientId, std::string mName) {
         matchName = mName;
     }
 }
-
 
 void GameAccessWindow::setClientId(int cid) {
     clientId = cid;
@@ -365,11 +390,15 @@ bool GameAccessWindow::isNotValidClientId() {
     return clientId == -1;
 }
 
-
 void GameAccessWindow::startMatch() {
-    pWindow->hide();
+    loadMutex.lock();
 
+    gameStarted = true;
+    pWindow->hide();
     game = new GamePlayWindow(server, &toReceive, &toSend, clientId);
+
+    loadMutex.unlock();
+
     game->start();
 
     //pWindow->show();

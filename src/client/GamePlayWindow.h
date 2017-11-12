@@ -132,6 +132,8 @@ private:
     bool isGroundTerrain(Point &point);
 
     bool isClickOnTowerButton(int mousePosX, int mousePosY) const;
+
+    void handleRightButtonClick(Point point);
 };
 
 #endif //TP4_TOWERDEFENSE_GAME_H

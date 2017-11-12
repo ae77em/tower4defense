@@ -58,26 +58,6 @@ std::string MessageFactory::getClientIdNotification(int clientId) {
     return toReturn;
 }
 
-std::string MessageFactory::getCreateMatchNotification(int gameId,
-                                                       int clientIdWhoCreatedGame) {
-    std::string toReturn;
-    Json::Value root(Json::objectValue);
-    Message message;
-
-    root[OPERATION_KEY] = SERVER_NOTIFICATION_NEW_MATCH;
-    //por el momento id el cliente con su ID, deberia de tener un nombre
-    //sino que se  va a mostar en los combos
-    root["clientIdWhoCreatedGame"] = clientIdWhoCreatedGame;
-    root["mgameIdapId"] = gameId;
-
-    message.setData(root);
-
-    toReturn = message.serialize();
-
-    return toReturn;
-}
-
-
 std::string
 MessageFactory::getGamesNotification(int clientId, std::string games) {
     std::string toReturn;
@@ -183,23 +163,6 @@ std::string MessageFactory::getExistingMatchesNotification(
     return toReturn;
 }
 
-std::string
-MessageFactory::getCreateMatchRequest(int clientId, std::string mapName) {
-    std::string toReturn;
-    Json::Value root(Json::objectValue);
-    Message message;
-
-    root[OPERATION_KEY] = CLIENT_REQUEST_NEW_MATCH;
-    root[CLIENT_ID_KEY] = clientId;
-    root["mapName"] = mapName;
-
-    message.setData(root);
-
-    toReturn = message.serialize();
-
-    return toReturn;
-}
-
 /* ****************************************************************************
  * GAMING REQUESTS
  * ****************************************************************************
@@ -270,17 +233,21 @@ std::string MessageFactory::getMarkTileNotification(Message &request) {
     return toReturn;
 }
 
-std::string
-MessageFactory::getNewMatchRequest(int clientId, std::string &mapName,
-                                   std::string &matchName) {
+std::string MessageFactory::getNewMatchRequest(int clientId,
+                                               std::string &mapName,
+                                               std::string &matchName) {
     std::string toReturn;
     Json::Value root(Json::objectValue);
     Message message;
+    std::string completeMatchName;
+
+    completeMatchName.assign(mapName);
+    completeMatchName.append(" - ");
+    completeMatchName.append(matchName);
 
     root[OPERATION_KEY] = CLIENT_REQUEST_NEW_MATCH;
     root[CLIENT_ID_KEY] = clientId;
-    root["mapName"] = mapName;
-    root[MATCH_NAME_KEY] = matchName;
+    root[MATCH_NAME_KEY] = completeMatchName;
 
     message.setData(root);
 
@@ -289,11 +256,13 @@ MessageFactory::getNewMatchRequest(int clientId, std::string &mapName,
     return toReturn;
 }
 
-std::string MessageFactory::getNewMatchNotification(std::string matchName) {
+std::string
+MessageFactory::getNewMatchNotification(int clientId, std::string matchName) {
     Json::Value responseRoot;
     Message message;
 
     responseRoot[OPERATION_KEY] = SERVER_NOTIFICATION_NEW_MATCH;
+    responseRoot[CLIENT_ID_KEY] = clientId;
     responseRoot[MATCH_NAME_KEY] = matchName;
 
     message.setData(responseRoot);
@@ -301,12 +270,14 @@ std::string MessageFactory::getNewMatchNotification(std::string matchName) {
     return message.serialize();
 }
 
-std::string MessageFactory::getNewMatchErrorNotification(std::string matchName,
-                                                         std::string errorMessage) {
+std::string MessageFactory::getNewMatchErrorNotification(int clientId,
+                                              std::string matchName,
+                                              std::string errorMessage) {
     Json::Value responseRoot;
     Message message;
 
     responseRoot[OPERATION_KEY] = SERVER_NOTIFICATION_NEW_MATCH;
+    responseRoot[CLIENT_ID_KEY] = clientId;
     responseRoot[MATCH_NAME_KEY] = matchName;
     responseRoot["errorMessage"] = errorMessage;
 

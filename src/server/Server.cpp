@@ -3,29 +3,33 @@
 #include "../common/Protocol.h"
 #include "Request.h"
 
-Server::Server(std::mutex &m, ThreadedQueue<Message> &tq) : mutexPlayers(m),
-                                                            queueMessagesClient(tq) {}
+Server::Server(std::mutex &m, ThreadedQueue<Message> &tq)
+        : mutexPlayers(m), queueMessagesClient(tq) {}
 
 
 unsigned int Server::getAmountGames() {
     return games.size();
 }
 
-void Server::createGame(string matchName) {
+void Server::createGame(int clientId, string matchName) {
     bool wasCreated = createMatch(matchName);
 
     std::string message = "";
 
     if (wasCreated) {
-        message = MessageFactory::getNewMatchNotification(matchName);
+        message = MessageFactory::getNewMatchNotification(clientId, matchName);
     } else {
-        message = MessageFactory::getNewMatchErrorNotification(matchName, "La partida ya existe");
+        message =
+                MessageFactory::getNewMatchErrorNotification(clientId,
+                                                        matchName,
+                                                        "La partida ya existe");
     }
 
     notifyAll(message);
 }
 
-void Server::addPlayerToGame(int clientId, std::string mName, vector<string> elements) {
+void Server::addPlayerToGame(int clientId, std::string mName,
+                             vector<string> elements) {
     mutexPlayers.lock();
 
     ServerGame *serverGame = games.at(mName);
@@ -39,21 +43,27 @@ void Server::addPlayerToGame(int clientId, std::string mName, vector<string> ele
         serverPlayer->setElements(elements);
         serverGame->addPlayer(serverPlayer);
 
-        //chequeo si la partida tiene 4 jugadores, de ser asi, arranca la partida
+        //si la partida tiene 4 jugadores, arranca
         if (serverGame->isFull()) {
-            std::string message = MessageFactory::getAddPlayerAndRunMatchNotification(mName, clientId);
+            std::string message =
+                    MessageFactory::getAddPlayerAndRunMatchNotification(
+                    mName, clientId);
             serverGame->notifyAll(message);
 
             //VEDR DESPUES COMO SINCRONIZAR PARA QUE NO ARRANQUE MUY ANTES
             serverGame->startGame();
         } else {
-            //si no esta llena simplemente notifico a todos el ingreso del jugador
-            std::string message = MessageFactory::getAddPlayerToMatchNotification(mName, clientId, elements);
+            //si no esta llena notifico a todos el ingreso del jugador
+            std::string message =
+                    MessageFactory::getAddPlayerToMatchNotification(mName,
+                                                                    clientId,
+                                                                    elements);
             notifyPlayerAdded(message);
         }
     } else {
         //notifico al cliente que se lleno la partida
-        std::string message = MessageFactory::getMatchNotAvailableNotification(mName, "Elemento no disponible");
+        std::string message = MessageFactory::getMatchNotAvailableNotification(
+                mName, "Elemento no disponible");
         serverPlayer->sendData(message);
     }
 
@@ -61,7 +71,8 @@ void Server::addPlayerToGame(int clientId, std::string mName, vector<string> ele
 }
 
 void Server::notifyAll(std::string message) {
-    std::cout << "Notificando a: " << players.size() << " jugadores" << std::endl;
+    std::cout << "Notificando a: " << players.size() << " jugadores"
+              << std::endl;
 
     for (std::pair<unsigned int, ServerPlayer *> player : players) {
         player.second->sendData(message);
@@ -69,7 +80,8 @@ void Server::notifyAll(std::string message) {
 }
 
 void Server::notifyAllExpeptTo(int clientId, std::string message) {
-    std::cout << "Notificando a: " << players.size() - 1 << " jugadores" << std::endl;
+    std::cout << "Notificando a: " << players.size() - 1 << " jugadores"
+              << std::endl;
 
     for (std::pair<unsigned int, ServerPlayer *> player : players) {
         if ((int) player.first != clientId) {
@@ -84,15 +96,22 @@ void Server::addPlayerToMatch(std::string nameMatch, ServerPlayer *sp) {
 
 //crea el juego y retorna el id del mismo, el id es el nombre del match...
 bool Server::createMatch(std::string nameMatch) {
-    if( games.find(nameMatch) == games.end() ){
-        games.insert(std::pair<std::string, ServerGame *>(nameMatch, new ServerGame(mutexPlayers)));
+    if (games.find(nameMatch) == games.end()) {
+        games.insert(
+                std::pair<std::string, ServerGame *>(nameMatch,
+                                                     new ServerGame(
+                                                             mutexPlayers
+                                                     )
+                )
+        );
         return true;
     }
     return false;
 }
 
 void Server::createAndRunPlayer(Socket *s) {
-    ClientRequestHandler *crh = new ClientRequestHandler(s, queueMessagesClient);
+    ClientRequestHandler *crh = new ClientRequestHandler(s,
+                                                         queueMessagesClient);
     ServerPlayer *serverPlayer = new ServerPlayer(crh, s->getSocket());
 
     mutexPlayers.lock();
@@ -115,38 +134,41 @@ void Server::notifyTo(int clientId, std::string &message) {
 }
 
 void Server::run() {
-    std::cout << "GameServer: Corriendo, esperando la conexion del algun cliente" << std::endl;
+    std::cout
+            << "GameServer: Corriendo, esperando la conexion del algun cliente"
+            << std::endl;
 
     try {
         while (!queueMessagesClient.isAtEnd()) {
-            std::cout << "GameServer: Esperando que algun cliente mande algo" << std::endl;
+            std::cout << "GameServer: Esperando que algun cliente mande algo"
+                      << std::endl;
 
             Message messageRequest = queueMessagesClient.pop();
             Request request(messageRequest);
 
             int op = request.getAsInt(OPERATION_KEY);
 
-            std::cout << "GameServer: un cliente envio este mensaje: " + messageRequest.toString() << std::endl;
+            std::cout << "GameServer: un cliente envio este mensaje: " +
+                         messageRequest.toString() << std::endl;
             std::string response;
 
             switch (op) {
                 /* non-gaming requests: */
                 case CLIENT_REQUEST_NEW_MATCH: {
-                    //FALTA TOMAR EL VALOR DEL MAPA
-                    //int clientId = request.getAsInt("clientId");
+                    int clientId = request.getAsInt("clientId");
                     std::string nameMatch = request.getAsString("matchName");
 
-                    createGame(nameMatch);
+                    createGame(clientId, nameMatch);
                     break;
                 }
                 /* this responses are individual */
                 case CLIENT_REQUEST_ENTER_MATCH: {
                     int clientId = request.getAsInt("clientId");
                     std::string nameMatch = request.getAsString("matchName");
-                    std::vector<std::string> elements = request.getAsStringVector("elements");
+                    std::vector<std::string> elements =
+                            request.getAsStringVector("elements");
 
-                    addPlayerToGame(clientId,nameMatch,elements);
-
+                    addPlayerToGame(clientId, nameMatch, elements);
                     break;
                 }
                 case CLIENT_REQUEST_GET_ALL_MAPS: {
@@ -158,7 +180,8 @@ void Server::run() {
                 case CLIENT_REQUEST_GET_ALL_MATCHES: {
                     int clientId = request.getAsInt("clientId");
                     std::vector<std::string> matchNames = getMatchesNames();
-                    response = MessageFactory::getExistingMatchesNotification(matchNames);
+                    response = MessageFactory::getExistingMatchesNotification(
+                            matchNames);
                     notifyTo(clientId, response);
                     break;
                 }
@@ -171,7 +194,8 @@ void Server::run() {
                 case CLIENT_REQUEST_ENTER_EXISTING_MATCH: {
                     int clientId = request.getAsInt("clientId");
                     std::string matchName = request.getAsString("matchName");
-                    std::vector<std::string> elements = request.getAsStringVector("elements");
+                    std::vector<std::string> elements =
+                            request.getAsStringVector("elements");
 
                     addPlayerToGame(clientId, matchName, elements);
                     break;
@@ -184,21 +208,24 @@ void Server::run() {
                     break;
                 }
 
-                /* gaming requests: */
+                    /* gaming requests: */
                 case CLIENT_REQUEST_PUT_TOWER: {
-                    response = MessageFactory::getPutTowerNotification(messageRequest);
+                    response = MessageFactory::getPutTowerNotification(
+                            messageRequest);
                     notifyAll(response);
                     break;
                 }
                 case CLIENT_REQUEST_MARK_TILE: {
-                    response = MessageFactory::getMarkTileNotification(messageRequest);
+                    response = MessageFactory::getMarkTileNotification(
+                            messageRequest);
                     notifyAll(response);
                     break;
                 }
                 case SERVER_NOTIFICATION_END_CLIENT_CONNECTION: {
                     std::cout
                             << "el cliente "
-                            << std::to_string(MessageFactory::getClientId(messageRequest))
+                            << std::to_string(
+                                    MessageFactory::getClientId(messageRequest))
                             << " se desconectó."
                             << std::endl;
 
@@ -207,8 +234,10 @@ void Server::run() {
 
                     removeClient(id);
 
-                    std::cout << "GameServer: se termino de matar al cliennte " << id << std::endl;
-                    std::cout << "Ahora hay " << players.size() << " clientes" << std::endl;
+                    std::cout << "GameServer: se termino de matar al cliennte "
+                              << id << std::endl;
+                    std::cout << "Ahora hay " << players.size() << " clientes"
+                              << std::endl;
 
                     break;
                 }
@@ -226,9 +255,9 @@ void Server::run() {
         std::cout << "GameServer: se rompi cola compartida" << std::endl;
     }
 
-    std::cout << "GameServer: Se murio, se tendria que haber apagado todo" << std::endl;
+    std::cout << "GameServer: Se murio, se tendria que haber apagado todo"
+              << std::endl;
 }
-
 
 
 void Server::startMatch(int clientId, string matchName) {
@@ -238,12 +267,14 @@ void Server::startMatch(int clientId, string matchName) {
         //reboto pedido
         ServerPlayer *serverPlayer = players.at(clientId);
 
-        std::string message = MessageFactory::getMatchStartedNotification("El match ya inicio");
+        std::string message = MessageFactory::getMatchStartedNotification(
+                "El match ya inicio");
         serverPlayer->sendData(message);
     } else {
         serverGame->setPlaying(true);
 
-        std::string message = MessageFactory::getStartMatchNotification(matchName);
+        std::string message = MessageFactory::getStartMatchNotification(
+                matchName);
         serverGame->notifyAll(message);
 
         //VEDR DESPUES COMO SINCRONIZAR PARA QUE NO ARRANQUE MUY ANTES
@@ -252,9 +283,11 @@ void Server::startMatch(int clientId, string matchName) {
 }
 
 void Server::sendUnavailableElementsToClient(int clientId, string matchName) {
-    std::list<std::string> elements = games.at(matchName)->getUnavailableElements();
+    std::list<std::string> elements = games.at(
+            matchName)->getUnavailableElements();
 
-    std::string message = MessageFactory::getUnavailableElementsNotification(elements);
+    std::string message = MessageFactory::getUnavailableElementsNotification(
+            elements);
 
     notifyTo(clientId, message);
 }
@@ -262,7 +295,8 @@ void Server::sendUnavailableElementsToClient(int clientId, string matchName) {
 std::vector<std::string> Server::getMatchesNames() {
     std::vector<std::string> matchesNames;
 
-    for (std::map<std::string, ServerGame *>::iterator it = games.begin(); it != games.end(); ++it) {
+    for (std::map<std::string, ServerGame *>::iterator it = games.begin();
+         it != games.end(); ++it) {
         matchesNames.push_back(it->first);
     }
 
@@ -270,7 +304,8 @@ std::vector<std::string> Server::getMatchesNames() {
 }
 
 void Server::notifyPlayerAdded(string message) {
-    std::cout << "Notificando a: " << players.size() << " jugadores" << std::endl;
+    std::cout << "Notificando a: " << players.size() << " jugadores"
+              << std::endl;
 
     for (std::pair<unsigned int, ServerPlayer *> player : players) {
         player.second->sendData(message);
@@ -279,26 +314,27 @@ void Server::notifyPlayerAdded(string message) {
 }
 
 void Server::removeClient(int id) {
-    std::cout << "GameServer: Matando al cliennte "<< id << std::endl;
+    std::cout << "GameServer: Matando al cliennte " << id << std::endl;
 
     mutexPlayers.lock();
 
-    ServerPlayer* sp = players.at(id);
+    ServerPlayer *sp = players.at(id);
 
-    if( sp->getStatus() == PLAYING ){
+    if (sp->getStatus() == PLAYING) {
 
-    }else if( sp->getStatus() == JOINED ){
+    } else if (sp->getStatus() == JOINED) {
         std::string gameId = sp->getGameId();
 
-        ServerGame* sg = games.at(gameId);
+        ServerGame *sg = games.at(gameId);
 
         sg->enableElements(id);
         sg->removePlayer(id);
 
-        std::cout<<"se saco jugador que estaba unido con id: "<<id<<std::endl;
-    }
-    else{
-        //VER DESPUES SI HAY ALGO QUE HACER CUANDO EL STATUS DEL CLIENTE ES NOTPLAYING
+        std::cout << "se saco jugador que estaba unido con id: " << id
+                  << std::endl;
+    } else {
+        // VER DESPUES SI HAY ALGO
+        // QUE HACER CUANDO EL STATUS DEL CLIENTE ES NOTPLAYING
     }
 
     sp->kill();

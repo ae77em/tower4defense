@@ -52,10 +52,10 @@ void Listener::run(){
                     break;
                 }
                 case SERVER_NOTIFICATION_NEW_MATCH:{
-                    std::string mapName = MessageFactory::getMapName(message);
+                    int clientId = MessageFactory::getClientId(message);
                     std::string matchName = MessageFactory::getMatchName(message);
 
-                    gameAccess.addMatchToCombo(mapName, matchName);
+                    gameAccess.addMatchToCombo(clientId, matchName);
                     break;
                 }
                 case SERVER_NOTIFICATION_GET_UNAVAILABLE_ELEMENTS:{

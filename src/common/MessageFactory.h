@@ -26,12 +26,8 @@ public:
     static std::string getGamesRequest(int clientId);
     static std::string getGamesNotification(int clientId,std::string games);
 
-    static std::string getCreateMatchNotification(int gameId,int clientIdWhoCreatedGame);
-
-    static std::string getNewMatchNotification(std::string matchName);
-    static std::string getNewMatchErrorNotification(std::string matchName,std::string cause);
-
-
+    static std::string getNewMatchErrorNotification(int clientId, std::string matchName,
+                                                        std::string cause);
 
     /*
      * Retorna la operación asociada al request que se hace con el Json.
@@ -63,7 +59,7 @@ public:
      * y: coordenada y donde se quiere colocar la torre.
      * isMark: es true si se está marcando, false para 'desmarcar'.
      */
-    std::string getMarkTileRequest(int clientId, int x, int y);
+    static std::string getMarkTileRequest(int clientId, int x, int y);
 
     /*
      * Retorna la operación asociada al request que se hace con el Json.
@@ -97,7 +93,9 @@ public:
     /*
      * Retorna la notificación informando de una nueva partida fue creada.
      */
-    static std::string getNewMatchNotification(Message &request, std::set<std::string> &matches);
+    static std::string
+    getNewMatchNotification(int clientId, std::string matchName);
+
 
     /*
      * Retorna el pedido para crear una nueva partida.
