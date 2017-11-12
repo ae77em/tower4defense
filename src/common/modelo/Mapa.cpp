@@ -38,6 +38,7 @@ std::vector<std::vector<Point>>& Mapa::getCaminos() {
 
 void Mapa::agregarCamino(const std::vector<Point> &camino) {
     caminos.push_back(camino);
+    enemigos.emplace_back();
 }
 
 std::string Mapa::serialize() {
@@ -65,4 +66,12 @@ Mapa::Mapa(std::string json) {
 
     std::string str_casillas = root["tiles"].asString();
     casillas = std::vector<char>(str_casillas.begin(), str_casillas.end());
+}
+
+std::vector<std::vector<model::Enemy>>& Mapa::getEnemigos() {
+    return enemigos;
+}
+
+void Mapa::agregarEnemigo(int indice_camino, const Enemy &e) {
+    enemigos.at(indice_camino).push_back(e);
 }
