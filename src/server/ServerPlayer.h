@@ -1,9 +1,13 @@
 #ifndef TP4_TOWERDEFENSE_SERVERPLAYER_H
 #define TP4_TOWERDEFENSE_SERVERPLAYER_H
 
-#define PLAYING 1
-#define NOT_PLAYING 2
-#define JOINED 3
+enum MatchStatus {
+    PLAYING = 1,
+    NOT_PLAYING = 2,
+    JOINED = 3
+};
+
+
 
 #include <iostream>
 
@@ -17,12 +21,12 @@ private:
     std::string gameId;
     unsigned int status;
     std::vector<std::string> elements;
+
 public:
     std::vector<std::string> & getElements();
 
     void setElements(vector<string> elements);
 
-public:
     explicit ServerPlayer(ClientRequestHandler *crh, unsigned int aId);
 
     unsigned int getId();

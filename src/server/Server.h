@@ -19,14 +19,14 @@
 class Server : public Thread {
 
 private:
-    std::set<std::string> matches;
+    std::set<std::string> matchesNames;
     std::mutex m;
 
     std::mutex& mutexPlayers;
 
     ThreadedQueue<Message>& queueMessagesClient;
     std::map<unsigned int,ServerPlayer*> players;
-    std::map<std::string,ServerGame*> games;
+    std::map<std::string,ServerGame*> matches;
 
 public:
     Server(std::mutex& m,ThreadedQueue<Message>& tq);
@@ -48,7 +48,7 @@ public:
 
     /*
      * Notifica a todos los clientes el mensaje pasado por parámetro.
-     * Este método activa el mutex, y lo libera al terminar.
+     * Este método activa el mutexPlayers, y lo libera al terminar.
      * messsage: mensaje que se debe enviar a los clientes.
      * */
     void notifyAll(std::string message);
@@ -76,6 +76,8 @@ private:
     void notifyAllExpeptTo(int clientId, std::string message);
 
     void notifyPlayerAdded(string matchName);
+
+    void markTile(std::string matchName, int x, int y);
 };
 
 

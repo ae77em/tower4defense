@@ -8,7 +8,7 @@ Server::Server(std::mutex &m, ThreadedQueue<Message> &tq)
 
 
 unsigned int Server::getAmountGames() {
-    return games.size();
+    return matches.size();
 }
 
 void Server::createGame(int clientId, string matchName) {
@@ -32,7 +32,7 @@ void Server::addPlayerToGame(int clientId, std::string mName,
                              vector<string> elements) {
     mutexPlayers.lock();
 
-    ServerGame *serverGame = games.at(mName);
+    ServerGame *serverGame = matches.at(mName);
     ServerPlayer *serverPlayer = players.at(clientId);
 
     //chequeo si no se lleno antes
@@ -91,13 +91,13 @@ void Server::notifyAllExpeptTo(int clientId, std::string message) {
 }
 
 void Server::addPlayerToMatch(std::string nameMatch, ServerPlayer *sp) {
-    games.at(nameMatch)->addPlayer(sp);
+    matches.at(nameMatch)->addPlayer(sp);
 }
 
 //crea el juego y retorna el id del mismo, el id es el nombre del match...
 bool Server::createMatch(std::string nameMatch) {
-    if (games.find(nameMatch) == games.end()) {
-        games.insert(
+    if (matches.find(nameMatch) == matches.end()) {
+        matches.insert(
                 std::pair<std::string, ServerGame *>(nameMatch,
                                                      new ServerGame(
                                                              mutexPlayers
@@ -210,15 +210,19 @@ void Server::run() {
 
                     /* gaming requests: */
                 case CLIENT_REQUEST_PUT_TOWER: {
-                    response = MessageFactory::getPutTowerNotification(
+                    //int clientId = request.getAsInt("clientId");
+                    std::string matchName = request.getAsString("matchName");
+                    MessageFactory::getPutTowerNotification(
                             messageRequest);
                     notifyAll(response);
                     break;
                 }
                 case CLIENT_REQUEST_MARK_TILE: {
-                    response = MessageFactory::getMarkTileNotification(
-                            messageRequest);
-                    notifyAll(response);
+                    std::string matchName = request.getAsString("matchName");
+                    int x = request.getAsInt("xCoord");
+                    int y = request.getAsInt("yCoord");
+
+                    markTile(matchName, x, y);
                     break;
                 }
                 case SERVER_NOTIFICATION_END_CLIENT_CONNECTION: {
@@ -261,7 +265,7 @@ void Server::run() {
 
 
 void Server::startMatch(int clientId, string matchName) {
-    ServerGame *serverGame = games.at(matchName);
+    ServerGame *serverGame = matches.at(matchName);
 
     if (serverGame->isPlaying()) {
         //reboto pedido
@@ -283,7 +287,7 @@ void Server::startMatch(int clientId, string matchName) {
 }
 
 void Server::sendUnavailableElementsToClient(int clientId, string matchName) {
-    std::list<std::string> elements = games.at(
+    std::list<std::string> elements = matches.at(
             matchName)->getUnavailableElements();
 
     std::string message = MessageFactory::getUnavailableElementsNotification(
@@ -295,8 +299,8 @@ void Server::sendUnavailableElementsToClient(int clientId, string matchName) {
 std::vector<std::string> Server::getMatchesNames() {
     std::vector<std::string> matchesNames;
 
-    for (std::map<std::string, ServerGame *>::iterator it = games.begin();
-         it != games.end(); ++it) {
+    for (std::map<std::string, ServerGame *>::iterator it = matches.begin();
+         it != matches.end(); ++it) {
         matchesNames.push_back(it->first);
     }
 
@@ -325,7 +329,7 @@ void Server::removeClient(int id) {
     } else if (sp->getStatus() == JOINED) {
         std::string gameId = sp->getGameId();
 
-        ServerGame *sg = games.at(gameId);
+        ServerGame *sg = matches.at(gameId);
 
         sg->enableElements(id);
         sg->removePlayer(id);
@@ -343,4 +347,9 @@ void Server::removeClient(int id) {
     players.erase(id);
 
     mutexPlayers.unlock();
+}
+
+void Server::markTile(std::string matchName, int x, int y) {
+    ServerGame *serverGame = matches.at(matchName);
+    serverGame->markTile(x, y);
 }

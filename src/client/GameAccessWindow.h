@@ -118,7 +118,7 @@ public:
 
     void setJoinedToMatch(int clientId, std::string matchName);
 
-    void startMatch();
+    void startMatch(std::string matchName);
 
 private:
     void setCreateMatchButtonEnableStatus();

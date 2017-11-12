@@ -201,13 +201,14 @@ std::string MessageFactory::getPutTowerNotification(Message &request) {
     return toReturn;
 }
 
-std::string MessageFactory::getMarkTileRequest(int clientId, int x, int y) {
+std::string MessageFactory::getMarkTileRequest(std::string matchName, int x,
+                                               int y) {
     std::string toReturn;
     Json::Value root(Json::objectValue);
     Message message;
 
     root[OPERATION_KEY] = CLIENT_REQUEST_MARK_TILE;
-    root[CLIENT_ID_KEY] = clientId;
+    root[MATCH_NAME_KEY] = matchName;
     root[XCOORD_KEY] = x;
     root[YCOORD_KEY] = y;
 
@@ -218,14 +219,16 @@ std::string MessageFactory::getMarkTileRequest(int clientId, int x, int y) {
     return toReturn;
 }
 
-std::string MessageFactory::getMarkTileNotification(Message &request) {
-    Json::Value &root = request.getData();
+std::string MessageFactory::getMarkTileNotification(int x, int y) {
+    Json::Value root = Json::objectValue;
     std::string toReturn;
     Message message;
 
     Json::Value responseRoot(root);
 
     responseRoot[OPERATION_KEY] = SERVER_NOTIFICATION_MARK_TILE;
+    responseRoot[XCOORD_KEY] = x;
+    responseRoot[YCOORD_KEY] = y;
 
     message.setData(responseRoot);
     toReturn = message.serialize();
@@ -271,13 +274,12 @@ MessageFactory::getNewMatchNotification(int clientId, std::string matchName) {
 }
 
 std::string MessageFactory::getNewMatchErrorNotification(int clientId,
-                                              std::string matchName,
-                                              std::string errorMessage) {
+                                                         std::string matchName,
+                                                         std::string errorMessage) {
     Json::Value responseRoot;
     Message message;
 
     responseRoot[OPERATION_KEY] = SERVER_NOTIFICATION_NEW_MATCH;
-    responseRoot[CLIENT_ID_KEY] = clientId;
     responseRoot[MATCH_NAME_KEY] = matchName;
     responseRoot["errorMessage"] = errorMessage;
 
@@ -619,3 +621,20 @@ MessageFactory::getCastSpellRequest(int clientId, int x, int y) {
 
     return toReturn;
 }
+
+std::string MessageFactory::getMarkTileGameRequest(int x, int y) {
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = GAME_REQUEST_MARK_TILE;
+    root[XCOORD_KEY] = x;
+    root[YCOORD_KEY] = y;
+
+    message.setData(root);
+
+    toReturn = message.serialize();
+
+    return toReturn;
+}
+

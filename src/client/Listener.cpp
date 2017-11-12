@@ -64,9 +64,9 @@ void Listener::run(){
                     break;
                 }
                 case SERVER_NOTIFICATION_START_MATCH:{
-                    std::list<std::string> elements = MessageFactory::getElements(message);
+                    std::string matchName = MessageFactory::getMatchName(message);
 
-                    gameAccess.startMatch();
+                    gameAccess.startMatch(matchName);
                     break;
                 }
                 case SERVER_NOTIFICATION_ENTER_EXISTING_MATCH:{

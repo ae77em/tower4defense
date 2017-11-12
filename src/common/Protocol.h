@@ -59,6 +59,13 @@ enum ServerPlayingNotifications {
     SERVER_NOTIFICATION_MATCH_ENDED = 305
 };
 
+enum GameRequestsPlaying {
+    GAME_REQUEST_PUT_TOWER = 400,
+    GAME_REQUEST_MARK_TILE = 401,
+    GAME_REQUEST_CAST_SPELL = 402,
+    GAME_REQUEST_TOWER_INFO = 403
+};
+
 enum TypeOfMoveable {
     ENEMY_ABMONIBLE = 0,
     ENEMY_BLOOD_HAWK = 1,

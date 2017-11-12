@@ -390,12 +390,15 @@ bool GameAccessWindow::isNotValidClientId() {
     return clientId == -1;
 }
 
-void GameAccessWindow::startMatch() {
+void GameAccessWindow::startMatch(std::string matchName) {
     loadMutex.lock();
 
     gameStarted = true;
     pWindow->hide();
-    game = new GamePlayWindow(server, &toReceive, &toSend, clientId);
+
+    game = new GamePlayWindow(server, &toReceive, &toSend, clientId,
+                              std::vector<std::string>(),
+                              matchName);
 
     loadMutex.unlock();
 

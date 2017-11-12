@@ -59,12 +59,12 @@ public:
      * y: coordenada y donde se quiere colocar la torre.
      * isMark: es true si se está marcando, false para 'desmarcar'.
      */
-    static std::string getMarkTileRequest(int clientId, int x, int y);
+    static std::string getMarkTileRequest(std::string matchName, int x, int y);
 
     /*
      * Retorna la operación asociada al request que se hace con el Json.
      */
-    static std::string getMarkTileNotification(Message &request);
+    static std::string getMarkTileNotification(int x, int y);
 
     static std::string getCreateMatchRequest(int clientId, std::string mapName);
 
@@ -161,6 +161,8 @@ public:
     static std::string getTowerInfoRequest(int clientId, int towerId);
 
     static std::string getCastSpellRequest(int clientId, int x, int y);
+
+    static std::string getMarkTileGameRequest(int x, int y);
 };
 
 

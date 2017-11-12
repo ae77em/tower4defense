@@ -13,9 +13,9 @@ class ServerGame {
 private:
     std::vector<ServerPlayer*> players;
     //lo usaria para bloquear un jugador
-    std::mutex& mutex;
+    std::mutex& mutexPlayers;
 
-    //lo uso para bloquear la lista deacciones a aplicar sobre el juego
+    //lo uso para bloquear la lista de acciones a aplicar sobre el juego
     std::mutex mutexActionsGame;
     ThreadedQueue<Message> queueMessagesGame;
     WorkerLoopGame workerLoopGame;
@@ -28,14 +28,15 @@ private:
     std::list<std::string> elements;
 
 public:
+    ServerGame(std::mutex& mutex);
+
+    bool elementsAreAvailables(vector<string> elements);
+
+    void addPlayer(ServerPlayer* sp);
+
     bool isPlaying() const;
 
     void setPlaying(bool playing);
-
-public:
-    ServerGame(std::mutex& mutex);
-    bool elementsAreAvailables(vector<string> elements);
-    void addPlayer(ServerPlayer* sp);
 
     bool isFull();
 
@@ -56,6 +57,8 @@ public:
     void enableElements(int idPlayer);
 
     void removePlayer(int i);
+
+    void markTile(int x, int y);
 };
 
 

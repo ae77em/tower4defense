@@ -6,6 +6,8 @@ class GameAction {
 public:
     GameAction();
     ~GameAction();
+
+
 };
 
 

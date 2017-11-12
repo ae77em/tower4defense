@@ -10,12 +10,18 @@
 #include "../common/Protocol.h"
 #include "../sdl/enemies/GreenDaemon.h"
 #include "../sdl/enemies/Zombie.h"
+#include "../common/TextMessage.h"
 
-GamePlayWindow::GamePlayWindow(Socket *s,
-                               SharedBuffer *in,
-                               SharedBuffer *out,
-                               int cId)
-        : server(s), toReceive(in), toSend(out), clientId(cId) {
+GamePlayWindow::GamePlayWindow(Socket *s, SharedBuffer *in,
+                               SharedBuffer *out, int cId,
+                               std::vector<std::string> elems,
+                               std::string mn)
+        : server(s),
+          toReceive(in),
+          toSend(out),
+          clientId(cId),
+          playerElements(elems),
+          matchName(mn){
     abmonibleTexture = new LTexture();
     blookHawkTexture = new LTexture();
     goatmanTexture = new LTexture();
@@ -514,11 +520,15 @@ void GamePlayWindow::handleLeftButtonClick(Point &point) {
         }
     } else if (typeOfTowerToPut != -1) {
         if (isFirmTerrain(point)) {
+            typeOfTowerToPut = 1;
             std::string request =
                     MessageFactory::getPutTowerRequest(clientId,
                                                      typeOfTowerToPut,
                                                      point.x,
                                                      point.y);
+
+            std::cout << "hice click en agregar torre...." << std::endl;
+
             toSend->addData(request);
         }
     } else if (isCastingSpells){
@@ -539,11 +549,19 @@ void GamePlayWindow::handleLeftButtonClick(Point &point) {
 
 void GamePlayWindow::handleRightButtonClick(Point point) {
     if (isFirmTerrain(point)) {
+        std::cout << "******************..." << std::endl;
+        std::cout << "******************..." << std::endl;
+        std::cout << "Mando mensaje para marcar tile..." << std::endl;
+        std::cout << "******************..." << std::endl;
+        std::cout << "******************..." << std::endl;
+
         std::string request =
-                MessageFactory::getMarkTileRequest(clientId,
+                MessageFactory::getMarkTileRequest(matchName,
                                                    point.x,
                                                    point.y);
-        toSend->addData(request);
+
+        TextMessage toSend(request);
+        toSend.sendTo(reinterpret_cast<Socket &>(*server));
     }
 }
 

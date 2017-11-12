@@ -1,7 +1,7 @@
 #include "ServerPlayer.h"
 
 ServerPlayer::ServerPlayer(ClientRequestHandler* crh, unsigned int aId)
-        : clientRequestHandler(crh), id(aId),status(NOT_PLAYING){ }
+        : clientRequestHandler(crh), id(aId), status(NOT_PLAYING){ }
 
 unsigned int ServerPlayer::getId(){
     return id;

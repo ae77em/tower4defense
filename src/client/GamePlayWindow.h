@@ -33,8 +33,10 @@ static const int TOWBER_BUTTONS_HEIGHT = 80;
 
 class GamePlayWindow : public Thread {
 public:
-    GamePlayWindow(Socket *socket, SharedBuffer *in, SharedBuffer *out,
-                   int clientId);
+    GamePlayWindow(Socket *socket, SharedBuffer *in,
+                       SharedBuffer *out, int clientId,
+                       std::vector<std::string> playerElements,
+                       std::string matchName);
 
     ~GamePlayWindow();
 
@@ -123,6 +125,8 @@ private:
 
     std::map<int, Horde *> hordes;
     std::vector<Tower *> towers;
+    std::vector<std::string> playerElements;
+    std::string matchName;
 
     TTF_Font *font;
     int typeOfTowerToPut;

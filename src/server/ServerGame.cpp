@@ -1,10 +1,11 @@
 #include "ServerGame.h"
 #include "../sdl/Constants.h"
 #include "../common/Protocol.h"
+#include "../common/MessageFactory.h"
 
 #include <algorithm>
 
-ServerGame::ServerGame(std::mutex& m):mutex(m),
+ServerGame::ServerGame(std::mutex& m):mutexPlayers(m),
                                       workerLoopGame(players,actions,mutexActionsGame),
                                       listenerLoopGame(actions,mutexActionsGame,queueMessagesGame) {
     elements.push_back(STR_WATER);
@@ -97,4 +98,15 @@ void ServerGame::enableElements(int idPlayer) {
 
 void ServerGame::removePlayer(int i) {
     //QUITAR JUGADOR DEL HASH
+}
+
+void ServerGame::markTile(int x, int y){
+    std::string markTileStr = MessageFactory::getMarkTileNotification(x, y);
+    Message message;
+
+    message.deserialize(markTileStr);
+
+    mutexPlayers.lock();
+    notifyAll(message.serialize());
+    mutexPlayers.unlock();
 }
