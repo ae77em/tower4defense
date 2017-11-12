@@ -13,11 +13,13 @@ private:
     std::list<GameAction*>& actions;
     std::mutex& mutexActions;
     ThreadedQueue<Message>& queueMessagesGame;
+    bool& endSignal;
 
 public:
     ListenerLoopGame(std::list<GameAction*>& a,
                      std::mutex& m,
-                     ThreadedQueue<Message>& q);
+                     ThreadedQueue<Message>& q,
+                        bool& endSignal);
 
 
     void run();

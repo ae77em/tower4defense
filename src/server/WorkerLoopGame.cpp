@@ -11,12 +11,14 @@
 
 //HAY QUE AGREGAR MUTEX PLAYERD PARA QUE BLOQUEE LA LISTA DE SERVER PLAYERS
 //PUEDE SER QUE SE ESTE REMOVIENDO ALGUNO EN OTRO HILO Y LUEGO EXPLOTE
-WorkerLoopGame::WorkerLoopGame(std::vector<ServerPlayer*>& p,
+WorkerLoopGame::WorkerLoopGame(std::map<int,ServerPlayer*>& p,
                                std::list<GameAction*>& a,
-                               std::mutex& m):
+                               std::mutex& m,
+                                bool& b):
                                                 players(p),
                                                 actions(a),
-                                                mutexActions(m){
+                                                mutexActions(m),
+                                                endSignal(b){
 }
 
 void WorkerLoopGame::run(){
@@ -30,6 +32,15 @@ void WorkerLoopGame::run(){
         std::list<GameAction *> actionsGame;
 
         mutexActions.lock();
+        //GRONCHADA PARA REFACTORIZAR
+        if(endSignal == true){
+            mutexActions.unlock();
+            std::cout << "WorkerLoopGame: Me acaban de avisar que se termino todo que bueno" << std::endl;
+
+            break;
+
+        }
+
         for (GameAction* a : this->actions) {
             actionsGame.push_back(a);
         }
@@ -59,8 +70,8 @@ void WorkerLoopGame::run(){
         statusGame = getGameStatus();
 
         //NOTIFICO EL ESTADO DEL JUEGO A TODOS LO JUGADORES LUEGO DE LA MODIFICACION DE MODELO
-        for(ServerPlayer* s : players){
-            s->sendData(statusGame);
+        for (auto it=players.begin(); it!=players.end(); ++it){
+            it->second->sendData(statusGame);
         }
 
         ciclos--;
@@ -68,11 +79,13 @@ void WorkerLoopGame::run(){
         //std::this_thread::sleep_for(std::chrono::seconds(0.5));
     }
 
+    //ESTA PARTE NO SE SI TIENE SENTIDO, DEBERIA DEE HABER SALIDO TODOS LOS CLIENTES
+    //DESPUES REVEER
     std::cout << "WorkerLoopGame: Hilo donde existe la partida se termino" << std::endl;
     std::cout << "WorkerLoopGame: Aviso que terminó la partida." << std::endl;
     statusGame = MessageFactory::getMatchEndedNotification();
-    for(ServerPlayer* s : players){
-        s->sendData(statusGame);
+    for (auto it=players.begin(); it!=players.end(); ++it){
+        it->second->sendData(statusGame);
     }
 }
 

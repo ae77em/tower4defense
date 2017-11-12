@@ -11,9 +11,10 @@
 
 class ServerGame {
 private:
-    std::vector<ServerPlayer*> players;
+    std::map<int,ServerPlayer*> players;
     //lo usaria para bloquear un jugador
     std::mutex& mutexPlayers;
+    bool endSignal;
 
     //lo uso para bloquear la lista de acciones a aplicar sobre el juego
     std::mutex mutexActionsGame;
@@ -30,7 +31,7 @@ private:
 public:
     ServerGame(std::mutex& mutex);
 
-    bool elementsAreAvailables(vector<string> elements);
+    bool elementsAreAvailables(list<string> elements);
 
     void addPlayer(ServerPlayer* sp);
 
@@ -59,6 +60,12 @@ public:
     void removePlayer(int i);
 
     void markTile(int x, int y);
+
+    int getAmountPlayers();
+
+    string getName();
+
+    void kill();
 };
 
 

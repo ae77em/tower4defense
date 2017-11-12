@@ -310,7 +310,7 @@ MessageFactory::getMatchNotAvailableNotification(std::string matchName,
 std::string
 MessageFactory::getAddPlayerToMatchNotification(std::string matchName,
                                                 int clientIdWasAdded,
-                                                std::vector<std::string> elements) {
+                                                std::list<std::string> elements) {
     std::string toReturn;
     Json::Value root(Json::objectValue);
     Message message;

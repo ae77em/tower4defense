@@ -27,11 +27,11 @@ unsigned int ServerPlayer::getStatus(){
     return this->status;
 }
 
-std::vector<std::string> & ServerPlayer::getElements() {
+std::list<std::string> & ServerPlayer::getElements() {
     return elements;
 }
 
-void ServerPlayer::setElements(std::vector<std::string> els) {
+void ServerPlayer::setElements(std::list<std::string> els) {
     elements = els;
 }
 

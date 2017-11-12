@@ -10,16 +10,18 @@
 
 class WorkerLoopGame : public Thread{
 private:
-    std::vector<ServerPlayer*>& players;
+    std::map<int,ServerPlayer*>& players;
     std::list<GameAction*>& actions;
     std::mutex& mutexActions;
     std::vector<ActorEnemy*> gameActors;
     std::map<int,std::vector<ActorEnemy*>> hordas;
+    bool& endSignal;
 
 public:
-    WorkerLoopGame(std::vector<ServerPlayer*>& p,
+    WorkerLoopGame(std::map<int,ServerPlayer*>& p,
                    std::list<GameAction*>& a,
-                   std::mutex& m);
+                   std::mutex& m,
+                    bool& endSignal);
 
     void run();
 

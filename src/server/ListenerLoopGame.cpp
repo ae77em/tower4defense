@@ -6,10 +6,12 @@
 
 ListenerLoopGame::ListenerLoopGame(std::list<GameAction *> &a,
                                    std::mutex &m,
-                                   ThreadedQueue<Message> &q) :
+                                   ThreadedQueue<Message> &q,
+                                    bool& end) :
         actions(a),
         mutexActions(m),
-        queueMessagesGame(q) {
+        queueMessagesGame(q),
+        endSignal(end){
 
 }
 
@@ -53,5 +55,10 @@ void ListenerLoopGame::run() {
         std::cout << "ListenerLoopGame: se rompio cola compartida de acitons"
                   << std::endl;
     }
+
+    //nose si esta parte sirve,
+    mutexActions.lock();
+    endSignal = true;
+    mutexActions.unlock();
     std::cout << "ListenerLoopGame: Se murio" << std::endl;
 }

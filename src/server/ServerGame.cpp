@@ -6,8 +6,9 @@
 #include <algorithm>
 
 ServerGame::ServerGame(std::mutex& m):mutexPlayers(m),
-                                      workerLoopGame(players,actions,mutexActionsGame),
-                                      listenerLoopGame(actions,mutexActionsGame,queueMessagesGame) {
+                                      endSignal(false),
+                                      workerLoopGame(players,actions,mutexActionsGame,endSignal),
+                                      listenerLoopGame(actions,mutexActionsGame,queueMessagesGame,endSignal) {
     elements.push_back(STR_WATER);
     elements.push_back(STR_AIR);
     elements.push_back(STR_FIRE);
@@ -15,13 +16,16 @@ ServerGame::ServerGame(std::mutex& m):mutexPlayers(m),
 }
 
 void ServerGame::addPlayer(ServerPlayer* sp){
-    players.push_back(sp);
+    players.insert(
+            std::pair<int, ServerPlayer *>(sp->getId(),sp)
+    );
 }
 
-bool ServerGame::elementsAreAvailables(vector<string> elements) {
-    std::vector<std::string> othersElements;
-    for (ServerPlayer *p : players){
-        othersElements = p->getElements();
+bool ServerGame::elementsAreAvailables(list<string> elements) {
+    std::list<std::string> othersElements;
+    for (auto it=players.begin(); it!=players.end(); ++it){
+        othersElements = it->second->getElements();
+
         for (std::string oe : othersElements) {
             if(std::find(elements.begin(), elements.end(), oe) != elements.end()) {
                 return false;
@@ -45,8 +49,8 @@ void ServerGame::startGame() {
 }
 
 void ServerGame::changeStatusPlayesOnGame(int status) {
-    for(ServerPlayer* sp : players){
-        sp->setStatus(status);
+    for (auto it=players.begin(); it!=players.end(); ++it){
+        it->second->setStatus(status);
     }
 }
 
@@ -55,8 +59,8 @@ void ServerGame::addEventMessage(Message m){
 }
 
 void ServerGame::notifyAll(string message) {
-    for(ServerPlayer* sp : players){
-        sp->sendData(message);
+    for (auto it=players.begin(); it!=players.end(); ++it){
+        it->second->sendData(message);
     }
 }
 
@@ -78,26 +82,27 @@ std::list<std::string> ServerGame::getElements() {
 
 std::list<std::string> ServerGame::getUnavailableElements() {
     std::list<std::string> toReturn;
-    std::vector<std::string> playerElements;
+    std::list<std::string> playerElements;
 
-    for(ServerPlayer* sp : players){
-        playerElements = sp->getElements();
+    for (auto it=players.begin(); it!=players.end(); ++it){
+        playerElements = it->second->getElements();
         for (std::string el : playerElements){
             toReturn.push_back(el);
         }
     }
-
     return toReturn;
 }
 
 void ServerGame::enableElements(int idPlayer) {
-    //Cambiar a hash el contenedor de jugadores para remover por elementos ID
-    //TOMAR ELEMENTOS PARA CARGARLOS A LA LISTA DE ELMENTOS
+    ServerPlayer* sp = players.at(idPlayer);
 
+    std::list<std::string>& elementsRecovered = sp->getElements();
+
+    this->elements.merge(elementsRecovered);
 }
 
 void ServerGame::removePlayer(int i) {
-    //QUITAR JUGADOR DEL HASH
+    players.erase(i);
 }
 
 void ServerGame::markTile(int x, int y){
@@ -109,4 +114,16 @@ void ServerGame::markTile(int x, int y){
     mutexPlayers.lock();
     notifyAll(message.serialize());
     mutexPlayers.unlock();
+}
+
+int ServerGame::getAmountPlayers() {
+    return players.size();
+}
+
+void ServerGame::kill() {
+
+    queueMessagesGame.close();
+
+    listenerLoopGame.join();
+    workerLoopGame.join();
 }

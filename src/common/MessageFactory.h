@@ -106,7 +106,7 @@ public:
 
     static std::string getAddPlayerToMatchNotification(std::string gameId,
                                                        int clientIdWasAdded,
-                                                       std::vector<std::string> elements);
+                                                       std::list<std::string> elements);
 
     static std::string getAddPlayerAndRunMatchNotification(std::string gameID, int clientId);
 

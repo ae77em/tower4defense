@@ -3,6 +3,7 @@
 
 
 #include "../common/Message.h"
+#include <list>
 
 class Request {
 private:
@@ -14,7 +15,7 @@ public:
 
     int getAsInt(std::string key);
 
-    std::vector<std::string> getAsStringVector(std::string key);
+    std::list<std::string> getAsStringVector(std::string key);
 };
 
 

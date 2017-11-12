@@ -29,7 +29,7 @@ void Server::createGame(int clientId, string matchName) {
 }
 
 void Server::addPlayerToGame(int clientId, std::string mName,
-                             vector<string> elements) {
+                             list<string> elements) {
     mutexPlayers.lock();
 
     ServerGame *serverGame = matches.at(mName);
@@ -165,7 +165,7 @@ void Server::run() {
                 case CLIENT_REQUEST_ENTER_MATCH: {
                     int clientId = request.getAsInt("clientId");
                     std::string nameMatch = request.getAsString("matchName");
-                    std::vector<std::string> elements =
+                    std::list<std::string> elements =
                             request.getAsStringVector("elements");
 
                     addPlayerToGame(clientId, nameMatch, elements);
@@ -194,7 +194,7 @@ void Server::run() {
                 case CLIENT_REQUEST_ENTER_EXISTING_MATCH: {
                     int clientId = request.getAsInt("clientId");
                     std::string matchName = request.getAsString("matchName");
-                    std::vector<std::string> elements =
+                    std::list<std::string> elements =
                             request.getAsStringVector("elements");
 
                     addPlayerToGame(clientId, matchName, elements);
@@ -325,6 +325,19 @@ void Server::removeClient(int id) {
     ServerPlayer *sp = players.at(id);
 
     if (sp->getStatus() == PLAYING) {
+        std::string gameId = sp->getGameId();
+
+        ServerGame *sg = matches.at(gameId);
+
+        sg->removePlayer(id);
+
+        if(sg->getAmountPlayers() == 0){
+            std::cout << "Server: limpiando partida: "<< gameId << "aguardo salida jajaja espero que no sea eterna" << std::endl;
+
+            sg->kill();
+            //delete sg;
+            matches.erase(gameId);
+        }
 
     } else if (sp->getStatus() == JOINED) {
         std::string gameId = sp->getGameId();

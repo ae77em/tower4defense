@@ -20,12 +20,12 @@ private:
     unsigned int id;
     std::string gameId;
     unsigned int status;
-    std::vector<std::string> elements;
+    std::list<std::string> elements;
 
 public:
-    std::vector<std::string> & getElements();
+    std::list<std::string> & getElements();
 
-    void setElements(vector<string> elements);
+    void setElements(list<string> elements);
 
     explicit ServerPlayer(ClientRequestHandler *crh, unsigned int aId);
 

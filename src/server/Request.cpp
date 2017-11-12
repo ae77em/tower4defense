@@ -16,9 +16,9 @@ int Request::getAsInt(std::string key){
     return root[key].asInt();
 }
 
-std::vector<std::string> Request::getAsStringVector(std::string key){
+std::list<std::string> Request::getAsStringVector(std::string key){
     Json::Value &root = requestMessage.getData();
-    std::vector<std::string> elements;
+    std::list<std::string> elements;
 
     for (Json::Value &map : root[key]){
         elements.push_back(map.asString());
