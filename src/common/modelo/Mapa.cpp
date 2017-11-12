@@ -47,9 +47,18 @@ std::string Mapa::serialize() {
     root["width"] = extension_x;
     root["height"] = extension_y;
 
+    // Serializar las casillas
     std::string string_casillas(casillas.data(), extension_x * extension_y);
     root["tiles"] = string_casillas;
 
+    // Serializar los caminos
+    for (const auto& camino : caminos) {
+        Json::Value path;
+        for (const auto& point : camino) path.append(point.serialize());
+        root["paths"].append(path);
+    }
+
+    // Generar string a partir de Json::Value
     Json::StreamWriterBuilder builder;
     builder["commentStyle"] = "None";
     builder["indentation"] = "    ";
@@ -64,8 +73,17 @@ Mapa::Mapa(std::string json) {
     extension_x = root["width"].asUInt();
     extension_y = root["height"].asUInt();
 
+    // Deserializar las casillas
     std::string str_casillas = root["tiles"].asString();
     casillas = std::vector<char>(str_casillas.begin(), str_casillas.end());
+
+    // Deserializar los caminos
+    for (const auto& path : root["paths"]) {
+        caminos.emplace_back();
+        auto &camino = caminos.back();
+        for (const auto& point : path)
+            camino.push_back(Point::deserialize(point));
+    }
 }
 
 std::vector<std::vector<model::Enemy>>& Mapa::getEnemigos() {
