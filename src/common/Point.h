@@ -1,19 +1,15 @@
 #ifndef TP4_TOWERDEFENSE_POINT_H
 #define TP4_TOWERDEFENSE_POINT_H
 
+#include <jsoncpp/json/json.h>
 
 struct Point {
-public:
-    Point(int x, int y){
-        this->x = x;
-        this->y = y;
-    }
+    Point(int x, int y);
 
-    ~Point(){};
+    Json::Value serialize() const;
+    static Point deserialize(const Json::Value &s);
 
-    bool isPositive(){
-        return x >= 0 and y >= 0;
-    }
+    bool isPositive();
 
     int x;
     int y;
