@@ -21,6 +21,10 @@ GamePlayWindow::GamePlayWindow(Socket *s,
     greenDaemonTexture = new LTexture();
     spectreTexture = new LTexture();
     zombieTexture = new LTexture();
+
+    typeOfTowerToPut = -1;
+    towerIdThatRequiresInfo = -1;
+    isCastingSpells = false;
 }
 
 GamePlayWindow::~GamePlayWindow() {
@@ -458,27 +462,59 @@ GamePlayWindow::handleMouseEvents(SDL_Rect camera, SDL_Event e) {
     }
 }
 
-void GamePlayWindow::handleLeftButtonClick(const Point &point) const {
+void GamePlayWindow::handleLeftButtonClick(Point &point) {
     int mousePosX, mousePosY;
     SDL_GetMouseState(&mousePosX, &mousePosY);
 
-    std::string request;
-    if ((mousePosX >= 1 && mousePosX <= 321) &&
-        (mousePosY >= 1 && mousePosY <= 81)) {
+    if (isClickOnTowerButton(mousePosX, mousePosY)) {
         if (mousePosX <= 80) {
-            std::cout << "click en 1er boton" << std::endl;
+            //BUTTON_TOWER_AIR
+            std::cout << "click en BUTTON_TOWER_AIR" << std::endl;
         } else if (mousePosX <= 160) {
-            std::cout << "click en 2do boton" << std::endl;
+            //BUTTON_TOWER_FIRE
+            std::cout << "click en BUTTON_TOWER_FIRE" << std::endl;
         } else if (mousePosX <= 240) {
-            std::cout << "click en 3er boton" << std::endl;
+            //BUTTON_TOWER_WATER
+            std::cout << "click en BUTTON_TOWER_WATER" << std::endl;
         } else {
-            std::cout << "click en 4to boton" << std::endl;
+            //BUTTON_TOWER_EARTH
+            std::cout << "click en BUTTON_TOWER_EARTH" << std::endl;
         }
-    } else {
-        request = MessageFactory::getPutTowerRequest(clientId, point.x, point.y,
-                                                     true);
+    } else if (typeOfTowerToPut != -1) {
+        if (isFirmTerrain(point)) {
+            std::string request =
+                    MessageFactory::getPutTowerRequest(clientId,
+                                                     typeOfTowerToPut,
+                                                     point.x,
+                                                     point.y);
+            toSend->addData(request);
+        }
+    } else if (isCastingSpells){
+        if (isGroundTerrain(point)) {
+            std::string request =
+                    MessageFactory::getCastSpellRequest(clientId,
+                                                        point.x,
+                                                        point.y);
+            toSend->addData(request);
+        }
+    } else if (isATowerPoint(point)) {
+        std::string request =
+                    MessageFactory::getTowerInfoRequest(clientId,
+                                                    towerIdThatRequiresInfo);
         toSend->addData(request);
     }
+}
+
+bool GamePlayWindow::isClickOnTowerButton(int mousePosX, int mousePosY) const {
+    return (
+                mousePosX >= TOWER_BUTTONS_X_POS
+                && mousePosX <= TOWER_BUTTONS_WIDTH + TOWER_BUTTONS_Y_POS
+           )
+           &&
+           (
+                mousePosY >= TOWER_BUTTONS_Y_POS
+                && mousePosY <= TOWBER_BUTTONS_HEIGHT + TOWER_BUTTONS_Y_POS
+           );
 }
 
 void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
@@ -510,6 +546,22 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
                 }
                 break;
             }
+            case SERVER_NOTIFICATION_MARK_TILE: {
+                Point point = MessageFactory::getPoint(message);
+
+                if (point.isPositive()) {
+                    tower->setPosition(point.x, point.y);
+                }
+                break;
+            }
+            case SERVER_NOTIFICATION_TOWER_INFO: {
+                // mostrar info de la torre por pantalla
+                break;
+            }
+            case SERVER_NOTIFICATION_CAST_SPELL: {
+                // reemplazar el tile por el valor que corresponde
+                break;
+            }
             case SERVER_NOTIFICATION_SCENARIO_STATUS: {
                 std::vector<Message> messages =
                         MessageFactory::getMovementNotifications(message);
@@ -518,7 +570,6 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
                     Point scenarioPoint = MessageFactory::getPoint(aMessage);
                     // no dibujo cosas fuera del escenario...
                     if (scenarioPoint.isPositive()) {
-                        Point finalPoint(1279, 400);
                         int dir = MessageFactory::getDirection(aMessage);
                         int enemyId = MessageFactory::getEnemyId(aMessage);
                         int hordeId = MessageFactory::getHordeId(aMessage);
@@ -569,6 +620,49 @@ void GamePlayWindow::initializeGameActors() {
         std::pair<int, Horde *> pair(i, horde);
         hordes.insert(pair);
     }
+}
+
+bool GamePlayWindow::isFirmTerrain(Point &point) {
+    bool isFirmTerrain = false;
+
+    if (point.isPositive()) {
+        int tilePos = point.x * TILES_COLUMNS + point.y;
+        isFirmTerrain = tileSet[tilePos]->getType() == TILE_FIRM;
+    }
+
+    return isFirmTerrain;
+}
+
+bool GamePlayWindow::isATowerPoint(Point &point) {
+    bool isATowerPoint = false;
+
+    if (point.isPositive()) {
+        for (unsigned i = 0; i < towers.size(); ++i){
+            if (point.isEqualsTo(towers[i]->getPoint())){
+                isATowerPoint = true;
+                towerIdThatRequiresInfo = i;
+                break;
+            } else {
+                towerIdThatRequiresInfo = -1;
+            }
+        }
+    }
+
+    return isATowerPoint;
+}
+
+bool GamePlayWindow::isGroundTerrain(Point &point) {
+    bool isGroundTerrain = false;
+
+    if (point.isPositive()) {
+        int tilePos = point.x * TILES_COLUMNS + point.y;
+        isGroundTerrain = tileSet[tilePos]->getType() == TILE_DESERT
+                || tileSet[tilePos]->getType() == TILE_GRASS
+                || tileSet[tilePos]->getType() == TILE_ICE
+                || tileSet[tilePos]->getType() == TILE_LAVA;
+    }
+
+    return isGroundTerrain;
 }
 
 

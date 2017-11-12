@@ -1,10 +1,6 @@
 #ifndef TP4_TOWERDEFENSE_MESSAGEFACTORY_H
 #define TP4_TOWERDEFENSE_MESSAGEFACTORY_H
 
-static const char *const OPERATION_KEY = "operation";
-
-static const char *const CLIENT_ID_KEY = "clientId";
-
 #include <string>
 #include <jsoncpp/json/json.h>
 #include <set>
@@ -13,6 +9,14 @@ static const char *const CLIENT_ID_KEY = "clientId";
 #include "Point.h"
 #include "../server/GameActor.h"
 #include "../server/game-actors/enemies/ActorEnemy.h"
+
+static std::string OPERATION_KEY = "operation";
+static std::string CLIENT_ID_KEY = "clientId";
+static std::string XCOORD_KEY = "xCoord";
+static std::string YCOORD_KEY = "yCoord";
+static std::string ENEMY_ID_KEY = "enemyId";
+static std::string HORDE_ID_KEY = "hordeId";
+static std::string MATCH_NAME_KEY = "matchName";
 
 class MessageFactory {
 public:
@@ -42,7 +46,8 @@ public:
      * y: coordenada y donde se quiere colocar la torre.
      * isPut: es true si se está colocando la torre, false en caso contrario.
      */
-    static std::string getPutTowerRequest(int clientId, int x, int y, bool isPut);
+    static std::string
+    getPutTowerRequest(int clientId, int towerType, int x, int y);
 
     /*
      * Retorna la notificación enviada por el server para poner una torre en el escenario.
@@ -58,7 +63,7 @@ public:
      * y: coordenada y donde se quiere colocar la torre.
      * isMark: es true si se está marcando, false para 'desmarcar'.
      */
-    std::string getMarkTileRequest(int clientId, int x, int y, bool isMark);
+    std::string getMarkTileRequest(int clientId, int x, int y);
 
     /*
      * Retorna la operación asociada al request que se hace con el Json.
@@ -154,6 +159,10 @@ public:
     static int getHordeId(Message message);
 
     static std::string getMatchEndedNotification();
+
+    static std::string getTowerInfoRequest(int clientId, int towerId);
+
+    static std::string getCastSpellRequest(int clientId, int x, int y);
 };
 
 

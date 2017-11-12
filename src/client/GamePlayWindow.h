@@ -6,6 +6,14 @@ static const int MAX_SERVER_NOTIFICATIONS_PER_FRAME = 1;
 static const int CANT_TOWERS_BUTTONS = 4;
 static const int CANT_TOWERS_BUTTONS_STATES = 4;
 
+static const int TOWER_BUTTONS_X_POS = 1;
+
+static const int TOWER_BUTTONS_Y_POS = 1;
+
+static const int TOWER_BUTTONS_WIDTH = 320;
+
+static const int TOWBER_BUTTONS_HEIGHT = 80;
+
 #include "../common/Socket.h"
 #include <string>
 #include <SDL2/SDL_rect.h>
@@ -55,7 +63,11 @@ private:
 
     void initializeGameActors();
 
-    void handleLeftButtonClick(const Point &point) const;
+    void handleLeftButtonClick(Point &point);
+
+    bool isFirmTerrain(Point &point);
+
+    bool isATowerPoint(Point &point);
 
     /* A game is, at all times, in one of three states: won, lost,
        or undecided. There is no point (and some risk) in keeping
@@ -113,6 +125,13 @@ private:
     std::vector<Tower *> towers;
 
     TTF_Font *font;
+    int typeOfTowerToPut;
+    int towerIdThatRequiresInfo;
+    bool isCastingSpells;
+
+    bool isGroundTerrain(Point &point);
+
+    bool isClickOnTowerButton(int mousePosX, int mousePosY) const;
 };
 
 #endif //TP4_TOWERDEFENSE_GAME_H

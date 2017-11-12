@@ -15,6 +15,10 @@ public:
         return x >= 0 and y >= 0;
     }
 
+    bool isEqualsTo(Point p2){
+        return x == p2.x && y == p2.y;
+    }
+
     int x;
     int y;
 };
