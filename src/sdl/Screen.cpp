@@ -97,7 +97,7 @@ void Screen::putDialog() {
 
 void Screen::handleEvent(SDL_Event &e) {
     std::string s;
-    dot.handleEvent(e, s);
+    dot.handleEvent(e);
 }
 
 void Screen::clear() {

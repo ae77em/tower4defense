@@ -35,7 +35,7 @@ public:
 
     std::string getGamesList();
 
-    void createGame(int request, string matchName);
+    void createGame(string matchName);
     bool createMatch(string basicString);
     void notifyAllCreationGame(int gameId,int clientIdWhoCreatedGame);
 
@@ -67,8 +67,6 @@ private:
 
     void removeClient(int id);
 
-    void createGame(string basic_string);
-
     void startMatch(int id, string basic_string);
 
     void sendUnavailableElementsToClient(int clientId, string matchName);
@@ -77,7 +75,7 @@ private:
 
     void notifyAllExpeptTo(int clientId, std::string message);
 
-    void notifyPlayerAdded(int clientId, string matchName);
+    void notifyPlayerAdded(string matchName);
 };
 
 

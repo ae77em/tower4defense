@@ -79,6 +79,14 @@ enum TileType {
     TILE_EARTH_TOWER = 6
 };
 
+
+enum TowerTypes {
+    TOWER_AIR = 0,
+    TOWER_FIRE = 1,
+    TOWER_WATER = 2,
+    TOWER_EARTH = 3
+};
+
 enum LTileSpriteMouseEvent {
     BUTTON_SPRITE_DEFAULT = 0,
     BUTTON_SPRITE_MOUSE_DOWN = 1
@@ -99,6 +107,22 @@ enum EnemyType {
     SPECTRE = 4,
     ZOMBIE = 5
 };
+
+
+enum TowerButtonsTypes {
+    BUTTON_TOWER_AIR = 0,
+    BUTTON_TOWER_FIRE = 1,
+    BUTTON_TOWER_WATER = 2,
+    BUTTON_TOWER_EARTH = 3
+};
+
+enum TowerButtonsStates {
+    BUTTON_TOWER_ENABLED = 0,
+    BUTTON_TOWER_DISABLED = 1,
+    BUTTON_TOWER_MOUSEOVER = 2,
+    BUTTON_TOWER_SELECTED = 3
+};
+
 
 const std::vector<std::string> TILES_IMAGES_PATHS({
     "images/sprites/tile-grass.png",

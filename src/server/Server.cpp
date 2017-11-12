@@ -11,7 +11,7 @@ unsigned int Server::getAmountGames() {
     return games.size();
 }
 
-void Server::createGame(int clientId, string matchName) {
+void Server::createGame(string matchName) {
     bool wasCreated = createMatch(matchName);
 
     std::string message = "";
@@ -49,7 +49,7 @@ void Server::addPlayerToGame(int clientId, std::string mName, vector<string> ele
         } else {
             //si no esta llena simplemente notifico a todos el ingreso del jugador
             std::string message = MessageFactory::getAddPlayerToMatchNotification(mName, clientId, elements);
-            notifyPlayerAdded(clientId, message);
+            notifyPlayerAdded(message);
         }
     } else {
         //notifico al cliente que se lleno la partida
@@ -133,10 +133,10 @@ void Server::run() {
                 /* non-gaming requests: */
                 case CLIENT_REQUEST_NEW_MATCH: {
                     //FALTA TOMAR EL VALOR DEL MAPA
-                    int clientId = request.getAsInt("clientId");
+                    //int clientId = request.getAsInt("clientId");
                     std::string nameMatch = request.getAsString("matchName");
 
-                    createGame(clientId, nameMatch);
+                    createGame(nameMatch);
                     break;
                 }
                 /* this responses are individual */
@@ -269,7 +269,7 @@ std::vector<std::string> Server::getMatchesNames() {
     return matchesNames;
 }
 
-void Server::notifyPlayerAdded(int clientId, string message) {
+void Server::notifyPlayerAdded(string message) {
     std::cout << "Notificando a: " << players.size() << " jugadores" << std::endl;
 
     for (std::pair<unsigned int, ServerPlayer *> player : players) {

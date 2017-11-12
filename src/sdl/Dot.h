@@ -20,7 +20,7 @@ public:
     explicit Dot(const Keybinding &keys = default_keybinding);
 
     //Takes key presses and adjusts the dot's velocity
-    void handleEvent(SDL_Event &e, std::string &desc);
+    void handleEvent(SDL_Event &e);
 
     //Moves the dot and check collision against tiles
     void move();

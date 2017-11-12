@@ -174,7 +174,7 @@ bool Utils::hasCircleCollision(Circle &a, Circle &b) {
 }
 
 bool Utils::animablesPositionComparator(Animable *a, Animable *b) {
-    bool toReturn = false;
+    bool toReturn;
 
     Point A = a->getPoint();
     Point B = b->getPoint();

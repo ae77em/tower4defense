@@ -3,6 +3,9 @@
 
 static const int MAX_SERVER_NOTIFICATIONS_PER_FRAME = 1;
 
+static const int CANT_TOWERS_BUTTONS = 4;
+static const int CANT_TOWERS_BUTTONS_STATES = 4;
+
 #include "../common/Socket.h"
 #include <string>
 #include <SDL2/SDL_rect.h>
@@ -21,7 +24,45 @@ static const int MAX_SERVER_NOTIFICATIONS_PER_FRAME = 1;
 #include "../sdl/enemies/Horde.h"
 
 class GamePlayWindow : public Thread {
+public:
+    GamePlayWindow(Socket *socket, SharedBuffer *in, SharedBuffer *out,
+                   int clientId);
+
+    ~GamePlayWindow();
+
+    void run();
+
+    void interactWithServer(Socket &client, std::string text);
+
+    bool setTiles();
+
+    void close();
+
+    bool loadMedia();
+
+    bool init();
+
 private:
+    void handleMouseEvents(SDL_Rect camera, SDL_Event e);
+
+    void loadServerNotifications(std::string notification);
+
+    void handleServerNotifications(SDL_Rect rect);
+
+    void loadPortalSprites();
+
+    void renderText(SDL_Rect &camera, std::string text);
+
+    void initializeGameActors();
+
+    void handleLeftButtonClick(const Point &point) const;
+
+    /* A game is, at all times, in one of three states: won, lost,
+       or undecided. There is no point (and some risk) in keeping
+       the information redundantly in several variables. */
+    bool gameWon;
+    bool gameLoose;
+
     //The window we'll be rendering to
     SDL_Window *gWindow = nullptr;
 
@@ -45,8 +86,10 @@ private:
 
     LTexture gSpriteSheetTextureTower;
 
-    SDL_Rect towerButtonsClips = {0, 0, 320, 80 };
+    SDL_Rect towerButtonsClips[4][4];
     LTexture towerButtonsTexture;
+    int towerButtonType;
+    int towerButtonState;
 
     //Scene textures
     LTexture gTileTextures[TOTAL_TILE_SPRITES];
@@ -66,49 +109,10 @@ private:
 
     int clientId;
 
-    std::map<int, Horde*> hordes;
-    std::vector<Tower*> towers;
-
-public:
-    GamePlayWindow(Socket *socket, SharedBuffer *in, SharedBuffer *out, int clientId);
-    ~GamePlayWindow();
-
-    void run();
-    void interactWithServer(Socket &client, std::string text);
-    bool setTiles();
-    void close();
-    bool loadMedia();
-    bool init();
-
-private:
-    void handleMouseEvents(SDL_Rect camera, std::string mov_description, SDL_Event e);
-    void loadServerNotifications(std::string notification);
-
-    void handleServerNotifications(SDL_Rect rect);
-
-    enum GameEvents {
-        GAME_EVENT_PUT_TOWER = 1,
-        GAME_EVENT_QUIT_TOWER = 2,
-        GAME_EVENT_KILL_ENEMY = 3
-    };
-
-    void loadPortalSprites();
-
-    void matarBichoSiLeHiceClick(const SDL_Rect &camera, Enemy &enemy);
-
-    /* A game is, at all times, in one of three states: won, lost,
-       or undecided. There is no point (and some risk) in keeping
-       the information redundantly in several variables. */
-    bool gameWon;
-    bool gameLoose;
-
-    void renderText(SDL_Rect &camera, std::string text);
+    std::map<int, Horde *> hordes;
+    std::vector<Tower *> towers;
 
     TTF_Font *font;
-
-    void initializeGameActors();
-
-    void handleLeftButtonClick(const Point &point) const;
 };
 
 #endif //TP4_TOWERDEFENSE_GAME_H
