@@ -32,6 +32,7 @@ private:
     SharedBuffer &toReceive;
     int clientId;
     std::string matchName;
+    std::vector<std::string> myElements;
 
 public:
     GameAccessWindow(Socket *client, SharedBuffer &toSend, SharedBuffer &toReceive);

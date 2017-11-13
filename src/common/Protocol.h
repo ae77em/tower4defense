@@ -77,7 +77,7 @@ enum TypeOfMoveable {
 const std::string STR_WATER = "Agua";
 const std::string STR_AIR = "Aire";
 const std::string STR_FIRE = "Fuego";
-const std::string STR_TERRAIN = "Tierra";
+const std::string STR_EARTH = "Tierra";
 const std::string STR_NONE = "-none-";
 
 

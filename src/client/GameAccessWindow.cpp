@@ -150,6 +150,7 @@ void GameAccessWindow::on_btnUnirse_clicked() {
     std::string matchName = cmbMatchesText->get_active_text();
     std::vector<std::string> elements = getSelectedElements();
 
+
     std::string request = MessageFactory::getEnterMatchRequest(clientId,
                                                                matchName,
                                                                elements);
@@ -168,11 +169,13 @@ std::vector<std::string> GameAccessWindow::getSelectedElements() {
         toReturn.push_back(STR_FIRE);
     }
     if (pchkTierra->get_active()) {
-        toReturn.push_back(STR_TERRAIN);
+        toReturn.push_back(STR_EARTH);
     }
     if (pchkAgua->get_active()) {
         toReturn.push_back(STR_WATER);
     }
+
+    myElements = toReturn;
 
     return toReturn;
 }
@@ -336,7 +339,7 @@ void GameAccessWindow::setAvailableElements(
             pchkAire->set_sensitive(false);
         } else if (STR_FIRE.compare(unavailableElement) == 0) {
             pchkFuego->set_sensitive(false);
-        } else if (STR_TERRAIN.compare(unavailableElement) == 0) {
+        } else if (STR_EARTH.compare(unavailableElement) == 0) {
             pchkTierra->set_sensitive(false);
         } else if (STR_WATER.compare(unavailableElement) == 0) {
             pchkAgua->set_sensitive(false);
@@ -357,7 +360,7 @@ void GameAccessWindow::setAvailableElementsForJoin(
         } else if (STR_FIRE.compare(element) == 0) {
             pchkFuego->set_active(false);
             pchkFuego->set_sensitive(false);
-        } else if (STR_TERRAIN.compare(element) == 0) {
+        } else if (STR_EARTH.compare(element) == 0) {
             pchkTierra->set_active(false);
             pchkTierra->set_sensitive(false);
         } else if (STR_WATER.compare(element) == 0) {
@@ -396,8 +399,10 @@ void GameAccessWindow::startMatch(std::string matchName) {
     gameStarted = true;
     pWindow->hide();
 
-    game = new GamePlayWindow(server, &toReceive, &toSend, clientId,
-                              std::vector<std::string>(),
+    game = new GamePlayWindow(server,
+                              &toReceive,
+                              clientId,
+                              myElements,
                               matchName);
 
     loadMutex.unlock();

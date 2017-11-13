@@ -15,6 +15,9 @@ Tile::Tile(int x, int y, int t) {
 
     //Get the tile type
     type = t;
+
+    isMarked = false;
+    tileMarkedTime = 0;
 }
 
 void Tile::render(SDL_Rect &camera,
@@ -66,7 +69,7 @@ void Tile::handleServerNotification(int opCode) {
     //If mouse event happened
     switch (opCode){
         case SERVER_NOTIFICATION_PUT_TOWER: {
-            type = TILE_EARTH_TOWER;
+            type = TILE_FIRM_MARKED;
             break;
         }
         default:
@@ -80,4 +83,32 @@ int Tile::getType() {
 
 SDL_Rect Tile::getBox() {
     return containerBoxAttributes;
+}
+
+int Tile::getTileMarkedTime() const {
+    return tileMarkedTime;
+}
+
+void Tile::setMarkedTime(int tileMarkedTime) {
+    Tile::tileMarkedTime = tileMarkedTime;
+}
+
+bool Tile::itIsMarked() const {
+    return isMarked;
+}
+
+void Tile::setIsMarked(bool isMarked) {
+    Tile::isMarked = isMarked;
+}
+
+void Tile::verifyIfMustContinueMarked(){
+    if (isMarked){
+        if (SDL_GetTicks() - tileMarkedTime > 5000){
+            isMarked = false;
+        }
+    }
+}
+
+void Tile::setType(int tileType) {
+    type = tileType;
 }

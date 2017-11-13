@@ -7,14 +7,10 @@
 #include <SDL2/SDL_events.h>
 #include "../sdl/LTexture.h"
 
-
-//The tile
 class Tile {
 public:
-    //Initializes position and type
     Tile(int x, int y, int type);
 
-    //Shows the tile
     void render(SDL_Rect &camera,
                 SDL_Rect *gTileClips,
                 SDL_Renderer *gRenderer,
@@ -42,6 +38,9 @@ public:
     //Get the collision box
     SDL_Rect getBox();
 
+
+    void verifyIfMustContinueMarked();
+
 private:
     //The attributes of the tile
     SDL_Rect containerBoxAttributes;
@@ -51,6 +50,21 @@ private:
 
     //GamePlayWindow-event dispatched from the tile
     int gameEvent;
+
+    int tileMarkedTime;
+public:
+    int getTileMarkedTime() const;
+
+    void setMarkedTime(int tileMarkedTime);
+
+    bool itIsMarked() const;
+
+    void setIsMarked(bool isMarked);
+
+private:
+
+    bool isMarked;
+
 };
 
 

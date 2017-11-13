@@ -137,15 +137,11 @@ SDL_Rect Utils::getBoxByTileType(int type) {
         case static_cast<int>(TileType::TILE_LAVA):
         case static_cast<int>(TileType::TILE_FIRM):
         case static_cast<int>(TileType::TILE_WAY):
+        case static_cast<int>(TileType::TILE_FIRM_MARKED):
+            toReturn.x = 0;
             toReturn.x = 0;
             toReturn.y = 0;
             toReturn.h = ISO_TILE_HEIGHT;
-            toReturn.w = ISO_TILE_WIDTH;
-            break;
-        case static_cast<int>(TileType::TILE_EARTH_TOWER):
-            toReturn.x = 0;
-            toReturn.y = 0;
-            toReturn.h = 194;
             toReturn.w = ISO_TILE_WIDTH;
             break;
         default:

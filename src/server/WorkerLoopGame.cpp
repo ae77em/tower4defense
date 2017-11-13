@@ -74,7 +74,7 @@ void WorkerLoopGame::run(){
 
         ciclos--;
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(400));
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 
     //ESTA PARTE NO SE SI TIENE SENTIDO, DEBERIA DEE HABER SALIDO TODOS LOS CLIENTES

@@ -76,7 +76,7 @@ enum TileType {
     TILE_LAVA = 3,
     TILE_WAY = 4,
     TILE_FIRM = 5,
-    TILE_EARTH_TOWER = 6
+    TILE_FIRM_MARKED = 6
 };
 
 
@@ -131,7 +131,7 @@ const std::vector<std::string> TILES_IMAGES_PATHS({
     "images/sprites/tile-lava.png",
     "images/sprites/tile-way.png",
     "images/sprites/tile-firm.png",
-    "images/sprites/tower-earth-alone.png"
+    "images/sprites/tile-firm-marked.png",
 });
 
 #endif //TP4_TOWERDEFENSE_CONSTANTS_H

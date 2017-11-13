@@ -12,16 +12,16 @@
 #include "../sdl/enemies/Zombie.h"
 #include "../common/TextMessage.h"
 
-GamePlayWindow::GamePlayWindow(Socket *s, SharedBuffer *in,
-                               SharedBuffer *out, int cId,
-                               std::vector<std::string> elems,
+GamePlayWindow::GamePlayWindow(Socket *s,
+                               SharedBuffer *in,
+                               int cId,
+                               std::vector<std::string> &elems,
                                std::string mn)
         : server(s),
           toReceive(in),
-          toSend(out),
           clientId(cId),
           playerElements(elems),
-          matchName(mn){
+          matchName(mn) {
     abmonibleTexture = new LTexture();
     blookHawkTexture = new LTexture();
     goatmanTexture = new LTexture();
@@ -94,11 +94,11 @@ void GamePlayWindow::run() {
                         quit = true;
                     }
 
-                    if (gameEnded) {
+                    /*if (gameEnded) {
                         if (SDL_GetTicks() - gameEndedTime > 3000) {
                             quit = true;
                         }
-                    }
+                    }*/
 
                     //Handle input for the dot
                     dot.handleEvent(e);
@@ -118,6 +118,14 @@ void GamePlayWindow::run() {
 
                 //Render level
                 for (int i = 0; i < TOTAL_TILES; ++i) {
+                    if (tileSet[i]->itIsMarked()) {
+                        tileSet[i]->verifyIfMustContinueMarked();
+
+                        if (!tileSet[i]->itIsMarked()){
+                            tileSet[i]->setType(TILE_FIRM); // HORRIBLE ESTO...REFACTORIZAR CUANDO SE PUEDA
+                        }
+                    }
+
                     tileSet[i]->render(camera, gTileClips, gRenderer,
                                        gTileTextures);
                 }
@@ -309,11 +317,10 @@ void GamePlayWindow::initializeGameActors() {
             zombie->setSprites();
             horde2->addEnemy(zombie);
         }
-        std::pair<int, Horde *> pair2(i+1, horde2);
+        std::pair<int, Horde *> pair2(i + 1, horde2);
         hordes.insert(pair2);
     }
 }
-
 
 void GamePlayWindow::close() {
     //Deallocate tiles
@@ -397,17 +404,12 @@ bool GamePlayWindow::setTiles() {
         //Clip the sprite sheet
         if (tilesLoaded) {
             // de 0 a 6 son los tiles de piso
-            for (unsigned i = 0; i < TILE_EARTH_TOWER; ++i) {
+            for (unsigned i = 0; i <= TILE_FIRM_MARKED; ++i) {
                 gTileClips[i].x = 0;
                 gTileClips[i].y = 0;
                 gTileClips[i].w = ISO_TILE_WIDTH;
                 gTileClips[i].h = ISO_TILE_HEIGHT;
             }
-
-            gTileClips[TILE_EARTH_TOWER].x = 0;
-            gTileClips[TILE_EARTH_TOWER].y = 0;
-            gTileClips[TILE_EARTH_TOWER].w = ISO_TILE_WIDTH;
-            gTileClips[TILE_EARTH_TOWER].h = 194;
 
             /* button tower clips definition */
             for (unsigned i = 0; i < CANT_TOWERS_BUTTONS; ++i) {
@@ -492,10 +494,6 @@ GamePlayWindow::handleMouseEvents(SDL_Rect camera, SDL_Event e) {
             }
             default:
                 std::cout << "se hizo click con algún botón que no se usa.";
-                /*if (point.isPositive()) {
-                    int tilePos = point.x * TILES_COLUMNS + point.y;
-                    tileSet[tilePos]->handleEvent(e, mov_description);
-                }*/
         }
     }
 }
@@ -505,46 +503,68 @@ void GamePlayWindow::handleLeftButtonClick(Point &point) {
     SDL_GetMouseState(&mousePosX, &mousePosY);
 
     if (isClickOnTowerButton(mousePosX, mousePosY)) {
+        typeOfTowerToPut = -1;
+
         if (mousePosX <= 80) {
-            //BUTTON_TOWER_AIR
-            std::cout << "click en BUTTON_TOWER_AIR" << std::endl;
+            if (hasElement(STR_AIR)){
+                typeOfTowerToPut = TOWER_AIR;
+                std::cout << "seleccion torre aire para poner...." << std::endl;
+            }
         } else if (mousePosX <= 160) {
-            //BUTTON_TOWER_FIRE
-            std::cout << "click en BUTTON_TOWER_FIRE" << std::endl;
+            if (hasElement(STR_FIRE)){
+                typeOfTowerToPut = TOWER_FIRE;
+                std::cout << "seleccion torre fueg para poner...." << std::endl;
+            }
         } else if (mousePosX <= 240) {
-            //BUTTON_TOWER_WATER
-            std::cout << "click en BUTTON_TOWER_WATER" << std::endl;
+            if (hasElement(STR_WATER)){
+                typeOfTowerToPut = TOWER_WATER;
+                std::cout << "seleccion torre agua para poner...." << std::endl;
+            }
         } else {
-            //BUTTON_TOWER_EARTH
-            std::cout << "click en BUTTON_TOWER_EARTH" << std::endl;
+            if (hasElement(STR_EARTH)){
+                typeOfTowerToPut = TOWER_EARTH;
+                std::cout << "seleccion torre tier para poner...." << std::endl;
+            }
         }
     } else if (typeOfTowerToPut != -1) {
         if (isFirmTerrain(point)) {
-            typeOfTowerToPut = 1;
             std::string request =
                     MessageFactory::getPutTowerRequest(clientId,
-                                                     typeOfTowerToPut,
-                                                     point.x,
-                                                     point.y);
+                                                       typeOfTowerToPut,
+                                                       point.x,
+                                                       point.y);
 
             std::cout << "hice click en agregar torre...." << std::endl;
 
-            toSend->addData(request);
+            sendToServer(request);
         }
-    } else if (isCastingSpells){
+    } else if (isCastingSpells) {
         if (isGroundTerrain(point)) {
             std::string request =
                     MessageFactory::getCastSpellRequest(clientId,
                                                         point.x,
                                                         point.y);
-            toSend->addData(request);
+            TextMessage toSend(request);
+            toSend.sendTo(reinterpret_cast<Socket &>(*server));
         }
     } else if (isATowerPoint(point)) {
         std::string request =
-                    MessageFactory::getTowerInfoRequest(clientId,
+                MessageFactory::getTowerInfoRequest(clientId,
                                                     towerIdThatRequiresInfo);
-        toSend->addData(request);
+        sendToServer(request);
+    } else {
+        std::cout << "********************" << std::endl;
+        std::cout << "********************" << std::endl;
+        std::cout << "hice click con el botón izquierdo, pero no disparé "
+                "ningún evento de juego...";
+        std::cout << "********************" << std::endl;
+        std::cout << "********************" << std::endl;
     }
+}
+
+void GamePlayWindow::sendToServer(const std::string &request) const {
+    TextMessage toSend(request);
+    toSend.sendTo(reinterpret_cast<Socket &>(*server));
 }
 
 void GamePlayWindow::handleRightButtonClick(Point point) {
@@ -590,7 +610,8 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
                 Point point = MessageFactory::getPoint(message);
 
                 if (point.isPositive()) {
-                    tower->setPosition(point.x, point.y);
+                    Point screenPoint = Utils::mapToScreen(point.x, point.y);
+                    tower->setPosition(screenPoint.x, screenPoint.y);
                 }
                 break;
             }
@@ -598,7 +619,7 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
                 Point point = MessageFactory::getPoint(message);
 
                 if (point.isPositive()) {
-                    tower->setPosition(point.x, point.y);
+                    setToMarkedTile(point);
                 }
                 break;
             }
@@ -677,8 +698,8 @@ bool GamePlayWindow::isATowerPoint(Point &point) {
     bool isATowerPoint = false;
 
     if (point.isPositive()) {
-        for (unsigned i = 0; i < towers.size(); ++i){
-            if (point.isEqualsTo(towers[i]->getPoint())){
+        for (unsigned i = 0; i < towers.size(); ++i) {
+            if (point.isEqualsTo(towers[i]->getPoint())) {
                 isATowerPoint = true;
                 towerIdThatRequiresInfo = i;
                 break;
@@ -697,13 +718,36 @@ bool GamePlayWindow::isGroundTerrain(Point &point) {
     if (point.isPositive()) {
         int tilePos = point.x * TILES_COLUMNS + point.y;
         isGroundTerrain = tileSet[tilePos]->getType() == TILE_DESERT
-                || tileSet[tilePos]->getType() == TILE_GRASS
-                || tileSet[tilePos]->getType() == TILE_ICE
-                || tileSet[tilePos]->getType() == TILE_LAVA;
+                          || tileSet[tilePos]->getType() == TILE_GRASS
+                          || tileSet[tilePos]->getType() == TILE_ICE
+                          || tileSet[tilePos]->getType() == TILE_LAVA;
     }
 
     return isGroundTerrain;
 }
 
+bool GamePlayWindow::hasElement(const std::string &element) const {
+    return
+        std::find(playerElements.begin(), playerElements.end(), element)
+                != playerElements.end();
+}
+
+void GamePlayWindow::setToMarkedTile(Point &point) {
+    if (point.isPositive()) {
+        int tilePos = point.x * TILES_COLUMNS + point.y;
+        tileSet[tilePos]->setType(TILE_FIRM_MARKED);
+        tileSet[tilePos]->setIsMarked(true);
+        tileSet[tilePos]->setMarkedTime(SDL_GetTicks());
+    }
+}
+
+void GamePlayWindow::setToFirmTile(Point &point) {
+    if (point.isPositive()) {
+        int tilePos = point.x * TILES_COLUMNS + point.y;
+        tileSet[tilePos]->setType(TILE_FIRM);
+        tileSet[tilePos]->setIsMarked(false);
+        tileSet[tilePos]->setMarkedTime(0);
+    }
+}
 
 

@@ -2,16 +2,11 @@
 #define TP4_TOWERDEFENSE_GAME_H
 
 static const int MAX_SERVER_NOTIFICATIONS_PER_FRAME = 1;
-
 static const int CANT_TOWERS_BUTTONS = 4;
 static const int CANT_TOWERS_BUTTONS_STATES = 4;
-
 static const int TOWER_BUTTONS_X_POS = 1;
-
 static const int TOWER_BUTTONS_Y_POS = 1;
-
 static const int TOWER_BUTTONS_WIDTH = 320;
-
 static const int TOWBER_BUTTONS_HEIGHT = 80;
 
 #include "../common/Socket.h"
@@ -33,16 +28,15 @@ static const int TOWBER_BUTTONS_HEIGHT = 80;
 
 class GamePlayWindow : public Thread {
 public:
-    GamePlayWindow(Socket *socket, SharedBuffer *in,
-                       SharedBuffer *out, int clientId,
-                       std::vector<std::string> playerElements,
-                       std::string matchName);
+    GamePlayWindow(Socket *socket,
+                   SharedBuffer *in,
+                   int clientId,
+                   std::vector<std::string> &playerElements,
+                   std::string matchName);
 
-    ~GamePlayWindow();
+    virtual ~GamePlayWindow();
 
-    void run();
-
-    void interactWithServer(Socket &client, std::string text);
+    void run() override;
 
     bool setTiles();
 
@@ -54,8 +48,6 @@ public:
 
 private:
     void handleMouseEvents(SDL_Rect camera, SDL_Event e);
-
-    void loadServerNotifications(std::string notification);
 
     void handleServerNotifications(SDL_Rect rect);
 
@@ -70,6 +62,20 @@ private:
     bool isFirmTerrain(Point &point);
 
     bool isATowerPoint(Point &point);
+
+    bool isGroundTerrain(Point &point);
+
+    bool isClickOnTowerButton(int mousePosX, int mousePosY) const;
+
+    void handleRightButtonClick(Point point);
+
+    bool hasElement(const std::string &element) const;
+
+    void sendToServer(const std::string &request) const;
+
+    void setToMarkedTile(Point &point);
+
+    void setToFirmTile(Point &point);
 
     /* A game is, at all times, in one of three states: won, lost,
        or undecided. There is no point (and some risk) in keeping
@@ -119,7 +125,6 @@ private:
     // Comunication with the game server
     Socket *server = nullptr;
     SharedBuffer *toReceive = nullptr;
-    SharedBuffer *toSend = nullptr;
 
     int clientId;
 
@@ -132,12 +137,6 @@ private:
     int typeOfTowerToPut;
     int towerIdThatRequiresInfo;
     bool isCastingSpells;
-
-    bool isGroundTerrain(Point &point);
-
-    bool isClickOnTowerButton(int mousePosX, int mousePosY) const;
-
-    void handleRightButtonClick(Point point);
 };
 
 #endif //TP4_TOWERDEFENSE_GAME_H

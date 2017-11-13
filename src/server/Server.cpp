@@ -332,7 +332,7 @@ void Server::removeClient(int id) {
         sg->removePlayer(id);
 
         if(sg->getAmountPlayers() == 0){
-            std::cout << "Server: limpiando partida: "<< gameId << "aguardo salida jajaja espero que no sea eterna" << std::endl;
+            std::cout << "Server: limpiando partida: "<< gameId << "aguardo salida...espero que no sea eterna" << std::endl;
 
             sg->kill();
             //delete sg;

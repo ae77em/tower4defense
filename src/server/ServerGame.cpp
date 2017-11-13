@@ -12,7 +12,7 @@ ServerGame::ServerGame(std::mutex& m):mutexPlayers(m),
     elements.push_back(STR_WATER);
     elements.push_back(STR_AIR);
     elements.push_back(STR_FIRE);
-    elements.push_back(STR_TERRAIN);
+    elements.push_back(STR_EARTH);
 }
 
 void ServerGame::addPlayer(ServerPlayer* sp){
