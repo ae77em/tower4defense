@@ -14,11 +14,13 @@
 
 GamePlayWindow::GamePlayWindow(Socket *s,
                                SharedBuffer *in,
+                               SharedBuffer *ot,
                                int cId,
                                std::vector<std::string> &elems,
                                std::string mn)
         : server(s),
           toReceive(in),
+          other(ot),
           clientId(cId),
           playerElements(elems),
           matchName(mn) {
@@ -106,6 +108,7 @@ void GamePlayWindow::run() {
                     handleMouseEvents(camera, e);
                 }
 
+                handleServerPlayerNotifications(camera);
                 handleServerNotifications(camera);
 
                 //Move the dot
@@ -585,16 +588,19 @@ void GamePlayWindow::handleRightButtonClick(Point point) {
     }
 }
 
-void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
+void GamePlayWindow::handleServerPlayerNotifications(SDL_Rect camera) {
     int transactionsCounter = 0;
     std::string notification;
 
     Tower *tower = towers.at(0);
 
-    while (toReceive->isProcessingYet() &&
-           transactionsCounter < MAX_SERVER_NOTIFICATIONS_PER_FRAME) {
+    while (other->hasData() &&
+           transactionsCounter < 10) {
         ++transactionsCounter;
-        notification = toReceive->getNextData();
+        notification = other->getNextData();
+
+        std::cout << "lo que tengo en el segundo buffer" << notification << std::endl;
+
 
         Message message;
         std::string response;
@@ -631,6 +637,37 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
                 // reemplazar el tile por el valor que corresponde
                 break;
             }
+            case SERVER_NOTIFICATION_APPLY_UPGRADE:{
+                // aplicar upgrade
+                break;
+            };
+            default:
+                response = "no reconocida";
+        }
+
+        std::cout << "notification: " << notification << std::endl;
+    }
+}
+
+void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
+    int transactionsCounter = 0;
+    std::string notification;
+
+    while (toReceive->isProcessingYet() &&
+           transactionsCounter < MAX_SERVER_NOTIFICATIONS_PER_FRAME) {
+        ++transactionsCounter;
+        notification = toReceive->getNextData();
+
+        Message message;
+        std::string response;
+
+        message.deserialize(notification);
+
+        int op = MessageFactory::getOperation(message);
+        std::cout << "llego op: " << std::to_string(op)
+                  << " al listener del juego..." << std::endl;
+
+        switch (op) {
             case SERVER_NOTIFICATION_SCENARIO_STATUS: {
                 std::vector<Message> messages =
                         MessageFactory::getMovementNotifications(message);
@@ -660,6 +697,7 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
             }
             case SERVER_NOTIFICATION_MATCH_ENDED: {
                 toReceive->setClientProcessEnded(true);
+                //other->setClientProcessEnded(true);
                 gameWon = true;
                 break;
             }

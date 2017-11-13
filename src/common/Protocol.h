@@ -44,19 +44,25 @@ enum ServerNonPlayingNotifications {
     SERVER_NOTIFICATION_GET_UNAVAILABLE_ELEMENTS = 210,
     SERVER_NOTIFICATION_SCENARIO_STATUS = 211,
     SERVER_NOTIFICATION_ENTERED_MATCH = 212,
-    SERVER_NOTIFICATION_TOWER_INFO = 213,
     SERVER_NOTIFICATION_END_CLIENT_CONNECTION = 296,
     SERVER_NOTIFICATION_NEW_MATCH_ERROR = 297,  // 299 - 2
     SERVER_NOTIFICATION_ACCESS_GAME_MENU_ERROR = 299  // 299 - 0
 };
 
 enum ServerPlayingNotifications {
+    /* Del 300 en adelante las notificaciones que
+     * corresponden a eventos disparados por el usuario. */
     SERVER_NOTIFICATION_PUT_TOWER = 300,
     SERVER_NOTIFICATION_MARK_TILE = 301,
     SERVER_NOTIFICATION_CAST_SPELL = 302,
-    SERVER_NOTIFICATION_MOVE_ENEMY = 303,
-    SERVER_NOTIFICATION_MOVE_ENEMIES = 304,
-    SERVER_NOTIFICATION_MATCH_ENDED = 305
+    SERVER_NOTIFICATION_TOWER_INFO = 303,
+    SERVER_NOTIFICATION_APPLY_UPGRADE = 304,
+    /* Del 399 para abajo (en forma descendente), las notificaciones que
+     * corresponden a eventos no disparados por el usuario. */
+    SERVER_NOTIFICATION_MATCH_ENDED = 399,
+    SERVER_NOTIFICATION_MOVE_ENEMIES = 398,
+    SERVER_NOTIFICATION_MOVE_ENEMY = 397
+    /* no creo que se alcancen, pero en tal caso habrá que pasar a otro rango */
 };
 
 enum GameRequestsPlaying {

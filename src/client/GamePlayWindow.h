@@ -30,6 +30,7 @@ class GamePlayWindow : public Thread {
 public:
     GamePlayWindow(Socket *socket,
                    SharedBuffer *in,
+                   SharedBuffer *other,
                    int clientId,
                    std::vector<std::string> &playerElements,
                    std::string matchName);
@@ -125,6 +126,7 @@ private:
     // Comunication with the game server
     Socket *server = nullptr;
     SharedBuffer *toReceive = nullptr;
+    SharedBuffer *other = nullptr;
 
     int clientId;
 
@@ -137,6 +139,8 @@ private:
     int typeOfTowerToPut;
     int towerIdThatRequiresInfo;
     bool isCastingSpells;
+
+    void handleServerPlayerNotifications(SDL_Rect camera);
 };
 
 #endif //TP4_TOWERDEFENSE_GAME_H

@@ -10,6 +10,7 @@
 
 int main(int argc, char **argv) {
     SharedBuffer toReceive;
+    SharedBuffer other;
     SharedBuffer toSend;
 
     if (argc < 3) {
@@ -35,11 +36,11 @@ int main(int argc, char **argv) {
     int clientId = MessageFactory::getClientId(message);
 
     /* instancio el juego con el id de jugador ya obtenido */
-    GameAccessWindow gameAccess(&server, toSend, toReceive);
+    GameAccessWindow gameAccess(&server, toSend, toReceive, other);
     gameAccess.setClientId(clientId);
 
     /* instancio los canales de comunicación con el server */
-    Listener listener(&server, gameAccess, toReceive);
+    Listener listener(&server, gameAccess, toReceive, other);
     Sender sender(&server, toSend);
 
     /* inicio el juego */

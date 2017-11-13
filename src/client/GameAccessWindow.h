@@ -30,12 +30,13 @@ private:
     Socket *server;
     SharedBuffer &toSend;
     SharedBuffer &toReceive;
+    SharedBuffer &other;
     int clientId;
     std::string matchName;
     std::vector<std::string> myElements;
 
 public:
-    GameAccessWindow(Socket *client, SharedBuffer &toSend, SharedBuffer &toReceive);
+    GameAccessWindow(Socket *client, SharedBuffer &toSend, SharedBuffer &toReceive, SharedBuffer &other);
 
     virtual ~GameAccessWindow();
 

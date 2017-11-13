@@ -6,8 +6,8 @@
 #include "../common/Message.h"
 #include "../common/Protocol.h"
 
-Listener::Listener(Socket *s, GameAccessWindow &ga, SharedBuffer &bfr)
-        : server(s), gameAccess(ga), buffer(bfr) { }
+Listener::Listener(Socket *s, GameAccessWindow &ga, SharedBuffer &bfr, SharedBuffer &other)
+        : server(s), gameAccess(ga), buffer(bfr), buffer2(other) { }
 
 Listener::~Listener() {}
 
@@ -84,6 +84,7 @@ void Listener::run(){
                     gameAccess.setJoinedToMatch(clientId, matchName);
                     break;
                 }
+
                 /*
                  * GAME OPERATIONS
                  * Todas aquellas operaciones que no corresponden con algo que se hace en
@@ -92,6 +93,13 @@ void Listener::run(){
                  * la mejor solución, pero es la que me surgió primero, teniendo en cuenta que
                  * las cosas las tenía resueltas por separado...
                  */
+
+                case SERVER_NOTIFICATION_PUT_TOWER:
+                case SERVER_NOTIFICATION_MARK_TILE:
+                case SERVER_NOTIFICATION_CAST_SPELL:{
+                    buffer2.addData(dataFromServer);
+                    break;
+                }
                 default:
                     std::cout << "Llegó notificación no de acceso...la mando la juego..." << std::endl;
                     std::cout << dataFromServer << std::endl;

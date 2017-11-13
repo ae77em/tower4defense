@@ -3,9 +3,11 @@
 #include "../common/TextMessage.h"
 #include "../common/Protocol.h"
 
-GameAccessWindow::GameAccessWindow(Socket *c, SharedBuffer &tsnd,
-                                   SharedBuffer &trcv)
-        : server(c), toSend(tsnd), toReceive(trcv) {
+GameAccessWindow::GameAccessWindow(Socket *c,
+                                   SharedBuffer &tsnd,
+                                   SharedBuffer &trcv,
+                                    SharedBuffer &ot)
+        : server(c), toSend(tsnd), toReceive(trcv), other(ot) {
     clientId = -1;
     gameStarted = false;
 }
@@ -401,6 +403,7 @@ void GameAccessWindow::startMatch(std::string matchName) {
 
     game = new GamePlayWindow(server,
                               &toReceive,
+                              &other,
                               clientId,
                               myElements,
                               matchName);
