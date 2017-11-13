@@ -114,17 +114,12 @@ void Screen::put(model::Mapa &map) {
     for (int x = 0; x < dimensions.x; ++x)
         for (int y = 0; y < dimensions.y; ++y)
             switch (map.casilla(x, y)) {
-                case '~': put(x, y, waterTower);
-                          break;
-                case '*': put(x, y, earthTower);
-                          break;
-                case '!': put(x, y, fireTower);
-                          break;
-                case '@': put(x, y, airTower);
-                          break;
-                case 'E': put(x, y, portal_blue);
-                          break;
-                case 'S': put(x, y, portal_red);
+                case '~': put(x, y, waterTower); break;
+                case '*': put(x, y, earthTower); break;
+                case '!': put(x, y, fireTower); break;
+                case '@': put(x, y, airTower); break;
+                case 'E': put(x, y, portal_blue); break;
+                case 'S': put(x, y, portal_red); break;
             }
 }
 
