@@ -40,7 +40,9 @@ Editor::StateCommand::StateCommand() {
     };
     dispatch_table["q"] = quit;
     dispatch_table["quit"] = quit;
+    dispatch_table["o"] = open;
     dispatch_table["open"] = open;
+    dispatch_table["s"] = save;
     dispatch_table["save"] = save;
     dispatch_table["n"] = new_map;
     dispatch_table["new"] = new_map;
