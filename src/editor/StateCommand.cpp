@@ -34,6 +34,12 @@ static std::string new_map(Editor::Editor &context,
     return "";
 }
 
+static std::string change_background(Editor::Editor &context,
+        const std::string& command) {
+    context.getMap().setEstiloFondo(command[0]);
+    return "";
+}
+
 Editor::StateCommand::StateCommand() {
     dispatch_table["_default_"] = [](Editor& context, const std::string& c){
         return std::string("command not recognized");
@@ -46,6 +52,8 @@ Editor::StateCommand::StateCommand() {
     dispatch_table["save"] = save;
     dispatch_table["n"] = new_map;
     dispatch_table["new"] = new_map;
+    dispatch_table["bg"] = change_background;
+    dispatch_table["background"] = change_background;
 }
 
 void Editor::StateCommand::handle(const SDL_Event &e, Editor &context) {
