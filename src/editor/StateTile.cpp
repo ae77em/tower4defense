@@ -11,14 +11,18 @@ void Editor::StateTile::handle(const SDL_Event &e, Editor &context) {
     const Keybinding& keys = context.getKeys();
 
     // Change tool type
-    if (e.type == SDL_KEYDOWN && e.key.keysym.sym == keys.water)
-        tile = '~';
-    if (e.type == SDL_KEYDOWN && e.key.keysym.sym == keys.earth)
-        tile = '*';
-    if (e.type == SDL_KEYDOWN && e.key.keysym.sym == keys.fire)
-        tile = '!';
-    if (e.type == SDL_KEYDOWN && e.key.keysym.sym == keys.air)
-        tile = '@';
+    if (e.type == SDL_KEYDOWN) {
+        if (e.key.keysym.sym == keys.water) tile = '~';
+        else if (e.key.keysym.sym == keys.earth) tile = '*';
+        else if (e.key.keysym.sym == keys.fire) tile = '!';
+        else if (e.key.keysym.sym == keys.air) tile = '@';
+        else if (e.key.keysym.sym == keys.portal_entry) tile = 'E';
+        else if (e.key.keysym.sym == keys.portal_exit) tile = 'S';
+
+        // On escape, alternate between '.' and '#'
+        else if (e.key.keysym.sym == SDLK_ESCAPE)
+            tile = (tile == '.') ? '#' : '.';
+    }
 
     // Change mode
     if (e.type == SDL_KEYDOWN && e.key.keysym.sym == keys.road) {

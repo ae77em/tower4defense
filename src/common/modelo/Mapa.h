@@ -15,6 +15,7 @@ class Mapa {
     std::vector<char> casillas;
     std::vector<std::vector<Point>> caminos;
     std::vector<std::vector<model::Enemy>> enemigos;
+    char estilo_fondo;
 
 public:
     Mapa(unsigned x, unsigned y);
@@ -40,6 +41,15 @@ public:
      */
     char casilla(unsigned x, unsigned y);
     void setCasilla(char value, unsigned x, unsigned y);
+
+    /* Devuelve el estilo de las casillas de espacio transitable.
+       d desert
+       g grass
+       i ice
+       l lava
+     */
+    char getEstiloFondo();
+    void setEstiloFondo(char estilo);
 
     Point dimensiones();
 
