@@ -16,6 +16,12 @@ void Editor::StateTile::handle(const SDL_Event &e, Editor &context) {
         else if (e.key.keysym.sym == keys.earth) tile = '*';
         else if (e.key.keysym.sym == keys.fire) tile = '!';
         else if (e.key.keysym.sym == keys.air) tile = '@';
+        else if (e.key.keysym.sym == keys.portal_entry) tile = 'E';
+        else if (e.key.keysym.sym == keys.portal_exit) tile = 'S';
+
+        // On escape, alternate between '.' and '#'
+        else if (e.key.keysym.sym == SDLK_ESCAPE)
+            tile = (tile == '.') ? '#' : '.';
     }
 
     // Change mode
