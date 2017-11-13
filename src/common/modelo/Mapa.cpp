@@ -8,7 +8,7 @@
 using namespace model;
 
 Mapa::Mapa(unsigned x, unsigned y) :extension_x(x), extension_y(y),
-        casillas(x * y, '.'), caminos() {}
+        casillas(x * y, '.'), caminos(), estilo_fondo('g') {}
 
 char Mapa::casilla(unsigned x, unsigned y) {
     if (x >= extension_x || y >= extension_y)
@@ -92,4 +92,12 @@ std::vector<std::vector<model::Enemy>>& Mapa::getEnemigos() {
 
 void Mapa::agregarEnemigo(int indice_camino, const Enemy &e) {
     enemigos.at(indice_camino).push_back(e);
+}
+
+char Mapa::getEstiloFondo() {
+    return estilo_fondo;
+}
+
+void Mapa::setEstiloFondo(char estilo) {
+    estilo_fondo = estilo;
 }
