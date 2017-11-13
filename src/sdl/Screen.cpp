@@ -27,11 +27,16 @@ Screen::Screen() {
         throw std::runtime_error("Could not initialize SDL_image. Error: "
                 + std::string(IMG_GetError()));
 
+    tile_desert.loadFromFile("images/sprites/tile-desert.png", renderer);
+    tile_grass.loadFromFile("images/sprites/tile-grass.png", renderer);
+    tile_ice.loadFromFile("images/sprites/tile-ice.png", renderer);
+    tile_lava.loadFromFile("images/sprites/tile-lava.png", renderer);
+
     waterTower.loadFromFile("images/water_tower.png", renderer);
     earthTower.loadFromFile("images/earth_tower.png", renderer);
     fireTower.loadFromFile("images/fire_tower.png", renderer);
     airTower.loadFromFile("images/air_tower.png", renderer);
-    tile.loadFromFile("images/sprites/tile-grass.png", renderer);
+
     portal_blue = new Animation(renderer,
             "images/sprites/portal-blue2.png", 30, 1);
     portal_red = new Animation(renderer,
@@ -67,10 +72,10 @@ void Screen::put(unsigned x, unsigned y, LTexture &texture) {
     pos.y -= camera.y;
 
     /* Correccion vertical */
-    pos.y -= texture.getHeight() - tile.getHeight();
+    pos.y -= texture.getHeight() - tile_desert.getHeight();
 
     /* Correccion horizontal */
-    pos.x += (tile.getWidth() - texture.getWidth()) / 2;
+    pos.x += (tile_desert.getWidth() - texture.getWidth()) / 2;
 
     texture.render(renderer, pos.x, pos.y);
 }
@@ -83,10 +88,10 @@ void Screen::put(unsigned x, unsigned y, Animation *animation) {
     pos.y -= camera.y;
 
     /* Correccion vertical */
-    pos.y -= animation->getHeight() - tile.getHeight();
+    pos.y -= animation->getHeight() - tile_desert.getHeight();
 
     /* Correccion horizontal */
-    pos.x += (tile.getWidth() - animation->getWidth()) / 2;
+    pos.x += (tile_desert.getWidth() - animation->getWidth()) / 2;
 
     animation->renderFrame(SDL_GetTicks() / 33, pos.x, pos.y);
 }
@@ -106,25 +111,25 @@ void Screen::clear() {
 }
 
 void Screen::put(model::Mapa &map) {
+    LTexture &curr_tile_style = (map.getEstiloFondo() == 'd') ? tile_desert
+        : (map.getEstiloFondo() == 'g') ? tile_grass
+        : (map.getEstiloFondo() == 'i') ? tile_ice
+        : (map.getEstiloFondo() == 'l') ? tile_lava
+        : tile_desert;
     Point dimensions = map.dimensiones();
     for (int x = 0; x < dimensions.x; ++x)
         for (int y = 0; y < dimensions.y; ++y)
-            if (map.casilla(x, y) != '#') put(x, y, tile);
+            if (map.casilla(x, y) != '#') put(x, y, curr_tile_style);
 
     for (int x = 0; x < dimensions.x; ++x)
         for (int y = 0; y < dimensions.y; ++y)
             switch (map.casilla(x, y)) {
-                case '~': put(x, y, waterTower);
-                          break;
-                case '*': put(x, y, earthTower);
-                          break;
-                case '!': put(x, y, fireTower);
-                          break;
-                case '@': put(x, y, airTower);
-                          break;
-                case 'E': put(x, y, portal_blue);
-                          break;
-                case 'S': put(x, y, portal_red);
+                case '~': put(x, y, waterTower); break;
+                case '*': put(x, y, earthTower); break;
+                case '!': put(x, y, fireTower); break;
+                case '@': put(x, y, airTower); break;
+                case 'E': put(x, y, portal_blue); break;
+                case 'S': put(x, y, portal_red); break;
             }
 }
 
@@ -147,8 +152,8 @@ void Screen::trace(const std::vector<Point> &path) {
         auto screen_point = Utils::mapToScreen(point.x, point.y);
         screen_point.x -= camera.x;
         screen_point.y -= camera.y;
-        screen_point.x += tile.getWidth() / 2;
-        screen_point.y += tile.getHeight() / 2;
+        screen_point.x += tile_desert.getWidth() / 2;
+        screen_point.y += tile_desert.getHeight() / 2;
 
         SDL_Point sdl_point = {screen_point.x, screen_point.y};
         visual_path.push_back(sdl_point);
