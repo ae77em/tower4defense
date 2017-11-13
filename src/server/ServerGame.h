@@ -66,6 +66,10 @@ public:
     string getName();
 
     void kill();
+
+    void putTower(int typeOfTower, int x, int y);
+
+    void castSpell(int x, int y);
 };
 
 

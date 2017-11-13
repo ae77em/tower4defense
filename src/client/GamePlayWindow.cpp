@@ -19,8 +19,8 @@ GamePlayWindow::GamePlayWindow(Socket *s,
                                std::vector<std::string> &elems,
                                std::string mn)
         : server(s),
-          toReceive(in),
-          other(ot),
+          nonPlayerNotifications(in),
+          playerNotifications(ot),
           clientId(cId),
           playerElements(elems),
           matchName(mn) {
@@ -34,6 +34,7 @@ GamePlayWindow::GamePlayWindow(Socket *s,
     typeOfTowerToPut = -1;
     towerIdThatRequiresInfo = -1;
     isCastingSpells = false;
+    timeOfLastSpell = 0;
 }
 
 GamePlayWindow::~GamePlayWindow() {
@@ -523,32 +524,37 @@ void GamePlayWindow::handleLeftButtonClick(Point &point) {
                 typeOfTowerToPut = TOWER_WATER;
                 std::cout << "seleccion torre agua para poner...." << std::endl;
             }
-        } else {
+        } else  if (mousePosX <= 320) {
             if (hasElement(STR_EARTH)){
                 typeOfTowerToPut = TOWER_EARTH;
                 std::cout << "seleccion torre tier para poner...." << std::endl;
+            }
+        } else {
+            if (hasElement(STR_EARTH) && (SDL_GetTicks() - timeOfLastSpell) > 20000) {
+                isCastingSpells = true;
+                std::cout << "seleccion terraforming...." << std::endl;
             }
         }
     } else if (typeOfTowerToPut != -1) {
         if (isFirmTerrain(point)) {
             std::string request =
-                    MessageFactory::getPutTowerRequest(clientId,
+                    MessageFactory::getPutTowerRequest(matchName,
                                                        typeOfTowerToPut,
                                                        point.x,
                                                        point.y);
-
-            std::cout << "hice click en agregar torre...." << std::endl;
 
             sendToServer(request);
         }
     } else if (isCastingSpells) {
         if (isGroundTerrain(point)) {
             std::string request =
-                    MessageFactory::getCastSpellRequest(clientId,
+                    MessageFactory::getCastSpellRequest(matchName,
                                                         point.x,
                                                         point.y);
             TextMessage toSend(request);
             toSend.sendTo(reinterpret_cast<Socket &>(*server));
+            isCastingSpells = false;
+            timeOfLastSpell = SDL_GetTicks();
         }
     } else if (isATowerPoint(point)) {
         std::string request =
@@ -594,10 +600,10 @@ void GamePlayWindow::handleServerPlayerNotifications(SDL_Rect camera) {
 
     Tower *tower = towers.at(0);
 
-    while (other->hasData() &&
+    while (playerNotifications->hasData() &&
            transactionsCounter < 10) {
         ++transactionsCounter;
-        notification = other->getNextData();
+        notification = playerNotifications->getNextData();
 
         std::cout << "lo que tengo en el segundo buffer" << notification << std::endl;
 
@@ -653,10 +659,10 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
     int transactionsCounter = 0;
     std::string notification;
 
-    while (toReceive->isProcessingYet() &&
+    while (nonPlayerNotifications->isProcessingYet() &&
            transactionsCounter < MAX_SERVER_NOTIFICATIONS_PER_FRAME) {
         ++transactionsCounter;
-        notification = toReceive->getNextData();
+        notification = nonPlayerNotifications->getNextData();
 
         Message message;
         std::string response;
@@ -696,8 +702,7 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
                 break;
             }
             case SERVER_NOTIFICATION_MATCH_ENDED: {
-                toReceive->setClientProcessEnded(true);
-                //other->setClientProcessEnded(true);
+                nonPlayerNotifications->setClientProcessEnded(true);
                 gameWon = true;
                 break;
             }

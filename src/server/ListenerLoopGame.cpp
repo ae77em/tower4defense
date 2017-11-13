@@ -32,17 +32,38 @@ void ListenerLoopGame::run() {
             // sobre el game loop
             switch (request.getAsInt(OPERATION_KEY)) {
                 case GAME_REQUEST_PUT_TOWER: {
-                    // poner torre
-                    break;
-                }
-                case GAME_REQUEST_MARK_TILE: {
-                    /*int x = request.getAsInt(XCOORD_KEY);
-                    int y = request.getAsInt(YCOORD_KEY);
-*/
+                    std::string x = request.getAsString(XCOORD_KEY);
+                    std::string y = request.getAsString(YCOORD_KEY);
+
+                    std::cout << "me llego request para poner torre en ("
+                            << x << ", " << y << ")..." << std::endl;
+
                     break;
                 }
                 case GAME_REQUEST_CAST_SPELL: {
-                    // lanzo hechizo
+                    std::string x = request.getAsString(XCOORD_KEY);
+                    std::string y = request.getAsString(YCOORD_KEY);
+
+                    std::cout << "me llego request para lanzar hechizo torre en ("
+                              << x << ", " << y << ")..." << std::endl;
+
+                    break;
+                }
+                case GAME_REQUEST_TOWER_INFO: {
+                    std::string towerId = request.getAsString("towerId");
+
+                    std::cout << "me llego request de info de torre "
+                              << towerId << std::endl;
+
+                    break;
+                }
+                case GAME_REQUEST_APPLY_UPGRADE: {
+                    std::string towerId = request.getAsString("towerId");
+                    std::string upgradeId = request.getAsString("upgradeId");
+
+                    std::cout << "me llego request de upgrade de torre "
+                              << towerId << std::endl;
+
                     break;
                 }
             }

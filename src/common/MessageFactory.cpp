@@ -168,13 +168,14 @@ std::string MessageFactory::getExistingMatchesNotification(
  * ****************************************************************************
  * */
 std::string
-MessageFactory::getPutTowerRequest(int clientId, int towerType, int x, int y) {
+MessageFactory::getPutTowerRequest(std::string &matchName, int towerType, int x,
+                                   int y) {
     std::string toReturn;
     Json::Value root(Json::objectValue);
     Message message;
 
     root[OPERATION_KEY] = CLIENT_REQUEST_PUT_TOWER;
-    root[CLIENT_ID_KEY] = clientId;
+    root[MATCH_NAME_KEY] = matchName;
     root["towerType"] = towerType;
     root[XCOORD_KEY] = x;
     root[YCOORD_KEY] = y;
@@ -185,6 +186,25 @@ MessageFactory::getPutTowerRequest(int clientId, int towerType, int x, int y) {
 
     return toReturn;
 }
+
+std::string MessageFactory::getPutTowerGameRequest(int towerType, int x, int y) {
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = GAME_REQUEST_PUT_TOWER;
+    root["towerType"] = towerType;
+    root[XCOORD_KEY] = x;
+    root[YCOORD_KEY] = y;
+
+    message.setData(root);
+
+    toReturn = message.serialize();
+
+    return toReturn;
+}
+
+
 
 std::string MessageFactory::getPutTowerNotification(Message &request) {
     Json::Value &root = request.getData();
@@ -605,13 +625,13 @@ std::string MessageFactory::getTowerInfoRequest(int clientId, int towerId) {
 }
 
 std::string
-MessageFactory::getCastSpellRequest(int clientId, int x, int y) {
+MessageFactory::getCastSpellRequest(std::string matchName, int x, int y) {
     std::string toReturn;
     Json::Value root(Json::objectValue);
     Message message;
 
     root[OPERATION_KEY] = CLIENT_REQUEST_CAST_SPELL;
-    root[CLIENT_ID_KEY] = clientId;
+    root[MATCH_NAME_KEY] = matchName;
     root[XCOORD_KEY] = x;
     root[YCOORD_KEY] = y;
 
@@ -628,6 +648,22 @@ std::string MessageFactory::getMarkTileGameRequest(int x, int y) {
     Message message;
 
     root[OPERATION_KEY] = GAME_REQUEST_MARK_TILE;
+    root[XCOORD_KEY] = x;
+    root[YCOORD_KEY] = y;
+
+    message.setData(root);
+
+    toReturn = message.serialize();
+
+    return toReturn;
+}
+
+std::string MessageFactory::getCastSpellGameRequest(int x, int y) {
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = GAME_REQUEST_CAST_SPELL;
     root[XCOORD_KEY] = x;
     root[YCOORD_KEY] = y;
 

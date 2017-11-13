@@ -78,6 +78,10 @@ private:
     void notifyPlayerAdded(string matchName);
 
     void markTile(std::string matchName, int x, int y);
+
+    void putTower(string matchName, int typeOfTower, int x, int y);
+
+    void castSpell(string matchName, int x, int y);
 };
 
 

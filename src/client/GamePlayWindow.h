@@ -6,7 +6,7 @@ static const int CANT_TOWERS_BUTTONS = 4;
 static const int CANT_TOWERS_BUTTONS_STATES = 4;
 static const int TOWER_BUTTONS_X_POS = 1;
 static const int TOWER_BUTTONS_Y_POS = 1;
-static const int TOWER_BUTTONS_WIDTH = 320;
+static const int TOWER_BUTTONS_WIDTH = 400;
 static const int TOWBER_BUTTONS_HEIGHT = 80;
 
 #include "../common/Socket.h"
@@ -125,8 +125,8 @@ private:
 
     // Comunication with the game server
     Socket *server = nullptr;
-    SharedBuffer *toReceive = nullptr;
-    SharedBuffer *other = nullptr;
+    SharedBuffer *nonPlayerNotifications = nullptr;
+    SharedBuffer *playerNotifications = nullptr;
 
     int clientId;
 
@@ -139,6 +139,7 @@ private:
     int typeOfTowerToPut;
     int towerIdThatRequiresInfo;
     bool isCastingSpells;
+    int timeOfLastSpell;
 
     void handleServerPlayerNotifications(SDL_Rect camera);
 };

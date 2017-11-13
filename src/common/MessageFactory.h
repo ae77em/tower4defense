@@ -43,7 +43,7 @@ public:
      * isPut: es true si se está colocando la torre, false en caso contrario.
      */
     static std::string
-    getPutTowerRequest(int clientId, int towerType, int x, int y);
+    getPutTowerRequest(std::string &matchName, int towerType, int x, int y);
 
     /*
      * Retorna la notificación enviada por el server para poner una torre en el escenario.
@@ -160,9 +160,13 @@ public:
 
     static std::string getTowerInfoRequest(int clientId, int towerId);
 
-    static std::string getCastSpellRequest(int clientId, int x, int y);
+    static std::string getCastSpellRequest(std::string matchName, int x, int y);
 
     static std::string getMarkTileGameRequest(int x, int y);
+
+    static std::string getPutTowerGameRequest(int towerType, int x, int y);
+
+    static std::string getCastSpellGameRequest(int x, int y);
 };
 
 

@@ -127,3 +127,17 @@ void ServerGame::kill() {
     listenerLoopGame.join();
     workerLoopGame.join();
 }
+
+void ServerGame::putTower(int typeOfTower, int x, int y) {
+    std::string req = MessageFactory::getPutTowerGameRequest(typeOfTower, x, y);
+    Message message;
+    message.deserialize(req);
+    queueMessagesGame.push(message);
+}
+
+void ServerGame::castSpell(int x, int y) {
+    std::string req = MessageFactory::getCastSpellGameRequest(x, y);
+    Message message;
+    message.deserialize(req);
+    queueMessagesGame.push(message);
+}

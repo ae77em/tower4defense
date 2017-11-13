@@ -210,11 +210,12 @@ void Server::run() {
 
                     /* gaming requests: */
                 case CLIENT_REQUEST_PUT_TOWER: {
-                    //int clientId = request.getAsInt("clientId");
                     std::string matchName = request.getAsString("matchName");
-                    MessageFactory::getPutTowerNotification(
-                            messageRequest);
-                    notifyAll(response);
+                    int towerType = request.getAsInt("towerType");
+                    int x = request.getAsInt(XCOORD_KEY);
+                    int y = request.getAsInt(YCOORD_KEY);
+
+                    putTower(matchName, towerType, x, y);
                     break;
                 }
                 case CLIENT_REQUEST_MARK_TILE: {
@@ -223,6 +224,14 @@ void Server::run() {
                     int y = request.getAsInt("yCoord");
 
                     markTile(matchName, x, y);
+                    break;
+                }
+                case CLIENT_REQUEST_CAST_SPELL: {
+                    std::string matchName = request.getAsString("matchName");
+                    int x = request.getAsInt(XCOORD_KEY);
+                    int y = request.getAsInt(YCOORD_KEY);
+
+                    castSpell(matchName, x, y);
                     break;
                 }
                 case SERVER_NOTIFICATION_END_CLIENT_CONNECTION: {
@@ -365,4 +374,14 @@ void Server::removeClient(int id) {
 void Server::markTile(std::string matchName, int x, int y) {
     ServerGame *serverGame = matches.at(matchName);
     serverGame->markTile(x, y);
+}
+
+void Server::putTower(std::string matchName, int typeOfTower, int x, int y){
+    ServerGame *serverGame = matches.at(matchName);
+    serverGame->putTower(typeOfTower, x, y);
+}
+
+void Server::castSpell(string matchName, int x, int y) {
+    ServerGame *serverGame = matches.at(matchName);
+    serverGame->castSpell(x, y);
 }
