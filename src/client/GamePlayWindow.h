@@ -142,6 +142,7 @@ private:
     int towerIdThatRequiresInfo;
     bool isCastingSpells;
     int timeOfLastSpell;
+    int timeOfLastTowerPutted;
 
     void handleServerPlayerNotifications(SDL_Rect camera);
 
@@ -152,6 +153,8 @@ private:
     void doUpgradeRequest() const;
 
     void doTowerInfoRequest() const;
+
+    void renderTimeMessages(SDL_Rect &camera);
 };
 
 #endif //TP4_TOWERDEFENSE_GAME_H

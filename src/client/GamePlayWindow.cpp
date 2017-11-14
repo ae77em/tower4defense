@@ -35,6 +35,7 @@ GamePlayWindow::GamePlayWindow(Socket *s,
     towerIdThatRequiresInfo = -1;
     isCastingSpells = false;
     timeOfLastSpell = -20000;
+    timeOfLastTowerPutted = -20000;
 }
 
 GamePlayWindow::~GamePlayWindow() {
@@ -62,7 +63,6 @@ GamePlayWindow::~GamePlayWindow() {
 void GamePlayWindow::run() {
     unsigned int gameEndedTime = 0;
     bool gameEnded;
-    int t;
     std::vector<Animable *> animables;
 
     //Start up SDL and create window
@@ -129,8 +129,9 @@ void GamePlayWindow::run() {
                     if (tileSet[i]->itIsMarked()) {
                         tileSet[i]->verifyIfMustContinueMarked();
 
-                        if (!tileSet[i]->itIsMarked()){
-                            tileSet[i]->setType(TILE_FIRM); // HORRIBLE ESTO...REFACTORIZAR CUANDO SE PUEDA
+                        if (!tileSet[i]->itIsMarked()) {
+                            tileSet[i]->setType(
+                                    TILE_FIRM); // HORRIBLE ESTO...REFACTORIZAR CUANDO SE PUEDA
                         }
                     }
 
@@ -180,14 +181,7 @@ void GamePlayWindow::run() {
                     }
                 }
 
-                if ((t = (SDL_GetTicks() - timeOfLastSpell)) < 20000){
-                    t /= 1000;
-                    t = 20 - t;
-                    std::string message("Lanza hechizo nuevamete en: ");
-                    message.append(std::to_string(t));
-                    message.append(" seg");
-                    renderText(camera, message, 1, 100);
-                }
+                renderTimeMessages(camera);
 
                 //Update screen
                 SDL_RenderPresent(gRenderer);
@@ -199,6 +193,28 @@ void GamePlayWindow::run() {
     }
 
     server->shutdown(); // TODO ver si esto corresponde hacerlo acá...
+}
+
+void GamePlayWindow::renderTimeMessages(SDL_Rect &camera) {
+    int t;
+    if ((t = (SDL_GetTicks() - timeOfLastSpell)) < 20000) {
+        t /= 1000;
+        t = 20 - t;
+        std::__cxx11::string message("Puede lanzar hechizo nuevamete en: ");
+        message.append(std::__cxx11::to_string(t));
+        message.append(" seg");
+        renderText(camera, message, 1, 100);
+    }
+
+    if ((t = (SDL_GetTicks() - timeOfLastTowerPutted)) < 20000) {
+        t /= 1000;
+        t = 20 - t;
+        std::__cxx11::string message("Puede poner torre nuevamente en: ");
+        message.append(std::__cxx11::to_string(t));
+        message.append(" seg");
+        renderText(camera, message, 1, 150);
+    }
+
 }
 
 bool GamePlayWindow::init() {
@@ -438,7 +454,6 @@ bool GamePlayWindow::setTiles() {
                     towerButtonsClips[i][j].h = 80;
                 }
             }
-
         }
 
         loadPortalSprites();
@@ -559,10 +574,11 @@ void GamePlayWindow::handleLeftButtonClick(Point &point) {
 
             doUpgradeRequest();
         }
-    } else if (typeOfTowerToPut != -1) {
+    } else if (typeOfTowerToPut != -1
+            && (SDL_GetTicks() - timeOfLastTowerPutted) > 20000) {
         if (isFirmTerrain(point)) {
             doPutTowerRequest(point);
-
+            timeOfLastTowerPutted = SDL_GetTicks();
         }
     } else if (isCastingSpells) {
         if (isGroundTerrain(point)) {
@@ -580,35 +596,35 @@ void GamePlayWindow::handleLeftButtonClick(Point &point) {
 
 void GamePlayWindow::doTowerInfoRequest() const {
     std::__cxx11::string request =
-                MessageFactory::getTowerInfoRequest(clientId,
-                                                    towerIdThatRequiresInfo);
+            MessageFactory::getTowerInfoRequest(clientId,
+                                                towerIdThatRequiresInfo);
     sendToServer(request);
 }
 
 void GamePlayWindow::doUpgradeRequest() const {
     std::__cxx11::string request =
-                    MessageFactory::getUpgradeRequest(matchName,
-                                                      towerSelected,
-                                                      typeOfUpgradeToDo);
+            MessageFactory::getUpgradeRequest(matchName,
+                                              towerSelected,
+                                              typeOfUpgradeToDo);
 
     sendToServer(request);
 }
 
 void GamePlayWindow::doPutTowerRequest(const Point &point) const {
     std::__cxx11::string request =
-                    MessageFactory::getPutTowerRequest(matchName,
-                                                       typeOfTowerToPut,
-                                                       point.x,
-                                                       point.y);
+            MessageFactory::getPutTowerRequest(matchName,
+                                               typeOfTowerToPut,
+                                               point.x,
+                                               point.y);
 
     sendToServer(request);
 }
 
 void GamePlayWindow::doCastSpellRequest(const Point &point) const {
     std::__cxx11::string request =
-                    MessageFactory::getCastSpellRequest(matchName,
-                                                        point.x,
-                                                        point.y);
+            MessageFactory::getCastSpellRequest(matchName,
+                                                point.x,
+                                                point.y);
     TextMessage toSend(request);
     toSend.sendTo(reinterpret_cast<Socket &>(*server));
 }
@@ -641,7 +657,8 @@ void GamePlayWindow::handleServerPlayerNotifications(SDL_Rect camera) {
         ++transactionsCounter;
         notification = playerNotifications->getNextData();
 
-        std::cout << "lo que tengo en el segundo buffer" << notification << std::endl;
+        std::cout << "lo que tengo en el segundo buffer" << notification
+                  << std::endl;
 
 
         Message message;
@@ -657,11 +674,13 @@ void GamePlayWindow::handleServerPlayerNotifications(SDL_Rect camera) {
             case SERVER_NOTIFICATION_PUT_TOWER: {
                 Point point = MessageFactory::getPoint(message);
 
-                Tower *newTower = new Tower(point.x, point.x, gRenderer, gSpriteSheetTextureTower);
+                Tower *newTower = new Tower(point.x, point.x, gRenderer,
+                                            gSpriteSheetTextureTower);
                 towers.push_back(newTower);
 
                 if (point.isPositive()) {
-                    newTower->setPosition(point.x * CARTESIAN_TILE_HEIGHT, point.y * CARTESIAN_TILE_HEIGHT);
+                    newTower->setPosition(point.x * CARTESIAN_TILE_HEIGHT,
+                                          point.y * CARTESIAN_TILE_HEIGHT);
                 }
                 break;
             }
@@ -685,7 +704,7 @@ void GamePlayWindow::handleServerPlayerNotifications(SDL_Rect camera) {
                 }
                 break;
             }
-            case SERVER_NOTIFICATION_APPLY_UPGRADE:{
+            case SERVER_NOTIFICATION_APPLY_UPGRADE: {
                 // aplicar upgrade
                 break;
             };
@@ -813,8 +832,8 @@ bool GamePlayWindow::isGroundTerrain(Point &point) {
 
 bool GamePlayWindow::hasElement(const std::string &element) const {
     return
-        std::find(playerElements.begin(), playerElements.end(), element)
-                != playerElements.end();
+            std::find(playerElements.begin(), playerElements.end(), element)
+            != playerElements.end();
 }
 
 void GamePlayWindow::setToMarkedTile(Point &point) {
