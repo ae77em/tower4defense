@@ -6,5 +6,6 @@ const struct Keybinding default_keybinding = {
     SDLK_1, SDLK_2, SDLK_3, SDLK_4,
     SDLK_e, SDLK_q,
     SDLK_r,
+    SDLK_f,
     SDLK_ESCAPE
 };
