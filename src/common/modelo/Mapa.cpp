@@ -48,6 +48,7 @@ std::string Mapa::serialize() {
     root["height"] = extension_y;
 
     // Serializar las casillas
+    root["fondo"] = std::string(&estilo_fondo, 1);
     std::string string_casillas(casillas.data(), extension_x * extension_y);
     root["tiles"] = string_casillas;
 
@@ -74,6 +75,7 @@ Mapa::Mapa(std::string json) {
     extension_y = root["height"].asUInt();
 
     // Deserializar las casillas
+    estilo_fondo = root["fondo"].asString().c_str()[0];
     std::string str_casillas = root["tiles"].asString();
     casillas = std::vector<char>(str_casillas.begin(), str_casillas.end());
 
