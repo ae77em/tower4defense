@@ -206,16 +206,19 @@ std::string MessageFactory::getPutTowerGameRequest(int towerType, int x, int y) 
 
 
 
-std::string MessageFactory::getPutTowerNotification(Message &request) {
-    Json::Value &root = request.getData();
+std::string MessageFactory::getPutTowerNotification(int towerType,
+                                                    int x,
+                                                    int y) {
     std::string toReturn;
+    Json::Value root(Json::objectValue);
     Message message;
 
-    Json::Value responseRoot(root);
+    root[OPERATION_KEY] = SERVER_NOTIFICATION_PUT_TOWER;
+    root["towerType"] = towerType;
+    root[XCOORD_KEY] = x;
+    root[YCOORD_KEY] = y;
 
-    responseRoot[OPERATION_KEY] = SERVER_NOTIFICATION_PUT_TOWER;
-
-    message.setData(responseRoot);
+    message.setData(root);
     toReturn = message.serialize();
 
     return toReturn;

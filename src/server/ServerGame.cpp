@@ -136,9 +136,9 @@ void ServerGame::putTower(int typeOfTower, int x, int y) {
     queueMessagesGame.push(message);
 
     /** HASTA TENER DEFINIDO EL ACCESO A EL LOOP DE JUEGO CON LA INFO ***/
-    req = MessageFactory::getCastSpellNotification(x, y);
+    req = MessageFactory::getPutTowerNotification(typeOfTower, x, y);
     mutexPlayers.lock();
-    notifyAll(message.serialize());
+    notifyAll(req);
     mutexPlayers.unlock();
     /*****/
 }

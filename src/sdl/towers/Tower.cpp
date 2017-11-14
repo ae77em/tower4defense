@@ -42,8 +42,8 @@ void Tower::setSprites() {
     for (int i = 0; i < numberOfIdleSprites; ++i) {
         idleSprites[i].x = idleStartX + (i * idleSpriteWidth);
         idleSprites[i].y = idleStartY;
-        idleSprites[i].w = idleSpriteWidth;
-        idleSprites[i].h = idleSpriteHeight;
+        idleSprites[i].w = IDLE_SPRITE_WIDTH;
+        idleSprites[i].h = IDLE_SPRITE_HEIGHT;
     }
 
     // seteo los sprites para disparo...
@@ -76,10 +76,11 @@ void Tower::renderIdle(SDL_Rect &camera) {
     shotBox.x = idleBox.x;
     shotBox.y = idleBox.y;
 
-    int offset = idleBox.h - ISO_TILE_HEIGHT;
+    int xoffset = (idleBox.w - ISO_TILE_WIDTH) / 2;
+    int yoffset = idleBox.h - ISO_TILE_HEIGHT;
 
-    double isox = screenPoint.x - camera.x;
-    double isoy = screenPoint.y - camera.y - offset;
+    double isox = screenPoint.x - camera.x - xoffset;
+    double isoy = screenPoint.y - camera.y - yoffset;
 
     texture.renderSprite(renderer, isox, isoy, &idleSprites[frameToDraw]);
 }

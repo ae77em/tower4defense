@@ -53,6 +53,10 @@ GamePlayWindow::~GamePlayWindow() {
         }
         delete hordes[i];
     }
+
+    for (unsigned i = 0; i < towers.size(); ++i) {
+        delete towers[i];
+    }
 }
 
 void GamePlayWindow::run() {
@@ -143,6 +147,7 @@ void GamePlayWindow::run() {
                  * para volver a mostrarlos bien.
                  */
                 animables.clear();
+
                 for (Tower *tower : towers) {
                     animables.push_back(reinterpret_cast<Animable *&&>(tower));
                 }
@@ -306,7 +311,7 @@ bool GamePlayWindow::loadMedia() {
 }
 
 void GamePlayWindow::initializeGameActors() {
-    Tower *tower = new Tower(10, 3, gRenderer, gSpriteSheetTextureTower);
+    Tower *tower = new Tower(800, 240, gRenderer, gSpriteSheetTextureTower);
     tower->loadMedia();
     tower->setSprites();
 
@@ -629,7 +634,7 @@ void GamePlayWindow::handleServerPlayerNotifications(SDL_Rect camera) {
     int transactionsCounter = 0;
     std::string notification;
 
-    Tower *tower = towers.at(0);
+    //Tower *tower = towers.at(0);
 
     while (playerNotifications->hasData() &&
            transactionsCounter < 10) {
@@ -652,9 +657,11 @@ void GamePlayWindow::handleServerPlayerNotifications(SDL_Rect camera) {
             case SERVER_NOTIFICATION_PUT_TOWER: {
                 Point point = MessageFactory::getPoint(message);
 
+                Tower *newTower = new Tower(point.x, point.x, gRenderer, gSpriteSheetTextureTower);
+                towers.push_back(newTower);
+
                 if (point.isPositive()) {
-                    Point screenPoint = Utils::mapToScreen(point.x, point.y);
-                    tower->setPosition(screenPoint.x, screenPoint.y);
+                    newTower->setPosition(point.x * CARTESIAN_TILE_HEIGHT, point.y * CARTESIAN_TILE_HEIGHT);
                 }
                 break;
             }

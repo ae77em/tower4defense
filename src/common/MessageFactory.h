@@ -177,6 +177,8 @@ public:
                              int slowDown = 0);
 
     static std::string getCastSpellNotification(int x, int y);
+
+    static std::string getPutTowerNotification(int towerType, int x, int y);
 };
 
 
