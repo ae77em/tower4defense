@@ -19,7 +19,7 @@ class Screen {
 
     TTF_Font *font;
     LTexture dialog;
-    LTexture tile_desert, tile_grass, tile_ice, tile_lava;
+    LTexture tile_desert, tile_grass, tile_ice, tile_lava, tile_firm;
     LTexture waterTower, earthTower, fireTower, airTower;
     Animation *portal_blue, *portal_red;
 
