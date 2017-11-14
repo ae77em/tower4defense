@@ -31,6 +31,7 @@ Screen::Screen() {
     tile_grass.loadFromFile("images/sprites/tile-grass.png", renderer);
     tile_ice.loadFromFile("images/sprites/tile-ice.png", renderer);
     tile_lava.loadFromFile("images/sprites/tile-lava.png", renderer);
+    tile_firm.loadFromFile("images/sprites/tile-firm.png", renderer);
 
     waterTower.loadFromFile("images/water_tower.png", renderer);
     earthTower.loadFromFile("images/earth_tower.png", renderer);
@@ -119,7 +120,17 @@ void Screen::put(model::Mapa &map) {
     Point dimensions = map.dimensiones();
     for (int x = 0; x < dimensions.x; ++x)
         for (int y = 0; y < dimensions.y; ++y)
-            if (map.casilla(x, y) != '#') put(x, y, curr_tile_style);
+            switch (map.casilla(x, y)) {
+                case '#': break;
+                case '.': put(x, y, curr_tile_style); break;
+                case 'x': put(x, y, tile_firm); break;
+
+                case 'E': case 'S':
+                    put(x, y, curr_tile_style); break;
+
+                case '~': case '*': case '!': case '@':
+                    put(x, y, tile_firm); break;
+            }
 
     for (int x = 0; x < dimensions.x; ++x)
         for (int y = 0; y < dimensions.y; ++y)
