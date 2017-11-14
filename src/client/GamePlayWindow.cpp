@@ -34,7 +34,7 @@ GamePlayWindow::GamePlayWindow(Socket *s,
     typeOfTowerToPut = -1;
     towerIdThatRequiresInfo = -1;
     isCastingSpells = false;
-    timeOfLastSpell = 0;
+    timeOfLastSpell = -20000;
 }
 
 GamePlayWindow::~GamePlayWindow() {
@@ -58,7 +58,7 @@ GamePlayWindow::~GamePlayWindow() {
 void GamePlayWindow::run() {
     unsigned int gameEndedTime = 0;
     bool gameEnded;
-
+    int t;
     std::vector<Animable *> animables;
 
     //Start up SDL and create window
@@ -173,6 +173,15 @@ void GamePlayWindow::run() {
                     } else {
                         renderText(camera, "Partida perdida...");
                     }
+                }
+
+                if ((t = (SDL_GetTicks() - timeOfLastSpell)) < 20000){
+                    t /= 1000;
+                    t = 20 - t;
+                    std::string message("Lanza hechizo nuevamete en: ");
+                    message.append(std::to_string(t));
+                    message.append(" seg");
+                    renderText(camera, message, 1, 100);
                 }
 
                 //Update screen
@@ -466,7 +475,8 @@ void GamePlayWindow::loadPortalSprites() {
     }
 }
 
-void GamePlayWindow::renderText(SDL_Rect &camera, std::string text) {
+void
+GamePlayWindow::renderText(SDL_Rect &camera, std::string text, int x, int y) {
     SDL_Color textColor = {0xFF, 0xFF, 0, 0xFF}; // letra amarilla
     SDL_Color bgColor = {0, 0, 0, 0}; // fondo transparente (supuestamente)
 
@@ -475,7 +485,7 @@ void GamePlayWindow::renderText(SDL_Rect &camera, std::string text) {
     gPromptTextTexture.generateFromText(text, gRenderer, font, textColor,
                                         bgColor);
 
-    gPromptTextTexture.render(gRenderer, 50, 50);
+    gPromptTextTexture.render(gRenderer, x, y);
 }
 
 void
@@ -509,66 +519,93 @@ void GamePlayWindow::handleLeftButtonClick(Point &point) {
     if (isClickOnTowerButton(mousePosX, mousePosY)) {
         typeOfTowerToPut = -1;
 
-        if (mousePosX <= 80) {
-            if (hasElement(STR_AIR)){
+        if (mousePosX <= 40) {
+            if (hasElement(STR_AIR)) {
                 typeOfTowerToPut = TOWER_AIR;
-                std::cout << "seleccion torre aire para poner...." << std::endl;
+            }
+        } else if (mousePosX <= 80) {
+            if (hasElement(STR_FIRE)) {
+                typeOfTowerToPut = TOWER_FIRE;
+            }
+        } else if (mousePosX <= 120) {
+            if (hasElement(STR_WATER)) {
+                typeOfTowerToPut = TOWER_WATER;
             }
         } else if (mousePosX <= 160) {
-            if (hasElement(STR_FIRE)){
-                typeOfTowerToPut = TOWER_FIRE;
-                std::cout << "seleccion torre fueg para poner...." << std::endl;
-            }
-        } else if (mousePosX <= 240) {
-            if (hasElement(STR_WATER)){
-                typeOfTowerToPut = TOWER_WATER;
-                std::cout << "seleccion torre agua para poner...." << std::endl;
-            }
-        } else  if (mousePosX <= 320) {
-            if (hasElement(STR_EARTH)){
+            if (hasElement(STR_EARTH)) {
                 typeOfTowerToPut = TOWER_EARTH;
-                std::cout << "seleccion torre tier para poner...." << std::endl;
             }
-        } else {
-            if (hasElement(STR_EARTH) && (SDL_GetTicks() - timeOfLastSpell) > 20000) {
+        } else if (mousePosX <= 200) {
+            if (hasElement(STR_EARTH) &&
+                (SDL_GetTicks() - timeOfLastSpell) > 20000) {
                 isCastingSpells = true;
-                std::cout << "seleccion terraforming...." << std::endl;
             }
+        } else if (towerSelected != -1) {
+            // quiero hacer upgrade
+            if (mousePosX <= 240) {
+                typeOfUpgradeToDo = UPGRADE_RANGE;
+            } else if (mousePosX <= 280) {
+                typeOfUpgradeToDo = UPGRADE_DAMAGE;
+            } else if (mousePosX <= 320) {
+                typeOfUpgradeToDo = UPGRADE_REACH;
+            } else {
+                typeOfUpgradeToDo = UPGRADE_SLOWDOWN;
+            }
+
+            doUpgradeRequest();
         }
     } else if (typeOfTowerToPut != -1) {
         if (isFirmTerrain(point)) {
-            std::string request =
+            doPutTowerRequest(point);
+
+        }
+    } else if (isCastingSpells) {
+        if (isGroundTerrain(point)) {
+            doCastSpellRequest(point);
+
+            isCastingSpells = false;
+            timeOfLastSpell = SDL_GetTicks();
+        }
+    } else if (isATowerPoint(point)) {
+        doTowerInfoRequest();
+    } else {
+        // no hago nada, por ahora
+    }
+}
+
+void GamePlayWindow::doTowerInfoRequest() const {
+    std::__cxx11::string request =
+                MessageFactory::getTowerInfoRequest(clientId,
+                                                    towerIdThatRequiresInfo);
+    sendToServer(request);
+}
+
+void GamePlayWindow::doUpgradeRequest() const {
+    std::__cxx11::string request =
+                    MessageFactory::getUpgradeRequest(matchName,
+                                                      towerSelected,
+                                                      typeOfUpgradeToDo);
+
+    sendToServer(request);
+}
+
+void GamePlayWindow::doPutTowerRequest(const Point &point) const {
+    std::__cxx11::string request =
                     MessageFactory::getPutTowerRequest(matchName,
                                                        typeOfTowerToPut,
                                                        point.x,
                                                        point.y);
 
-            sendToServer(request);
-        }
-    } else if (isCastingSpells) {
-        if (isGroundTerrain(point)) {
-            std::string request =
+    sendToServer(request);
+}
+
+void GamePlayWindow::doCastSpellRequest(const Point &point) const {
+    std::__cxx11::string request =
                     MessageFactory::getCastSpellRequest(matchName,
                                                         point.x,
                                                         point.y);
-            TextMessage toSend(request);
-            toSend.sendTo(reinterpret_cast<Socket &>(*server));
-            isCastingSpells = false;
-            timeOfLastSpell = SDL_GetTicks();
-        }
-    } else if (isATowerPoint(point)) {
-        std::string request =
-                MessageFactory::getTowerInfoRequest(clientId,
-                                                    towerIdThatRequiresInfo);
-        sendToServer(request);
-    } else {
-        std::cout << "********************" << std::endl;
-        std::cout << "********************" << std::endl;
-        std::cout << "hice click con el botón izquierdo, pero no disparé "
-                "ningún evento de juego...";
-        std::cout << "********************" << std::endl;
-        std::cout << "********************" << std::endl;
-    }
+    TextMessage toSend(request);
+    toSend.sendTo(reinterpret_cast<Socket &>(*server));
 }
 
 void GamePlayWindow::sendToServer(const std::string &request) const {
@@ -578,12 +615,6 @@ void GamePlayWindow::sendToServer(const std::string &request) const {
 
 void GamePlayWindow::handleRightButtonClick(Point point) {
     if (isFirmTerrain(point)) {
-        std::cout << "******************..." << std::endl;
-        std::cout << "******************..." << std::endl;
-        std::cout << "Mando mensaje para marcar tile..." << std::endl;
-        std::cout << "******************..." << std::endl;
-        std::cout << "******************..." << std::endl;
-
         std::string request =
                 MessageFactory::getMarkTileRequest(matchName,
                                                    point.x,
@@ -640,7 +671,11 @@ void GamePlayWindow::handleServerPlayerNotifications(SDL_Rect camera) {
                 break;
             }
             case SERVER_NOTIFICATION_CAST_SPELL: {
-                // reemplazar el tile por el valor que corresponde
+                Point point = MessageFactory::getPoint(message);
+
+                if (point.isPositive()) {
+                    setToFirmTile(point);
+                }
                 break;
             }
             case SERVER_NOTIFICATION_APPLY_UPGRADE:{
@@ -744,10 +779,10 @@ bool GamePlayWindow::isATowerPoint(Point &point) {
         for (unsigned i = 0; i < towers.size(); ++i) {
             if (point.isEqualsTo(towers[i]->getPoint())) {
                 isATowerPoint = true;
-                towerIdThatRequiresInfo = i;
+                towerSelected = i;
                 break;
             } else {
-                towerIdThatRequiresInfo = -1;
+                towerSelected = -1;
             }
         }
     }

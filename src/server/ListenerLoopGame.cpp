@@ -57,7 +57,7 @@ void ListenerLoopGame::run() {
 
                     break;
                 }
-                case GAME_REQUEST_APPLY_UPGRADE: {
+                case GAME_REQUEST_UPGRADE_TOWER: {
                     std::string towerId = request.getAsString("towerId");
                     std::string upgradeId = request.getAsString("upgradeId");
 

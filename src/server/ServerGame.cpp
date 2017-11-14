@@ -105,16 +105,6 @@ void ServerGame::removePlayer(int i) {
     players.erase(i);
 }
 
-void ServerGame::markTile(int x, int y){
-    std::string markTileStr = MessageFactory::getMarkTileNotification(x, y);
-    Message message;
-
-    message.deserialize(markTileStr);
-
-    mutexPlayers.lock();
-    notifyAll(message.serialize());
-    mutexPlayers.unlock();
-}
 
 int ServerGame::getAmountPlayers() {
     return players.size();
@@ -128,11 +118,29 @@ void ServerGame::kill() {
     workerLoopGame.join();
 }
 
+void ServerGame::markTile(int x, int y){
+    std::string markTileStr = MessageFactory::getMarkTileNotification(x, y);
+    Message message;
+
+    message.deserialize(markTileStr);
+
+    mutexPlayers.lock();
+    notifyAll(message.serialize());
+    mutexPlayers.unlock();
+}
+
 void ServerGame::putTower(int typeOfTower, int x, int y) {
     std::string req = MessageFactory::getPutTowerGameRequest(typeOfTower, x, y);
     Message message;
     message.deserialize(req);
     queueMessagesGame.push(message);
+
+    /** HASTA TENER DEFINIDO EL ACCESO A EL LOOP DE JUEGO CON LA INFO ***/
+    req = MessageFactory::getCastSpellNotification(x, y);
+    mutexPlayers.lock();
+    notifyAll(message.serialize());
+    mutexPlayers.unlock();
+    /*****/
 }
 
 void ServerGame::castSpell(int x, int y) {
@@ -140,4 +148,40 @@ void ServerGame::castSpell(int x, int y) {
     Message message;
     message.deserialize(req);
     queueMessagesGame.push(message);
+
+    /** HASTA TENER DEFINIDO EL ACCESO A EL LOOP DE JUEGO CON LA INFO ***/
+    req = MessageFactory::getCastSpellNotification(x, y);
+    mutexPlayers.lock();
+    notifyAll(req);
+    mutexPlayers.unlock();
+    /*****/
 }
+
+void ServerGame::upgradeTower(int towerId, int upgradeType) {
+    std::string req = MessageFactory::getUpgradeTowerGameRequest(towerId, upgradeType);
+    Message message;
+    message.deserialize(req);
+    queueMessagesGame.push(message);
+
+    /** HASTA TENER DEFINIDO EL ACCESO A EL LOOP DE JUEGO CON LA INFO ***/
+    mutexPlayers.lock();
+    notifyAll(message.serialize());
+    mutexPlayers.unlock();
+    /*****/
+}
+
+void ServerGame::towerInfo(int towerId) {
+    std::string req = MessageFactory::getTowerInfoGameRequest(towerId);
+    Message message;
+    message.deserialize(req);
+    queueMessagesGame.push(message);
+
+
+    /** HASTA TENER DEFINIDO EL ACCESO A EL LOOP DE JUEGO CON LA INFO ***/
+    req = MessageFactory::getTowerInfoNotification(towerId, 999, 999, 999);
+    mutexPlayers.lock();
+    notifyAll(req);
+    mutexPlayers.unlock();
+    /*****/
+}
+

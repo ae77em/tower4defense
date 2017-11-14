@@ -96,7 +96,9 @@ void Listener::run(){
 
                 case SERVER_NOTIFICATION_PUT_TOWER:
                 case SERVER_NOTIFICATION_MARK_TILE:
-                case SERVER_NOTIFICATION_CAST_SPELL:{
+                case SERVER_NOTIFICATION_CAST_SPELL:
+                case SERVER_NOTIFICATION_TOWER_INFO:
+                case SERVER_NOTIFICATION_APPLY_UPGRADE: {
                     buffer2.addData(dataFromServer);
                     break;
                 }

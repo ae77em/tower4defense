@@ -43,7 +43,7 @@ public:
      * isPut: es true si se está colocando la torre, false en caso contrario.
      */
     static std::string
-    getPutTowerRequest(std::string &matchName, int towerType, int x, int y);
+    getPutTowerRequest(std::string matchName, int towerType, int x, int y);
 
     /*
      * Retorna la notificación enviada por el server para poner una torre en el escenario.
@@ -65,10 +65,6 @@ public:
      * Retorna la operación asociada al request que se hace con el Json.
      */
     static std::string getMarkTileNotification(int x, int y);
-
-    static std::string getCreateMatchRequest(int clientId, std::string mapName);
-
-    static std::string getCreateMatchNotification(Message &request);
 
     /*
      * Retorna el pedido para obtener todos los mapas existentes para jugar.
@@ -142,8 +138,6 @@ public:
 
     static std::string getEnterMatchRequest(int clientId, std::string matchName, std::vector<std::string> elements);
 
-    std::string getNewMatchRequest(int clientId, std::string matchName);
-
     static std::string getStartMatchRequest(int clientId, std::string &matchName);
 
     static std::string getStatusMatchNotification(std::map<int, std::vector<ActorEnemy*>> actors);
@@ -167,6 +161,22 @@ public:
     static std::string getPutTowerGameRequest(int towerType, int x, int y);
 
     static std::string getCastSpellGameRequest(int x, int y);
+
+    static std::string
+    getUpgradeRequest(std::string matchName, int towerId, int upgradeType);
+
+    static std::string getUpgradeTowerGameRequest(int towerId, int upgradeType);
+
+    static std::string getTowerInfoGameRequest(int towerId);
+
+    static std::string
+    getTowerInfoNotification(int towerId,
+                             int damage,
+                             int range,
+                             int reach = 0,
+                             int slowDown = 0);
+
+    static std::string getCastSpellNotification(int x, int y);
 };
 
 

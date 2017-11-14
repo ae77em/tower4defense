@@ -6,8 +6,8 @@ static const int CANT_TOWERS_BUTTONS = 4;
 static const int CANT_TOWERS_BUTTONS_STATES = 4;
 static const int TOWER_BUTTONS_X_POS = 1;
 static const int TOWER_BUTTONS_Y_POS = 1;
-static const int TOWER_BUTTONS_WIDTH = 400;
-static const int TOWBER_BUTTONS_HEIGHT = 80;
+static const int TOWER_BUTTONS_WIDTH = 360;
+static const int TOWBER_BUTTONS_HEIGHT = 40;
 
 #include "../common/Socket.h"
 #include <string>
@@ -54,7 +54,7 @@ private:
 
     void loadPortalSprites();
 
-    void renderText(SDL_Rect &camera, std::string text);
+    void renderText(SDL_Rect &camera, std::string text, int x = 50, int y = 50);
 
     void initializeGameActors();
 
@@ -137,11 +137,21 @@ private:
 
     TTF_Font *font;
     int typeOfTowerToPut;
+    int typeOfUpgradeToDo;
+    int towerSelected;
     int towerIdThatRequiresInfo;
     bool isCastingSpells;
     int timeOfLastSpell;
 
     void handleServerPlayerNotifications(SDL_Rect camera);
+
+    void doCastSpellRequest(const Point &point) const;
+
+    void doPutTowerRequest(const Point &point) const;
+
+    void doUpgradeRequest() const;
+
+    void doTowerInfoRequest() const;
 };
 
 #endif //TP4_TOWERDEFENSE_GAME_H

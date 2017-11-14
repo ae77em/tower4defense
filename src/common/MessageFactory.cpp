@@ -168,7 +168,7 @@ std::string MessageFactory::getExistingMatchesNotification(
  * ****************************************************************************
  * */
 std::string
-MessageFactory::getPutTowerRequest(std::string &matchName, int towerType, int x,
+MessageFactory::getPutTowerRequest(std::string matchName, int towerType, int x,
                                    int y) {
     std::string toReturn;
     Json::Value root(Json::objectValue);
@@ -664,6 +664,93 @@ std::string MessageFactory::getCastSpellGameRequest(int x, int y) {
     Message message;
 
     root[OPERATION_KEY] = GAME_REQUEST_CAST_SPELL;
+    root[XCOORD_KEY] = x;
+    root[YCOORD_KEY] = y;
+
+    message.setData(root);
+
+    toReturn = message.serialize();
+
+    return toReturn;
+}
+
+std::string MessageFactory::getUpgradeTowerGameRequest(int towerId, int upgradeType) {
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = GAME_REQUEST_UPGRADE_TOWER;
+    root["towerId"] = towerId;
+    root["upgradeType"] = upgradeType;
+
+    message.setData(root);
+
+    toReturn = message.serialize();
+
+    return toReturn;
+}
+
+std::string MessageFactory::getTowerInfoGameRequest(int towerId) {
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = GAME_REQUEST_UPGRADE_TOWER;
+    root["towerId"] = towerId;
+
+    message.setData(root);
+
+    toReturn = message.serialize();
+
+    return toReturn;
+}
+
+std::string MessageFactory::getUpgradeRequest(std::string matchName,
+                                                int towerId,
+                                                int upgradeType) {
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = CLIENT_REQUEST_UPGRADE_TOWER;
+    root[MATCH_NAME_KEY] = matchName;
+    root["towerId"] = towerId;
+    root["upgradeType"] = upgradeType;
+
+    message.setData(root);
+
+    toReturn = message.serialize();
+
+    return toReturn;
+}
+
+std::string
+MessageFactory::getTowerInfoNotification(int towerId, int damage, int range,
+                                         int reach, int slowDown) {
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = SERVER_NOTIFICATION_TOWER_INFO;
+    root["towerId"] = towerId;
+    root["damage"] = damage;
+    root["range"] = range;
+    root["reach"] = reach;
+    root["slowDown"] = slowDown;
+
+    message.setData(root);
+
+    toReturn = message.serialize();
+
+    return toReturn;
+}
+
+std::string MessageFactory::getCastSpellNotification(int x, int y) {
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = SERVER_NOTIFICATION_CAST_SPELL;
     root[XCOORD_KEY] = x;
     root[YCOORD_KEY] = y;
 

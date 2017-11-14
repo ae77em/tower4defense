@@ -87,6 +87,14 @@ enum TowerTypes {
     TOWER_EARTH = 3
 };
 
+enum UpgradeTypes {
+    UPGRADE_DAMAGE = 0,
+    UPGRADE_RANGE = 1,
+    UPGRADE_SLOWDOWN = 2,
+    UPGRADE_REACH = 3
+};
+
+
 enum LTileSpriteMouseEvent {
     BUTTON_SPRITE_DEFAULT = 0,
     BUTTON_SPRITE_MOUSE_DOWN = 1

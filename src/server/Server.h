@@ -82,6 +82,10 @@ private:
     void putTower(string matchName, int typeOfTower, int x, int y);
 
     void castSpell(string matchName, int x, int y);
+
+    void upgradeTower(string matchName, int towerId, int upgradeType);
+
+    void towerInfo(string matchName, int towerId);
 };
 
 

@@ -69,7 +69,11 @@ public:
 
     void putTower(int typeOfTower, int x, int y);
 
+    void upgradeTower(int x, int y);
+
     void castSpell(int x, int y);
+
+    void towerInfo(int towerId);
 };
 
 
