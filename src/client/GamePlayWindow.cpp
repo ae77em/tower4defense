@@ -23,7 +23,7 @@ GamePlayWindow::GamePlayWindow(Socket *s,
           playerNotifications(ot),
           clientId(cId),
           playerElements(elems),
-          matchName(mn) {
+          matchName(std::move(mn)) {
     abmonibleTexture = new LTexture();
     blookHawkTexture = new LTexture();
     goatmanTexture = new LTexture();
@@ -239,7 +239,7 @@ bool GamePlayWindow::init() {
                                    SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
                                    SCREEN_HEIGHT, SDL_WINDOW_SHOWN |
                                                   SDL_WINDOW_RESIZABLE);
-        if (gWindow == NULL) {
+        if (gWindow == nullptr) {
             printf("Window could not be created! SDL Error: %s\n",
                    SDL_GetError());
             success = false;
@@ -248,7 +248,7 @@ bool GamePlayWindow::init() {
             gRenderer = SDL_CreateRenderer(gWindow, -1,
                                            SDL_RENDERER_ACCELERATED |
                                            SDL_RENDERER_PRESENTVSYNC);
-            if (gRenderer == NULL) {
+            if (gRenderer == nullptr) {
                 printf("Renderer could not be created! SDL Error: %s\n",
                        SDL_GetError());
                 success = false;
@@ -327,16 +327,16 @@ bool GamePlayWindow::loadMedia() {
 }
 
 void GamePlayWindow::initializeGameActors() {
-    Tower *tower = new Tower(800, 240, gRenderer, gSpriteSheetTextureTower);
+    auto tower = new Tower(800, 240, gRenderer, gSpriteSheetTextureTower);
     tower->loadMedia();
     tower->setSprites();
 
     towers.push_back(tower);
 
     for (int i = 0; i < 2; ++i) {
-        Horde *horde = new Horde();
+        auto horde = new Horde();
         for (int j = 0; j < 3; ++j) {
-            Enemy *greenDaemon = new GreenDaemon(-1, -1, gRenderer,
+            auto greenDaemon = new GreenDaemon(-1, -1, gRenderer,
                                                  greenDaemonTexture);
             greenDaemon->setSprites();
             horde->addEnemy(greenDaemon);
@@ -344,7 +344,7 @@ void GamePlayWindow::initializeGameActors() {
         std::pair<int, Horde *> pair(i, horde);
         hordes.insert(pair);
 
-        Horde *horde2 = new Horde();
+        auto horde2 = new Horde();
         for (int j = 0; j < 3; ++j) {
             Enemy *zombie = new Zombie(-1, -1, gRenderer,
                                        zombieTexture);
@@ -359,15 +359,15 @@ void GamePlayWindow::initializeGameActors() {
 void GamePlayWindow::close() {
     //Deallocate tiles
     for (int i = 0; i < TOTAL_TILES; ++i) {
-        if (tileSet[i] == NULL) {
+        if (tileSet[i] == nullptr) {
             delete tileSet[i];
-            tileSet[i] = NULL;
+            tileSet[i] = nullptr;
         }
     }
 
     //Free loaded images
     dotTexture.free();
-    for (int i = 0; i < TOTAL_TILE_SPRITES; ++i) {
+    for (unsigned i = 0; i < TOTAL_TILE_SPRITES; ++i) {
         gTileTextures[i].free();
     }
 
@@ -381,8 +381,8 @@ void GamePlayWindow::close() {
     //Destroy window
     SDL_DestroyRenderer(gRenderer);
     SDL_DestroyWindow(gWindow);
-    gWindow = NULL;
-    gRenderer = NULL;
+    gWindow = nullptr;
+    gRenderer = nullptr;
 
     //Quit SDL subsystems
     IMG_Quit();
@@ -674,7 +674,7 @@ void GamePlayWindow::handleServerPlayerNotifications(SDL_Rect camera) {
             case SERVER_NOTIFICATION_PUT_TOWER: {
                 Point point = MessageFactory::getPoint(message);
 
-                Tower *newTower = new Tower(point.x, point.x, gRenderer,
+                auto newTower = new Tower(point.x, point.x, gRenderer,
                                             gSpriteSheetTextureTower);
                 towers.push_back(newTower);
 
@@ -739,7 +739,7 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
                 std::vector<Message> messages =
                         MessageFactory::getMovementNotifications(message);
 
-                for (Message aMessage : messages) {
+                for (Message &aMessage : messages) {
                     Point scenarioPoint = MessageFactory::getPoint(aMessage);
                     // no dibujo cosas fuera del escenario...
                     if (scenarioPoint.isPositive()) {

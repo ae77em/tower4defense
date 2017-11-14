@@ -17,7 +17,7 @@ public:
 
     void addEnemy(Enemy *e);
 
-    Enemy *&getEnemieAt(unsigned int i);
+    Enemy *&getEnemieAt(int i);
 
 private:
     void loadAbmonibles(size_t size, int x, int y, SDL_Renderer *r);

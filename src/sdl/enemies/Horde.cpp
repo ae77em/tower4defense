@@ -52,6 +52,6 @@ std::vector<Enemy *> &Horde::getEnemies() {
     return enemies;
 }
 
-Enemy* &Horde::getEnemieAt(unsigned i) {
-    return enemies.at(i);
+Enemy* &Horde::getEnemieAt(int i) {
+    return enemies.at((unsigned)i);
 }
