@@ -85,7 +85,7 @@ private:
 
     void upgradeTower(string matchName, int towerId, int upgradeType);
 
-    void towerInfo(string matchName, int towerId);
+    void towerInfo(int clientId, string matchName, int towerId);
 };
 
 

@@ -1,7 +1,7 @@
 #include "Server.h"
 #include "../common/MessageFactory.h"
 #include "../common/Protocol.h"
-#include "Request.h"
+#include "../common/Request.h"
 
 Server::Server(std::mutex &m, ThreadedQueue<Message> &tq)
         : mutexPlayers(m), queueMessagesClient(tq) {}
@@ -234,10 +234,11 @@ void Server::run() {
                     break;
                 }
                 case CLIENT_REQUEST_TOWER_INFO: {
+                    int clientId = request.getAsInt(CLIENT_ID_KEY);
                     std::string matchName = request.getAsString(MATCH_NAME_KEY);
                     int towerId = request.getAsInt("towerId");
 
-                    towerInfo(matchName, towerId);
+                    towerInfo(clientId, matchName, towerId);
                     break;
                 }
                 case CLIENT_REQUEST_UPGRADE_TOWER: {
@@ -405,9 +406,9 @@ void Server::upgradeTower(string matchName, int towerId, int upgradeType) {
     serverGame->upgradeTower(towerId, upgradeType);
 }
 
-void Server::towerInfo(string matchName, int towerId) {
+void Server::towerInfo(int clientId, string matchName, int towerId) {
     ServerGame *serverGame = matches.at(matchName);
-    serverGame->towerInfo(towerId);
+    serverGame->towerInfo(clientId, towerId);
 }
 
 

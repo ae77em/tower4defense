@@ -112,3 +112,11 @@ void Tile::verifyIfMustContinueMarked(){
 void Tile::setType(int tileType) {
     type = tileType;
 }
+
+void Tile::setTower(Tower *t) {
+    tower = t;
+}
+
+Tower *Tile::getTower() {
+    return tower;
+}

@@ -2,7 +2,7 @@
 #define TP4_TOWERDEFENSE_REQUEST_H
 
 
-#include "../common/Message.h"
+#include "Message.h"
 #include <list>
 
 class Request {

@@ -1,5 +1,5 @@
 #include "Request.h"
-#include "../common/MessageFactory.h"
+#include "MessageFactory.h"
 
 Request::Request(Message& m):requestMessage(m){
 }

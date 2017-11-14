@@ -611,14 +611,17 @@ std::string MessageFactory::getMatchEndedNotification() {
     return message.serialize();
 }
 
-std::string MessageFactory::getTowerInfoRequest(int clientId, int towerId) {
+std::string
+MessageFactory::getTowerInfoRequest(int clientId, std::string matchName,
+                                    int towerId) {
     std::string toReturn;
     Json::Value root(Json::objectValue);
     Message message;
 
     root[OPERATION_KEY] = CLIENT_REQUEST_TOWER_INFO;
     root[CLIENT_ID_KEY] = clientId;
-    root["towerId"] = towerId;
+    root[MATCH_NAME_KEY] = matchName;
+    root[TOWER_ID_KEY] = towerId;
 
     message.setData(root);
 
@@ -683,7 +686,7 @@ std::string MessageFactory::getUpgradeTowerGameRequest(int towerId, int upgradeT
     Message message;
 
     root[OPERATION_KEY] = GAME_REQUEST_UPGRADE_TOWER;
-    root["towerId"] = towerId;
+    root[TOWER_ID_KEY] = towerId;
     root["upgradeType"] = upgradeType;
 
     message.setData(root);
@@ -699,7 +702,7 @@ std::string MessageFactory::getTowerInfoGameRequest(int towerId) {
     Message message;
 
     root[OPERATION_KEY] = GAME_REQUEST_UPGRADE_TOWER;
-    root["towerId"] = towerId;
+    root[TOWER_ID_KEY] = towerId;
 
     message.setData(root);
 
@@ -717,7 +720,7 @@ std::string MessageFactory::getUpgradeRequest(std::string matchName,
 
     root[OPERATION_KEY] = CLIENT_REQUEST_UPGRADE_TOWER;
     root[MATCH_NAME_KEY] = matchName;
-    root["towerId"] = towerId;
+    root[TOWER_ID_KEY] = towerId;
     root["upgradeType"] = upgradeType;
 
     message.setData(root);
@@ -735,7 +738,7 @@ MessageFactory::getTowerInfoNotification(int towerId, int damage, int range,
     Message message;
 
     root[OPERATION_KEY] = SERVER_NOTIFICATION_TOWER_INFO;
-    root["towerId"] = towerId;
+    root[TOWER_ID_KEY] = towerId;
     root["damage"] = damage;
     root["range"] = range;
     root["reach"] = reach;

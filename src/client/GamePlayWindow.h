@@ -9,6 +9,8 @@ static const int TOWER_BUTTONS_Y_POS = 1;
 static const int TOWER_BUTTONS_WIDTH = 360;
 static const int TOWBER_BUTTONS_HEIGHT = 40;
 
+static const int TIME_FOR_ENABLE_ACTION = 20000;
+
 #include "../common/Socket.h"
 #include <string>
 #include <SDL2/SDL_rect.h>
@@ -25,6 +27,7 @@ static const int TOWBER_BUTTONS_HEIGHT = 40;
 #include "../sdl/enemies/Abmonible.h"
 #include "../sdl/towers/Tower.h"
 #include "../sdl/enemies/Horde.h"
+#include "../common/Message.h"
 
 class GamePlayWindow : public Thread {
 public:
@@ -90,6 +93,8 @@ private:
     //The window renderer
     SDL_Renderer *gRenderer = nullptr;
 
+    SDL_Rect camera;
+
     //The level tiles
     Tile *tileSet[TOTAL_TILES];
 
@@ -143,6 +148,10 @@ private:
     bool isCastingSpells;
     int timeOfLastSpell;
     int timeOfLastTowerPutted;
+    std::string towerDamageDataMessage;
+    std::string towerRangeDataMessage;
+    std::string towerReachDataMessage;
+    std::string towerSlowdownDataMessage;
 
     void handleServerPlayerNotifications(SDL_Rect camera);
 
@@ -155,6 +164,12 @@ private:
     void doTowerInfoRequest() const;
 
     void renderTimeMessages(SDL_Rect &camera);
+
+    void loadTowerInfo(Message message);
+
+    void setToTowerTile(Point point, Tower *tower);
+
+    bool isAValidPutTowerRequest(Point &point);
 };
 
 #endif //TP4_TOWERDEFENSE_GAME_H

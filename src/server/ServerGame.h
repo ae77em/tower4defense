@@ -73,7 +73,9 @@ public:
 
     void castSpell(int x, int y);
 
-    void towerInfo(int towerId);
+    void towerInfo(int clientId, int towerId);
+
+    void notifyTo(int clientId, string message);
 };
 
 

@@ -13,6 +13,20 @@ const int SCREEN_HEIGHT = 600;
 //
 // Tile constants
 //
+const std::vector<std::string> TILES_IMAGES_PATHS({
+      "images/sprites/tile-grass.png",
+      "images/sprites/tile-desert.png",
+      "images/sprites/tile-ice.png",
+      "images/sprites/tile-lava.png",
+      "images/sprites/tile-way.png",
+      "images/sprites/tile-firm.png",
+      "images/sprites/tile-firm-marked.png",
+      "images/sprites/tile-firm.png" // CUANDO TENGO UNA TORRE,
+      // EL TILE NO CAMBIA, PERO IGUAL
+      // TENGO UN TIPO DE TILE DISTINTO
+});
+
+
 const int CARTESIAN_TILE_WIDTH = 80;
 const int CARTESIAN_TILE_HEIGHT = 80;
 const int ISO_TILE_WIDTH = 160;
@@ -24,7 +38,7 @@ const int SQUARE_TILE_HEIGHT = 80; // height of the tile without iso perspective
 const int TILES_ROWS = 24;
 const int TILES_COLUMNS = 16;
 const int TOTAL_TILES = TILES_ROWS * TILES_COLUMNS;
-const int TOTAL_TILE_SPRITES = 7;
+const int TOTAL_TILE_SPRITES = 8;
 
 //
 // Constants of enemies sprites
@@ -48,7 +62,6 @@ const int WALK_SPRITE_HEIGHT_ABMONIBLE = 119;
 
 const int DEATH_SPRITE_WIDTH_ABMONIBLE = 200;
 const int DEATH_SPRITE_HEIGHT_ABMONIBLE = 155;
-
 
 
 /* There are eight directions to face: front, front left, left,
@@ -76,7 +89,8 @@ enum TileType {
     TILE_LAVA = 3,
     TILE_WAY = 4,
     TILE_FIRM = 5,
-    TILE_FIRM_MARKED = 6
+    TILE_FIRM_MARKED = 6,
+    TILE_TOWER = 7
 };
 
 
@@ -130,16 +144,5 @@ enum TowerButtonsStates {
     BUTTON_TOWER_MOUSEOVER = 2,
     BUTTON_TOWER_SELECTED = 3
 };
-
-
-const std::vector<std::string> TILES_IMAGES_PATHS({
-    "images/sprites/tile-grass.png",
-    "images/sprites/tile-desert.png",
-    "images/sprites/tile-ice.png",
-    "images/sprites/tile-lava.png",
-    "images/sprites/tile-way.png",
-    "images/sprites/tile-firm.png",
-    "images/sprites/tile-firm-marked.png",
-});
 
 #endif //TP4_TOWERDEFENSE_CONSTANTS_H

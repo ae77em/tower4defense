@@ -1,6 +1,8 @@
 #ifndef TP4_TOWERDEFENSE_MESSAGEFACTORY_H
 #define TP4_TOWERDEFENSE_MESSAGEFACTORY_H
 
+static const char *const TOWER_ID_KEY = "towerId";
+
 #include <string>
 #include <jsoncpp/json/json.h>
 #include <set>
@@ -152,7 +154,8 @@ public:
 
     static std::string getMatchEndedNotification();
 
-    static std::string getTowerInfoRequest(int clientId, int towerId);
+    static std::string
+    getTowerInfoRequest(int clientId, std::string matchName, int towerId);
 
     static std::string getCastSpellRequest(std::string matchName, int x, int y);
 

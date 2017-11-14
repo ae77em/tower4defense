@@ -1,6 +1,6 @@
 #include <iostream>
 #include "ListenerLoopGame.h"
-#include "Request.h"
+#include "../common/Request.h"
 #include "../common/MessageFactory.h"
 #include "../common/Protocol.h"
 

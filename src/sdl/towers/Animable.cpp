@@ -112,3 +112,7 @@ Circle &Tower::getCollisionCircle() {
 Point Tower::getPoint() {
     return currentPoint;
 }
+
+const SDL_Rect & Tower::getIdleBox() const {
+    return idleBox;
+}

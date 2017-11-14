@@ -6,6 +6,7 @@
 #include <SDL2/SDL_system.h>
 #include <SDL2/SDL_events.h>
 #include "../sdl/LTexture.h"
+#include "towers/Tower.h"
 
 class Tile {
 public:
@@ -41,6 +42,19 @@ public:
 
     void verifyIfMustContinueMarked();
 
+    int getTileMarkedTime() const;
+
+    void setMarkedTime(int tileMarkedTime);
+
+    bool itIsMarked() const;
+
+    void setIsMarked(bool isMarked);
+
+    void setTower(Tower *tower);
+
+    Tower *getTower();
+
+
 private:
     //The attributes of the tile
     SDL_Rect containerBoxAttributes;
@@ -52,19 +66,10 @@ private:
     int gameEvent;
 
     int tileMarkedTime;
-public:
-    int getTileMarkedTime() const;
-
-    void setMarkedTime(int tileMarkedTime);
-
-    bool itIsMarked() const;
-
-    void setIsMarked(bool isMarked);
-
-private:
 
     bool isMarked;
 
+    Tower *tower = nullptr;
 };
 
 

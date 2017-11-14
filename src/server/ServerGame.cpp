@@ -64,6 +64,11 @@ void ServerGame::notifyAll(string message) {
     }
 }
 
+void ServerGame::notifyTo(int clientId, string message) {
+    ServerPlayer *player = players.at(clientId);
+    player->sendData(message);
+}
+
 bool ServerGame::isPlaying() const {
     return playing;
 }
@@ -170,7 +175,7 @@ void ServerGame::upgradeTower(int towerId, int upgradeType) {
     /*****/
 }
 
-void ServerGame::towerInfo(int towerId) {
+void ServerGame::towerInfo(int clientId, int towerId) {
     std::string req = MessageFactory::getTowerInfoGameRequest(towerId);
     Message message;
     message.deserialize(req);
@@ -180,7 +185,7 @@ void ServerGame::towerInfo(int towerId) {
     /** HASTA TENER DEFINIDO EL ACCESO A EL LOOP DE JUEGO CON LA INFO ***/
     req = MessageFactory::getTowerInfoNotification(towerId, 999, 999, 999);
     mutexPlayers.lock();
-    notifyAll(req);
+    notifyTo(clientId, req);
     mutexPlayers.unlock();
     /*****/
 }

@@ -11,6 +11,7 @@
 #include "../sdl/enemies/GreenDaemon.h"
 #include "../sdl/enemies/Zombie.h"
 #include "../common/TextMessage.h"
+#include "../common/Request.h"
 
 GamePlayWindow::GamePlayWindow(Socket *s,
                                SharedBuffer *in,
@@ -34,8 +35,8 @@ GamePlayWindow::GamePlayWindow(Socket *s,
     typeOfTowerToPut = -1;
     towerIdThatRequiresInfo = -1;
     isCastingSpells = false;
-    timeOfLastSpell = -20000;
-    timeOfLastTowerPutted = -20000;
+    timeOfLastSpell = -TIME_FOR_ENABLE_ACTION;
+    timeOfLastTowerPutted = -TIME_FOR_ENABLE_ACTION;
 }
 
 GamePlayWindow::~GamePlayWindow() {
@@ -60,144 +61,9 @@ GamePlayWindow::~GamePlayWindow() {
     }
 }
 
-void GamePlayWindow::run() {
-    unsigned int gameEndedTime = 0;
-    bool gameEnded;
-    std::vector<Animable *> animables;
-
-    //Start up SDL and create window
-    if (!init()) {
-        printf("Failed to initializde!\n");
-    } else {
-        //Load media
-        if (!loadMedia()) {
-            printf("Failed to load media!\n");
-        } else {
-            //Main loop flag
-            bool quit = false;
-
-            //Event handler
-            SDL_Event e;
-
-            //The dot that will be moving around on the screen
-            Dot dot;
-
-            //Level camera
-            SDL_Rect camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
-
-            initializeGameActors();
-
-            //While application is running
-            while (!quit) {
-                gameEnded = gameWon || gameLoose;
-                if (gameEnded && gameEndedTime == 0) {
-                    gameEndedTime = SDL_GetTicks();
-                }
-
-                //Handle events on queue
-                while (SDL_PollEvent(&e) != 0) {
-                    //User requests quit
-                    if (e.type == SDL_QUIT) {
-                        quit = true;
-                    }
-
-                    /*if (gameEnded) {
-                        if (SDL_GetTicks() - gameEndedTime > 3000) {
-                            quit = true;
-                        }
-                    }*/
-
-                    //Handle input for the dot
-                    dot.handleEvent(e);
-
-                    handleMouseEvents(camera, e);
-                }
-
-                handleServerPlayerNotifications(camera);
-                handleServerNotifications(camera);
-
-                //Move the dot
-                dot.move();
-                dot.setCamera(camera);
-
-                //Clear screen
-                SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 0xFF);
-                SDL_RenderClear(gRenderer);
-
-                //Render level
-                for (int i = 0; i < TOTAL_TILES; ++i) {
-                    if (tileSet[i]->itIsMarked()) {
-                        tileSet[i]->verifyIfMustContinueMarked();
-
-                        if (!tileSet[i]->itIsMarked()) {
-                            tileSet[i]->setType(
-                                    TILE_FIRM); // HORRIBLE ESTO...REFACTORIZAR CUANDO SE PUEDA
-                        }
-                    }
-
-                    tileSet[i]->render(camera, gTileClips, gRenderer,
-                                       gTileTextures);
-                }
-
-                // Rendereo punto para mover pantalla
-                dot.render(dotTexture, camera, gRenderer);
-
-                /* Remuevo los animables del vector (ojo, siguen existiendo,
-                 * pero no están en el vector), ya que pueden ir cambiando de
-                 * posición en cada iteración, y los vuelvo a cargar y ordenar,
-                 * para volver a mostrarlos bien.
-                 */
-                animables.clear();
-
-                for (Tower *tower : towers) {
-                    animables.push_back(reinterpret_cast<Animable *&&>(tower));
-                }
-
-                for (std::map<int, Horde *>::iterator it = hordes.begin();
-                     it != hordes.end(); ++it) {
-                    Horde *horde = it->second;
-
-                    for (auto enemy : horde->getEnemies()) {
-                        animables.push_back(
-                                reinterpret_cast<Animable *&&>(enemy));
-                    }
-                }
-
-                std::sort(animables.begin(), animables.end(),
-                          Utils::animablesPositionComparator);
-
-                for (Animable *animable : animables) {
-                    animable->animate(camera);
-                }
-
-                // Muestro los botones de las torres que puedo poner
-                towerButtonsTexture.render(gRenderer, 1, 1);
-
-                if (gameEnded) {
-                    if (gameWon) {
-                        renderText(camera, "Partida ganada...");
-                    } else {
-                        renderText(camera, "Partida perdida...");
-                    }
-                }
-
-                renderTimeMessages(camera);
-
-                //Update screen
-                SDL_RenderPresent(gRenderer);
-            }
-        }
-
-        //Free resources and close SDL
-        close();
-    }
-
-    server->shutdown(); // TODO ver si esto corresponde hacerlo acá...
-}
-
 void GamePlayWindow::renderTimeMessages(SDL_Rect &camera) {
     int t;
-    if ((t = (SDL_GetTicks() - timeOfLastSpell)) < 20000) {
+    if ((t = (SDL_GetTicks() - timeOfLastSpell)) < TIME_FOR_ENABLE_ACTION) {
         t /= 1000;
         t = 20 - t;
         std::__cxx11::string message("Puede lanzar hechizo nuevamete en: ");
@@ -206,7 +72,8 @@ void GamePlayWindow::renderTimeMessages(SDL_Rect &camera) {
         renderText(camera, message, 1, 100);
     }
 
-    if ((t = (SDL_GetTicks() - timeOfLastTowerPutted)) < 20000) {
+    if ((t = (SDL_GetTicks() - timeOfLastTowerPutted)) <
+        TIME_FOR_ENABLE_ACTION) {
         t /= 1000;
         t = 20 - t;
         std::__cxx11::string message("Puede poner torre nuevamente en: ");
@@ -283,7 +150,7 @@ bool GamePlayWindow::loadMedia() {
     }
 
     //Load tile texture
-    for (int i = 0; i < TOTAL_TILE_SPRITES; ++i) {
+    for (unsigned i = 0; i < TILES_IMAGES_PATHS.size(); ++i) {
         if (!gTileTextures[i].loadFromFile(TILES_IMAGES_PATHS[i], gRenderer)) {
             printf("Failed to load tile set texture!\n");
             success = false;
@@ -359,9 +226,8 @@ void GamePlayWindow::initializeGameActors() {
 void GamePlayWindow::close() {
     //Deallocate tiles
     for (int i = 0; i < TOTAL_TILES; ++i) {
-        if (tileSet[i] == nullptr) {
+        if (tileSet[i] != nullptr) {
             delete tileSet[i];
-            tileSet[i] = nullptr;
         }
     }
 
@@ -438,7 +304,7 @@ bool GamePlayWindow::setTiles() {
         //Clip the sprite sheet
         if (tilesLoaded) {
             // de 0 a 6 son los tiles de piso
-            for (unsigned i = 0; i <= TILE_FIRM_MARKED; ++i) {
+            for (unsigned i = 0; i <= TILE_TOWER; ++i) {
                 gTileClips[i].x = 0;
                 gTileClips[i].y = 0;
                 gTileClips[i].w = ISO_TILE_WIDTH;
@@ -557,7 +423,7 @@ void GamePlayWindow::handleLeftButtonClick(Point &point) {
             }
         } else if (mousePosX <= 200) {
             if (hasElement(STR_EARTH) &&
-                (SDL_GetTicks() - timeOfLastSpell) > 20000) {
+                (SDL_GetTicks() - timeOfLastSpell) > TIME_FOR_ENABLE_ACTION) {
                 isCastingSpells = true;
             }
         } else if (towerSelected != -1) {
@@ -574,12 +440,9 @@ void GamePlayWindow::handleLeftButtonClick(Point &point) {
 
             doUpgradeRequest();
         }
-    } else if (typeOfTowerToPut != -1
-            && (SDL_GetTicks() - timeOfLastTowerPutted) > 20000) {
-        if (isFirmTerrain(point)) {
-            doPutTowerRequest(point);
-            timeOfLastTowerPutted = SDL_GetTicks();
-        }
+    } else if (isAValidPutTowerRequest(point)) {
+        doPutTowerRequest(point);
+        timeOfLastTowerPutted = SDL_GetTicks();
     } else if (isCastingSpells) {
         if (isGroundTerrain(point)) {
             doCastSpellRequest(point);
@@ -588,21 +451,29 @@ void GamePlayWindow::handleLeftButtonClick(Point &point) {
             timeOfLastSpell = SDL_GetTicks();
         }
     } else if (isATowerPoint(point)) {
+        std::cout << "encontre una torre" << std::endl;
         doTowerInfoRequest();
     } else {
+        towerDamageDataMessage = "";
         // no hago nada, por ahora
     }
 }
 
+bool GamePlayWindow::isAValidPutTowerRequest(Point &point) {
+    return typeOfTowerToPut != -1
+           && (SDL_GetTicks() - timeOfLastTowerPutted) >
+              TIME_FOR_ENABLE_ACTION
+            && isFirmTerrain(point);
+}
+
 void GamePlayWindow::doTowerInfoRequest() const {
-    std::__cxx11::string request =
-            MessageFactory::getTowerInfoRequest(clientId,
-                                                towerIdThatRequiresInfo);
+    std::string request =
+            MessageFactory::getTowerInfoRequest(clientId, matchName, towerSelected);
     sendToServer(request);
 }
 
 void GamePlayWindow::doUpgradeRequest() const {
-    std::__cxx11::string request =
+    std::string request =
             MessageFactory::getUpgradeRequest(matchName,
                                               towerSelected,
                                               typeOfUpgradeToDo);
@@ -611,7 +482,7 @@ void GamePlayWindow::doUpgradeRequest() const {
 }
 
 void GamePlayWindow::doPutTowerRequest(const Point &point) const {
-    std::__cxx11::string request =
+    std::string request =
             MessageFactory::getPutTowerRequest(matchName,
                                                typeOfTowerToPut,
                                                point.x,
@@ -621,12 +492,11 @@ void GamePlayWindow::doPutTowerRequest(const Point &point) const {
 }
 
 void GamePlayWindow::doCastSpellRequest(const Point &point) const {
-    std::__cxx11::string request =
+    std::string request =
             MessageFactory::getCastSpellRequest(matchName,
                                                 point.x,
                                                 point.y);
-    TextMessage toSend(request);
-    toSend.sendTo(reinterpret_cast<Socket &>(*server));
+    sendToServer(request);
 }
 
 void GamePlayWindow::sendToServer(const std::string &request) const {
@@ -641,16 +511,13 @@ void GamePlayWindow::handleRightButtonClick(Point point) {
                                                    point.x,
                                                    point.y);
 
-        TextMessage toSend(request);
-        toSend.sendTo(reinterpret_cast<Socket &>(*server));
+        sendToServer(request);
     }
 }
 
 void GamePlayWindow::handleServerPlayerNotifications(SDL_Rect camera) {
     int transactionsCounter = 0;
     std::string notification;
-
-    //Tower *tower = towers.at(0);
 
     while (playerNotifications->hasData() &&
            transactionsCounter < 10) {
@@ -674,11 +541,14 @@ void GamePlayWindow::handleServerPlayerNotifications(SDL_Rect camera) {
             case SERVER_NOTIFICATION_PUT_TOWER: {
                 Point point = MessageFactory::getPoint(message);
 
-                auto newTower = new Tower(point.x, point.x, gRenderer,
-                                            gSpriteSheetTextureTower);
+                auto newTower = new Tower(point.x * CARTESIAN_TILE_WIDTH,
+                                          point.y * CARTESIAN_TILE_HEIGHT,
+                                          gRenderer,
+                                          gSpriteSheetTextureTower);
                 towers.push_back(newTower);
 
                 if (point.isPositive()) {
+                    setToTowerTile(point, newTower);
                     newTower->setPosition(point.x * CARTESIAN_TILE_HEIGHT,
                                           point.y * CARTESIAN_TILE_HEIGHT);
                 }
@@ -693,7 +563,7 @@ void GamePlayWindow::handleServerPlayerNotifications(SDL_Rect camera) {
                 break;
             }
             case SERVER_NOTIFICATION_TOWER_INFO: {
-                // mostrar info de la torre por pantalla
+                loadTowerInfo(message);
                 break;
             }
             case SERVER_NOTIFICATION_CAST_SPELL: {
@@ -792,7 +662,9 @@ bool GamePlayWindow::isFirmTerrain(Point &point) {
 
     if (point.isPositive()) {
         int tilePos = point.x * TILES_COLUMNS + point.y;
-        isFirmTerrain = tileSet[tilePos]->getType() == TILE_FIRM;
+        isFirmTerrain =
+                tileSet[tilePos]->getType() == TILE_FIRM
+                || tileSet[tilePos]->getType() == TILE_FIRM_MARKED;
     }
 
     return isFirmTerrain;
@@ -802,14 +674,17 @@ bool GamePlayWindow::isATowerPoint(Point &point) {
     bool isATowerPoint = false;
 
     if (point.isPositive()) {
-        for (unsigned i = 0; i < towers.size(); ++i) {
-            if (point.isEqualsTo(towers[i]->getPoint())) {
-                isATowerPoint = true;
-                towerSelected = i;
-                break;
-            } else {
-                towerSelected = -1;
+        int tilePos = point.x * TILES_COLUMNS + point.y;
+        if (tileSet[tilePos]->getType() == TILE_TOWER){
+            for (unsigned i = 0; i < towers.size(); ++i) {
+                if (tileSet[tilePos]->getTower() == towers[i]) {
+                    towerSelected = i;
+                    isATowerPoint = true;
+                    break;
+                }
             }
+        } else {
+            towerSelected = -1;
         }
     }
 
@@ -836,6 +711,15 @@ bool GamePlayWindow::hasElement(const std::string &element) const {
             != playerElements.end();
 }
 
+
+void GamePlayWindow::setToTowerTile(Point point, Tower *tower) {
+    if (point.isPositive()) {
+        int tilePos = point.x * TILES_COLUMNS + point.y;
+        tileSet[tilePos]->setType(TILE_TOWER);
+        tileSet[tilePos]->setTower(tower);
+    }
+}
+
 void GamePlayWindow::setToMarkedTile(Point &point) {
     if (point.isPositive()) {
         int tilePos = point.x * TILES_COLUMNS + point.y;
@@ -852,6 +736,171 @@ void GamePlayWindow::setToFirmTile(Point &point) {
         tileSet[tilePos]->setIsMarked(false);
         tileSet[tilePos]->setMarkedTime(0);
     }
+}
+
+void GamePlayWindow::loadTowerInfo(Message message) {
+    Request request(message);
+
+    std::string towerData("Tower data");
+    std::string item;
+
+    towerDamageDataMessage.assign("Daño: ");
+    item = request.getAsString("damage");
+    towerDamageDataMessage.append(item);
+
+    towerRangeDataMessage.assign("Rango: ");
+    item = request.getAsString("range");
+    towerRangeDataMessage.append(item);
+
+    towerReachDataMessage.assign("Alcance: ");
+    item = request.getAsString("reach");
+    towerReachDataMessage.append(item);
+
+    towerSlowdownDataMessage.assign("Ralentizado: ");
+    item = request.getAsString("slowDown");
+    towerSlowdownDataMessage.append(item);
+}
+
+void GamePlayWindow::run() {
+    unsigned int gameEndedTime = 0;
+    bool gameEnded;
+    std::vector<Tower *> animables;
+
+    //Start up SDL and create window
+    if (!init()) {
+        printf("Failed to initializde!\n");
+    } else {
+        //Load media
+        if (!loadMedia()) {
+            printf("Failed to load media!\n");
+        } else {
+            //Main loop flag
+            bool quit = false;
+
+            //Event handler
+            SDL_Event e;
+
+            //The dot that will be moving around on the screen
+            Dot dot;
+
+            //Level camera
+            camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+
+            initializeGameActors();
+
+            //While application is running
+            while (!quit) {
+                gameEnded = gameWon || gameLoose;
+                if (gameEnded && gameEndedTime == 0) {
+                    gameEndedTime = SDL_GetTicks();
+                }
+
+                //Handle events on queue
+                while (SDL_PollEvent(&e) != 0) {
+                    //User requests quit
+                    if (e.type == SDL_QUIT) {
+                        quit = true;
+                    }
+
+                    /*if (gameEnded) {
+                        if (SDL_GetTicks() - gameEndedTime > 3000) {
+                            quit = true;
+                        }
+                    }*/
+
+                    //Handle input for the dot
+                    dot.handleEvent(e);
+
+                    handleMouseEvents(camera, e);
+                }
+
+                handleServerPlayerNotifications(camera);
+                handleServerNotifications(camera);
+
+                //Move the dot
+                dot.move();
+                dot.setCamera(camera);
+
+                //Clear screen
+                SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 0xFF);
+                SDL_RenderClear(gRenderer);
+
+                //Render level
+                for (int i = 0; i < TOTAL_TILES; ++i) {
+                    if (tileSet[i]->itIsMarked()) {
+                        tileSet[i]->verifyIfMustContinueMarked();
+
+                        if (!tileSet[i]->itIsMarked()) {
+                            tileSet[i]->setType(
+                                    TILE_FIRM); // HORRIBLE ESTO...REFACTORIZAR CUANDO SE PUEDA
+                        }
+                    }
+
+                    tileSet[i]->render(camera, gTileClips, gRenderer,
+                                       gTileTextures);
+                }
+
+                // Rendereo punto para mover pantalla
+                dot.render(dotTexture, camera, gRenderer);
+
+                /* Remuevo los animables del vector (ojo, siguen existiendo,
+                 * pero no están en el vector), ya que pueden ir cambiando de
+                 * posición en cada iteración, y los vuelvo a cargar y ordenar,
+                 * para volver a mostrarlos bien.
+                 */
+                animables.clear();
+
+                for (Tower *tower : towers) {
+                    animables.push_back(reinterpret_cast<Tower *&&>(tower));
+                }
+
+                for (std::map<int, Horde *>::iterator it = hordes.begin();
+                     it != hordes.end(); ++it) {
+                    Horde *horde = it->second;
+
+                    for (auto enemy : horde->getEnemies()) {
+                        animables.push_back(
+                                reinterpret_cast<Tower *&&>(enemy));
+                    }
+                }
+
+                std::sort(animables.begin(), animables.end(),
+                          Utils::animablesPositionComparator);
+
+                for (Tower *animable : animables) {
+                    animable->animate(camera);
+                }
+
+                // Muestro los botones de las torres que puedo poner
+                towerButtonsTexture.render(gRenderer, 1, 1);
+
+                if (gameEnded) {
+                    if (gameWon) {
+                        renderText(camera, "Partida ganada...");
+                    } else {
+                        renderText(camera, "Partida perdida...");
+                    }
+                }
+
+                renderTimeMessages(camera);
+                if (!towerDamageDataMessage.empty()){
+                    renderText(camera, "Datos de la torre:", 1, 250);
+                    renderText(camera, towerDamageDataMessage, 1, 270);
+                    renderText(camera, towerRangeDataMessage, 1, 290);
+                    renderText(camera, towerReachDataMessage, 1, 310);
+                    renderText(camera, towerSlowdownDataMessage, 1, 330);
+                }
+
+                //Update screen
+                SDL_RenderPresent(gRenderer);
+            }
+        }
+
+        //Free resources and close SDL
+        close();
+    }
+
+    server->shutdown(); // TODO ver si esto corresponde hacerlo acá...
 }
 
 
