@@ -1,4 +1,4 @@
-#include "Enemies.h"
+#include "Enemy.h"
 #include <string>
 
 using namespace model;
@@ -18,7 +18,7 @@ void Enemy::setLife(int points) {
     if (max_life > points)
         throw std::runtime_error("tried setting life above maximum ("
                 + std::to_string(points) + ", max "
-                + std::to_string(getMaxLife()) + ")" );
+                + std::to_string(getMaxLife()) + ")");
 
     curr_life = points;
 }

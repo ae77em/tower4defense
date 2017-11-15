@@ -12,7 +12,7 @@ private:
     const int DEATH_SPRITE_WIDTH = 200;
     const int DEATH_SPRITE_HEIGHT = 155;
 public:
-    Spectre(int x, int y, SDL_Renderer *renderer, LTexture *texture);
+    Spectre(int x, int y, SDL_Renderer *renderer, Texture *texture);
 
     void initializeSpritesData();
 };

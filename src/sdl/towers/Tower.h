@@ -2,7 +2,7 @@
 #define TP4_TOWERDEFENSE_TOWER_H
 
 #include <vector>
-#include "../LTexture.h"
+#include "../Texture.h"
 #include "../../common/Point.h"
 #include "../Constants.h"
 #include "../../common/Circle.h"
@@ -13,7 +13,7 @@ const int NUMBER_OF_SHOT_SPRITES = 8;
 
 class Tower : public Animable {
 public:
-    Tower(int x, int y, SDL_Renderer *renderer, LTexture &t);
+    Tower(int x, int y, SDL_Renderer *renderer, Texture &t);
 
     ~Tower();
 
@@ -60,7 +60,7 @@ public:
      * Modifica la textura que se utilizará para mostrar la torre.
      * texture: referencia a la textura a utilizar.
      * */
-    void setTexture(LTexture &texture);
+    void setTexture(Texture &texture);
 
     /*
      * Modifica la cámara del juego donde está metido la torre, es decir,
@@ -108,7 +108,7 @@ protected:
     SDL_Rect idleBox;
     SDL_Rect shotBox;
 
-    LTexture &texture;
+    Texture &texture;
     SDL_Renderer *renderer;
     SDL_Rect idleSprites[NUMBER_OF_IDLE_SPRITES];
     SDL_Rect shotSprites[NUMBER_OF_SHOT_SPRITES];

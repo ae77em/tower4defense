@@ -3,7 +3,7 @@
 
 DrawableHorde::DrawableHorde() {}
 
-DrawableHorde::DrawableHorde(int enemyType, size_t size, int x, int y, SDL_Renderer *r, LTexture &t) {
+DrawableHorde::DrawableHorde(int enemyType, size_t size, int x, int y, SDL_Renderer *r, Texture &t) {
     switch (enemyType){
         case ABMONIBLE:{
             loadAbmonibles(size, x, y, r);

@@ -5,7 +5,7 @@
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_system.h>
 #include <SDL2/SDL_events.h>
-#include "../sdl/LTexture.h"
+#include "Texture.h"
 #include "towers/Tower.h"
 
 class Tile {
@@ -15,12 +15,12 @@ public:
     void render(SDL_Rect &camera,
                 SDL_Rect *gTileClips,
                 SDL_Renderer *gRenderer,
-                LTexture *gTileTextures);
+                Texture *gTileTextures);
 
     void renderSprite(SDL_Rect &camera,
                       SDL_Rect *gTileClips,
                       SDL_Renderer *gRenderer,
-                      LTexture *gTileTextures);
+                      Texture *gTileTextures);
 
     /* Maneja los eventos sobre los tiles.
      * */

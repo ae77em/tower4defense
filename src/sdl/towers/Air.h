@@ -5,7 +5,7 @@
 #include "Tower.h"
 
 class Air : Tower {
-    Air(int x, int y, SDL_Renderer *renderer, LTexture &t);
+    Air(int x, int y, SDL_Renderer *renderer, Texture &t);
     ~Air();
 
     void initializeSpritesData(int x, int y);

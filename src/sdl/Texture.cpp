@@ -1,20 +1,20 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
-#include "LTexture.h"
+#include "Texture.h"
 
-LTexture::LTexture() {
+Texture::Texture() {
     //Initialize
     mTexture = NULL;
     mWidth = 0;
     mHeight = 0;
 }
 
-LTexture::~LTexture() {
+Texture::~Texture() {
     //Deallocate
     free();
 }
 
-bool LTexture::generateFromText(const std::string &text, SDL_Renderer *renderer,
+bool Texture::generateFromText(const std::string &text, SDL_Renderer *renderer,
                                 TTF_Font *font, SDL_Color text_color, SDL_Color background_color) {
     //Get rid of preexisting texture
     free();
@@ -41,7 +41,7 @@ bool LTexture::generateFromText(const std::string &text, SDL_Renderer *renderer,
     return true;
 }
 
-bool LTexture::loadFromFile(const std::string &path, SDL_Renderer *gRenderer, int r, int g, int b) {
+bool Texture::loadFromFile(const std::string &path, SDL_Renderer *gRenderer, int r, int g, int b) {
     //Get rid of preexisting texture
     free();
 
@@ -79,7 +79,7 @@ bool LTexture::loadFromFile(const std::string &path, SDL_Renderer *gRenderer, in
     return mTexture != NULL;
 }
 
-void LTexture::free() {
+void Texture::free() {
     //Free texture if it exists
     if (mTexture != NULL) {
         SDL_DestroyTexture(mTexture);
@@ -89,22 +89,22 @@ void LTexture::free() {
     }
 }
 
-void LTexture::setColor(Uint8 red, Uint8 green, Uint8 blue) {
+void Texture::setColor(Uint8 red, Uint8 green, Uint8 blue) {
     //Modulate texture rgb
     SDL_SetTextureColorMod(mTexture, red, green, blue);
 }
 
-void LTexture::setBlendMode(SDL_BlendMode blending) {
+void Texture::setBlendMode(SDL_BlendMode blending) {
     //Set blending function
     SDL_SetTextureBlendMode(mTexture, blending);
 }
 
-void LTexture::setAlpha(Uint8 alpha) {
+void Texture::setAlpha(Uint8 alpha) {
     //Modulate texture alpha
     SDL_SetTextureAlphaMod(mTexture, alpha);
 }
 
-void LTexture::render(SDL_Renderer *gRenderer,
+void Texture::render(SDL_Renderer *gRenderer,
                       int x,
                       int y,
                       SDL_Rect *clip,
@@ -131,7 +131,7 @@ void LTexture::render(SDL_Renderer *gRenderer,
 }
 
 
-void LTexture::renderSprite(SDL_Renderer *gRenderer, int x, int y, SDL_Rect *clip) {
+void Texture::renderSprite(SDL_Renderer *gRenderer, int x, int y, SDL_Rect *clip) {
     //Set rendering space and render to screen
     SDL_Rect renderQuad = {x, y, mWidth, mHeight};
 
@@ -145,10 +145,10 @@ void LTexture::renderSprite(SDL_Renderer *gRenderer, int x, int y, SDL_Rect *cli
     SDL_RenderCopy(gRenderer, mTexture, clip, &renderQuad);
 }
 
-int LTexture::getWidth() {
+int Texture::getWidth() {
     return mWidth;
 }
 
-int LTexture::getHeight() {
+int Texture::getHeight() {
     return mHeight;
 }

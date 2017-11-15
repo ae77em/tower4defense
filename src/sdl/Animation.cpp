@@ -1,6 +1,6 @@
 #include "Animation.h"
 #include <SDL2/SDL.h>
-#include "LTexture.h"
+#include "Texture.h"
 #include <stdexcept>
 
 Animation::Animation(SDL_Renderer *renderer, const std::string &filename,

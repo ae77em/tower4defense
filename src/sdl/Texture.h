@@ -6,13 +6,13 @@
 #include <SDL2/SDL_ttf.h>
 
 //Texture wrapper class
-class LTexture {
+class Texture {
 public:
     //Initializes variables
-    LTexture();
+    Texture();
 
     //Deallocates memory
-    ~LTexture();
+    ~Texture();
 
     bool generateFromText(const std::string &text, SDL_Renderer *renderer,
             TTF_Font *font, SDL_Color text_color = { 0xC5, 0xC8, 0xC6 },

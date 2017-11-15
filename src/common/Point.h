@@ -6,6 +6,8 @@
 struct Point {
     Point(int x, int y);
 
+    virtual ~Point() = default;
+
     Json::Value serialize() const;
     static Point deserialize(const Json::Value &s);
 
@@ -26,7 +28,7 @@ public:
         this->y = y;
     }
 
-    ~DecimalPoint(){};
+    virtual ~DecimalPoint() = default;
 
     bool isPositive(){
         return x >= 0 and y >= 0;

@@ -16,7 +16,8 @@ struct Circle {
         int totalRadiusSquared = r + b.r;
         totalRadiusSquared = totalRadiusSquared * totalRadiusSquared;
 
-        //If the distance between the centers of the circles is less than the sum of their radii
+        //If the distance between the centers of the circles is less than
+        // the sum of their radii
         return (distanceSquared(x, y, b.x, b.y) < (totalRadiusSquared));
     }
 };

@@ -1,7 +1,7 @@
 #include "Air.h"
 #include "../Utils.h"
 
-Air::Air(int x, int y, SDL_Renderer *renderer, LTexture &t) : Tower(x, y, renderer, t) {
+Air::Air(int x, int y, SDL_Renderer *renderer, Texture &t) : Tower(x, y, renderer, t) {
     initializeSpritesData(x,y);
 }
 

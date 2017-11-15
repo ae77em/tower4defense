@@ -6,7 +6,7 @@
 
 class Goatman : public Enemy {
 public:
-    Goatman(int x, int y, SDL_Renderer *renderer, LTexture *texture);
+    Goatman(int x, int y, SDL_Renderer *renderer, Texture *texture);
     virtual ~Goatman();
 
     void initializeSpritesData();

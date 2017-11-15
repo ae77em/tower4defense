@@ -11,7 +11,7 @@ unsigned int Server::getAmountGames() {
     return matches.size();
 }
 
-void Server::createGame(int clientId, string matchName) {
+void Server::createGame(int clientId, std::string matchName) {
     bool wasCreated = createMatch(matchName);
 
     std::string message = "";
@@ -29,7 +29,7 @@ void Server::createGame(int clientId, string matchName) {
 }
 
 void Server::addPlayerToGame(int clientId, std::string mName,
-                             list<string> elements) {
+                             std::list<std::string> elements) {
     mutexPlayers.lock();
 
     ServerGame *serverGame = matches.at(mName);
@@ -288,7 +288,7 @@ void Server::run() {
 }
 
 
-void Server::startMatch(int clientId, string matchName) {
+void Server::startMatch(int clientId, std::string matchName) {
     ServerGame *serverGame = matches.at(matchName);
 
     if (serverGame->isPlaying()) {
@@ -310,7 +310,8 @@ void Server::startMatch(int clientId, string matchName) {
     }
 }
 
-void Server::sendUnavailableElementsToClient(int clientId, string matchName) {
+void Server::sendUnavailableElementsToClient(int clientId,
+                                             std::string matchName) {
     std::list<std::string> elements = matches.at(
             matchName)->getUnavailableElements();
 
@@ -331,7 +332,7 @@ std::vector<std::string> Server::getMatchesNames() {
     return matchesNames;
 }
 
-void Server::notifyPlayerAdded(string message) {
+void Server::notifyPlayerAdded(std::string message) {
     std::cout << "Notificando a: " << players.size() << " jugadores"
               << std::endl;
 
@@ -396,17 +397,17 @@ void Server::putTower(std::string matchName, int typeOfTower, int x, int y){
     serverGame->putTower(typeOfTower, x, y);
 }
 
-void Server::castSpell(string matchName, int x, int y) {
+void Server::castSpell(std::string matchName, int x, int y) {
     ServerGame *serverGame = matches.at(matchName);
     serverGame->castSpell(x, y);
 }
 
-void Server::upgradeTower(string matchName, int towerId, int upgradeType) {
+void Server::upgradeTower(std::string matchName, int towerId, int upgradeType) {
     ServerGame *serverGame = matches.at(matchName);
     serverGame->upgradeTower(towerId, upgradeType);
 }
 
-void Server::towerInfo(int clientId, string matchName, int towerId) {
+void Server::towerInfo(int clientId, std::string matchName, int towerId) {
     ServerGame *serverGame = matches.at(matchName);
     serverGame->towerInfo(clientId, towerId);
 }

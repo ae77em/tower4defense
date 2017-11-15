@@ -23,7 +23,7 @@ Tile::Tile(int x, int y, int t) {
 void Tile::render(SDL_Rect &camera,
                            SDL_Rect *gTileClips,
                            SDL_Renderer *gRenderer,
-                           LTexture *gTileTextures) {
+                           Texture *gTileTextures) {
 
     Point screenPoint = Utils::mapToScreen(containerBoxAttributes.x, containerBoxAttributes.y);
 
@@ -44,7 +44,7 @@ void Tile::render(SDL_Rect &camera,
 void Tile::renderSprite(SDL_Rect &camera,
                         SDL_Rect *gTileClips,
                         SDL_Renderer *gRenderer,
-                        LTexture *gTileTextures) {
+                        Texture *gTileTextures) {
 
     Point screenPoint = Utils::mapToScreen(containerBoxAttributes.x, containerBoxAttributes.y);
 

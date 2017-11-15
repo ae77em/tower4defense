@@ -35,8 +35,8 @@ public:
 
     std::string getGamesList();
 
-    void createGame(int clientId, string matchName);
-    bool createMatch(string basicString);
+    void createGame(int clientId, std::string matchName);
+    bool createMatch(std::string basicString);
     void notifyAllCreationGame(int gameId,int clientIdWhoCreatedGame);
 
     void addPlayerToMatch(std::string nameMatch, ServerPlayer *sp);
@@ -61,31 +61,33 @@ public:
 
 private:
 
-    void addPlayerToGame(int clientId, std::string mName, std::list<string> elementName);
+    void addPlayerToGame(int clientId,
+                         std::string mName,
+                         std::list<std::string> elementName);
 
-    void notifyTo(int clientId, string &message);
+    void notifyTo(int clientId, std::string &message);
 
     void removeClient(int id);
 
-    void startMatch(int id, string basic_string);
+    void startMatch(int id, std::string basic_string);
 
-    void sendUnavailableElementsToClient(int clientId, string matchName);
+    void sendUnavailableElementsToClient(int clientId, std::string matchName);
 
     std::vector<std::string> getMatchesNames();
 
     void notifyAllExpeptTo(int clientId, std::string message);
 
-    void notifyPlayerAdded(string matchName);
+    void notifyPlayerAdded(std::string matchName);
 
     void markTile(std::string matchName, int x, int y);
 
-    void putTower(string matchName, int typeOfTower, int x, int y);
+    void putTower(std::string matchName, int typeOfTower, int x, int y);
 
-    void castSpell(string matchName, int x, int y);
+    void castSpell(std::string matchName, int x, int y);
 
-    void upgradeTower(string matchName, int towerId, int upgradeType);
+    void upgradeTower(std::string matchName, int towerId, int upgradeType);
 
-    void towerInfo(int clientId, string matchName, int towerId);
+    void towerInfo(int clientId, std::string matchName, int towerId);
 };
 
 

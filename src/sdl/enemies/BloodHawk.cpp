@@ -2,7 +2,7 @@
 #include "BloodHawk.h"
 #include "../Utils.h"
 
-BloodHawk::BloodHawk(int x, int y, SDL_Renderer *renderer, LTexture *texture)
+BloodHawk::BloodHawk(int x, int y, SDL_Renderer *renderer, Texture *texture)
         : Enemy(model::Enemy(100, 4, "bloodhawk"), x, y, renderer, texture) {
     currentDirection = 0;
     initializeSpritesData();

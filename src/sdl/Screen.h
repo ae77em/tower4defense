@@ -4,7 +4,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
-#include "LTexture.h"
+#include "Texture.h"
 #include "Animation.h"
 #include "Dot.h"
 #include "Constants.h"
@@ -18,14 +18,14 @@ class Screen {
     SDL_Rect camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
 
     TTF_Font *font;
-    LTexture dialog;
-    LTexture tile_desert, tile_grass, tile_ice, tile_lava, tile_firm;
-    LTexture waterTower, earthTower, fireTower, airTower;
+    Texture dialog;
+    Texture tile_desert, tile_grass, tile_ice, tile_lava, tile_firm;
+    Texture waterTower, earthTower, fireTower, airTower;
     Animation *portal_blue, *portal_red;
 
     void putDialog();
 
-    void put(unsigned x, unsigned y, LTexture &texture);
+    void put(unsigned x, unsigned y, Texture &texture);
     void put(unsigned x, unsigned y, Animation *animation);
 
 public:

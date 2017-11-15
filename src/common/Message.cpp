@@ -2,6 +2,7 @@
 #include "Protocol.h"
 
 #include <cstring>
+#include <string>
 #include <iostream>
 
 Message::Message() {
@@ -24,7 +25,10 @@ bool Message::deserialize(std::string messageData) {
     // copy data in dest string
     jsonString.assign(messageData.data(), messageData.length());
 
-    parseOk = reader.parse(jsonString.c_str(), jsonString.c_str() + messageData.length(), data, true);
+    parseOk = reader.parse(jsonString.c_str(),
+                           jsonString.c_str() + messageData.length(),
+                           data,
+                           true);
 
     return parseOk;
 }

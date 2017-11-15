@@ -1,15 +1,15 @@
 #ifndef TP4_TOWERDEFENSE_REQUEST_H
 #define TP4_TOWERDEFENSE_REQUEST_H
 
-
 #include "Message.h"
 #include <list>
+#include <string>
 
 class Request {
 private:
     Message& requestMessage;
 public:
-    Request(Message& m);
+    explicit Request(Message& m);
 
     std::string getAsString(std::string key);
 

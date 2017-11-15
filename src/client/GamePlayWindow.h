@@ -18,7 +18,7 @@ static const int TIME_FOR_ENABLE_ACTION = 20000;
 #include <SDL2/SDL_system.h>
 #include <map>
 #include "../sdl/Constants.h"
-#include "../sdl/LTexture.h"
+#include "../sdl/Texture.h"
 #include "../sdl/Tile.h"
 #include "../common/Point.h"
 #include "../common/SharedBuffer.h"
@@ -99,35 +99,35 @@ private:
     //The level tiles
     Tile *tileSet[TOTAL_TILES];
 
-    LTexture dotTexture;
+    Texture dotTexture;
 
-    LTexture gPromptTextTexture;
+    Texture gPromptTextTexture;
 
     SDL_Rect gTileClips[TOTAL_TILE_SPRITES];
 
     SDL_Rect gSpriteClipsPortalBlue[30];
-    LTexture bluePortalTexture;
+    Texture bluePortalTexture;
 
     SDL_Rect gSpriteClipsPortalRed[30];
-    LTexture redPortalTexture;
+    Texture redPortalTexture;
 
-    LTexture gSpriteSheetTextureTower;
+    Texture gSpriteSheetTextureTower;
 
     SDL_Rect towerButtonsClips[4][4];
-    LTexture towerButtonsTexture;
+    Texture towerButtonsTexture;
     int towerButtonType;
     int towerButtonState;
 
     //Scene textures
-    LTexture gTileTextures[TOTAL_TILE_SPRITES];
+    Texture gTileTextures[TOTAL_TILE_SPRITES];
 
     // Enemies textures
-    LTexture *abmonibleTexture = nullptr;
-    LTexture *blookHawkTexture = nullptr;
-    LTexture *goatmanTexture = nullptr;
-    LTexture *greenDaemonTexture = nullptr;
-    LTexture *spectreTexture = nullptr;
-    LTexture *zombieTexture = nullptr;
+    Texture *abmonibleTexture = nullptr;
+    Texture *blookHawkTexture = nullptr;
+    Texture *goatmanTexture = nullptr;
+    Texture *greenDaemonTexture = nullptr;
+    Texture *spectreTexture = nullptr;
+    Texture *zombieTexture = nullptr;
 
     // Comunication with the game server
     Socket *server = nullptr;

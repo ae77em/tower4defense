@@ -1,5 +1,5 @@
 #include "Screen.h"
-#include "LTexture.h"
+#include "Texture.h"
 #include "Animation.h"
 #include <stdexcept>
 #include <vector>
@@ -65,7 +65,7 @@ void Screen::draw() {
     SDL_RenderPresent(renderer);
 }
 
-void Screen::put(unsigned x, unsigned y, LTexture &texture) {
+void Screen::put(unsigned x, unsigned y, Texture &texture) {
     Point pos = Utils::mapToScreen(x, y);
 
     // Correccion por camara
@@ -112,7 +112,7 @@ void Screen::clear() {
 }
 
 void Screen::put(model::Mapa &map) {
-    LTexture &curr_tile_style = (map.getEstiloFondo() == 'd') ? tile_desert
+    Texture &curr_tile_style = (map.getEstiloFondo() == 'd') ? tile_desert
         : (map.getEstiloFondo() == 'g') ? tile_grass
         : (map.getEstiloFondo() == 'i') ? tile_ice
         : (map.getEstiloFondo() == 'l') ? tile_lava

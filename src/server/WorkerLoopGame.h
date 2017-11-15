@@ -30,7 +30,7 @@ public:
 
     void buildGameContext();
 
-    string getGameStatus();
+    std::string getGameStatus();
 };
 
 

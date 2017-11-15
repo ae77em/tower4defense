@@ -13,8 +13,9 @@ public:
     static Point mapToScreen(int i, int j, int h_offset = 0, int w_offset = 0);
 
     /*
-     * Verifica a qué coordenada (x,y) del mapa pertenece un punto de la pantalla
-     * clickeado, teniendo usando como punto el cuadrado que corresponde al tile.
+     * Verifica a qué coordenada (x,y) del mapa pertenece un punto de la
+     * pantalla clickeado, teniendo usando como punto el cuadrado que
+     * corresponde al tile.
      * Por ejemplo: el punto (0,0) corresponde al tile en dicha posición en el
      * mapa de tiles.
      */

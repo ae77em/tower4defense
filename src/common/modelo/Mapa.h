@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include "../Point.h"
-#include "../modelo/Enemies.h"
+#include "Enemy.h"
 
 namespace model {
 
@@ -19,7 +19,7 @@ class Mapa {
 
 public:
     Mapa(unsigned x, unsigned y);
-    Mapa(std::string filename);
+    explicit Mapa(std::string filename);
     std::string serialize();
 
     /* Devuelve el contenido de la casilla en la posicion x, y.

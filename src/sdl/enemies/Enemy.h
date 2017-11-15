@@ -2,10 +2,10 @@
 #define TP4_TOWERDEFENSE_SDL_ENEMY_H
 
 
-#include "../../common/modelo/Enemies.h"
+#include "../../common/modelo/Enemy.h"
 #include <vector>
 #include <array>
-#include "../LTexture.h"
+#include "../Texture.h"
 #include "../../common/Point.h"
 #include "../Constants.h"
 #include "../../common/Circle.h"
@@ -14,7 +14,7 @@
 class Enemy : public Animable {
 public:
     Enemy(model::Enemy&& base, int x, int y,
-            SDL_Renderer *renderer, LTexture *texture);
+            SDL_Renderer *renderer, Texture *texture);
 
     virtual ~Enemy();
 
@@ -81,7 +81,7 @@ public:
      * Modifica la textura que se utilizará para mostrar el enemigo.
      * texture: referencia a la textura a utilizar.
      * */
-    void setTexture(LTexture *texture);
+    void setTexture(Texture *texture);
 
     /*
      * Modifica la cámara del juego donde está metido el enemigo, es decir,
@@ -165,7 +165,7 @@ protected:
     int velocityY;
 
     SDL_Renderer *renderer;
-    LTexture *texture = new LTexture();
+    Texture *texture = new Texture();
 
     Point currentPoint;
 

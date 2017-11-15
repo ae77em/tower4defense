@@ -25,12 +25,11 @@ private:
 public:
     std::list<std::string> & getElements();
 
-    void setElements(list<string> elements);
+    void setElements(std::list<std::string> elements);
 
     explicit ServerPlayer(ClientRequestHandler *crh, unsigned int aId);
 
     unsigned int getId();
-
 
     void sendData(std::string data);
 

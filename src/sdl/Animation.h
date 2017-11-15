@@ -7,7 +7,7 @@
  */
 
 #include <SDL2/SDL.h>
-#include "LTexture.h"
+#include "Texture.h"
 
 #ifndef ANIMATION_H
 #define ANIMATION_H
@@ -15,7 +15,7 @@
 class Animation {
     SDL_Renderer *renderer;
     SDL_Rect clip;
-    LTexture spritesheet;
+    Texture spritesheet;
     unsigned hcount, vcount;
 
     public:

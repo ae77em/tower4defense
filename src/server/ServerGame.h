@@ -31,7 +31,7 @@ private:
 public:
     ServerGame(std::mutex& mutex);
 
-    bool elementsAreAvailables(list<string> elements);
+    bool elementsAreAvailables(std::list<std::string> elements);
 
     void addPlayer(ServerPlayer* sp);
 
@@ -47,13 +47,13 @@ public:
 
     void addEventMessage(Message m);
 
-    void notifyAll(string basic_string);
+    void notifyAll(std::string basic_string);
 
     std::list<std::string> getElements();
 
-    void removeElement(string elementName);
+    void removeElement(std::string elementName);
 
-    list<string> getUnavailableElements();
+    std::list<std::string> getUnavailableElements();
 
     void enableElements(int idPlayer);
 
@@ -63,7 +63,7 @@ public:
 
     int getAmountPlayers();
 
-    string getName();
+    std::string getName();
 
     void kill();
 
@@ -75,7 +75,7 @@ public:
 
     void towerInfo(int clientId, int towerId);
 
-    void notifyTo(int clientId, string message);
+    void notifyTo(int clientId, std::string message);
 };
 
 

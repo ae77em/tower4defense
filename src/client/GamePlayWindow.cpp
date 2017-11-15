@@ -30,12 +30,12 @@ GamePlayWindow::GamePlayWindow(Socket *s,
           clientId(cId),
           playerElements(elems),
           matchName(std::move(mn)) {
-    abmonibleTexture = new LTexture();
-    blookHawkTexture = new LTexture();
-    goatmanTexture = new LTexture();
-    greenDaemonTexture = new LTexture();
-    spectreTexture = new LTexture();
-    zombieTexture = new LTexture();
+    abmonibleTexture = new Texture();
+    blookHawkTexture = new Texture();
+    goatmanTexture = new Texture();
+    greenDaemonTexture = new Texture();
+    spectreTexture = new Texture();
+    zombieTexture = new Texture();
 
     typeOfTowerToPut = -1;
     towerIdThatRequiresInfo = -1;

@@ -7,6 +7,7 @@
 #endif
 #include <stdio.h>
 #include <iostream>
+#include <string>
 
 TextMessage::TextMessage(std::string message) : message(message) {}
 

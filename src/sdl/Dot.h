@@ -2,7 +2,7 @@
 #define TP4_TOWERDEFENSE_DOT_H
 
 #include <SDL2/SDL_rect.h>
-#include "LTexture.h"
+#include "Texture.h"
 #include "Tile.h"
 #include "Keybinding.h"
 
@@ -29,7 +29,7 @@ public:
     void setCamera(SDL_Rect &camera);
 
     //Shows the dot on the screen
-    void render(LTexture &gDotTexture,
+    void render(Texture &gDotTexture,
                 SDL_Rect &camera,
                 SDL_Renderer *gRenderer);
 

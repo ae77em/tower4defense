@@ -1,7 +1,7 @@
 #include "Tower.h"
 #include "../Utils.h"
 
-Tower::Tower(int x, int y, SDL_Renderer *r, LTexture &t) : texture(t), currentPoint(Utils::mapToScreen(x, y)) {
+Tower::Tower(int x, int y, SDL_Renderer *r, Texture &t) : texture(t), currentPoint(Utils::mapToScreen(x, y)) {
     idleBox.x = currentPoint.x;
     idleBox.y = currentPoint.y;
     idleBox.w = IDLE_SPRITE_WIDTH;

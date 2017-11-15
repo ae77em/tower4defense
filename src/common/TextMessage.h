@@ -4,7 +4,6 @@
  * The prefix is a ten-character, fixed-width, zero padded decimal
  * representation of the length of the tail.
  */
-
 #include "Socket.h"
 #include <string>
 
@@ -17,12 +16,11 @@ class TextMessage {
     std::string message;
 
 public:
-    TextMessage(std::string message);
+    explicit TextMessage(std::string message);
     void sendTo(Socket &sock);
     TextMessage receiveFrom(Socket &sock);
 
     const std::string& getMessage();
 };
-
 
 #endif

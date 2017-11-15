@@ -6,7 +6,7 @@
 
 class BloodHawk : public Enemy {
 public:
-    BloodHawk(int x, int y, SDL_Renderer *renderer, LTexture *texture);
+    BloodHawk(int x, int y, SDL_Renderer *renderer, Texture *texture);
     virtual ~BloodHawk();
 
     void initializeSpritesData();

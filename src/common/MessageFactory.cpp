@@ -3,6 +3,9 @@
 #include "Protocol.h"
 #include "../server/game-actors/towers/ActorTower.h"
 #include "../server/game-actors/enemies/Horde.h"
+#include <string>
+#include <list>
+#include <vector>
 
 int MessageFactory::getOperation(Message &request) {
     Json::Value &root = request.getData();
@@ -189,13 +192,13 @@ MessageFactory::getPutTowerRequest(std::string matchName, int towerType, int x,
     return toReturn;
 }
 
-std::string MessageFactory::getPutTowerGameRequest(int towerType, int x, int y) {
+std::string MessageFactory::getPutTowerGameRequest(int towType, int x, int y) {
     std::string toReturn;
     Json::Value root(Json::objectValue);
     Message message;
 
     root[OPERATION_KEY] = GAME_REQUEST_PUT_TOWER;
-    root["towerType"] = towerType;
+    root["towerType"] = towType;
     root[XCOORD_KEY] = x;
     root[YCOORD_KEY] = y;
 
@@ -299,8 +302,8 @@ MessageFactory::getNewMatchNotification(int clientId, std::string matchName) {
 }
 
 std::string MessageFactory::getNewMatchErrorNotification(int clientId,
-                                                         std::string matchName,
-                                                         std::string errorMessage) {
+                                                    std::string matchName,
+                                                    std::string errorMessage) {
     Json::Value responseRoot;
     Message message;
 
@@ -334,8 +337,8 @@ MessageFactory::getMatchNotAvailableNotification(std::string matchName,
 
 std::string
 MessageFactory::getAddPlayerToMatchNotification(std::string matchName,
-                                                int clientIdWasAdded,
-                                                std::list<std::string> elements) {
+                                            int clientIdWasAdded,
+                                            std::list<std::string> elements) {
     std::string toReturn;
     Json::Value root(Json::objectValue);
     Message message;
@@ -507,7 +510,7 @@ std::list<std::string> MessageFactory::getElements(Message message) {
 }
 
 std::string MessageFactory::getUnavailableElementsRequest(int clientId,
-                                                          std::string matchName) {
+                                                      std::string matchName) {
     std::string toReturn;
     Json::Value root(Json::objectValue);
     Message message;
@@ -541,7 +544,7 @@ MessageFactory::getEnterMatchRequest(int clientId, std::string matchName,
 }
 
 std::string MessageFactory::getEnteredInMatchNotification(int clientId,
-                                                          std::string matchName) {
+                                                      std::string matchName) {
     std::string toReturn;
     Json::Value root(Json::objectValue);
     Message message;
@@ -618,22 +621,6 @@ MessageFactory::getCastSpellRequest(std::string matchName, int x, int y) {
     return toReturn;
 }
 
-std::string MessageFactory::getMarkTileGameRequest(int x, int y) {
-    std::string toReturn;
-    Json::Value root(Json::objectValue);
-    Message message;
-
-    root[OPERATION_KEY] = GAME_REQUEST_MARK_TILE;
-    root[XCOORD_KEY] = x;
-    root[YCOORD_KEY] = y;
-
-    message.setData(root);
-
-    toReturn = message.serialize();
-
-    return toReturn;
-}
-
 std::string MessageFactory::getCastSpellGameRequest(int x, int y) {
     std::string toReturn;
     Json::Value root(Json::objectValue);
@@ -650,7 +637,8 @@ std::string MessageFactory::getCastSpellGameRequest(int x, int y) {
     return toReturn;
 }
 
-std::string MessageFactory::getUpgradeTowerGameRequest(int towerId, int upgradeType) {
+std::string MessageFactory::getUpgradeTowerGameRequest(int towerId,
+                                                       int upgradeType) {
     std::string toReturn;
     Json::Value root(Json::objectValue);
     Message message;

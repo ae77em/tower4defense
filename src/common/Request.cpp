@@ -1,5 +1,7 @@
 #include "Request.h"
 #include "MessageFactory.h"
+#include <string>
+#include <list>
 
 Request::Request(Message& m):requestMessage(m){
 }

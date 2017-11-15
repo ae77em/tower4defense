@@ -28,8 +28,6 @@ private:
     bool isEmpty();
 };
 
-using namespace std;
-
 template<typename T>
 ThreadedQueue<T>::ThreadedQueue() : closed(false) {}
 
@@ -40,7 +38,7 @@ bool ThreadedQueue<T>::isEmpty() {
 
 template<typename T>
 bool ThreadedQueue<T>::isAtEnd() {
-    unique_lock<mutex> lck{this->m};
+    std::unique_lock<std::mutex> lck{this->m};
 
     if (!this->isEmpty()) return false;
 
@@ -52,7 +50,7 @@ bool ThreadedQueue<T>::isAtEnd() {
 
 template<typename T>
 void ThreadedQueue<T>::push(const T &x) {
-    unique_lock<mutex> lck{this->m};
+    std::unique_lock<std::mutex> lck{this->m};
 
     if (this->closed)
         throw std::runtime_error("Trying to push into a closed queue.");
@@ -63,7 +61,7 @@ void ThreadedQueue<T>::push(const T &x) {
 
 template<typename T>
 T ThreadedQueue<T>::pop() {
-    unique_lock<mutex> lck{this->m};
+    std::unique_lock<std::mutex> lck{this->m};
 
     // Wait until buffer is not empty or is closed.
     if (this->isEmpty())
@@ -80,7 +78,7 @@ T ThreadedQueue<T>::pop() {
 
 template<typename T>
 void ThreadedQueue<T>::close() {
-    unique_lock<mutex> lck{this->m};
+    std::unique_lock<std::mutex> lck{this->m};
     this->closed = true;
     this->empty.notify_all();
 }

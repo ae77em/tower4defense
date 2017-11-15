@@ -21,7 +21,7 @@ void ServerGame::addPlayer(ServerPlayer* sp){
     );
 }
 
-bool ServerGame::elementsAreAvailables(list<string> elements) {
+bool ServerGame::elementsAreAvailables(std::list<std::string> elements) {
     std::list<std::string> othersElements;
     for (auto it=players.begin(); it!=players.end(); ++it){
         othersElements = it->second->getElements();
@@ -58,13 +58,13 @@ void ServerGame::addEventMessage(Message m){
     queueMessagesGame.push(m);
 }
 
-void ServerGame::notifyAll(string message) {
+void ServerGame::notifyAll(std::string message) {
     for (auto it=players.begin(); it!=players.end(); ++it){
         it->second->sendData(message);
     }
 }
 
-void ServerGame::notifyTo(int clientId, string message) {
+void ServerGame::notifyTo(int clientId, std::string message) {
     ServerPlayer *player = players.at(clientId);
     player->sendData(message);
 }

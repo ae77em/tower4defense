@@ -5,6 +5,7 @@
 #include <jsoncpp/json/json.h>
 #include <set>
 #include <list>
+#include <vector>
 #include "Message.h"
 #include "Point.h"
 #include "../server/GameActor.h"
@@ -15,13 +16,16 @@
 class MessageFactory {
 public:
     static std::string getClientIdNotification(int clientId);
+
     static std::string getClientIdRequest(std::string message);
 
     static std::string getGamesRequest(int clientId);
-    static std::string getGamesNotification(int clientId,std::string games);
 
-    static std::string getNewMatchErrorNotification(int clientId, std::string matchName,
-                                                        std::string cause);
+    static std::string getGamesNotification(int clientId, std::string games);
+
+    static std::string
+    getNewMatchErrorNotification(int clientId, std::string matchName,
+                                 std::string cause);
 
     /*
      * Retorna la operación asociada al request que se hace con el Json.
@@ -40,13 +44,15 @@ public:
     getPutTowerRequest(std::string matchName, int towerType, int x, int y);
 
     /*
-     * Retorna la notificación enviada por el server para poner una torre en el escenario.
+     * Retorna la notificación enviada por el server para poner una torre en el
+     * escenario.
      * Es un json string.
      */
     static std::string getPutTowerNotification(Message &request);
 
     /*
-     * Retorna el request de texto para marcar un lugar donde poner una torre, listo para
+     * Retorna el request de texto para marcar un lugar donde poner una torre,
+     * listo para
      * ser enviado al server.
      * clientId: id del cliente que se conecta.
      * x: coordenada x donde se quiere colocar la torre.
@@ -78,7 +84,8 @@ public:
     /*
      * Retorna la notificación con todas las partidas existentes para jugar.
      */
-    static std::string getExistingMatchesNotification(std::vector<std::string> &matches);
+    static std::string
+    getExistingMatchesNotification(std::vector<std::string> &matches);
 
     /*
      * Retorna la notificación informando de una nueva partida fue creada.
@@ -90,15 +97,18 @@ public:
     /*
      * Retorna el pedido para crear una nueva partida.
      */
-    static std::string getNewMatchRequest(int clientId, std::string &mapName, std::string &matchName);
+    static std::string getNewMatchRequest(int clientId, std::string &mapName,
+                                          std::string &matchName);
 
-    static std::string getMatchNotAvailableNotification(std::string matchName, std::string errorMessage);
+    static std::string getMatchNotAvailableNotification(std::string matchName,
+                                                  std::string errorMessage);
 
     static std::string getAddPlayerToMatchNotification(std::string gameId,
-                                                       int clientIdWasAdded,
-                                                       std::list<std::string> elements);
+                                              int clientIdWasAdded,
+                                              std::list<std::string> elements);
 
-    static std::string getAddPlayerAndRunMatchNotification(std::string gameID, int clientId);
+    static std::string
+    getAddPlayerAndRunMatchNotification(std::string gameID, int clientId);
 
     static int getClientId(Message &message);
 
@@ -112,7 +122,9 @@ public:
 
     static std::string getClientEndConectionNotification(int clientId);
 
-    static std::string getMovementNotification(int enemyId, int moveable, int x, int y, int direction);
+    static std::string
+    getMovementNotification(int enemyId, int moveable, int x, int y,
+                            int direction);
 
     static Point getPoint(Message message);
 
@@ -122,24 +134,26 @@ public:
 
     static std::string getMatchStartedNotification(std::string name);
 
-    static std::string getUnavailableElementsNotification(std::list<std::string> elements);
+    static std::string
+    getUnavailableElementsNotification(std::list<std::string> elements);
 
     static std::list<std::string> getElements(Message message);
 
     static int getEnemyId(Message message);
 
-    static std::string getUnavailableElementsRequest(int clientId, std::string matchName);
+    static std::string
+    getUnavailableElementsRequest(int clientId, std::string matchName);
 
-    static std::string getEnterMatchRequest(int clientId, std::string matchName, std::vector<std::string> elements);
+    static std::string getEnterMatchRequest(int clientId, std::string matchName,
+                                            std::vector<std::string> elements);
 
-    static std::string getStartMatchRequest(int clientId, std::string &matchName);
-
-    static std::string getStatusMatchNotification(std::map<int, Horde *> hordes,
-                                                     std::vector<ActorTower *> towers);
+    static std::string
+    getStartMatchRequest(int clientId, std::string &matchName);
 
     static std::vector<std::string> getMatches(Message &message);
 
-    static std::string getEnteredInMatchNotification(int clientId, std::string matchName);
+    static std::string
+    getEnteredInMatchNotification(int clientId, std::string matchName);
 
     static std::vector<Message> getMovementNotifications(Message message);
 
@@ -152,9 +166,7 @@ public:
 
     static std::string getCastSpellRequest(std::string matchName, int x, int y);
 
-    static std::string getMarkTileGameRequest(int x, int y);
-
-    static std::string getPutTowerGameRequest(int towerType, int x, int y);
+    static std::string getPutTowerGameRequest(int towType, int x, int y);
 
     static std::string getCastSpellGameRequest(int x, int y);
 
@@ -176,6 +188,5 @@ public:
 
     static std::string getPutTowerNotification(int towerType, int x, int y);
 };
-
 
 #endif //TP4_TOWERDEFENSE_MESSAGEFACTORY_H

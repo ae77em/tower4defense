@@ -1,7 +1,7 @@
 #include "Enemy.h"
 #include "../Utils.h"
 
-Enemy::Enemy(model::Enemy&& base, int x, int y, SDL_Renderer *r, LTexture *t)
+Enemy::Enemy(model::Enemy&& base, int x, int y, SDL_Renderer *r, Texture *t)
         : enemy_base(base), currentPoint(Utils::mapToScreen(x, y)) {
     initializeSpritesData();
 
@@ -236,7 +236,7 @@ int Enemy::getCollisionCircleRadio(){
     return CARTESIAN_TILE_WIDTH / 2;
 }
 
-void Enemy::setTexture(LTexture *t) {
+void Enemy::setTexture(Texture *t) {
     texture = t;
 }
 

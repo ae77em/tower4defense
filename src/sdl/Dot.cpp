@@ -82,7 +82,7 @@ void Dot::setCamera(SDL_Rect &camera) {
 }
 
 void
-Dot::render(LTexture &gDotTexture, SDL_Rect &camera, SDL_Renderer *gRenderer) {
+Dot::render(Texture &gDotTexture, SDL_Rect &camera, SDL_Renderer *gRenderer) {
     //Show the dot
     gDotTexture.render(gRenderer, mBox.x - camera.x, mBox.y - camera.y);
 }
