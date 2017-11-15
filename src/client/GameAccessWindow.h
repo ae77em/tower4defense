@@ -6,6 +6,9 @@
 #include "../common/Socket.h"
 #include "../common/SharedBuffer.h"
 #include "GamePlayWindow.h"
+#include <string>
+#include <list>
+#include <vector>
 
 class GameAccessWindow : public Thread {
 private:
@@ -36,7 +39,10 @@ private:
     std::vector<std::string> myElements;
 
 public:
-    GameAccessWindow(Socket *client, SharedBuffer &toSend, SharedBuffer &toReceive, SharedBuffer &other);
+    GameAccessWindow(Socket *client,
+                     SharedBuffer &toSend,
+                     SharedBuffer &toReceive,
+                     SharedBuffer &other);
 
     virtual ~GameAccessWindow();
 
@@ -65,22 +71,25 @@ public:
     void addMatchToCombo(int clientId, const std::string &matchName);
 
     /*
-     * Setea el id del cliente (socket) con el cual me estoy conectando al server.
+     * Setea el id del cliente (socket) con el cual me estoy conectando al
+     * server.
      * Corresponde al FD del cliente en el server.
      * clientId: FD del cliente en el server.
      */
     void setClientId(int clientId);
 
     /*
-     * Retorna el id del cliente (socket) con el cual me estoy conectando al server.
+     * Retorna el id del cliente (socket) con el cual me estoy conectando al
+     * server.
      * Corresponde al FD del cliente en el server.
      */
     int getClientId();
 
     /*
-     * Retorna true si el clientId es igual a -1, que es el valor al construirse el objeto.
-     * Se supone que si se conecta a un server exitosamente, ese valor cambia por el del FD
-     * del cliente conectado en el server-
+     * Retorna true si el clientId es igual a -1, que es el valor al construirse
+     * el objeto.
+     * Se supone que si se conecta a un server exitosamente, ese valor cambia
+     * por el del FD del cliente conectado en el server.
      */
     bool isNotValidClientId();
 
@@ -88,7 +97,7 @@ public:
      * poder ser seleccionados.
      * elements: listado de elementos disponibles.
      * */
-    void setAvailableElements(const std::list<std::string> &unavailableElements);
+    void setAvailableElements(const std::list<std::string> &unavailableElems);
 
     /* Inicializadores de los distintos inputs.
      * refBuilder: referencia al builder donde se están colocando los elementos.
@@ -116,7 +125,8 @@ public:
 
     void on_entryMatchName_changed();
 
-    void setAvailableElementsForJoin(const std::list<std::string> &unavailableElements);
+    void setAvailableElementsForJoin(
+            const std::list<std::string> &unavailableElems);
 
     void setJoinedToMatch(int clientId, std::string matchName);
 
@@ -140,8 +150,6 @@ private:
     void handlePlayButtonsAvailability();
 
     bool hasValidValue(const std::string &match) const;
-
 };
-
 
 #endif //TP4_TOWERDEFENSE_GAMEACCESS_H

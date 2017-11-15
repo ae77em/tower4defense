@@ -1,17 +1,22 @@
 #include "GamePlayWindow.h"
 
-#include <iostream>
-#include <fstream>
 #include "../sdl/Dot.h"
 #include "../sdl/Utils.h"
-#include <SDL2/SDL_image.h>
-#include <algorithm>
 #include "../common/MessageFactory.h"
 #include "../common/Protocol.h"
 #include "../sdl/enemies/GreenDaemon.h"
 #include "../sdl/enemies/Zombie.h"
 #include "../common/TextMessage.h"
 #include "../common/Request.h"
+
+#include <iostream>
+#include <fstream>
+#include <SDL2/SDL_image.h>
+#include <algorithm>
+#include <utility>
+#include <string>
+#include <map>
+#include <vector>
 
 GamePlayWindow::GamePlayWindow(Socket *s,
                                SharedBuffer *in,
@@ -81,7 +86,6 @@ void GamePlayWindow::renderTimeMessages(SDL_Rect &camera) {
         message.append(" seg");
         renderText(camera, message, 1, 150);
     }
-
 }
 
 bool GamePlayWindow::init() {
@@ -126,7 +130,8 @@ bool GamePlayWindow::init() {
                 //Initialize PNG loading
                 int imgFlags = IMG_INIT_PNG;
                 if (!(IMG_Init(imgFlags) & imgFlags)) {
-                    printf("SDL_image could not initialize! SDL_image Error: %s\n",
+                    printf("SDL_image could not initialize! "
+                                   "SDL_image Error: %s\n",
                            IMG_GetError());
                     success = false;
                 }
@@ -201,24 +206,24 @@ void GamePlayWindow::initializeGameActors() {
     towers.push_back(tower);
 
     for (int i = 0; i < 2; ++i) {
-        auto horde = new Horde();
+        auto horde = new DrawableHorde();
         for (int j = 0; j < 3; ++j) {
             auto greenDaemon = new GreenDaemon(-1, -1, gRenderer,
                                                  greenDaemonTexture);
             greenDaemon->setSprites();
             horde->addEnemy(greenDaemon);
         }
-        std::pair<int, Horde *> pair(i, horde);
+        std::pair<int, DrawableHorde *> pair(i, horde);
         hordes.insert(pair);
 
-        auto horde2 = new Horde();
+        auto horde2 = new DrawableHorde();
         for (int j = 0; j < 3; ++j) {
             Enemy *zombie = new Zombie(-1, -1, gRenderer,
                                        zombieTexture);
             zombie->setSprites();
             horde2->addEnemy(zombie);
         }
-        std::pair<int, Horde *> pair2(i + 1, horde2);
+        std::pair<int, DrawableHorde *> pair2(i + 1, horde2);
         hordes.insert(pair2);
     }
 }
@@ -468,7 +473,7 @@ bool GamePlayWindow::isAValidPutTowerRequest(Point &point) {
 
 void GamePlayWindow::doTowerInfoRequest() const {
     std::string request =
-            MessageFactory::getTowerInfoRequest(clientId, matchName, towerSelected);
+        MessageFactory::getTowerInfoRequest(clientId, matchName, towerSelected);
     sendToServer(request);
 }
 
@@ -618,7 +623,7 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
                         int hordeId = MessageFactory::getHordeId(aMessage);
 
                         try {
-                            Horde *horde = hordes.at(hordeId);
+                            DrawableHorde *horde = hordes.at(hordeId);
                             Enemy *enemy = horde->getEnemieAt(enemyId);
                             enemy->setDirection(dir);
                             enemy->moveTo(scenarioPoint.x, scenarioPoint.y);
@@ -646,15 +651,11 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
 }
 
 bool GamePlayWindow::isClickOnTowerButton(int mousePosX, int mousePosY) const {
-    return (
-                   mousePosX >= TOWER_BUTTONS_X_POS
-                   && mousePosX <= TOWER_BUTTONS_WIDTH + TOWER_BUTTONS_Y_POS
-           )
+    return (mousePosX >= TOWER_BUTTONS_X_POS
+                   && mousePosX <= TOWER_BUTTONS_WIDTH + TOWER_BUTTONS_Y_POS)
            &&
-           (
-                   mousePosY >= TOWER_BUTTONS_Y_POS
-                   && mousePosY <= TOWBER_BUTTONS_HEIGHT + TOWER_BUTTONS_Y_POS
-           );
+           (mousePosY >= TOWER_BUTTONS_Y_POS
+                   && mousePosY <= TOWBER_BUTTONS_HEIGHT + TOWER_BUTTONS_Y_POS);
 }
 
 bool GamePlayWindow::isFirmTerrain(Point &point) {
@@ -832,7 +833,7 @@ void GamePlayWindow::run() {
 
                         if (!tileSet[i]->itIsMarked()) {
                             tileSet[i]->setType(
-                                    TILE_FIRM); // HORRIBLE ESTO...REFACTORIZAR CUANDO SE PUEDA
+                                    TILE_FIRM); // todo refactor
                         }
                     }
 
@@ -854,9 +855,9 @@ void GamePlayWindow::run() {
                     animables.push_back(reinterpret_cast<Tower *&&>(tower));
                 }
 
-                for (std::map<int, Horde *>::iterator it = hordes.begin();
-                     it != hordes.end(); ++it) {
-                    Horde *horde = it->second;
+                std::map<int, DrawableHorde*>::iterator it;
+                for (it = hordes.begin(); it != hordes.end(); ++it) {
+                    DrawableHorde *horde = it->second;
 
                     for (auto enemy : horde->getEnemies()) {
                         animables.push_back(

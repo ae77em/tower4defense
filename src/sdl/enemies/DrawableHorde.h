@@ -1,17 +1,17 @@
-#ifndef TP4_TOWERDEFENSE_HORDE_H
-#define TP4_TOWERDEFENSE_HORDE_H
+#ifndef TP4_TOWERDEFENSE_DrawableHorde_H
+#define TP4_TOWERDEFENSE_DrawableHorde_H
 
 #include "Enemy.h"
 
-class Horde {
+class DrawableHorde {
 private:
     std::vector<Enemy*> enemies;
     int enemySeparation; // in pixels, in cartesian coords
 
 public:
-    Horde();
-    Horde(int enemyType, size_t size, int x, int y, SDL_Renderer *renderer, LTexture &texture);
-    virtual ~Horde();
+    DrawableHorde();
+    DrawableHorde(int enemyType, size_t size, int x, int y, SDL_Renderer *renderer, LTexture &texture);
+    virtual ~DrawableHorde();
 
     std::vector<Enemy *> &getEnemies();
 
@@ -30,4 +30,4 @@ private:
 };
 
 
-#endif //TP4_TOWERDEFENSE_HORDE_H
+#endif //TP4_TOWERDEFENSE_DrawableHorde_H

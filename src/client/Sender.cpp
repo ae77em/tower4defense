@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include "Sender.h"
 #include "../common/TextMessage.h"
 

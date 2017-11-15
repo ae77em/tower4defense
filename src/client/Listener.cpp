@@ -1,4 +1,7 @@
 #include <iostream>
+#include <string>
+#include <list>
+#include <vector>
 #include "Listener.h"
 #include "../common/TextMessage.h"
 #include "../common/SharedBuffer.h"
@@ -6,8 +9,14 @@
 #include "../common/Message.h"
 #include "../common/Protocol.h"
 
-Listener::Listener(Socket *s, GameAccessWindow &ga, SharedBuffer &bfr, SharedBuffer &other)
-        : server(s), gameAccess(ga), buffer(bfr), buffer2(other) { }
+Listener::Listener(Socket *s,
+                   GameAccessWindow &ga,
+                   SharedBuffer &bfr,
+                   SharedBuffer &other)
+        : server(s),
+          gameAccess(ga),
+          buffer(bfr),
+          buffer2(other) { }
 
 Listener::~Listener() {}
 
@@ -30,7 +39,7 @@ void Listener::run(){
 
             std::cout << "llego operación: " << std::to_string(op) << std::endl;
 
-            switch(op){
+            switch (op){
                 /*
                  * ACCESS OPERATIONS
                  */
@@ -53,25 +62,29 @@ void Listener::run(){
                 }
                 case SERVER_NOTIFICATION_NEW_MATCH:{
                     int clientId = MessageFactory::getClientId(message);
-                    std::string matchName = MessageFactory::getMatchName(message);
+                    std::string matchName =
+                            MessageFactory::getMatchName(message);
 
                     gameAccess.addMatchToCombo(clientId, matchName);
                     break;
                 }
                 case SERVER_NOTIFICATION_GET_UNAVAILABLE_ELEMENTS:{
-                    std::list<std::string> elements = MessageFactory::getElements(message);
+                    std::list<std::string> elements =
+                            MessageFactory::getElements(message);
                     gameAccess.setAvailableElements(elements);
                     break;
                 }
                 case SERVER_NOTIFICATION_START_MATCH:{
-                    std::string matchName = MessageFactory::getMatchName(message);
+                    std::string matchName =
+                            MessageFactory::getMatchName(message);
 
                     gameAccess.startMatch(matchName);
                     break;
                 }
                 case SERVER_NOTIFICATION_ENTER_EXISTING_MATCH:{
                     int clientId = MessageFactory::getClientId(message);
-                    std::list<std::string> elements = MessageFactory::getElements(message);
+                    std::list<std::string> elements =
+                            MessageFactory::getElements(message);
 
                     if (gameAccess.getClientId() != clientId){
                         gameAccess.setAvailableElementsForJoin(elements);
@@ -80,11 +93,11 @@ void Listener::run(){
                 }
                 case SERVER_NOTIFICATION_ENTERED_MATCH:{
                     int clientId = MessageFactory::getClientId(message);
-                    std::string matchName = MessageFactory::getMatchName(message);
+                    std::string matchName =
+                            MessageFactory::getMatchName(message);
                     gameAccess.setJoinedToMatch(clientId, matchName);
                     break;
                 }
-
                 /*
                  * GAME OPERATIONS
                  * Todas aquellas operaciones que no corresponden con algo que se hace en
@@ -93,7 +106,6 @@ void Listener::run(){
                  * la mejor solución, pero es la que me surgió primero, teniendo en cuenta que
                  * las cosas las tenía resueltas por separado...
                  */
-
                 case SERVER_NOTIFICATION_PUT_TOWER:
                 case SERVER_NOTIFICATION_MARK_TILE:
                 case SERVER_NOTIFICATION_CAST_SPELL:
@@ -103,12 +115,14 @@ void Listener::run(){
                     break;
                 }
                 default:
-                    std::cout << "Llegó notificación no de acceso...la mando la juego..." << std::endl;
+                    std::cout << "Llegó notificación no de acceso..."
+                            "la mando la juego..." << std::endl;
                     std::cout << dataFromServer << std::endl;
                     buffer.addData(dataFromServer);
             }
 
-            std::cout << response << "dataFromServer: " << dataFromServer << std::endl;
+            std::cout << response << "dataFromServer: "
+                      << dataFromServer << std::endl;
         }
     } catch (std::exception) {
         std::cout << "se cierra el listener del cliente del juego" << std::endl;

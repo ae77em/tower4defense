@@ -14,7 +14,10 @@ private:
     SharedBuffer &buffer2;
 
 public:
-    Listener(Socket *server, GameAccessWindow &b, SharedBuffer &bfr, SharedBuffer &other);
+    Listener(Socket *server,
+             GameAccessWindow &b,
+             SharedBuffer &bfr,
+             SharedBuffer &other);
 
     virtual ~Listener();
 

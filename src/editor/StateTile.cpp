@@ -28,7 +28,7 @@ void Editor::StateTile::handle(const SDL_Event &e, Editor &context) {
     // Change mode
     if (e.type == SDL_KEYDOWN && e.key.keysym.sym == keys.road) {
         context.transition(new StatePath());
-    } else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_SEMICOLON) {
+    } else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_COMMA) {
         context.transition(new StateCommand());
     }
 }

@@ -63,3 +63,7 @@ int ActorTower::getEnergy() {
 int ActorTower::getId() {
     return 0;
 }
+
+bool ActorTower::itIsShooting() {
+    return isShooting;
+}

@@ -88,6 +88,14 @@ const std::string STR_FIRE = "Fuego";
 const std::string STR_EARTH = "Tierra";
 const std::string STR_NONE = "-none-";
 
+static std::string OPERATION_KEY = "operation";
+static std::string CLIENT_ID_KEY = "clientId";
+static std::string XCOORD_KEY = "xCoord";
+static std::string YCOORD_KEY = "yCoord";
+static std::string ENEMY_ID_KEY = "enemyId";
+static std::string HORDE_ID_KEY = "hordeId";
+static std::string MATCH_NAME_KEY = "matchName";
+static std::string TOWER_ID_KEY = "towerId";
 
 class Protocol {
 public:

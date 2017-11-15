@@ -2,6 +2,9 @@
 #include "../common/MessageFactory.h"
 #include "../common/TextMessage.h"
 #include "../common/Protocol.h"
+#include <string>
+#include <list>
+#include <vector>
 
 GameAccessWindow::GameAccessWindow(Socket *c,
                                    SharedBuffer &tsnd,
@@ -74,9 +77,7 @@ void GameAccessWindow::on_entryMatchName_changed() {
     setCreateMatchButtonEnableStatus();
     std::string match = cmbMatchesText->get_active_text();
 
-    if (hasValidValue(match)) {
-
-    }
+    if (hasValidValue(match)) { }
 }
 
 bool GameAccessWindow::hasValidValue(const std::string &match) const {
@@ -190,8 +191,7 @@ void GameAccessWindow::initButtonCreateMatch(
         pBtnCrearPartida->signal_clicked()
                 .connect(
                         sigc::mem_fun(*this,
-                                      &GameAccessWindow::on_btnCrearPartida_clicked)
-                );
+                             &GameAccessWindow::on_btnCrearPartida_clicked));
     }
 }
 
@@ -202,8 +202,7 @@ void GameAccessWindow::initButtonPlay(Glib::RefPtr<Gtk::Builder> &refBuilder) {
         pbtnJugar->signal_clicked()
                 .connect(
                         sigc::mem_fun(*this,
-                                      &GameAccessWindow::on_btnJugar_clicked)
-                );
+                                      &GameAccessWindow::on_btnJugar_clicked));
     }
 }
 
@@ -214,8 +213,7 @@ void GameAccessWindow::initButtonJoin(Glib::RefPtr<Gtk::Builder> &refBuilder) {
         pbtnUnirse->signal_clicked()
                 .connect(
                         sigc::mem_fun(*this,
-                                      &GameAccessWindow::on_btnUnirse_clicked)
-                );
+                                      &GameAccessWindow::on_btnUnirse_clicked));
     }
 }
 
@@ -224,8 +222,7 @@ void GameAccessWindow::initComboMaps(Glib::RefPtr<Gtk::Builder> &refBuilder) {
     cmbMapsText->append(STR_NONE);
     cmbMapsText->signal_changed()
             .connect(
-                    sigc::mem_fun(*this, &GameAccessWindow::on_cmbMapas_changed)
-            );
+                sigc::mem_fun(*this, &GameAccessWindow::on_cmbMapas_changed));
 }
 
 void
@@ -234,8 +231,7 @@ GameAccessWindow::initEntryMatchName(Glib::RefPtr<Gtk::Builder> &refBuilder) {
     entryMatchName->signal_changed()
             .connect(
                     sigc::mem_fun(*this,
-                                  &GameAccessWindow::on_entryMatchName_changed)
-            );
+                        &GameAccessWindow::on_entryMatchName_changed));
 }
 
 void
@@ -245,8 +241,7 @@ GameAccessWindow::initComboMatches(Glib::RefPtr<Gtk::Builder> &refBuilder) {
     cmbMatchesText->signal_changed()
             .connect(
                     sigc::mem_fun(*this,
-                                  &GameAccessWindow::on_cmbMatches_changed)
-            );
+                                  &GameAccessWindow::on_cmbMatches_changed));
 }
 
 void
@@ -257,8 +252,7 @@ GameAccessWindow::initCheckboxElements(Glib::RefPtr<Gtk::Builder> &refBuilder) {
         pchkAire->signal_clicked()
                 .connect(
                         sigc::mem_fun(*this,
-                                      &GameAccessWindow::on_chkElement_clicked)
-                );
+                            &GameAccessWindow::on_chkElement_clicked));
     }
 
     refBuilder->get_widget("chkAgua", pchkAgua);
@@ -267,8 +261,7 @@ GameAccessWindow::initCheckboxElements(Glib::RefPtr<Gtk::Builder> &refBuilder) {
         pchkAgua->signal_clicked()
                 .connect(
                         sigc::mem_fun(*this,
-                                      &GameAccessWindow::on_chkElement_clicked)
-                );
+                            &GameAccessWindow::on_chkElement_clicked));
     }
 
     refBuilder->get_widget("chkFuego", pchkFuego);
@@ -277,8 +270,7 @@ GameAccessWindow::initCheckboxElements(Glib::RefPtr<Gtk::Builder> &refBuilder) {
         pchkFuego->signal_clicked()
                 .connect(
                         sigc::mem_fun(*this,
-                                      &GameAccessWindow::on_chkElement_clicked)
-                );
+                            &GameAccessWindow::on_chkElement_clicked));
     }
 
     refBuilder->get_widget("chkTierra", pchkTierra);
@@ -287,8 +279,7 @@ GameAccessWindow::initCheckboxElements(Glib::RefPtr<Gtk::Builder> &refBuilder) {
         pchkTierra->signal_clicked()
                 .connect(
                         sigc::mem_fun(*this,
-                                      &GameAccessWindow::on_chkElement_clicked)
-                );
+                            &GameAccessWindow::on_chkElement_clicked));
     }
 }
 

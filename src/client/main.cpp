@@ -1,5 +1,3 @@
-#include <gtkmm.h>
-#include <iostream>
 #include "../common/SharedBuffer.h"
 #include "../common/Socket.h"
 #include "Listener.h"
@@ -7,6 +5,9 @@
 #include "../common/Utils.h"
 #include "../common/TextMessage.h"
 #include "Sender.h"
+#include <gtkmm.h>
+#include <iostream>
+#include <string>
 
 int main(int argc, char **argv) {
     SharedBuffer toReceive;

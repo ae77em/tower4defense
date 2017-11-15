@@ -26,8 +26,9 @@ static const int TIME_FOR_ENABLE_ACTION = 20000;
 #include "../sdl/enemies/Enemy.h"
 #include "../sdl/enemies/Abmonible.h"
 #include "../sdl/towers/Tower.h"
-#include "../sdl/enemies/Horde.h"
+#include "../sdl/enemies/DrawableHorde.h"
 #include "../common/Message.h"
+#include <vector>
 
 class GamePlayWindow : public Thread {
 public:
@@ -135,7 +136,7 @@ private:
 
     int clientId;
 
-    std::map<int, Horde *> hordes;
+    std::map<int, DrawableHorde *> hordes;
     std::vector<Tower *> towers;
     std::vector<std::string> playerElements;
     std::string matchName;

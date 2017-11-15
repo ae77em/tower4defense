@@ -1,8 +1,6 @@
 #ifndef TP4_TOWERDEFENSE_MESSAGEFACTORY_H
 #define TP4_TOWERDEFENSE_MESSAGEFACTORY_H
 
-static const char *const TOWER_ID_KEY = "towerId";
-
 #include <string>
 #include <jsoncpp/json/json.h>
 #include <set>
@@ -11,14 +9,8 @@ static const char *const TOWER_ID_KEY = "towerId";
 #include "Point.h"
 #include "../server/GameActor.h"
 #include "../server/game-actors/enemies/ActorEnemy.h"
-
-static std::string OPERATION_KEY = "operation";
-static std::string CLIENT_ID_KEY = "clientId";
-static std::string XCOORD_KEY = "xCoord";
-static std::string YCOORD_KEY = "yCoord";
-static std::string ENEMY_ID_KEY = "enemyId";
-static std::string HORDE_ID_KEY = "hordeId";
-static std::string MATCH_NAME_KEY = "matchName";
+#include "../server/game-actors/enemies/Horde.h"
+#include "../server/game-actors/towers/ActorTower.h"
 
 class MessageFactory {
 public:
@@ -142,7 +134,8 @@ public:
 
     static std::string getStartMatchRequest(int clientId, std::string &matchName);
 
-    static std::string getStatusMatchNotification(std::map<int, std::vector<ActorEnemy*>> actors);
+    static std::string getStatusMatchNotification(std::map<int, Horde *> hordes,
+                                                     std::vector<ActorTower *> towers);
 
     static std::vector<std::string> getMatches(Message &message);
 

@@ -35,6 +35,8 @@ public:
 
     int getExperiencePoints();
 
+    bool itIsShooting();
+
 protected:
     int shotRatio;
     int shotMsTimeGap;

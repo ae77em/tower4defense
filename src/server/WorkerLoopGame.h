@@ -7,14 +7,17 @@
 #include "GameActor.h"
 #include "GameAction.h"
 #include "game-actors/enemies/ActorEnemy.h"
+#include "game-actors/enemies/Horde.h"
+#include "game-actors/towers/ActorTower.h"
+
 
 class WorkerLoopGame : public Thread{
 private:
     std::map<int,ServerPlayer*>& players;
     std::list<GameAction*>& actions;
     std::mutex& mutexActions;
-    std::vector<ActorEnemy*> gameActors;
-    std::map<int,std::vector<ActorEnemy*>> hordas;
+    std::map<int, Horde*> hordes;
+    std::vector<ActorTower*> towers;
     bool& endSignal;
 
 public:

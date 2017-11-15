@@ -2,12 +2,13 @@
 #include "../common/Point.h"
 #include "../sdl/Constants.h"
 #include "game-actors/enemies/ActorEnemy.h"
+#include "game-actors/enemies/Horde.h"
 #include "../common/MessageFactory.h"
+#include "GameNotification.h"
 
 #include <iostream>
 #include <chrono>
 #include <thread>
-
 
 //HAY QUE AGREGAR MUTEX PLAYERD PARA QUE BLOQUEE LA LISTA DE SERVER PLAYERS
 //PUEDE SER QUE SE ESTE REMOVIENDO ALGUNO EN OTRO HILO Y LUEGO EXPLOTE
@@ -26,25 +27,31 @@ void WorkerLoopGame::run(){
     unsigned int ciclos = 1000;
     std::string statusGame;
 
+    std::list<GameAction *> actionsGame;
+    std::map<int, Horde*>::iterator hordeIt;
+
     //while(isRunning()){
     while (ciclos > 0){
         //std::list<GameAction*> obtainedActions = getActions();
-        std::list<GameAction *> actionsGame;
 
         mutexActions.lock();
         //GRONCHADA PARA REFACTORIZAR
         if(endSignal == true){
-            std::cout << "WorkerLoopGame: Me acaban de avisar que se termino todo que bueno" << std::endl;
+            std::cout << "WorkerLoopGame: Me acaban de avisar "
+                    "que se termino todo que bueno" << std::endl;
             mutexActions.unlock();
             break;
         }
 
+        /* Estos son los requests enviados por el cliente, por ejemplo,
+         * poner torre... */
         for (GameAction* a : this->actions) {
             actionsGame.push_back(a);
         }
         mutexActions.unlock();
 
-        //TOMO LAS ACCIONES PARSEADAS DE LOS REQUEST Y LAS APLICO A TODOS LOS ACTORES
+        //TOMO LAS ACCIONES PARSEADAS DE LOS REQUEST Y LAS
+        // APLICO A TODOS LOS ACTORES
         /*for (GameAction* a : actionsGame) {
             for (GameActor* g : gameActors){
 
@@ -55,14 +62,23 @@ void WorkerLoopGame::run(){
         /*for (GameActor* g : gameActors) {
             g->live();
         }*/
+        /* hago que los enemigos caminen */
 
-        for (std::map<int, std::vector<ActorEnemy*>>::iterator it = hordas.begin(); it != hordas.end(); ++it){
-            std::vector<ActorEnemy*> enemies = it->second;
+        for (hordeIt = hordes.begin(); hordeIt != hordes.end(); ++hordeIt){
+            std::vector<ActorEnemy*> enemies = hordeIt->second->getEnemies();
 
             for (auto enemy : enemies) {
                 enemy->live();
             }
         }
+
+        /* ahora hago andar las torres */
+        //for (auto tower : towers){
+            /* verificar colisión con bicho */
+            /* si hay colisión */
+                /* sumar puntos a torre */
+                /* sacar vida a bicho */
+        //}
 
         //GET STATUS GAMES
         statusGame = getGameStatus();
@@ -77,8 +93,9 @@ void WorkerLoopGame::run(){
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 
-    //ESTA PARTE NO SE SI TIENE SENTIDO, DEBERIA DEE HABER SALIDO TODOS LOS CLIENTES
-    //DESPUES REVEER
+    // ESTA PARTE NO SE SI TIENE SENTIDO,
+    // DEBERIA DEE HABER SALIDO TODOS LOS CLIENTES
+    // DESPUES REVEER
     std::cout << "WorkerLoopGame: Hilo donde existe la partida se termino" << std::endl;
     std::cout << "WorkerLoopGame: Aviso que terminó la partida." << std::endl;
     statusGame = MessageFactory::getMatchEndedNotification();
@@ -89,7 +106,8 @@ void WorkerLoopGame::run(){
 
 void WorkerLoopGame::buildGameContext() {
     std::vector<Point> camino1;
-    // supongo que recorro una matriz de baldosas de CARTESIAN_TILE_WIDTH x CARTESIAN_TILE_HEIGHT
+    // supongo que recorro una matriz de baldosas de
+    // CARTESIAN_TILE_WIDTH x CARTESIAN_TILE_HEIGHT
     camino1.push_back(Point(0 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
     camino1.push_back(Point(1 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
     camino1.push_back(Point(2 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
@@ -112,7 +130,7 @@ void WorkerLoopGame::buildGameContext() {
     camino1.push_back(Point(15 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
     camino1.push_back(Point(16 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
 
-    std::vector<ActorEnemy*> horda1;
+    Horde *horda1 = new Horde();
 
     for (int x = 0; x < 3; ++x){
         ActorEnemy* enemy = new ActorEnemy();
@@ -120,12 +138,13 @@ void WorkerLoopGame::buildGameContext() {
         enemy->setId(x);
         enemy->setCurrentPathPosition(-x * CARTESIAN_TILE_WIDTH / 2);
 
-        horda1.push_back( enemy );
+        horda1->addEnemy(enemy);
     }
-    hordas.insert(std::pair<int, std::vector<ActorEnemy*>>(0, horda1));
+    hordes.insert(std::pair<int, Horde*>(0, horda1));
 
     std::vector<Point> camino2;
-    // supongo que recorro una matriz de baldosas de CARTESIAN_TILE_WIDTH x CARTESIAN_TILE_HEIGHT
+    // supongo que recorro una matriz de baldosas de
+    // CARTESIAN_TILE_WIDTH x CARTESIAN_TILE_HEIGHT
     camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 0 * CARTESIAN_TILE_HEIGHT));
     camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 1 * CARTESIAN_TILE_HEIGHT));
     camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 2 * CARTESIAN_TILE_HEIGHT));
@@ -144,7 +163,7 @@ void WorkerLoopGame::buildGameContext() {
     camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 15 * CARTESIAN_TILE_HEIGHT));
 
 
-    std::vector<ActorEnemy*> horda2;
+    Horde *horda2 = new Horde();
 
     for (int x = 0; x < 3; ++x){
         ActorEnemy* enemy = new ActorEnemy();
@@ -152,9 +171,9 @@ void WorkerLoopGame::buildGameContext() {
         enemy->setId(x);
         enemy->setCurrentPathPosition(-x * CARTESIAN_TILE_WIDTH / 2);
 
-        horda2.push_back( enemy );
+        horda2->addEnemy(enemy);
     }
-    hordas.insert(std::pair<int, std::vector<ActorEnemy*>>(1, horda2));
+    hordes.insert(std::pair<int, Horde*>(1, horda2));
 
 
     /* ESTA ES LÓGICA DE NEGOCIO, Y VA EN EL SERVER...
@@ -203,5 +222,5 @@ void WorkerLoopGame::buildGameContext() {
 
 std::string WorkerLoopGame::getGameStatus() {
     //despues ver como parsear todos los actores
-    return MessageFactory::getStatusMatchNotification(hordas);
+    return GameNotification::getStatusMatchNotification(hordes, towers);
 }

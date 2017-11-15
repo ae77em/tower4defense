@@ -1,6 +1,8 @@
 #include <iostream>
 #include "MessageFactory.h"
 #include "Protocol.h"
+#include "../server/game-actors/towers/ActorTower.h"
+#include "../server/game-actors/enemies/Horde.h"
 
 int MessageFactory::getOperation(Message &request) {
     Json::Value &root = request.getData();
@@ -547,38 +549,6 @@ std::string MessageFactory::getEnteredInMatchNotification(int clientId,
     root[OPERATION_KEY] = SERVER_NOTIFICATION_ENTERED_MATCH;
     root[CLIENT_ID_KEY] = clientId;
     root[MATCH_NAME_KEY] = matchName;
-
-    message.setData(root);
-
-    return message.serialize();
-}
-
-std::string MessageFactory::getStatusMatchNotification(
-        std::map<int, std::vector<ActorEnemy *>> actors) {
-    std::string toReturn;
-    Json::Value root(Json::objectValue);
-    Message message;
-
-    root[OPERATION_KEY] = SERVER_NOTIFICATION_SCENARIO_STATUS;
-    root["enemies"] = Json::arrayValue;
-
-    for (std::map<int, std::vector<ActorEnemy *>>::iterator it = actors.begin();
-         it != actors.end(); ++it) {
-
-        std::vector<ActorEnemy *> vectorActor = it->second;
-
-        for (auto g : vectorActor) {
-            Json::Value aBichito(Json::objectValue);
-
-            aBichito[HORDE_ID_KEY] = it->first;
-            aBichito[ENEMY_ID_KEY] = g->getId();
-            aBichito[XCOORD_KEY] = g->getXPosition();
-            aBichito[YCOORD_KEY] = g->getYPosition();
-            aBichito["direction"] = g->getDirection();
-
-            root["enemies"].append(aBichito);
-        }
-    }
 
     message.setData(root);
 
