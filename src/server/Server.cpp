@@ -2,6 +2,11 @@
 #include "../common/MessageFactory.h"
 #include "../common/Protocol.h"
 #include "../common/Request.h"
+#include <utility>
+#include <map>
+#include <vector>
+#include <string>
+#include <list>
 
 Server::Server(std::mutex &m, ThreadedQueue<Message> &tq)
         : mutexPlayers(m), queueMessagesClient(tq) {}
@@ -100,10 +105,7 @@ bool Server::createMatch(std::string nameMatch) {
         matches.insert(
                 std::pair<std::string, ServerGame *>(nameMatch,
                                                      new ServerGame(
-                                                             mutexPlayers
-                                                     )
-                )
-        );
+                                                             mutexPlayers)));
         return true;
     }
     return false;
@@ -339,7 +341,6 @@ void Server::notifyPlayerAdded(std::string message) {
     for (std::pair<unsigned int, ServerPlayer *> player : players) {
         player.second->sendData(message);
     }
-
 }
 
 void Server::removeClient(int id) {
@@ -356,8 +357,11 @@ void Server::removeClient(int id) {
 
         sg->removePlayer(id);
 
-        if(sg->getAmountPlayers() == 0){
-            std::cout << "Server: limpiando partida: "<< gameId << "aguardo salida...espero que no sea eterna" << std::endl;
+        if (sg->getAmountPlayers() == 0){
+            std::cout << "Server: limpiando partida: "
+                      << gameId
+                      << "aguardo salida...espero que no sea eterna"
+                      << std::endl;
 
             sg->kill();
             //delete sg;

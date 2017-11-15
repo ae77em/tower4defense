@@ -4,11 +4,20 @@
 #include "../common/MessageFactory.h"
 
 #include <algorithm>
+#include <utility>
+#include <list>
+#include <string>
 
 ServerGame::ServerGame(std::mutex& m):mutexPlayers(m),
                                       endSignal(false),
-                                      workerLoopGame(players,actions,mutexActionsGame,endSignal),
-                                      listenerLoopGame(actions,mutexActionsGame,queueMessagesGame,endSignal) {
+                                      workerLoopGame(players,
+                                                     actions,
+                                                     mutexActionsGame,
+                                                     endSignal),
+                                      listenerLoopGame(actions,
+                                                       mutexActionsGame,
+                                                       queueMessagesGame,
+                                                       endSignal) {
     elements.push_back(STR_WATER);
     elements.push_back(STR_AIR);
     elements.push_back(STR_FIRE);
@@ -17,8 +26,7 @@ ServerGame::ServerGame(std::mutex& m):mutexPlayers(m),
 
 void ServerGame::addPlayer(ServerPlayer* sp){
     players.insert(
-            std::pair<int, ServerPlayer *>(sp->getId(),sp)
-    );
+            std::pair<int, ServerPlayer *>(sp->getId(),sp));
 }
 
 bool ServerGame::elementsAreAvailables(std::list<std::string> elements) {
@@ -27,7 +35,8 @@ bool ServerGame::elementsAreAvailables(std::list<std::string> elements) {
         othersElements = it->second->getElements();
 
         for (std::string oe : othersElements) {
-            if(std::find(elements.begin(), elements.end(), oe) != elements.end()) {
+            if (std::find(elements.begin(), elements.end(), oe)
+               != elements.end()) {
                 return false;
             }
         }
@@ -116,7 +125,6 @@ int ServerGame::getAmountPlayers() {
 }
 
 void ServerGame::kill() {
-
     queueMessagesGame.close();
 
     listenerLoopGame.join();
@@ -163,7 +171,8 @@ void ServerGame::castSpell(int x, int y) {
 }
 
 void ServerGame::upgradeTower(int towerId, int upgradeType) {
-    std::string req = MessageFactory::getUpgradeTowerGameRequest(towerId, upgradeType);
+    std::string req =
+            MessageFactory::getUpgradeTowerGameRequest(towerId, upgradeType);
     Message message;
     message.deserialize(req);
     queueMessagesGame.push(message);

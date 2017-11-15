@@ -4,12 +4,13 @@
 #include <string>
 #include "game-actors/enemies/Horde.h"
 #include "game-actors/towers/ActorTower.h"
+#include <map>
+#include <vector>
 
 class GameNotification {
-
 public:
     static std::string getStatusMatchNotification(std::map<int, Horde *> hordes,
-                                                  std::vector<ActorTower *> towers);
+                                              std::vector<ActorTower *> towers);
 };
 
 

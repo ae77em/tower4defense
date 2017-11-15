@@ -1,4 +1,5 @@
 #include "Horde.h"
+#include <vector>
 
 void Horde::setEnemies(std::vector<ActorEnemy *> e){
     enemies = e;

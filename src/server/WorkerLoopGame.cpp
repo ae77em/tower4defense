@@ -9,6 +9,11 @@
 #include <iostream>
 #include <chrono>
 #include <thread>
+#include <utility>
+#include <map>
+#include <string>
+#include <list>
+#include <vector>
 
 //HAY QUE AGREGAR MUTEX PLAYERD PARA QUE BLOQUEE LA LISTA DE SERVER PLAYERS
 //PUEDE SER QUE SE ESTE REMOVIENDO ALGUNO EN OTRO HILO Y LUEGO EXPLOTE

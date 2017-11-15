@@ -1,7 +1,6 @@
 #ifndef TP4_TOWERDEFENSE_LOOPGAME_H
 #define TP4_TOWERDEFENSE_LOOPGAME_H
 
-
 #include "../common/Thread.h"
 #include "ServerPlayer.h"
 #include "GameActor.h"
@@ -9,7 +8,10 @@
 #include "game-actors/enemies/ActorEnemy.h"
 #include "game-actors/enemies/Horde.h"
 #include "game-actors/towers/ActorTower.h"
-
+#include <map>
+#include <string>
+#include <list>
+#include <vector>
 
 class WorkerLoopGame : public Thread{
 private:

@@ -5,6 +5,7 @@
 #include "../common/Socket.h"
 #include "../common/Message.h"
 #include "../common/ThreadedQueue.h"
+#include <string>
 
 class ClientRequestHandler : public Thread {
 private:

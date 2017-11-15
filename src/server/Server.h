@@ -15,9 +15,11 @@
 
 #include "ServerPlayer.h"
 #include "ServerGame.h"
+#include <map>
+#include <string>
+#include <list>
 
 class Server : public Thread {
-
 private:
     std::set<std::string> matchesNames;
     std::mutex m;
@@ -60,7 +62,6 @@ public:
     void addClient(ThreadedQueue<TextMessage> &queue);
 
 private:
-
     void addPlayerToGame(int clientId,
                          std::string mName,
                          std::list<std::string> elementName);
@@ -89,6 +90,5 @@ private:
 
     void towerInfo(int clientId, std::string matchName, int towerId);
 };
-
 
 #endif //TP4_TOWERDEFENSE_SERVER_H

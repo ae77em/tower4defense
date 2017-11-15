@@ -1,6 +1,8 @@
 #include "ActorEnemy.h"
 #include "../../../common/Utils.h"
 #include "../../../sdl/Constants.h"
+#include <string>
+#include <vector>
 
 ActorEnemy::ActorEnemy() {}
 
@@ -32,7 +34,8 @@ void ActorEnemy::advance() {
     if (currentPathPosition >= 0 && currentPathPosition < (int)path.size()) {
         int xFinal, yFinal;
 
-        if (xPositionIntoTile > CARTESIAN_TILE_WIDTH || yPositionIntoTile > CARTESIAN_TILE_HEIGHT){
+        if (xPositionIntoTile > CARTESIAN_TILE_WIDTH ||
+                yPositionIntoTile > CARTESIAN_TILE_HEIGHT){
             ++currentPathPosition;
             xPositionIntoTile = 0;
             yPositionIntoTile = 0;
@@ -52,8 +55,10 @@ void ActorEnemy::advance() {
         int x = path.at(currentPathPosition).x + xMovement;
         int y = path.at(currentPathPosition).y + yMovement;
 
-        currentDirection = Utils::getMovementDirection(Utils::getNextMapDisplacement(x, xFinal),
-                                                       Utils::getNextMapDisplacement(y, yFinal));
+        currentDirection =
+                Utils::getMovementDirection(
+                        Utils::getNextMapDisplacement(x, xFinal),
+                        Utils::getNextMapDisplacement(y, yFinal));
 
         xPositionIntoTile += xMovement;
         yPositionIntoTile += yMovement;

@@ -4,6 +4,7 @@
 #include "../../../common/Circle.h"
 #include "../../../common/Point.h"
 #include "../../GameActor.h"
+#include <string>
 
 class ActorTower {
 public:

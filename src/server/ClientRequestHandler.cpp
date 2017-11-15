@@ -11,12 +11,12 @@
 
 #include "ClientRequestHandler.h"
 
-ClientRequestHandler::ClientRequestHandler(Socket* c, ThreadedQueue<Message> &th)
-                                                                :client(c)
-                                                                , queueSharedMessage(th) {}
+ClientRequestHandler::ClientRequestHandler(Socket* c,
+                                           ThreadedQueue<Message> &th)
+                        :client(c), queueSharedMessage(th) {}
 
 void ClientRequestHandler::sendData(std::string data){
-    TextMessage d( data );
+    TextMessage d(data);
     d.sendTo(*client);
 }
 
@@ -30,8 +30,7 @@ void ClientRequestHandler::run() {
     sendClientId();
     std::string data;
 
-
-    while(true) {
+    while (true) {
         Message message;
         try {
             std::cout

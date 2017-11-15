@@ -1,5 +1,6 @@
 #include "ActorTower.h"
 #include "../../../sdl/Constants.h"
+#include <string>
 
 ActorTower::ActorTower() { }
 
@@ -28,8 +29,8 @@ int ActorTower::getShotDamage() {
     return shotDamage;
 }
 
-void ActorTower::setIsShooting(bool isShooting) {
-
+void ActorTower::setIsShooting(bool isShoot) {
+    isShooting = isShoot;
 }
 
 void ActorTower::sumExperiencePoints(int points) {

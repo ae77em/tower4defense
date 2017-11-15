@@ -3,6 +3,8 @@
 #include "../common/Request.h"
 #include "../common/MessageFactory.h"
 #include "../common/Protocol.h"
+#include <list>
+#include <string>
 
 ListenerLoopGame::ListenerLoopGame(std::list<GameAction *> &a,
                                    std::mutex &m,
@@ -11,9 +13,7 @@ ListenerLoopGame::ListenerLoopGame(std::list<GameAction *> &a,
         actions(a),
         mutexActions(m),
         queueMessagesGame(q),
-        endSignal(end){
-
-}
+        endSignal(end){ }
 
 void ListenerLoopGame::run() {
     std::cout << "ListenerLoopGame: "
@@ -44,7 +44,8 @@ void ListenerLoopGame::run() {
                     std::string x = request.getAsString(XCOORD_KEY);
                     std::string y = request.getAsString(YCOORD_KEY);
 
-                    std::cout << "me llego request para lanzar hechizo torre en ("
+                    std::cout << "me llego request para lanzar "
+                            "hechizo torre en ("
                               << x << ", " << y << ")..." << std::endl;
 
                     break;

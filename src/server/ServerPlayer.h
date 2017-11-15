@@ -1,20 +1,18 @@
 #ifndef TP4_TOWERDEFENSE_SERVERPLAYER_H
 #define TP4_TOWERDEFENSE_SERVERPLAYER_H
 
+#include <iostream>
+#include <string>
+#include <list>
+#include "ClientRequestHandler.h"
+
 enum MatchStatus {
     PLAYING = 1,
     NOT_PLAYING = 2,
     JOINED = 3
 };
 
-
-
-#include <iostream>
-
-#include "ClientRequestHandler.h"
-
 class ServerPlayer {
-
 private:
     ClientRequestHandler *clientRequestHandler;
     unsigned int id;

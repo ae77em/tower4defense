@@ -1,4 +1,6 @@
 #include "ServerPlayer.h"
+#include <string>
+#include <list>
 
 ServerPlayer::ServerPlayer(ClientRequestHandler* crh, unsigned int aId)
         : clientRequestHandler(crh), id(aId), status(NOT_PLAYING){ }
@@ -35,13 +37,16 @@ void ServerPlayer::setElements(std::list<std::string> els) {
     elements = els;
 }
 
-// si esta jugando no notifico disponibilidad de elementos libres, o queda asi, nose
+// si esta jugando no notifico disponibilidad de elementos libres,
+// o queda asi, nose
 void ServerPlayer::kill() {
-    std::cout << "GameServer: Esperando que termine el reciever del cliennte "<< id << std::endl;
+    std::cout << "GameServer: Esperando que "
+            "termine el reciever del cliennte "<< id << std::endl;
 
     clientRequestHandler->join();
 
-    std::cout << "GameServer: Termino el reciever del cliennte "<< id << std::endl;
+    std::cout << "GameServer: Termino el "
+            "reciever del cliennte "<< id << std::endl;
 
     delete clientRequestHandler;
 }

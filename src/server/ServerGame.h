@@ -8,6 +8,9 @@
 #include "WorkerLoopGame.h"
 #include "ListenerLoopGame.h"
 #include "GameAction.h"
+#include <map>
+#include <string>
+#include <list>
 
 class ServerGame {
 private:
@@ -29,7 +32,7 @@ private:
     std::list<std::string> elements;
 
 public:
-    ServerGame(std::mutex& mutex);
+    explicit ServerGame(std::mutex& mutex);
 
     bool elementsAreAvailables(std::list<std::string> elements);
 

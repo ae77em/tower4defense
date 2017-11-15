@@ -2,6 +2,7 @@
 #define TP4_TOWERDEFENSE_SERVER_GAMEACTOR_H
 
 #include <iostream>
+#include <string>
 
 class GameActor {
 public:
@@ -15,7 +16,6 @@ public:
     virtual int getEnergy() = 0;
     virtual int getDirection() = 0;
     virtual int getId() = 0;
-
 };
 
 

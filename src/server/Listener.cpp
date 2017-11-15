@@ -3,12 +3,14 @@
 
 #include <cstring>
 
-Listener::Listener(uint16_t port, std::mutex &aMutexPlayers) : mutexPlayers(aMutexPlayers) {
+Listener::Listener(uint16_t port, std::mutex &aMutexPlayers)
+        : mutexPlayers(aMutexPlayers) {
     serverSocket.bind(port);
     serverSocket.listen();
 }
 
-Listener::Listener(const Listener &orig, std::mutex &aMutexPlayers) : mutexPlayers(aMutexPlayers) {}
+Listener::Listener(const Listener &orig, std::mutex &aMutexPlayers)
+        : mutexPlayers(aMutexPlayers) {}
 
 void Listener::shutdown() {
     int size = threads.size();
@@ -21,15 +23,16 @@ void Listener::shutdown() {
 }
 
 void Listener::run() {
-    //todos los ClientRequestHandler cargaran sus mensajes en esta cola y el servidor estara
-    //esperando a tomarlos
+    //todos los ClientRequestHandler cargaran sus mensajes en esta cola y
+    // el servidor estara esperando a tomarlos
     ThreadedQueue<Message> threadedQueue;
     Server server(mutexPlayers, threadedQueue);
 
     server.start();
     try {
         while (true) {
-            std::cout << "Listener escuchando esperando conexion: " << std::endl;
+            std::cout << "Listener escuchando "
+                    "esperando conexion: " << std::endl;
 
             int fd = serverSocket.accept();
             Socket *client = new Socket(fd);
@@ -38,16 +41,20 @@ void Listener::run() {
                       << std::to_string(fd)
                       << std::endl;
 
-            //ClientRequestHandler se encarga solamente de tomar los request del client
+            //ClientRequestHandler se encarga solamente de
+            // tomar los request del client
             server.createAndRunPlayer(client);
         }
     } catch (std::exception) {
-        std::cout << "Listener: Cachenado excepcion, se corto accept" << std::endl;
+        std::cout << "Listener: Cachenado excepcion, "
+                "se corto accept" << std::endl;
     }
-    std::cout << "Listener: Esperando finalizacion de todas las comunicaciones" << std::endl;
+    std::cout << "Listener: Esperando finalizacion de "
+            "todas las comunicaciones" << std::endl;
 
     threadedQueue.close();
     server.join();
 
-    std::cout << "Listener: Comunicaciones finalizadas, listener terminando su hilo" << std::endl;
+    std::cout << "Listener: Comunicaciones finalizadas, "
+            "listener terminando su hilo" << std::endl;
 }

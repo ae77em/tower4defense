@@ -7,8 +7,9 @@
 #include <map>
 #include <vector>
 
-std::string GameNotification::getStatusMatchNotification(std::map<int, Horde *> hordes,
-                                                       std::vector<ActorTower *> towers) {
+std::string GameNotification::getStatusMatchNotification(std::map<int,
+        Horde *> hordes,
+        std::vector<ActorTower *> towers) {
     std::string toReturn;
     Json::Value root(Json::objectValue);
     Message message;
@@ -16,9 +17,7 @@ std::string GameNotification::getStatusMatchNotification(std::map<int, Horde *> 
     root[OPERATION_KEY] = SERVER_NOTIFICATION_SCENARIO_STATUS;
     root["enemies"] = Json::arrayValue;
 
-    for (std::map<int, Horde*>::iterator it = hordes.begin();
-         it != hordes.end(); ++it) {
-
+    for (auto it = hordes.begin(); it != hordes.end(); ++it) {
         Horde* vectorActor = it->second;
 
         for (auto g : vectorActor->getEnemies()) {

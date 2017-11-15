@@ -2,6 +2,7 @@
 #define TP4_TOWERDEFENSE_SERVER_HORDE_H
 
 #include "ActorEnemy.h"
+#include <vector>
 
 class Horde {
 public:
