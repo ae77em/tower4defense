@@ -13,13 +13,21 @@
 #define ANIMATION_H
 
 class Animation {
+    public:
+    virtual ~Animation() {}
+    virtual void renderFrame(int frame, int x, int y) = 0;
+    virtual int getHeight() = 0;
+    virtual int getWidth() = 0;
+};
+
+class GridAnimation : public Animation {
     SDL_Renderer *renderer;
     SDL_Rect clip;
     Texture spritesheet;
     unsigned hcount, vcount;
 
     public:
-    Animation(SDL_Renderer *renderer, const std::string &filename,
+    GridAnimation(SDL_Renderer *renderer, const std::string &filename,
             unsigned hcount, unsigned vcount);
 
     void renderFrame(int frame, int x, int y);

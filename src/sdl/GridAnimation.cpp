@@ -3,8 +3,9 @@
 #include "Texture.h"
 #include <stdexcept>
 
-Animation::Animation(SDL_Renderer *renderer, const std::string &filename,
-        unsigned hcount, unsigned vcount) : renderer(renderer), clip(),
+GridAnimation::GridAnimation(SDL_Renderer *renderer,
+        const std::string &filename, unsigned hcount, unsigned vcount)
+        : renderer(renderer), clip(),
         spritesheet(), hcount(hcount), vcount(vcount) {
     if (! renderer) throw std::runtime_error("null renderer");
 
@@ -16,17 +17,17 @@ Animation::Animation(SDL_Renderer *renderer, const std::string &filename,
         (int)( spritesheet.getHeight() / vcount )};
 }
 
-void Animation::renderFrame(int frame, int x, int y) {
+void GridAnimation::renderFrame(int frame, int x, int y) {
     clip.x = frame % hcount * clip.w;
     clip.y = frame / hcount % vcount * clip.h;
 
     spritesheet.renderSprite(renderer, x, y, &clip);
 }
 
-int Animation::getHeight() {
+int GridAnimation::getHeight() {
     return clip.h;
 }
 
-int Animation::getWidth() {
+int GridAnimation::getWidth() {
     return clip.w;
 }
