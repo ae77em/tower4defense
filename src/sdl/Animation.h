@@ -68,13 +68,6 @@ class CompositeAnimation : public Animation {
      */
     void memberPushBack(Animation *m, int x = 0, int y = 0);
 
-    /* Adds a member to the bottom of the composite
-
-       The new member will be displayed first, at the given relative
-       position.
-     */
-    void memberPushFront(Animation *m, int x = 0, int y = 0);
-
     /*  -+---> x       ^
          |             |
        y v  +---+      | h

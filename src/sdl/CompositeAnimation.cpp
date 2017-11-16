@@ -10,9 +10,6 @@ void CompositeAnimation::memberPushBack(Animation *m, int x, int y) {
     members.push_back(Record( m, Point(x, y) ));
 }
 
-void CompositeAnimation::memberPushFront(Animation *m, int x, int y) {
-}
-
 void CompositeAnimation::renderFrame(int frame, int x, int y) {
     for (auto& pair : members) {
         auto& member(pair.first);
