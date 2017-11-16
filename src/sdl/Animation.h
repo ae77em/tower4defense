@@ -1,17 +1,10 @@
-/* Shows the appropiate frame of an animation
- *
- * hcount and vcount are, respectively, the count of horizontal
- * and vertical frames on the spritesheet. The x,y position given
- * is relative to the 0,0 position of the screen, not the map,
- * and is not isometric.
- */
-
 #include <SDL2/SDL.h>
 #include "Texture.h"
 
 #ifndef ANIMATION_H
 #define ANIMATION_H
 
+/* Shows the appropiate frame of an animation */
 class Animation {
     public:
     virtual ~Animation() {}
@@ -20,6 +13,13 @@ class Animation {
     virtual int getWidth() const = 0;
 };
 
+/* Takes a spritesheet and deduces frame to show
+ *
+ * hcount and vcount are, respectively, the count of horizontal
+ * and vertical frames on the spritesheet. The x,y position given
+ * is relative to the 0,0 position of the screen, not the map,
+ * and is not isometric.
+ */
 class GridAnimation : public Animation {
     SDL_Renderer *renderer;
     SDL_Rect clip;
@@ -36,6 +36,7 @@ class GridAnimation : public Animation {
     int getWidth() const;
 };
 
+/* Ignores the frame argument and shows a static texture */
 class StaticFrame : public Animation {
     SDL_Renderer *renderer;
     Texture sprite;
