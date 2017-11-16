@@ -36,4 +36,17 @@ class GridAnimation : public Animation {
     int getWidth() const;
 };
 
+class StaticFrame : public Animation {
+    SDL_Renderer *renderer;
+    Texture sprite;
+
+    public:
+    StaticFrame(SDL_Renderer *renderer, const std::string &filename);
+
+    void renderFrame(int frame, int x, int y);
+
+    int getHeight() const;
+    int getWidth() const;
+};
+
 #endif
