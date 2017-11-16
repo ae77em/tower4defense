@@ -29,10 +29,17 @@ class GridAnimation : public Animation {
     SDL_Rect clip;
     Texture spritesheet;
     int hcount, vcount;
+    int padding;
 
     public:
+    /* Create a new animation from the given sprite sheet
+
+       hcount is the number of frames in the horizontal
+       vcount is the number of frames in the vertical
+       padding is the number of pixels between any two adjacent frames
+     */
     GridAnimation(SDL_Renderer *renderer, const std::string &filename,
-            int hcount, int vcount);
+            int hcount, int vcount, int padding = 0);
 
     void renderFrame(int frame, int x, int y);
 
