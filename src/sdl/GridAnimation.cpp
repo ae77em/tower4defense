@@ -24,10 +24,10 @@ void GridAnimation::renderFrame(int frame, int x, int y) {
     spritesheet.renderSprite(renderer, x, y, &clip);
 }
 
-int GridAnimation::getHeight() {
+int GridAnimation::getHeight() const {
     return clip.h;
 }
 
-int GridAnimation::getWidth() {
+int GridAnimation::getWidth() const {
     return clip.w;
 }

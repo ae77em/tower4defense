@@ -16,8 +16,8 @@ class Animation {
     public:
     virtual ~Animation() {}
     virtual void renderFrame(int frame, int x, int y) = 0;
-    virtual int getHeight() = 0;
-    virtual int getWidth() = 0;
+    virtual int getHeight() const = 0;
+    virtual int getWidth() const = 0;
 };
 
 class GridAnimation : public Animation {
@@ -32,8 +32,8 @@ class GridAnimation : public Animation {
 
     void renderFrame(int frame, int x, int y);
 
-    int getHeight();
-    int getWidth();
+    int getHeight() const;
+    int getWidth() const;
 };
 
 #endif
