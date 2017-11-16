@@ -15,23 +15,27 @@ void Editor::Editor::run() {
     while (!quit) {
         screen.clear();
 
+        /* Poll and handle sdl events */
         SDL_Event e;
         while(SDL_PollEvent( &e ) != 0) {
             if (e.type == SDL_QUIT) {
                 quit = true;
             } else {
                 state->handle(e, *this);
+
+                /* Handle camera scrolling */
                 screen.handleEvent(e);
             }
         }
 
         screen.put(map);
+
         //TODO move path tracing to screen::put(map)
         for (const auto& camino : map.getCaminos())
             screen.trace(camino);
 
+        /* Let state effect last-minute changes */
         state->preRender(*this);
-
         screen.draw();
     }
 }
