@@ -1,28 +1,34 @@
 #include "Editor.h"
 
 void Editor::StatePath::handle(const SDL_Event &e, Editor &context) {
+    auto& map = context.getMap();
+    auto& screen = context.getScreen();
+
     // Simple, unshifted click adds points to path
     if (e.type == SDL_MOUSEBUTTONDOWN
             && !( KMOD_SHIFT & SDL_GetModState() )) {
-        Point p = context.getScreen().mouseCurrentTile();
-        Point d = context.getMap().dimensiones();
-        if ((p.isPositive()) && (p.x < d.x) && (p.y < d.y))
+        Point p = screen.mouseCurrentTile();
+        if (map.estaDentro(p)) {
+            // Automatically add portal on the first point
+            if (path.size() == 0) map.setCasilla('E', p.x, p.y);
+
             path.push_back(p);
+        }
     }
 
     // Shift-click adds point to path, ends it, and adds it to map
     if (e.type == SDL_MOUSEBUTTONDOWN
             && ( KMOD_SHIFT & SDL_GetModState() )) {
-        Point p = context.getScreen().mouseCurrentTile();
-        Point d = context.getMap().dimensiones();
+        Point p = screen.mouseCurrentTile();
 
         /* Do something iff the new point is acceptable as
            an extension of the path, and the result would be
            a sensible path */
-        if ((p.isPositive()) && (p.x < d.x) && (p.y < d.y)
-                && (path.size() > 0)) {
+        if (map.estaDentro(p) && (path.size() > 0)) {
+            // Automatically add portal on the last point
+            map.setCasilla('S', p.x, p.y);
             path.push_back(p);
-            context.getMap().agregarCamino(path);
+            map.agregarCamino(path);
             path.clear();
         }
     }
@@ -35,7 +41,7 @@ void Editor::StatePath::handle(const SDL_Event &e, Editor &context) {
 
     // Change mode
     if (e.type == SDL_KEYDOWN && e.key.keysym.sym == keys.road) {
-        context.getScreen().setDialog("");
+        screen.setDialog("");
         context.transition(new StateTile());
     }
 }

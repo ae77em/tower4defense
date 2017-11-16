@@ -103,3 +103,9 @@ char Mapa::getEstiloFondo() {
 void Mapa::setEstiloFondo(char estilo) {
     estilo_fondo = estilo;
 }
+
+bool Mapa::estaDentro(Point &p) const {
+    return p.isPositive()
+        && (p.x < (int)extension_x)
+        && (p.y < (int)extension_y);
+}
