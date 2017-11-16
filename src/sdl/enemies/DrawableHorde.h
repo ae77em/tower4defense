@@ -2,6 +2,7 @@
 #define TP4_TOWERDEFENSE_DrawableHorde_H
 
 #include "Enemy.h"
+#include <vector>
 
 class DrawableHorde {
 private:
@@ -10,7 +11,8 @@ private:
 
 public:
     DrawableHorde();
-    DrawableHorde(int enemyType, size_t size, int x, int y, SDL_Renderer *renderer, Texture &texture);
+    DrawableHorde(int enemyType, size_t size, int x, int y,
+                  SDL_Renderer *renderer, Texture &texture);
     virtual ~DrawableHorde();
 
     std::vector<Enemy *> &getEnemies();
@@ -26,7 +28,6 @@ private:
     void loadGreenDaemons(size_t size);
     void loadSpectres(size_t size);
     void loadZombies(size_t size);
-
 };
 
 

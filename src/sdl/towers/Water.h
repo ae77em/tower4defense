@@ -2,9 +2,7 @@
 #define TP4_TOWERDEFENSE_WATER_H
 
 
-class Water {
-
-};
+class Water { };
 
 
 #endif //TP4_TOWERDEFENSE_WATER_H

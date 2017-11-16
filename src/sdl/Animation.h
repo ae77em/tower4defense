@@ -8,6 +8,7 @@
 
 #include <SDL2/SDL.h>
 #include "Texture.h"
+#include <string>
 
 #ifndef ANIMATION_H
 #define ANIMATION_H

@@ -1,10 +1,12 @@
 #include "DrawableHorde.h"
 #include "Abmonible.h"
 #include "../../common/Protocol.h"
+#include <vector>
 
 DrawableHorde::DrawableHorde() {}
 
-DrawableHorde::DrawableHorde(int enemyType, size_t size, int x, int y, SDL_Renderer *r, Texture &t) {
+DrawableHorde::DrawableHorde(int enemyType, size_t size, int x, int y,
+                             SDL_Renderer *r, Texture &t) {
     switch (enemyType){
         case ENEMY_ABMONIBLE:{
             loadAbmonibles(size, x, y, r);
@@ -25,25 +27,15 @@ void DrawableHorde::loadAbmonibles(size_t size, int x, int y, SDL_Renderer *r) {
     }
 }
 
-void DrawableHorde::loadBloodHawks(size_t size) {
+void DrawableHorde::loadBloodHawks(size_t size) { }
 
-}
+void DrawableHorde::loadGoatmans(size_t size) { }
 
-void DrawableHorde::loadGoatmans(size_t size) {
+void DrawableHorde::loadGreenDaemons(size_t size) { }
 
-}
+void DrawableHorde::loadSpectres(size_t size) { }
 
-void DrawableHorde::loadGreenDaemons(size_t size) {
-
-}
-
-void DrawableHorde::loadSpectres(size_t size) {
-
-}
-
-void DrawableHorde::loadZombies(size_t size) {
-
-}
+void DrawableHorde::loadZombies(size_t size) { }
 
 void DrawableHorde::addEnemy(Enemy *e){
     enemies.push_back(e);

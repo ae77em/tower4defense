@@ -7,6 +7,7 @@
 #include "../Constants.h"
 #include "../../common/Circle.h"
 #include "../Animable.h"
+#include <string>
 
 const int NUMBER_OF_IDLE_SPRITES = 8;
 const int NUMBER_OF_SHOT_SPRITES = 8;

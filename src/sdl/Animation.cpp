@@ -2,6 +2,7 @@
 #include <SDL2/SDL.h>
 #include "Texture.h"
 #include <stdexcept>
+#include <string>
 
 Animation::Animation(SDL_Renderer *renderer, const std::string &filename,
         unsigned hcount, unsigned vcount) : renderer(renderer), clip(),

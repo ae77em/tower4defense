@@ -1,7 +1,8 @@
 #include "Tower.h"
 #include "../Utils.h"
 
-Tower::Tower(int x, int y, SDL_Renderer *r, Texture &t) : texture(t), currentPoint(Utils::mapToScreen(x, y)) {
+Tower::Tower(int x, int y, SDL_Renderer *r, Texture &t)
+        : texture(t), currentPoint(Utils::mapToScreen(x, y)) {
     idleBox.x = currentPoint.x;
     idleBox.y = currentPoint.y;
     idleBox.w = IDLE_SPRITE_WIDTH;
@@ -24,10 +25,12 @@ Tower::~Tower(){}
 
 bool Tower::loadMedia() {
     bool success = true;
-    if (!texture.loadFromFile("images/sprites/tower-earth.png", renderer, 0xFF, 0x00, 0x99)) {
+    if (!texture.loadFromFile("images/sprites/tower-earth.png",
+                              renderer, 0xFF, 0x00, 0x99)) {
         printf("Failed to load dot texture!\n");
         success = false;
     }
+
     return success;
 }
 

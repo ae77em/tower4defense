@@ -17,9 +17,7 @@ void Dot::handleEvent(SDL_Event &e) {
             mVelX -= DOT_VEL;
         else if (e.key.keysym.sym == keys.right)
             mVelX += DOT_VEL;
-    }
-        //If a key was released
-    else if (e.type == SDL_KEYUP && e.key.repeat == 0) {
+    } else if (e.type == SDL_KEYUP && e.key.repeat == 0) {
         //Adjust the velocity
         if (e.key.keysym.sym == keys.up)
             mVelY += DOT_VEL;

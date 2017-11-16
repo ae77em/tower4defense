@@ -1,8 +1,9 @@
-#include <iostream>
 #include "Tile.h"
 #include "Constants.h"
 #include "Utils.h"
 #include "../common/Protocol.h"
+#include <iostream>
+#include <string>
 
 Tile::Tile(int x, int y, int t) {
     //Get the offsets
@@ -22,10 +23,10 @@ Tile::Tile(int x, int y, int t) {
 
 void Tile::render(SDL_Rect &camera,
                            SDL_Rect *gTileClips,
-                           SDL_Renderer *gRenderer,
+                           SDL_Renderer *renderer,
                            Texture *gTileTextures) {
-
-    Point screenPoint = Utils::mapToScreen(containerBoxAttributes.x, containerBoxAttributes.y);
+    Point screenPoint = Utils::mapToScreen(containerBoxAttributes.x,
+                                           containerBoxAttributes.y);
 
     SDL_Rect aux = Utils::getBoxByTileType(type);
 
@@ -34,7 +35,7 @@ void Tile::render(SDL_Rect &camera,
     int isox = screenPoint.x - camera.x;
     int isoy = screenPoint.y - camera.y - offset;
 
-    gTileTextures[type].render(gRenderer,
+    gTileTextures[type].render(renderer,
                                 isox,
                                 isoy,
                                 &gTileClips[type]);
@@ -42,25 +43,24 @@ void Tile::render(SDL_Rect &camera,
 
 
 void Tile::renderSprite(SDL_Rect &camera,
-                        SDL_Rect *gTileClips,
-                        SDL_Renderer *gRenderer,
-                        Texture *gTileTextures) {
-
-    Point screenPoint = Utils::mapToScreen(containerBoxAttributes.x, containerBoxAttributes.y);
+                        SDL_Rect *tileClips,
+                        SDL_Renderer *renderer,
+                        Texture *tileTextures) {
+    Point screenPoint = Utils::mapToScreen(containerBoxAttributes.x,
+                                           containerBoxAttributes.y);
 
         int isox = screenPoint.x - camera.x;
         int isoy = screenPoint.y - camera.y;
 
-    gTileTextures->renderSprite(gRenderer, isox, isoy, gTileClips);
-
+    tileTextures->renderSprite(renderer, isox, isoy, tileClips);
 }
 
 void Tile::handleEvent(SDL_Event &e, std::string &desc) {
     //If mouse event happened
     if (e.type == SDL_MOUSEBUTTONDOWN) {
         type = ((type == LTileSpriteMouseEvent::BUTTON_SPRITE_MOUSE_DOWN)
-                                    ? LTileSpriteMouseEvent::BUTTON_SPRITE_DEFAULT
-                                    : LTileSpriteMouseEvent::BUTTON_SPRITE_MOUSE_DOWN);
+            ? LTileSpriteMouseEvent::BUTTON_SPRITE_DEFAULT
+            : LTileSpriteMouseEvent::BUTTON_SPRITE_MOUSE_DOWN);
         desc.append("cambio tile...");
     }
 }

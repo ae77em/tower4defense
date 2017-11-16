@@ -2,16 +2,13 @@
 #include "../Utils.h"
 
 Enemy::Enemy(model::Enemy&& base, int x, int y, SDL_Renderer *r, Texture *t)
-        : enemy_base(base), currentPoint(Utils::mapToScreen(x, y)) {
+        : baseEnemy(base), currentPoint(Utils::mapToScreen(x, y)) {
     initializeSpritesData();
 
     collisionCircle.r = Enemy::getCollisionCircleRadio();
     shiftColliders();
-
     texture = t;
-
     renderer = r;
-
     currentDirection = 0;
 
     setSprites();
@@ -57,7 +54,8 @@ Enemy::~Enemy() {}
 
 bool Enemy::loadMedia() {
     bool success = true;
-    if (!texture->loadFromFile("images/sprites/enemy-abominable.png", renderer, 0xFF, 0x00, 0x99)) {
+    if (!texture->loadFromFile("images/sprites/enemy-abominable.png",
+                               renderer, 0xFF, 0x00, 0x99)) {
         printf("Failed to load dot texture!\n");
         success = false;
     }
@@ -65,7 +63,7 @@ bool Enemy::loadMedia() {
 }
 
 void Enemy::kill() {
-    enemy_base.setLife(0);
+    baseEnemy.setLife(0);
 }
 
 void Enemy::setSprites() {
@@ -79,7 +77,8 @@ void Enemy::setSprites() {
             spritesRow = SPRITE_DIRECTIONS[i];
 
             walkingSprites[i][j].x = walkingStartX + (j * spriteWidth);
-            walkingSprites[i][j].y = walkingStartY + (spritesRow * spriteHeight);
+            walkingSprites[i][j].y = walkingStartY
+                                     + (spritesRow * spriteHeight);
             walkingSprites[i][j].w = walkSpriteWidth;
             walkingSprites[i][j].h = walkSpriteHeight;
         }
@@ -119,7 +118,8 @@ void Enemy::renderWalk(SDL_Rect &camera) {
         currentDirection = 0;
     }
 
-    texture->renderSprite(renderer, isox, isoy, &walkingSprites[currentDirection][frameToDraw]);
+    texture->renderSprite(renderer, isox, isoy,
+                          &walkingSprites[currentDirection][frameToDraw]);
 
     renderLifeBar(isox, isoy);
 }
@@ -128,18 +128,21 @@ void Enemy::renderDie(SDL_Rect &camera) {
     int frameToDraw = (SDL_GetTicks() / 100) % numberOfEnemyDeathSprites;
 
     firstFrameOfDeathRendered = (firstFrameOfDeathRendered || frameToDraw == 0);
-    lastFrameOfDeathRendered = (lastFrameOfDeathRendered || frameToDraw == NUMBER_OF_ENEMY_DEATH_SPRITES - 1);
+    lastFrameOfDeathRendered = (lastFrameOfDeathRendered
+                 || frameToDraw == NUMBER_OF_ENEMY_DEATH_SPRITES - 1);
 
-    //if (!(firstFrameOfDeathRendered and lastFrameOfDeathRendered)) {
-        DecimalPoint screenPoint = Utils::cartesianToIso(deathBox.x, deathBox.y);
+    if (!(firstFrameOfDeathRendered and lastFrameOfDeathRendered)) {
+        DecimalPoint screenPoint =
+                Utils::cartesianToIso(deathBox.x, deathBox.y);
 
         int offset = walkBox.h - ISO_TILE_HEIGHT;
 
         double isox = screenPoint.x - camera.x;
         double isoy = screenPoint.y - camera.y - offset;
 
-        texture->renderSprite(renderer, isox, isoy, &deathSprites[currentDirection][frameToDraw]);
-    //}
+        texture->renderSprite(renderer, isox, isoy,
+                              &deathSprites[currentDirection][frameToDraw]);
+    }
 }
 
 void Enemy::animate(SDL_Rect &camera) {
@@ -164,7 +167,7 @@ void Enemy::move() {
     walkBox.x += velocityX;
 
     // stop if is the end is reached
-    if ((walkBox.x < 0) or (walkBox.x > TILES_COLUMNS * CARTESIAN_TILE_WIDTH)) {
+    if ((walkBox.x < 0) || (walkBox.x > TILES_COLUMNS * CARTESIAN_TILE_WIDTH)) {
         //move back
         walkBox.x -= velocityX;
     }
@@ -183,16 +186,16 @@ const SDL_Rect &Enemy::getWalkBox() const {
 }
 
 int Enemy::getVelocity() const {
-    return enemy_base.getVelocity();
+    return baseEnemy.getVelocity();
 }
 
 bool Enemy::itIsAlive() const {
-    return enemy_base.getLife() != 0;
+    return baseEnemy.getLife() != 0;
 }
 
 void Enemy::quitLifePoints(int points) {
-    int current = enemy_base.getLife();
-    enemy_base.setLife( (current <= points) ? 0 : current - points );
+    int current = baseEnemy.getLife();
+    baseEnemy.setLife((current <= points) ? 0 : current - points);
 }
 
 void Enemy::shiftColliders() {
@@ -205,22 +208,21 @@ Circle &Enemy::getCollisionCircle() {
     return collisionCircle;
 }
 
-
 void Enemy::renderLifeBar(int x, int y) {
     int w = 50; // porque sí
     int h = 4; // porque también (?)...
-    double percent = double(enemy_base.getLife())
-        / double(enemy_base.getMaxLife());
-    SDL_Color FGColor = {0x00, 0xFF, 0x00, 0xFF}; // green
-    SDL_Color BGColor = {0xFF, 0x00, 0x00, 0xFF}; // red
+    double percent = double(baseEnemy.getLife())
+        / double(baseEnemy.getMaxLife());
+    SDL_Color fcolor = {0x00, 0xFF, 0x00, 0xFF}; // green
+    SDL_Color bcolor = {0xFF, 0x00, 0x00, 0xFF}; // red
 
     percent = percent > 1.f ? 1.f : percent < 0.f ? 0.f : percent;
     SDL_Color old;
     SDL_GetRenderDrawColor(renderer, &old.r, &old.g, &old.g, &old.a);
     SDL_Rect bgrect = {x, y, w, h};
-    SDL_SetRenderDrawColor(renderer, BGColor.r, BGColor.g, BGColor.b, BGColor.a);
+    SDL_SetRenderDrawColor(renderer, bcolor.r, bcolor.g, bcolor.b, bcolor.a);
     SDL_RenderFillRect(renderer, &bgrect);
-    SDL_SetRenderDrawColor(renderer, FGColor.r, FGColor.g, FGColor.b, FGColor.a);
+    SDL_SetRenderDrawColor(renderer, fcolor.r, fcolor.g, fcolor.b, fcolor.a);
     int pw = (int) ((float) w * percent);
     int px = x + (w - pw);
     SDL_Rect fgrect = {px, y, pw, h};
@@ -229,7 +231,7 @@ void Enemy::renderLifeBar(int x, int y) {
 }
 
 int Enemy::getBonus() {
-    return enemy_base.getMaxLife() / 2;
+    return baseEnemy.getMaxLife() / 2;
 }
 
 int Enemy::getCollisionCircleRadio(){

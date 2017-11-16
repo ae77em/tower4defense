@@ -10,6 +10,8 @@
 #include "Constants.h"
 #include "../common/modelo/Mapa.h"
 #include "../common/Point.h"
+#include <string>
+#include <vector>
 
 class Screen {
     SDL_Renderer *renderer;

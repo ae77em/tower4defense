@@ -1,13 +1,14 @@
 #include "Screen.h"
 #include "Texture.h"
 #include "Animation.h"
-#include <stdexcept>
-#include <vector>
 #include "Constants.h"
 #include "Utils.h"
 #include "../common/modelo/Mapa.h"
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_ttf.h>
+#include <stdexcept>
+#include <vector>
+#include <string>
 
 Screen::Screen() {
     window = SDL_CreateWindow("Tower4Defense", SDL_WINDOWPOS_UNDEFINED,

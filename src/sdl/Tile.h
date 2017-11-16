@@ -14,13 +14,13 @@ public:
 
     void render(SDL_Rect &camera,
                 SDL_Rect *gTileClips,
-                SDL_Renderer *gRenderer,
+                SDL_Renderer *renderer,
                 Texture *gTileTextures);
 
     void renderSprite(SDL_Rect &camera,
-                      SDL_Rect *gTileClips,
-                      SDL_Renderer *gRenderer,
-                      Texture *gTileTextures);
+                      SDL_Rect *tileClips,
+                      SDL_Renderer *renderer,
+                      Texture *tileTextures);
 
     /* Maneja los eventos sobre los tiles.
      * */

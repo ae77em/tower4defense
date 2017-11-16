@@ -1,7 +1,6 @@
 #ifndef TP4_TOWERDEFENSE_SDL_ENEMY_H
 #define TP4_TOWERDEFENSE_SDL_ENEMY_H
 
-
 #include "../../common/modelo/Enemy.h"
 #include <vector>
 #include <array>
@@ -10,6 +9,7 @@
 #include "../Constants.h"
 #include "../../common/Circle.h"
 #include "../Animable.h"
+#include <string>
 
 class Enemy : public Animable {
 public:
@@ -61,8 +61,8 @@ public:
 
     /*
      * Mueve al enemigo a las coordenadas (x,y) del mapa. Las coordenadas tienen
-     * que indicar la posición entera dentro del mapa isométrico, teniendo en cuenta
-     * que el mapa tiene columnas cartesianas.
+     * que indicar la posición entera dentro del mapa isométrico, teniendo en
+     * cuenta que el mapa tiene columnas cartesianas.
      *
      * */
     void moveTo(int x, int y);
@@ -124,10 +124,11 @@ public:
     Point getPoint();
 
 protected:
-    model::Enemy enemy_base;
+    model::Enemy baseEnemy;
 
     // Defino este monstruo por default...
-    const std::string TEXTURE_FILE_PATH = "images/sprites/enemy-abominable-walk.png";
+    const std::string TEXTURE_FILE_PATH = "images/sprites/"
+            "enemy-abominable-walk.png";
 
     /* Point for get the sprites */
     int walkingStartX = 1765;
@@ -151,10 +152,14 @@ protected:
 
     /* ATRIBUTOS RELACIONADOS CON DIBUJO */
     SDL_Rect walkBox;
-    std::array<std::array<SDL_Rect,NUMBER_OF_ENEMY_WALK_SPRITES>, NUMBER_OF_ENEMY_WALK_DIRECTIONS> walkingSprites;
+    std::array
+            <std::array<SDL_Rect,NUMBER_OF_ENEMY_WALK_SPRITES>,
+                    NUMBER_OF_ENEMY_WALK_DIRECTIONS> walkingSprites;
 
     SDL_Rect deathBox;
-    std::array<std::array<SDL_Rect, NUMBER_OF_ENEMY_DEATH_SPRITES>, NUMBER_OF_ENEMY_DEATH_DIRECTIONS> deathSprites;
+    std::array
+            <std::array<SDL_Rect, NUMBER_OF_ENEMY_DEATH_SPRITES>,
+                    NUMBER_OF_ENEMY_DEATH_DIRECTIONS> deathSprites;
 
     bool firstFrameOfDeathRendered = false;
     bool lastFrameOfDeathRendered = false;

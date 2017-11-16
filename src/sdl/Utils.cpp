@@ -165,7 +165,8 @@ bool Utils::hasCircleCollision(Circle &a, Circle &b) {
     int totalRadiusSquared = a.r + b.r;
     totalRadiusSquared = totalRadiusSquared * totalRadiusSquared;
 
-    //If the distance between the centers of the circles is less than the sum of their radii
+    //If the distance between the centers of the circles is less than
+    // the sum of their radii
     return (distanceSquared(a.x, a.y, b.x, b.y) < (totalRadiusSquared));
 }
 
