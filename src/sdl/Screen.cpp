@@ -33,10 +33,10 @@ Screen::Screen() {
     tile_lava.loadFromFile("images/sprites/tile-lava.png", renderer);
     tile_firm.loadFromFile("images/sprites/tile-firm.png", renderer);
 
-    waterTower.loadFromFile("images/water_tower.png", renderer);
-    earthTower.loadFromFile("images/earth_tower.png", renderer);
-    fireTower.loadFromFile("images/fire_tower.png", renderer);
-    airTower.loadFromFile("images/air_tower.png", renderer);
+    waterTower.reset(new StaticFrame(renderer, "images/water_tower.png"));
+    earthTower.reset(new StaticFrame(renderer, "images/earth_tower.png"));
+    fireTower.reset(new StaticFrame(renderer, "images/fire_tower.png"));
+    airTower.reset(new StaticFrame(renderer, "images/air_tower.png"));
 
     portal_blue.reset(new GridAnimation(renderer,
             "images/sprites/portal-blue2.png", 30, 1));

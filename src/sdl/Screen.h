@@ -21,7 +21,7 @@ class Screen {
     TTF_Font *font;
     Texture dialog;
     Texture tile_desert, tile_grass, tile_ice, tile_lava, tile_firm;
-    Texture waterTower, earthTower, fireTower, airTower;
+    std::unique_ptr<Animation> waterTower, earthTower, fireTower, airTower;
     std::unique_ptr<Animation> portal_blue, portal_red;
 
     void putDialog();
