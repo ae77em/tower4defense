@@ -3,7 +3,7 @@
 #include <fstream>
 
 Editor::Editor::Editor(State *state) : state(state), screen(),
-        map(10, 10), keys(default_keybinding) {}
+        map(10, 10), keys(default_keybinding), scrolling_enabled(true) {}
 
 void Editor::Editor::transition(State *newstate) {
     state.reset(newstate);
@@ -15,23 +15,27 @@ void Editor::Editor::run() {
     while (!quit) {
         screen.clear();
 
+        /* Poll and handle sdl events */
         SDL_Event e;
         while(SDL_PollEvent( &e ) != 0) {
             if (e.type == SDL_QUIT) {
                 quit = true;
             } else {
                 state->handle(e, *this);
-                screen.handleEvent(e);
+
+                /* Handle camera scrolling */
+                if (scrolling_enabled) screen.handleEvent(e);
             }
         }
 
         screen.put(map);
+
         //TODO move path tracing to screen::put(map)
         for (const auto& camino : map.getCaminos())
             screen.trace(camino);
 
+        /* Let state effect last-minute changes */
         state->preRender(*this);
-
         screen.draw();
     }
 }
@@ -73,4 +77,12 @@ void Editor::Editor::save(std::string filename) {
 
 void Editor::Editor::new_map(unsigned side) {
     map = model::Mapa(side, side);
+}
+
+void Editor::Editor::inhibitScrolling() {
+    scrolling_enabled = false;
+}
+
+void Editor::Editor::enableScrolling() {
+    scrolling_enabled = true;
 }
