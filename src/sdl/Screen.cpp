@@ -35,7 +35,15 @@ Screen::Screen() {
 
     waterTower.reset(new StaticFrame(renderer, "images/water_tower.png"));
     earthTower.reset(new StaticFrame(renderer, "images/earth_tower.png"));
-    fireTower.reset(new StaticFrame(renderer, "images/fire_tower.png"));
+    {
+        CompositeAnimation *c = new CompositeAnimation();
+        c->memberPushBack(new StaticFrame(renderer, "images/fire_tower.png"),
+                0, 30);
+        c->memberPushBack(new GridAnimation(renderer,
+                "images/sprites/tower-fire-flame.png", 30, 1, 1),
+                50, 0);
+        fireTower.reset(c);
+    }
     airTower.reset(new StaticFrame(renderer, "images/air_tower.png"));
 
     portal_blue.reset(new GridAnimation(renderer,
