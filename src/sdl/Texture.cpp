@@ -145,10 +145,10 @@ void Texture::renderSprite(SDL_Renderer *gRenderer, int x, int y, SDL_Rect *clip
     SDL_RenderCopy(gRenderer, mTexture, clip, &renderQuad);
 }
 
-int Texture::getWidth() {
+int Texture::getWidth() const {
     return mWidth;
 }
 
-int Texture::getHeight() {
+int Texture::getHeight() const {
     return mHeight;
 }
