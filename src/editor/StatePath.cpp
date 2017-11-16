@@ -1,24 +1,27 @@
 #include "Editor.h"
 
 void Editor::StatePath::handle(const SDL_Event &e, Editor &context) {
+    auto& map = context.getMap();
+    auto& screen = context.getScreen();
+
     // Simple, unshifted click adds points to path
     if (e.type == SDL_MOUSEBUTTONDOWN
             && !( KMOD_SHIFT & SDL_GetModState() )) {
-        Point p = context.getScreen().mouseCurrentTile();
-        if (context.getMap().estaDentro(p)) path.push_back(p);
+        Point p = screen.mouseCurrentTile();
+        if (map.estaDentro(p)) path.push_back(p);
     }
 
     // Shift-click adds point to path, ends it, and adds it to map
     if (e.type == SDL_MOUSEBUTTONDOWN
             && ( KMOD_SHIFT & SDL_GetModState() )) {
-        Point p = context.getScreen().mouseCurrentTile();
+        Point p = screen.mouseCurrentTile();
 
         /* Do something iff the new point is acceptable as
            an extension of the path, and the result would be
            a sensible path */
-        if (context.getMap().estaDentro(p) && (path.size() > 0)) {
+        if (map.estaDentro(p) && (path.size() > 0)) {
             path.push_back(p);
-            context.getMap().agregarCamino(path);
+            map.agregarCamino(path);
             path.clear();
         }
     }
@@ -31,7 +34,7 @@ void Editor::StatePath::handle(const SDL_Event &e, Editor &context) {
 
     // Change mode
     if (e.type == SDL_KEYDOWN && e.key.keysym.sym == keys.road) {
-        context.getScreen().setDialog("");
+        screen.setDialog("");
         context.transition(new StateTile());
     }
 }
