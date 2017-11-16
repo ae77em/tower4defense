@@ -1,10 +1,13 @@
 #include "ActorEnemy.h"
 #include "../../../common/Utils.h"
 #include "../../../sdl/Constants.h"
+#include "../../../common/Circle.h"
 #include <string>
 #include <vector>
 
-ActorEnemy::ActorEnemy() {}
+ActorEnemy::ActorEnemy(){ }
+
+ActorEnemy::~ActorEnemy(){ }
 
 const std::vector<Point> &ActorEnemy::getPath() const {
     return path;
@@ -18,16 +21,16 @@ int ActorEnemy::getDirection() {
     return currentDirection;
 }
 
-void ActorEnemy::setDirection(int currentDirection) {
-    ActorEnemy::currentDirection = currentDirection;
+void ActorEnemy::setDirection(int currDir) {
+    currentDirection = currDir;
 }
 
 int ActorEnemy::getCurrentPosition() const {
     return currentPathPosition;
 }
 
-void ActorEnemy::setCurrentPathPosition(int currentPosition) {
-    ActorEnemy::currentPathPosition = currentPosition;
+void ActorEnemy::setCurrentPathPosition(int currPos) {
+    currentPathPosition = currPos;
 }
 
 void ActorEnemy::advance() {
@@ -35,7 +38,7 @@ void ActorEnemy::advance() {
         int xFinal, yFinal;
 
         if (xPositionIntoTile > CARTESIAN_TILE_WIDTH ||
-                yPositionIntoTile > CARTESIAN_TILE_HEIGHT){
+            yPositionIntoTile > CARTESIAN_TILE_HEIGHT){
             ++currentPathPosition;
             xPositionIntoTile = 0;
             yPositionIntoTile = 0;
@@ -65,6 +68,10 @@ void ActorEnemy::advance() {
 
         xPosition = path.at(currentPathPosition).x + xPositionIntoTile;
         yPosition = path.at(currentPathPosition).y + yPositionIntoTile;
+
+        collisionCircle.x = xPosition + (CARTESIAN_TILE_WIDTH * 0.5);
+        collisionCircle.y = xPosition + (CARTESIAN_TILE_HEIGHT * 0.5);
+
     } else {
         ++currentPathPosition;
     }
@@ -128,3 +135,39 @@ int ActorEnemy::getId() {
 void ActorEnemy::setId(int id) {
     ActorEnemy::id = id;
 }
+
+Circle &ActorEnemy::getCollisionCircle() {
+    return collisionCircle;
+}
+
+bool ActorEnemy::itIsAlive() {
+    return isAlive;
+}
+
+int ActorEnemy::getShoot(int damage) {
+    int actualDamage = std::min(damage, energy);
+    energy -= actualDamage;
+
+    return actualDamage;
+}
+
+int ActorEnemy::receiveDamage(int damage) {
+    int damagePoints = 0;
+    int actualDamage = std::min(damage, energy);
+    energy -= actualDamage;
+
+    if (energy > 0){
+        damagePoints = actualDamage;
+    } else {
+        int bonus = initialEnergy * 0.5;
+        isAlive = false;
+        damagePoints += actualDamage + bonus;
+    }
+
+    return damagePoints;
+}
+
+ActorRectT ActorEnemy::getRect() {
+    return ActorRectT();
+}
+

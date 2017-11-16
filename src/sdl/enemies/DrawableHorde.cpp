@@ -1,11 +1,12 @@
 #include "DrawableHorde.h"
 #include "Abmonible.h"
+#include "../../common/Protocol.h"
 
 DrawableHorde::DrawableHorde() {}
 
 DrawableHorde::DrawableHorde(int enemyType, size_t size, int x, int y, SDL_Renderer *r, Texture &t) {
     switch (enemyType){
-        case ABMONIBLE:{
+        case ENEMY_ABMONIBLE:{
             loadAbmonibles(size, x, y, r);
             break;
         }

@@ -6,7 +6,6 @@
 #include <iostream>
 #include "ServerPlayer.h"
 #include "WorkerLoopGame.h"
-#include "ListenerLoopGame.h"
 #include "GameAction.h"
 #include <map>
 #include <string>
@@ -21,9 +20,7 @@ private:
 
     //lo uso para bloquear la lista de acciones a aplicar sobre el juego
     std::mutex mutexActionsGame;
-    ThreadedQueue<Message> queueMessagesGame;
     WorkerLoopGame workerLoopGame;
-    ListenerLoopGame listenerLoopGame;
 
     std::list<GameAction*> actions;
 

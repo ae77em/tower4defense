@@ -74,12 +74,20 @@ enum GameRequestsPlaying {
     GAME_REQUEST_UPGRADE_TOWER = 404
 };
 
-enum TypeOfMoveable {
+enum EnemyType {
     ENEMY_ABMONIBLE = 0,
     ENEMY_BLOOD_HAWK = 1,
     ENEMY_GOATMAN = 2,
     ENEMY_GREEN_DAEMON = 3,
-    ENEMY_SPECTRE = 4
+    ENEMY_SPECTRE = 4,
+    ENEMY_ZOMBIE = 5
+};
+
+enum TowerType {
+    TOWER_AIR = 0,
+    TOWER_FIRE = 1,
+    TOWER_WATER = 2,
+    TOWER_EARTH = 3
 };
 
 const std::string STR_WATER = "Agua";

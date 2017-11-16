@@ -209,7 +209,9 @@ void Server::run() {
                     startMatch(clientId, matchName);
                     break;
                 }
-                /* gaming requests: */
+
+
+                    /* gaming requests: */
                 case CLIENT_REQUEST_PUT_TOWER: {
                     std::string matchName = request.getAsString("matchName");
                     int towerType = request.getAsInt("towerType");

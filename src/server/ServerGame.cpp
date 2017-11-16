@@ -12,12 +12,8 @@ ServerGame::ServerGame(std::mutex& m):mutexPlayers(m),
                                       endSignal(false),
                                       workerLoopGame(players,
                                                      actions,
-                                                     mutexActionsGame,
-                                                     endSignal),
-                                      listenerLoopGame(actions,
-                                                       mutexActionsGame,
-                                                       queueMessagesGame,
-                                                       endSignal) {
+                                                     mutexActionsGame)
+                                      {
     elements.push_back(STR_WATER);
     elements.push_back(STR_AIR);
     elements.push_back(STR_FIRE);
@@ -53,7 +49,6 @@ void ServerGame::startGame() {
 
     workerLoopGame.buildGameContext();
 
-    listenerLoopGame.start();
     workerLoopGame.start();
 }
 
@@ -64,7 +59,6 @@ void ServerGame::changeStatusPlayesOnGame(int status) {
 }
 
 void ServerGame::addEventMessage(Message m){
-    queueMessagesGame.push(m);
 }
 
 void ServerGame::notifyAll(std::string message) {
@@ -125,9 +119,12 @@ int ServerGame::getAmountPlayers() {
 }
 
 void ServerGame::kill() {
-    queueMessagesGame.close();
+    mutexActionsGame.lock();
+    actions.push_back( new GameAction("game-explotion") );
+    mutexActionsGame.unlock();
 
-    listenerLoopGame.join();
+
+
     workerLoopGame.join();
 }
 
@@ -146,7 +143,10 @@ void ServerGame::putTower(int typeOfTower, int x, int y) {
     std::string req = MessageFactory::getPutTowerGameRequest(typeOfTower, x, y);
     Message message;
     message.deserialize(req);
-    queueMessagesGame.push(message);
+
+    mutexActionsGame.lock();
+    actions.push_back( new GameAction("putTower") );
+    mutexActionsGame.unlock();
 
     /** HASTA TENER DEFINIDO EL ACCESO A EL LOOP DE JUEGO CON LA INFO ***/
     req = MessageFactory::getPutTowerNotification(typeOfTower, x, y);
@@ -160,7 +160,10 @@ void ServerGame::castSpell(int x, int y) {
     std::string req = MessageFactory::getCastSpellGameRequest(x, y);
     Message message;
     message.deserialize(req);
-    queueMessagesGame.push(message);
+
+    mutexActionsGame.lock();
+    actions.push_back( new GameAction("castSpell") );
+    mutexActionsGame.unlock();
 
     /** HASTA TENER DEFINIDO EL ACCESO A EL LOOP DE JUEGO CON LA INFO ***/
     req = MessageFactory::getCastSpellNotification(x, y);
@@ -171,11 +174,13 @@ void ServerGame::castSpell(int x, int y) {
 }
 
 void ServerGame::upgradeTower(int towerId, int upgradeType) {
-    std::string req =
-            MessageFactory::getUpgradeTowerGameRequest(towerId, upgradeType);
+    std::string req = MessageFactory::getUpgradeTowerGameRequest(towerId, upgradeType);
     Message message;
     message.deserialize(req);
-    queueMessagesGame.push(message);
+
+    mutexActionsGame.lock();
+    actions.push_back( new GameAction("upgradeTower") );
+    mutexActionsGame.unlock();
 
     /** HASTA TENER DEFINIDO EL ACCESO A EL LOOP DE JUEGO CON LA INFO ***/
     mutexPlayers.lock();
@@ -188,8 +193,11 @@ void ServerGame::towerInfo(int clientId, int towerId) {
     std::string req = MessageFactory::getTowerInfoGameRequest(towerId);
     Message message;
     message.deserialize(req);
-    queueMessagesGame.push(message);
 
+
+    mutexActionsGame.lock();
+    actions.push_back( new GameAction("towerInfo") );
+    mutexActionsGame.unlock();
 
     /** HASTA TENER DEFINIDO EL ACCESO A EL LOOP DE JUEGO CON LA INFO ***/
     req = MessageFactory::getTowerInfoNotification(towerId, 999, 999, 999);

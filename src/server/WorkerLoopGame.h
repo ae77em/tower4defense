@@ -20,13 +20,11 @@ private:
     std::mutex& mutexActions;
     std::map<int, Horde*> hordes;
     std::vector<ActorTower*> towers;
-    bool& endSignal;
 
 public:
     WorkerLoopGame(std::map<int,ServerPlayer*>& p,
                    std::list<GameAction*>& a,
-                   std::mutex& m,
-                    bool& endSignal);
+                   std::mutex& m);
 
     void run();
 

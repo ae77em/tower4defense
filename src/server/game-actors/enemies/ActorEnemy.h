@@ -5,25 +5,30 @@
 #include <string>
 #include <bits/basic_string.h>
 #include "../../../common/Point.h"
+#include "../../../common/Circle.h"
 #include "../../GameActor.h"
 
 class ActorEnemy : public GameActor {
 public:
     ActorEnemy();
 
+    virtual ~ActorEnemy();
+
     std::string getClass();
 
-    void live();
+    void live() override;
 
-    int getDirection();
+    int getDirection() override;
 
-    int getXPosition();
+    int getXPosition() override;
 
-    int getYPosition();
+    int getYPosition() override;
 
-    int getEnergy();
+    int getEnergy() override;
 
-    int getId();
+    int getId() override;
+
+    ActorRectT getRect() override;
 
     const Point &getCurrentPoint() const;
 
@@ -51,23 +56,34 @@ public:
 
     int getYPositionIntoTile();
 
+    Circle &getCollisionCircle();
+
+    bool itIsAlive();
+
+    int getShoot(int i);
+
+    int receiveDamage(int i);
+
 private:
     std::vector<Point> path;
+    Point currentPoint = Point(-1, -1);
+    Circle collisionCircle;
+
+    int xPositionIntoTile = 0;
     int currentDirection = 0;
     int currentPathPosition = 0;
     int currentShift = 0;
-    Point currentPoint = Point(-1, -1);
-    int xPositionIntoTile = 0;
     int yPositionIntoTile = 0;
     int xPosition = 0;
     int yPosition = 0;
     bool isWalking = false;
 
     int velocity = 1;
-    int initialLifePoints = 200;
+    int initialEnergy = 200;
+    int energy = 200;
     int remainingLifePoints = 200;
-    int isAir = false;
-    int isAlive = true;
+    bool isAir = false;
+    bool isAlive = true;
 
     int id;
 };

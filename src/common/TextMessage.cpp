@@ -17,11 +17,11 @@ void TextMessage::sendTo(Socket &sock) {
 
     prefix[MESSAGE_PREFIX_LENGTH-1] = '\0';
 
-    std::cout << "mando length: " << prefix << std::endl;
+    //std::cout << "mando length: " << prefix << std::endl;
 
     sock.send(prefix, MESSAGE_PREFIX_LENGTH);
 
-    std::cout << "mando mensaje: " << message << std::endl;
+    //std::cout << "mando mensaje: " << message << std::endl;
 
     sock.send(message.c_str(), message.size());
 }

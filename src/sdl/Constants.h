@@ -94,13 +94,6 @@ enum TileType {
 };
 
 
-enum TowerTypes {
-    TOWER_AIR = 0,
-    TOWER_FIRE = 1,
-    TOWER_WATER = 2,
-    TOWER_EARTH = 3
-};
-
 enum UpgradeTypes {
     UPGRADE_DAMAGE = 0,
     UPGRADE_RANGE = 1,
@@ -120,16 +113,6 @@ enum MovementDirection {
     X_NEGATIVE = 1,
     Y_NEGATIVE = 2
 };
-
-enum EnemyType {
-    ABMONIBLE = 0,
-    BLOOD_HAWK = 1,
-    GOATMAN = 2,
-    GREEN_DAEMON = 3,
-    SPECTRE = 4,
-    ZOMBIE = 5
-};
-
 
 enum TowerButtonsTypes {
     BUTTON_TOWER_AIR = 0,

@@ -1,3 +1,3 @@
 #include "GameAction.h"
 
-GameAction::GameAction(){ }
+GameAction::GameAction(std::string a):action(a){ }

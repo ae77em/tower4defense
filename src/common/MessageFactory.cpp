@@ -1,8 +1,6 @@
 #include <iostream>
 #include "MessageFactory.h"
 #include "Protocol.h"
-#include "../server/game-actors/towers/ActorTower.h"
-#include "../server/game-actors/enemies/Horde.h"
 #include <string>
 #include <list>
 #include <vector>

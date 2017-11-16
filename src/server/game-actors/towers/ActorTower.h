@@ -4,17 +4,22 @@
 #include "../../../common/Circle.h"
 #include "../../../common/Point.h"
 #include "../../GameActor.h"
+#include "../enemies/Horde.h"
+#include "../enemies/ActorEnemy.h"
+
 #include <string>
 
-class ActorTower {
+class ActorTower : public GameActor {
 public:
     ActorTower();
+
+    virtual ~ActorTower();
 
     std::string getClass();
 
     void live();
 
-    int getDirection();
+    void live(Horde *horde);
 
     int getXPosition();
 
@@ -23,6 +28,8 @@ public:
     int getEnergy();
 
     int getId();
+
+    ActorRectT getRect();
 
     void shiftColliders();
 
@@ -38,6 +45,8 @@ public:
 
     bool itIsShooting();
 
+    void setPosition(int x, int y);
+
 protected:
     int shotRatio;
     int shotMsTimeGap;
@@ -47,8 +56,13 @@ protected:
     int experiencePoints;
     Circle collisionCircle;
     Point currentPoint = Point(0, 0);
+    ActorRectT rect;
 
     void initialize();
+
+    void shootTo(ActorEnemy *pEnemy);
+
+    void doShootTo(ActorEnemy *pEnemy);
 };
 
 

@@ -19,41 +19,57 @@
 //PUEDE SER QUE SE ESTE REMOVIENDO ALGUNO EN OTRO HILO Y LUEGO EXPLOTE
 WorkerLoopGame::WorkerLoopGame(std::map<int,ServerPlayer*>& p,
                                std::list<GameAction*>& a,
-                               std::mutex& m,
-                                bool& b):
+                               std::mutex& m):
                                                 players(p),
                                                 actions(a),
-                                                mutexActions(m),
-                                                endSignal(b){
+                                                mutexActions(m){
 }
 
 void WorkerLoopGame::run(){
     std::cout << "WorkerLoopGame: Hilo donde existe la partida arrancando" << std::endl;
-    unsigned int ciclos = 1000;
+    unsigned int ciclos = 10000;
     std::string statusGame;
 
     std::list<GameAction *> actionsGame;
     std::map<int, Horde*>::iterator hordeIt;
 
+    bool clientDie = false;
+    bool gameFinish = false;
+    std::string cause = "";
+    Point finalPoint(16 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT);
+
     //while(isRunning()){
-    while (ciclos > 0){
+    while (!gameFinish){
+        std::cout << "WorkerLoopGame: ciclo  "<< ciclos << std::endl;
+
         //std::list<GameAction*> obtainedActions = getActions();
 
         mutexActions.lock();
         //GRONCHADA PARA REFACTORIZAR
-        if(endSignal == true){
-            std::cout << "WorkerLoopGame: Me acaban de avisar "
-                    "que se termino todo que bueno" << std::endl;
-            mutexActions.unlock();
-            break;
-        }
+        //IMPLEMENTAR CLASE QUE HAGA EL CIERRE DEL GAME LOOP
 
         /* Estos son los requests enviados por el cliente, por ejemplo,
          * poner torre... */
         for (GameAction* a : this->actions) {
+            std::cout<< a->action << "  "<<std::endl;
+
+            if(a->action.compare("game-explotion") == 0){
+                std::cout << "WorkerLoopGame: salgo porque explote "<< std::endl;
+
+                clientDie = true;
+                break;
+            }
+
             actionsGame.push_back(a);
         }
+
+        this->actions.clear();
+
         mutexActions.unlock();
+
+        if(clientDie)
+            break;
+
 
         //TOMO LAS ACCIONES PARSEADAS DE LOS REQUEST Y LAS
         // APLICO A TODOS LOS ACTORES
@@ -74,7 +90,14 @@ void WorkerLoopGame::run(){
 
             for (auto enemy : enemies) {
                 enemy->live();
+
+                /*if(ciclos > 0){
+                    gameFinish = true;
+                    cause = "enemigos llegaron al final";
+
+                }*/
             }
+
         }
 
         /* ahora hago andar las torres */
@@ -95,12 +118,20 @@ void WorkerLoopGame::run(){
 
         ciclos--;
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        actionsGame.clear();//limpio la lista para no ejecutar request viejos
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+        if(ciclos > 0){
+            gameFinish = true;
+            cause = "se terminaron los ciclos";
+        }
+
+
     }
 
     // ESTA PARTE NO SE SI TIENE SENTIDO,
     // DEBERIA DEE HABER SALIDO TODOS LOS CLIENTES
-    // DESPUES REVEER
+    std::cout << "WorkerLoopGame: TERMINO PARTIDA CAUSA: "<< cause << std::endl;
     std::cout << "WorkerLoopGame: Hilo donde existe la partida se termino" << std::endl;
     std::cout << "WorkerLoopGame: Aviso que terminó la partida." << std::endl;
     statusGame = MessageFactory::getMatchEndedNotification();
