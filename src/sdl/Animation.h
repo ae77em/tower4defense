@@ -1,5 +1,9 @@
 #include <SDL2/SDL.h>
 #include "Texture.h"
+#include "../common/Point.h"
+#include <utility>
+#include <memory>
+#include <vector>
 
 #ifndef ANIMATION_H
 #define ANIMATION_H
@@ -44,6 +48,48 @@ class StaticFrame : public Animation {
     public:
     StaticFrame(SDL_Renderer *renderer, const std::string &filename);
 
+    void renderFrame(int frame, int x, int y);
+
+    int getHeight() const;
+    int getWidth() const;
+};
+
+typedef std::pair<std::unique_ptr<Animation>, Point> Record;
+class CompositeAnimation : public Animation {
+    std::vector<Record> members;
+
+    public:
+    CompositeAnimation();
+
+    /* Adds a member to the top of the composite
+
+       The new member will be displayed last, at the given relative
+       position.
+     */
+    void memberPushBack(Animation *m, int x = 0, int y = 0);
+
+    /* Adds a member to the bottom of the composite
+
+       The new member will be displayed first, at the given relative
+       position.
+     */
+    void memberPushFront(Animation *m, int x = 0, int y = 0);
+
+    /*  -+---> x       ^
+         |             |
+       y v  +---+      | h
+            |   |---@  |
+            B---+   |  |
+              |     |  |
+              A-----@  v
+
+       Assuming a composite with elements as shown, the height h
+       of the sprite is:
+
+           h = max(y_offset + elem_height)
+
+       Similar considerations apply to the width.
+     */
     void renderFrame(int frame, int x, int y);
 
     int getHeight() const;
