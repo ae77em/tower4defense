@@ -3,7 +3,7 @@
 #include <fstream>
 
 Editor::Editor::Editor(State *state) : state(state), screen(),
-        map(10, 10), keys(default_keybinding) {}
+        map(10, 10), keys(default_keybinding), scrolling_enabled(true) {}
 
 void Editor::Editor::transition(State *newstate) {
     state.reset(newstate);
@@ -24,7 +24,7 @@ void Editor::Editor::run() {
                 state->handle(e, *this);
 
                 /* Handle camera scrolling */
-                screen.handleEvent(e);
+                if (scrolling_enabled) screen.handleEvent(e);
             }
         }
 
@@ -77,4 +77,12 @@ void Editor::Editor::save(std::string filename) {
 
 void Editor::Editor::new_map(unsigned side) {
     map = model::Mapa(side, side);
+}
+
+void Editor::Editor::inhibitScrolling() {
+    scrolling_enabled = false;
+}
+
+void Editor::Editor::enableScrolling() {
+    scrolling_enabled = true;
 }
