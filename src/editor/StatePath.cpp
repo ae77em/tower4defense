@@ -8,7 +8,12 @@ void Editor::StatePath::handle(const SDL_Event &e, Editor &context) {
     if (e.type == SDL_MOUSEBUTTONDOWN
             && !( KMOD_SHIFT & SDL_GetModState() )) {
         Point p = screen.mouseCurrentTile();
-        if (map.estaDentro(p)) path.push_back(p);
+        if (map.estaDentro(p)) {
+            // Automatically add portal on the first point
+            if (path.size() == 0) map.setCasilla('E', p.x, p.y);
+
+            path.push_back(p);
+        }
     }
 
     // Shift-click adds point to path, ends it, and adds it to map
@@ -20,6 +25,8 @@ void Editor::StatePath::handle(const SDL_Event &e, Editor &context) {
            an extension of the path, and the result would be
            a sensible path */
         if (map.estaDentro(p) && (path.size() > 0)) {
+            // Automatically add portal on the last point
+            map.setCasilla('S', p.x, p.y);
             path.push_back(p);
             map.agregarCamino(path);
             path.clear();
