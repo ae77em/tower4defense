@@ -28,11 +28,11 @@ class GridAnimation : public Animation {
     SDL_Renderer *renderer;
     SDL_Rect clip;
     Texture spritesheet;
-    unsigned hcount, vcount;
+    int hcount, vcount;
 
     public:
     GridAnimation(SDL_Renderer *renderer, const std::string &filename,
-            unsigned hcount, unsigned vcount);
+            int hcount, int vcount);
 
     void renderFrame(int frame, int x, int y);
 

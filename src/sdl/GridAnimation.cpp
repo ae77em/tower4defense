@@ -4,7 +4,7 @@
 #include <stdexcept>
 
 GridAnimation::GridAnimation(SDL_Renderer *renderer,
-        const std::string &filename, unsigned hcount, unsigned vcount)
+        const std::string &filename, int hcount, int vcount)
         : renderer(renderer), clip(),
         spritesheet(), hcount(hcount), vcount(vcount) {
     if (! renderer) throw std::runtime_error("null renderer");
@@ -12,9 +12,8 @@ GridAnimation::GridAnimation(SDL_Renderer *renderer,
     spritesheet.loadFromFile(filename, renderer);
 
     // Dimensions of the clip are deduced from those of the spritesheet
-    clip = { 0, 0,
-        (int)( spritesheet.getWidth() / hcount ),
-        (int)( spritesheet.getHeight() / vcount )};
+    clip = { 0, 0, spritesheet.getWidth() / hcount,
+        spritesheet.getHeight() / vcount};
 }
 
 void GridAnimation::renderFrame(int frame, int x, int y) {
