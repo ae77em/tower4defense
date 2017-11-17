@@ -5,17 +5,18 @@
 #include "../common/Socket.h"
 #include "GameAccessWindow.h"
 #include "../common/SharedBuffer.h"
+#include "Notificable.h"
 
 class Listener : public Thread {
 private:
     Socket *server;
-    GameAccessWindow &gameAccess;
+    Notificable &notificable;
     SharedBuffer &buffer;
     SharedBuffer &buffer2;
 
 public:
     Listener(Socket *server,
-             GameAccessWindow &b,
+             Notificable &b,
              SharedBuffer &bfr,
              SharedBuffer &other);
 

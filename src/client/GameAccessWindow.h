@@ -6,13 +6,14 @@
 #include "../common/Socket.h"
 #include "../common/SharedBuffer.h"
 #include "GamePlayWindow.h"
+#include "Notificable.h"
 #include <string>
 #include <list>
 #include <vector>
 
-class GameAccessWindow : public Thread {
+class GameAccessWindow : public Thread, public Notificable {
 private:
-    std::mutex loadMutex;
+    std::mutex uiMutex;
     GamePlayWindow *game = nullptr;
     bool gameStarted;
 
@@ -28,6 +29,10 @@ private:
     Gtk::CheckButton *pchkAgua = nullptr;
     Gtk::CheckButton *pchkFuego = nullptr;
     Gtk::CheckButton *pchkTierra = nullptr;
+
+    /* External modifications */
+    Glib::Dispatcher dispatcher;
+    std::queue<std::string> dataForUILoad;
 
     /* Connection */
     Socket *server;
@@ -132,6 +137,10 @@ public:
 
     void startMatch(std::string matchName);
 
+    void notify(std::string &dtl);
+
+    void updateUIData();
+
 private:
     void setCreateMatchButtonEnableStatus();
 
@@ -151,11 +160,13 @@ private:
 
     bool hasValidValue(const std::string &match) const;
 
-    void initListenerThread(Glib::RefPtr<Gtk::Builder> &refPtr);
+    void initDispatcher(Glib::RefPtr<Gtk::Builder> &refPtr);
 
     void on_loadData();
 
     void listen();
+
+
 };
 
 #endif //TP4_TOWERDEFENSE_GAMEACCESS_H

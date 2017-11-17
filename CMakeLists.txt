@@ -3,8 +3,17 @@ project(tp4_towerdefense)
 
 SET(CMAKE_CXX_FLAGS "-Wall -Werror -pedantic -pedantic-errors -O0 -ggdb -DDEBUG -fno-inline -std=c++11")
 
-file(GLOB CLIENT_SOURCES "src/client/*.cpp" "src/common/*.cpp" "src/common/*.h"
-        "src/common/**/*.cpp" "src/sdl/*.cpp" "src/sdl/*.h" "src/sdl/*/*.cpp")
+file(GLOB CLIENT_SOURCES
+        "src/client/*.h"
+        "src/client/*.cpp"
+        "src/common/*.h"
+        "src/common/*.cpp"
+        "src/common/**/*.h"
+        "src/common/**/*.cpp"
+        "src/sdl/*.h"
+        "src/sdl/*.cpp"
+        "src/sdl/*/*.h"
+        "src/sdl/*/*.cpp")
 file(GLOB SERVER_SOURCES "src/server/*.cpp" "src/server/*/*.cpp" "src/server/*/*/*.cpp" "src/common/*.cpp")
 file(GLOB EDITOR_SOURCES "src/editor/*.cpp" "src/common/*.cpp"
         "src/common/**/*.cpp" "src/sdl/*.cpp") 
@@ -13,7 +22,7 @@ file(GLOB TEST_SOURCES "tests/unit/*.cpp" "src/common/*.cpp"
 file(GLOB SOCKMAN_SOURCES "tests/sockman.cpp" "src/common/*/*.cpp"
         "src/common/*.cpp")
 
-add_executable(game.exe ${CLIENT_SOURCES} src/sdl/Animable.h)
+add_executable(game.exe ${CLIENT_SOURCES})
 add_executable(server.exe ${SERVER_SOURCES})
 add_executable(editor.exe ${EDITOR_SOURCES})
 add_executable(unit.exe ${TEST_SOURCES})

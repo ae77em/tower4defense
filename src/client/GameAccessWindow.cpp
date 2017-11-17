@@ -9,7 +9,7 @@
 GameAccessWindow::GameAccessWindow(Socket *c,
                                    SharedBuffer &tsnd,
                                    SharedBuffer &trcv,
-                                    SharedBuffer &ot)
+                                   SharedBuffer &ot)
         : server(c), toSend(tsnd), toReceive(trcv), other(ot) {
     clientId = -1;
     gameStarted = false;
@@ -21,8 +21,7 @@ GameAccessWindow::~GameAccessWindow() {
 
 
 void GameAccessWindow::run() {
-    loadMutex.lock();
-
+    uiMutex.lock();
     auto app = Gtk::Application::create();
 
     //Load the GtkBuilder file and instantiate its widgets:
@@ -54,18 +53,18 @@ void GameAccessWindow::run() {
         initEntryMatchName(refBuilder);
         initComboMatches(refBuilder);
         initCheckboxElements(refBuilder);
-        initListenerThread(refBuilder);
+        initDispatcher(refBuilder);
 
-        loadMutex.unlock();
+        uiMutex.unlock();
         app->run(*pWindow);
     } else {
-        loadMutex.unlock();
+        uiMutex.unlock();
     }
 
     delete pWindow;
 
     // les aviso a los encargados de comunicación que terminé
-    if (!gameStarted){
+    if (!gameStarted) {
         server->shutdown();
     }
 }
@@ -78,7 +77,7 @@ void GameAccessWindow::on_entryMatchName_changed() {
     setCreateMatchButtonEnableStatus();
     std::string match = cmbMatchesText->get_active_text();
 
-    if (hasValidValue(match)) { }
+    if (hasValidValue(match)) {}
 }
 
 bool GameAccessWindow::hasValidValue(const std::string &match) const {
@@ -192,7 +191,7 @@ void GameAccessWindow::initButtonCreateMatch(
         pBtnCrearPartida->signal_clicked()
                 .connect(
                         sigc::mem_fun(*this,
-                             &GameAccessWindow::on_btnCrearPartida_clicked));
+                                      &GameAccessWindow::on_btnCrearPartida_clicked));
     }
 }
 
@@ -223,7 +222,8 @@ void GameAccessWindow::initComboMaps(Glib::RefPtr<Gtk::Builder> &refBuilder) {
     cmbMapsText->append(STR_NONE);
     cmbMapsText->signal_changed()
             .connect(
-                sigc::mem_fun(*this, &GameAccessWindow::on_cmbMapas_changed));
+                    sigc::mem_fun(*this,
+                                  &GameAccessWindow::on_cmbMapas_changed));
 }
 
 void
@@ -232,7 +232,7 @@ GameAccessWindow::initEntryMatchName(Glib::RefPtr<Gtk::Builder> &refBuilder) {
     entryMatchName->signal_changed()
             .connect(
                     sigc::mem_fun(*this,
-                        &GameAccessWindow::on_entryMatchName_changed));
+                                  &GameAccessWindow::on_entryMatchName_changed));
 }
 
 void
@@ -253,7 +253,7 @@ GameAccessWindow::initCheckboxElements(Glib::RefPtr<Gtk::Builder> &refBuilder) {
         pchkAire->signal_clicked()
                 .connect(
                         sigc::mem_fun(*this,
-                            &GameAccessWindow::on_chkElement_clicked));
+                                      &GameAccessWindow::on_chkElement_clicked));
     }
 
     refBuilder->get_widget("chkAgua", pchkAgua);
@@ -262,7 +262,7 @@ GameAccessWindow::initCheckboxElements(Glib::RefPtr<Gtk::Builder> &refBuilder) {
         pchkAgua->signal_clicked()
                 .connect(
                         sigc::mem_fun(*this,
-                            &GameAccessWindow::on_chkElement_clicked));
+                                      &GameAccessWindow::on_chkElement_clicked));
     }
 
     refBuilder->get_widget("chkFuego", pchkFuego);
@@ -271,7 +271,7 @@ GameAccessWindow::initCheckboxElements(Glib::RefPtr<Gtk::Builder> &refBuilder) {
         pchkFuego->signal_clicked()
                 .connect(
                         sigc::mem_fun(*this,
-                            &GameAccessWindow::on_chkElement_clicked));
+                                      &GameAccessWindow::on_chkElement_clicked));
     }
 
     refBuilder->get_widget("chkTierra", pchkTierra);
@@ -280,49 +280,35 @@ GameAccessWindow::initCheckboxElements(Glib::RefPtr<Gtk::Builder> &refBuilder) {
         pchkTierra->signal_clicked()
                 .connect(
                         sigc::mem_fun(*this,
-                            &GameAccessWindow::on_chkElement_clicked));
+                                      &GameAccessWindow::on_chkElement_clicked));
     }
 }
 
 
 void GameAccessWindow::addMapsToCombo(const std::vector<std::string> &maps) {
-    loadMutex.lock();
-
     for (std::string map : maps) {
         cmbMapsText->append(map);
     }
-
-    loadMutex.unlock();
 }
 
 void GameAccessWindow::addMatchesToCombo(
         const std::vector<std::string> &matches) {
-    loadMutex.lock();
-
     for (std::string match : matches) {
         cmbMatchesText->append(match);
     }
-
-    loadMutex.unlock();
 }
 
 void GameAccessWindow::addMatchToCombo(int clientId,
                                        const std::string &matchName) {
-    loadMutex.lock();
-
     cmbMatchesText->append(matchName);
 
-    if (clientId == getClientId()){
+    if (clientId == getClientId()) {
         cmbMatchesText->set_active_text(matchName);
     }
-
-    loadMutex.unlock();
 }
 
 void GameAccessWindow::setAvailableElements(
         const std::list<std::string> &unavailableElements) {
-    loadMutex.lock();
-
     pchkAire->set_sensitive(true);
     pchkFuego->set_sensitive(true);
     pchkTierra->set_sensitive(true);
@@ -339,14 +325,10 @@ void GameAccessWindow::setAvailableElements(
             pchkAgua->set_sensitive(false);
         }
     }
-
-    loadMutex.unlock();
 }
 
 void GameAccessWindow::setAvailableElementsForJoin(
         const std::list<std::string> &unavailableElements) {
-    loadMutex.lock();
-
     for (std::string element : unavailableElements) {
         if (STR_AIR.compare(element) == 0) {
             pchkAire->set_active(false);
@@ -362,8 +344,6 @@ void GameAccessWindow::setAvailableElementsForJoin(
             pchkAgua->set_sensitive(false);
         }
     }
-
-    loadMutex.unlock();
 }
 
 void GameAccessWindow::setJoinedToMatch(int clientId, std::string mName) {
@@ -388,8 +368,6 @@ bool GameAccessWindow::isNotValidClientId() {
 }
 
 void GameAccessWindow::startMatch(std::string matchName) {
-    loadMutex.lock();
-
     gameStarted = true;
     pWindow->hide();
 
@@ -400,33 +378,95 @@ void GameAccessWindow::startMatch(std::string matchName) {
                               myElements,
                               matchName);
 
-    loadMutex.unlock();
-
     game->start();
+    game->join();
 
-    //pWindow->show();
+    pWindow->show();
 }
 
-void GameAccessWindow::initListenerThread(Glib::RefPtr<Gtk::Builder> &refPtr) {
-//    //Glib::Thread *listener;
-//
-//    //for the worker thread to dispatch jobs to the GUI thread.
-//    Glib::Dispatcher *dispatcher;
-//
-//    // somewhere in your initialization code you specify
-//    // the function that gets called when the worker thread dispatches a job
-//    dispatcher->connect(sigc::mem_fun(*this, &GameAccessWindow::on_loadData));
-//
-//    //you start the worker thread to do the processing
-//    //listener = Glib::Thread::create(sigc::mem_fun(*this, &GameAccessWindow::listen), true);
+void GameAccessWindow::initDispatcher(Glib::RefPtr<Gtk::Builder> &refPtr) {
+    dispatcher.connect(sigc::mem_fun(*this, &GameAccessWindow::updateUIData));
 }
 
-void GameAccessWindow::on_loadData() {
-
+void GameAccessWindow::notify(std::string &dtl) {
+    uiMutex.lock();
+    dataForUILoad.push(dtl);
+    dispatcher.emit(); // despacha y manda al método que que está a
+    // continuación, i.e.: updateUIData
+    uiMutex.unlock();
 }
 
-void GameAccessWindow::listen() {
+void GameAccessWindow::updateUIData() {
+    Message message;
+    std::string response = "";
+    std::string dataToLoad;
 
+    while (!dataForUILoad.empty()) {
 
+        dataToLoad = dataForUILoad.front();
+        dataForUILoad.pop();
+
+        message.deserialize(dataToLoad);
+
+        int op = MessageFactory::getOperation(message);
+
+        std::cout << "llego operación: " << std::to_string(op) << std::endl;
+
+        switch (op) {
+            case SERVER_NOTIFICATION_CLIENT_ID: {
+                int clientId = MessageFactory::getClientId(message);
+                setClientId(clientId);
+                break;
+            }
+            case SERVER_NOTIFICATION_GET_ALL_MAPS: {
+                std::vector<std::string> maps;
+                maps = MessageFactory::getMaps(message);
+                addMapsToCombo(maps);
+                break;
+            }
+            case SERVER_NOTIFICATION_GET_ALL_MATCHES: {
+                std::vector<std::string> matches;
+                matches = MessageFactory::getMatches(message);
+                addMatchesToCombo(matches);
+                break;
+            }
+            case SERVER_NOTIFICATION_NEW_MATCH: {
+                int clientId = MessageFactory::getClientId(message);
+                std::string matchName = MessageFactory::getMatchName(message);
+
+                addMatchToCombo(clientId, matchName);
+                break;
+            }
+            case SERVER_NOTIFICATION_GET_UNAVAILABLE_ELEMENTS: {
+                std::list<std::string> elements = MessageFactory::getElements(
+                        message);
+                setAvailableElements(elements);
+                break;
+            }
+            case SERVER_NOTIFICATION_ENTER_EXISTING_MATCH: {
+                int clientId = MessageFactory::getClientId(message);
+                std::list<std::string> elements = MessageFactory::getElements(
+                        message);
+
+                if (getClientId() != clientId) {
+                    setAvailableElementsForJoin(elements);
+                }
+                break;
+            }
+            case SERVER_NOTIFICATION_ENTERED_MATCH: {
+                int clientId = MessageFactory::getClientId(message);
+                std::string matchName = MessageFactory::getMatchName(message);
+                setJoinedToMatch(clientId, matchName);
+                break;
+            }
+            case SERVER_NOTIFICATION_START_MATCH: {
+                std::string matchName = MessageFactory::getMatchName(message);
+                startMatch(matchName);
+                break;
+            }
+            default:
+                std::cout << "caso imposible";
+        }
+    }
 }
 

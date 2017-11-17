@@ -8,13 +8,14 @@
 #include "../common/MessageFactory.h"
 #include "../common/Message.h"
 #include "../common/Protocol.h"
+#include "Notificable.h"
 
 Listener::Listener(Socket *s,
-                   GameAccessWindow &ga,
+                   Notificable &ga,
                    SharedBuffer &bfr,
                    SharedBuffer &other)
         : server(s),
-          gameAccess(ga),
+          notificable(ga),
           buffer(bfr),
           buffer2(other) { }
 
@@ -42,60 +43,18 @@ void Listener::run(){
             switch (op){
                 /*
                  * ACCESS OPERATIONS
+                 * Operaciones que modifican la interfaz, y requieren que se
+                 * use el Glib::dispatcher
                  */
-                case SERVER_NOTIFICATION_CLIENT_ID:{
-                    int clientId = MessageFactory::getClientId(message);
-                    gameAccess.setClientId(clientId);
-                    break;
-                }
-                case SERVER_NOTIFICATION_GET_ALL_MAPS:{
-                    std::vector<std::string> maps;
-                    maps = MessageFactory::getMaps(message);
-                    gameAccess.addMapsToCombo(maps);
-                    break;
-                }
-                case SERVER_NOTIFICATION_GET_ALL_MATCHES:{
-                    std::vector<std::string> matches;
-                    matches = MessageFactory::getMatches(message);
-                    gameAccess.addMatchesToCombo(matches);
-                    break;
-                }
-                case SERVER_NOTIFICATION_NEW_MATCH:{
-                    int clientId = MessageFactory::getClientId(message);
-                    std::string matchName =
-                            MessageFactory::getMatchName(message);
-
-                    gameAccess.addMatchToCombo(clientId, matchName);
-                    break;
-                }
-                case SERVER_NOTIFICATION_GET_UNAVAILABLE_ELEMENTS:{
-                    std::list<std::string> elements =
-                            MessageFactory::getElements(message);
-                    gameAccess.setAvailableElements(elements);
-                    break;
-                }
-                case SERVER_NOTIFICATION_START_MATCH:{
-                    std::string matchName =
-                            MessageFactory::getMatchName(message);
-
-                    gameAccess.startMatch(matchName);
-                    break;
-                }
-                case SERVER_NOTIFICATION_ENTER_EXISTING_MATCH:{
-                    int clientId = MessageFactory::getClientId(message);
-                    std::list<std::string> elements =
-                            MessageFactory::getElements(message);
-
-                    if (gameAccess.getClientId() != clientId){
-                        gameAccess.setAvailableElementsForJoin(elements);
-                    }
-                    break;
-                }
-                case SERVER_NOTIFICATION_ENTERED_MATCH:{
-                    int clientId = MessageFactory::getClientId(message);
-                    std::string matchName =
-                            MessageFactory::getMatchName(message);
-                    gameAccess.setJoinedToMatch(clientId, matchName);
+                case SERVER_NOTIFICATION_START_MATCH:
+                case SERVER_NOTIFICATION_CLIENT_ID:
+                case SERVER_NOTIFICATION_GET_ALL_MAPS:
+                case SERVER_NOTIFICATION_GET_ALL_MATCHES:
+                case SERVER_NOTIFICATION_NEW_MATCH:
+                case SERVER_NOTIFICATION_ENTER_EXISTING_MATCH:
+                case SERVER_NOTIFICATION_GET_UNAVAILABLE_ELEMENTS:
+                case SERVER_NOTIFICATION_ENTERED_MATCH: {
+                    notificable.notify(dataFromServer);
                     break;
                 }
                 /*
