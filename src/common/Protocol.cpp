@@ -35,9 +35,6 @@ std::string Protocol::requestToString(int requestType) {
         case CLIENT_REQUEST_NEW_MATCH:
             toReturn.append(" to Create new GamePlayWindow");
             break;
-        case CLIENT_REQUEST_ENTER_EXISTING_MATCH:
-            toReturn.append(" to Enter in exisiting GamePlayWindow");
-            break;
         case CLIENT_REQUEST_PUT_TOWER:
             toReturn.append(" to Put a Tower");
             break;

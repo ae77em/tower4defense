@@ -54,6 +54,7 @@ void GameAccessWindow::run() {
         initEntryMatchName(refBuilder);
         initComboMatches(refBuilder);
         initCheckboxElements(refBuilder);
+        initListenerThread(refBuilder);
 
         loadMutex.unlock();
         app->run(*pWindow);
@@ -404,5 +405,28 @@ void GameAccessWindow::startMatch(std::string matchName) {
     game->start();
 
     //pWindow->show();
+}
+
+void GameAccessWindow::initListenerThread(Glib::RefPtr<Gtk::Builder> &refPtr) {
+//    //Glib::Thread *listener;
+//
+//    //for the worker thread to dispatch jobs to the GUI thread.
+//    Glib::Dispatcher *dispatcher;
+//
+//    // somewhere in your initialization code you specify
+//    // the function that gets called when the worker thread dispatches a job
+//    dispatcher->connect(sigc::mem_fun(*this, &GameAccessWindow::on_loadData));
+//
+//    //you start the worker thread to do the processing
+//    //listener = Glib::Thread::create(sigc::mem_fun(*this, &GameAccessWindow::listen), true);
+}
+
+void GameAccessWindow::on_loadData() {
+
+}
+
+void GameAccessWindow::listen() {
+
+
 }
 

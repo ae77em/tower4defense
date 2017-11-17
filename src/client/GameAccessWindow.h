@@ -150,6 +150,12 @@ private:
     void handlePlayButtonsAvailability();
 
     bool hasValidValue(const std::string &match) const;
+
+    void initListenerThread(Glib::RefPtr<Gtk::Builder> &refPtr);
+
+    void on_loadData();
+
+    void listen();
 };
 
 #endif //TP4_TOWERDEFENSE_GAMEACCESS_H

@@ -12,11 +12,10 @@ enum ClientRequestsNonPlaying {
     CLIENT_REQUEST_ACCESS_GAME_MENU = 1,
     CLIENT_REQUEST_ACCESS_CONFIGURATION_MENU = 2,
     CLIENT_REQUEST_NEW_MATCH = 3,
-    CLIENT_REQUEST_ENTER_EXISTING_MATCH = 4,
+    CLIENT_REQUEST_ENTER_MATCH = 4,
     CLIENT_REQUEST_GET_ALL_MAPS = 5,
     CLIENT_REQUEST_GET_ALL_MATCHES = 6,
     CLIENT_REQUEST_GET_UNAVAILABLE_ELEMENTS = 7,
-    CLIENT_REQUEST_ENTER_MATCH = 8,
     CLIENT_REQUEST_START_MATCH = 9
 };
 
@@ -32,8 +31,6 @@ enum ClientRequestsPlaying {
 };
 
 enum ServerNonPlayingNotifications {
-    SERVER_NOTIFICATION_ACCESS_GAME_MENU = 200,
-    SERVER_NOTIFICATION_ACCESS_CONFIGURATION_MENU = 201,
     SERVER_NOTIFICATION_NEW_MATCH = 202,
     SERVER_NOTIFICATION_ENTER_EXISTING_MATCH = 203,
     SERVER_NOTIFICATION_GET_ALL_MAPS = 204,
@@ -47,7 +44,6 @@ enum ServerNonPlayingNotifications {
     SERVER_NOTIFICATION_ENTERED_MATCH = 212,
     SERVER_NOTIFICATION_END_CLIENT_CONNECTION = 296,
     SERVER_NOTIFICATION_NEW_MATCH_ERROR = 297,  // 299 - 2
-    SERVER_NOTIFICATION_ACCESS_GAME_MENU_ERROR = 299  // 299 - 0
 };
 
 enum ServerPlayingNotifications {
@@ -61,7 +57,6 @@ enum ServerPlayingNotifications {
     /* Del 399 para abajo (en forma descendente), las notificaciones que
      * corresponden a eventos no disparados por el usuario. */
     SERVER_NOTIFICATION_MATCH_ENDED = 399,
-    SERVER_NOTIFICATION_MOVE_ENEMIES = 398,
     SERVER_NOTIFICATION_MOVE_ENEMY = 397
     /* no creo que se alcancen, pero en tal caso habrá que pasar a otro rango */
 };

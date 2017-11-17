@@ -193,15 +193,6 @@ void Server::run() {
                     sendUnavailableElementsToClient(clientId, nameMatch);
                     break;
                 }
-                case CLIENT_REQUEST_ENTER_EXISTING_MATCH: {
-                    int clientId = request.getAsInt("clientId");
-                    std::string matchName = request.getAsString("matchName");
-                    std::list<std::string> elements =
-                            request.getAsStringVector("elements");
-
-                    addPlayerToGame(clientId, matchName, elements);
-                    break;
-                }
                 case CLIENT_REQUEST_START_MATCH: {
                     int clientId = request.getAsInt("clientId");
                     std::string matchName = request.getAsString("matchName");
