@@ -34,15 +34,23 @@ Screen::Screen() {
     tile_lava.loadFromFile("images/sprites/tile-lava.png", renderer);
     tile_firm.loadFromFile("images/sprites/tile-firm.png", renderer);
 
-    waterTower.loadFromFile("images/water_tower.png", renderer);
-    earthTower.loadFromFile("images/earth_tower.png", renderer);
-    fireTower.loadFromFile("images/fire_tower.png", renderer);
-    airTower.loadFromFile("images/air_tower.png", renderer);
+    waterTower.reset(new StaticFrame(renderer, "images/water_tower.png"));
+    earthTower.reset(new StaticFrame(renderer, "images/earth_tower.png"));
+    {
+        CompositeAnimation *c = new CompositeAnimation();
+        c->memberPushBack(new StaticFrame(renderer, "images/fire_tower.png"),
+                0, 30);
+        c->memberPushBack(new GridAnimation(renderer,
+                "images/sprites/tower-fire-flame.png", 30, 1, 1),
+                50, 0);
+        fireTower.reset(c);
+    }
+    airTower.reset(new StaticFrame(renderer, "images/air_tower.png"));
 
-    portal_blue = new Animation(renderer,
-            "images/sprites/portal-blue2.png", 30, 1);
-    portal_red = new Animation(renderer,
-            "images/sprites/portal-red.png", 10, 3);
+    portal_blue.reset(new GridAnimation(renderer,
+            "images/sprites/portal-blue2.png", 30, 1));
+    portal_red.reset(new GridAnimation(renderer,
+            "images/sprites/portal-red.png", 10, 3));
 
     font = TTF_OpenFont("resources/fonts/UbuntuMono-R.ttf", 16);
     if (! font) throw std::runtime_error("Could not load font");
@@ -50,9 +58,6 @@ Screen::Screen() {
 }
 
 Screen::~Screen() {
-    delete portal_blue;
-    delete portal_red;
-
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
 }
@@ -82,7 +87,8 @@ void Screen::put(unsigned x, unsigned y, Texture &texture) {
     texture.render(renderer, pos.x, pos.y);
 }
 
-void Screen::put(unsigned x, unsigned y, Animation *animation) {
+void Screen::put(unsigned x, unsigned y,
+        std::unique_ptr<Animation> &animation) {
     Point pos = Utils::mapToScreen(x, y);
 
     // Correccion por camara

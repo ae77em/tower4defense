@@ -21,6 +21,7 @@ class Editor {
     Screen screen;
     model::Mapa map;
     Keybinding keys;
+    bool scrolling_enabled;
 
     public:
     Editor(State *state);
@@ -30,6 +31,10 @@ class Editor {
     void load(std::string filename);
     void save(std::string filename);
     void new_map(unsigned side);
+
+    /* Control map scrolling */
+    void inhibitScrolling();
+    void enableScrolling();
 
     Screen& getScreen();
     model::Mapa& getMap();
@@ -67,6 +72,7 @@ class StateCommand : public State {
     public:
     StateCommand();
     virtual void handle(const SDL_Event &e, Editor &context);
+    virtual void onTransition(Editor &context);
 };
 
 } //namespace Editor

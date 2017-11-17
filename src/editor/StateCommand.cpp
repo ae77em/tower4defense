@@ -65,6 +65,7 @@ void Editor::StateCommand::handle(const SDL_Event &e, Editor &context) {
         // When deleting everything return to tile mode
         if (e.key.keysym.sym == SDLK_BACKSPACE) {
             if ((command.length() == 1) || (SDL_GetModState() & KMOD_ALT)) {
+                context.enableScrolling();
                 context.transition(new StateTile());
                 return;
             }
@@ -97,6 +98,7 @@ void Editor::StateCommand::handle(const SDL_Event &e, Editor &context) {
 
             context.getScreen().setDialog(c(context, command));
 
+            context.enableScrolling();
             context.transition(new StateTile());
             return;
         }
@@ -114,4 +116,8 @@ void Editor::StateCommand::handle(const SDL_Event &e, Editor &context) {
     }
 
     if (textUpdated) context.getScreen().setDialog(command);
+}
+
+void Editor::StateCommand::onTransition(Editor &context) {
+    context.inhibitScrolling();
 }

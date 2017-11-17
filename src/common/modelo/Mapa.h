@@ -52,6 +52,8 @@ public:
     void setEstiloFondo(char estilo);
 
     Point dimensiones();
+    /* Devuelve verdadero si el parametro esta dentro de los bordes */
+    bool estaDentro(Point &p) const;
 
     std::vector<std::vector<Point>>& getCaminos();
     void agregarCamino(const std::vector<Point> &camino);

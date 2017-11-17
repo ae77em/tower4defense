@@ -10,8 +10,7 @@
 #include "Constants.h"
 #include "../common/modelo/Mapa.h"
 #include "../common/Point.h"
-#include <string>
-#include <vector>
+#include <memory>
 
 class Screen {
     SDL_Renderer *renderer;
@@ -22,13 +21,13 @@ class Screen {
     TTF_Font *font;
     Texture dialog;
     Texture tile_desert, tile_grass, tile_ice, tile_lava, tile_firm;
-    Texture waterTower, earthTower, fireTower, airTower;
-    Animation *portal_blue, *portal_red;
+    std::unique_ptr<Animation> waterTower, earthTower, fireTower, airTower;
+    std::unique_ptr<Animation> portal_blue, portal_red;
 
     void putDialog();
 
     void put(unsigned x, unsigned y, Texture &texture);
-    void put(unsigned x, unsigned y, Animation *animation);
+    void put(unsigned x, unsigned y, std::unique_ptr<Animation> &animation);
 
 public:
     Screen();

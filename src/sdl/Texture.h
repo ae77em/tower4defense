@@ -49,9 +49,9 @@ public:
     void renderSprite(SDL_Renderer *renderer, int x, int y, SDL_Rect *clip);
 
     //Gets image dimensions
-    int getWidth();
+    int getWidth() const;
 
-    int getHeight();
+    int getHeight() const;
 
 private:
     //The actual hardware texture
