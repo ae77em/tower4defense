@@ -46,6 +46,12 @@ public:
     static double distanceSquared(int x1, int y1, int x2, int y2);
 
     static bool animablesPositionComparator(Animable *a, Animable *b);
+
+    /* Devuelve un punto en l a distancia minimal de p
+     *
+     * Pasar un l vacio resulta en error en tiempo de ejecucion.
+     */
+    static Point findClosest(const Point& p, const std::vector<Point>& l);
 };
 
 
