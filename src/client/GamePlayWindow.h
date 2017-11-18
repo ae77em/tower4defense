@@ -109,6 +109,8 @@ private:
 
     bool isAValidPutTowerRequest(Point &point);
 
+    void renderLevel();
+
     /* *
      * Attributes
      * */
@@ -186,28 +188,28 @@ private:
     int TILES_COLUMNS;
     int TOTAL_TILES;
 
-
     const std::map<char, int> tileIdTranslator = {
-            /*
-             * Tabla de codigos:
-             *    . espacio transitable
-             *    # espacio vacio/impasable
-             *    x terreno firme (construccion de torres posible)
-             *
-             *    E entrada
-             *    S salida
-             *
-             *   d desert
-             *   g grass
-             *   i ice
-             *   l lava
-             */
-            std::make_pair('x', TILE_FIRM),
-            std::make_pair('.', TILE_WAY),
-            std::make_pair('d', TILE_DESERT),
-            std::make_pair('g', TILE_GRASS),
-            std::make_pair('i', TILE_ICE),
-            std::make_pair('l', TILE_LAVA),
+        /*
+         * Tabla de codigos:
+         *    . espacio transitable
+         *    # espacio vacio/impasable
+         *    x terreno firme (construccion de torres posible)
+         *
+         *    E entrada
+         *    S salida
+         *
+         *   d desert
+         *   g grass
+         *   i ice
+         *   l lava
+         */
+        std::make_pair('.', TILE_WAY),
+        std::make_pair('#', TILE_EMPTY),
+        std::make_pair('x', TILE_FIRM),
+        std::make_pair('d', TILE_DESERT),
+        std::make_pair('g', TILE_GRASS),
+        std::make_pair('i', TILE_ICE),
+        std::make_pair('l', TILE_LAVA)
     };
 };
 

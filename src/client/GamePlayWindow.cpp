@@ -89,7 +89,7 @@ void GamePlayWindow::renderTimeMessages(SDL_Rect &camera) {
         TIME_FOR_ENABLE_ACTION) {
         t /= 1000;
         t = 20 - t;
-        std::__cxx11::string message("Puede poner torre nuevamente en: ");
+        std::string message("Puede poner torre nuevamente en: ");
         message.append(std::__cxx11::to_string(t));
         message.append(" seg");
         renderText(camera, message, 1, 150);
@@ -99,8 +99,6 @@ void GamePlayWindow::renderTimeMessages(SDL_Rect &camera) {
 bool GamePlayWindow::init() {
     //Initialization flag
     bool success = true;
-
-    std::cout << "mapa serializadoooo: " << map.serialize() << std::endl;
 
     //Initialize SDL
     if (TTF_Init() < 0) {
@@ -239,13 +237,6 @@ void GamePlayWindow::initializeGameActors() {
 }
 
 void GamePlayWindow::close() {
-    //Deallocate tiles
-    /*for (int i = 0; i < TOTAL_TILES; ++i) {
-        if (tileSet[i] != nullptr) {
-            delete tileSet[i];
-        }
-    }*/
-
     //Free loaded images
     dotTexture.free();
     for (unsigned i = 0; i < TOTAL_TILE_SPRITES; ++i) {
@@ -273,42 +264,32 @@ void GamePlayWindow::close() {
 bool GamePlayWindow::setTiles() {
     //Success flag
     bool tilesLoaded = true;
+    int tileType;
 
     //The tile offset
-    //int k = 0;
     char tileSaved;
 
-    //Open the map
-    //std::ifstream map("resources/maps/mapa1.map");
-
-    //If the map couldn't be loaded
-    /*if (!map.is_open()) {
-        printf("Unable to load map file!\n");
-        tilesLoaded = false;
-    } else {*/
     //Initialize the tiles
-
-
     for (unsigned i = 0; i < map.getExtensionX(); ++i) {
         for (unsigned j = 0; j < map.getExtensionY(); ++j) {
             //Determines what kind of tile will be made
-            int tileType = -1;
 
             //Read tile from map file
             tileSaved = map.casilla(i, j);
 
-            if (tileSaved == 'E' || tileSaved == 'S'){ // es portal
+            if (tileSaved == 'E' || tileSaved == 'S') { // es portal
                 portals.push_back(new Portal());
                 tileType = tileIdTranslator.at(map.getEstiloFondo());
-            } else if (tileSaved == '.' || tileSaved == 'x'){ // firme o camino
-                tileType = tileIdTranslator.at(tileSaved);
-            } else {  // es campo
+            } else if (tileSaved == '.') { // campo
                 tileType = tileIdTranslator.at(map.getEstiloFondo());
+            } else if (tileSaved == 'x') { // firme
+                tileType = tileIdTranslator.at(tileSaved);
+            } else if (tileSaved == '#') { // es la nada
+                tileType = tileIdTranslator.at(tileSaved);
             }
 
             //If the number is a valid tile number
-            if (tileType >= 0 && tileType <= TILE_TOWER) {
-                //k = i * TILES_COLUMNS + j;
+            if (tileType >= TILE_EMPTY && tileType <= TILE_TOWER) {
                 tileSet.push_back(std::move(Tile(i, j, tileType)));
             } else {
                 //If we don't recognize the tile type
@@ -342,10 +323,6 @@ bool GamePlayWindow::setTiles() {
     }
 
     loadPortalSprites();
-    //}
-
-    //Close the file
-    //map.close();
 
     //If the map was loaded fine
     return tilesLoaded;
@@ -487,7 +464,8 @@ bool GamePlayWindow::isAValidPutTowerRequest(Point &point) {
 
 void GamePlayWindow::doTowerInfoRequest() const {
     std::string request =
-            MessageFactory::getTowerInfoRequest(clientId, matchName, towerSelected);
+            MessageFactory::getTowerInfoRequest(clientId, matchName,
+                                                towerSelected);
     sendToServer(request);
 }
 
@@ -817,12 +795,6 @@ void GamePlayWindow::run() {
                         quit = true;
                     }
 
-                    /*if (gameEnded) {
-                        if (SDL_GetTicks() - gameEndedTime > 3000) {
-                            quit = true;
-                        }
-                    }*/
-
                     //Handle input for the dot
                     dot.handleEvent(e);
 
@@ -841,21 +813,7 @@ void GamePlayWindow::run() {
                 SDL_RenderClear(gRenderer);
 
                 //Render level
-                for (int i = 0; i < TOTAL_TILES; ++i) {
-                    if (tileSet.at(i).itIsMarked()) {
-                        tileSet.at(i).verifyIfMustContinueMarked();
-
-                        if (!tileSet.at(i).itIsMarked()) {
-                            tileSet.at(i).setType(
-                                    TILE_FIRM); // todo refactor
-                        }
-                    }
-
-                    tileSet.at(i).render(camera,
-                                         gTileClips,
-                                         gRenderer,
-                                         gTileTextures);
-                }
+                renderLevel();
 
                 // Rendereo punto para mover pantalla
                 dot.render(dotTexture, camera, gRenderer);
@@ -916,6 +874,26 @@ void GamePlayWindow::run() {
     }
 
     server->shutdown(); // TODO ver si esto corresponde hacerlo acá...
+}
+
+void GamePlayWindow::renderLevel() {
+    for (int i = 0; i < TOTAL_TILES; ++i) {
+        if (tileSet.at(i).itIsMarked()) {
+            tileSet.at(i).verifyIfMustContinueMarked();
+
+            if (!tileSet.at(i).itIsMarked()) {
+                tileSet.at(i).setType(
+                        TILE_FIRM); // todo refactor
+            }
+        }
+
+        if (tileSet.at(i).isDrawable()){
+            tileSet.at(i).render(camera,
+                             gTileClips,
+                             gRenderer,
+                             gTileTextures);
+        }
+    }
 }
 
 

@@ -80,6 +80,7 @@ const int SPRITE_DIRECTIONS[4] = {
 
 //The different tile sprites
 enum TileType {
+    TILE_EMPTY = -1,
     TILE_GRASS = 0,
     TILE_DESERT = 1,
     TILE_ICE = 2,

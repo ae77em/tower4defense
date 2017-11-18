@@ -54,6 +54,7 @@ public:
 
     Tower *getTower();
 
+    bool isDrawable();
 
 private:
     //The attributes of the tile

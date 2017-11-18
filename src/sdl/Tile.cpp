@@ -120,3 +120,7 @@ void Tile::setTower(Tower *t) {
 Tower *Tile::getTower() {
     return tower;
 }
+
+bool Tile::isDrawable() {
+    return type != TILE_EMPTY;
+}
