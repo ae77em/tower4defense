@@ -24,7 +24,7 @@ void Editor::StatePath::handle(const SDL_Event &e, Editor &context) {
     // Shift-click adds point to path, ends it, and adds it to map
     if (e.type == SDL_MOUSEBUTTONDOWN
             && ( KMOD_SHIFT & SDL_GetModState() )) {
-        Point p = screen.mouseCurrentTile();
+        Point p = tentative_point;
 
         /* Do something iff the new point is acceptable as
            an extension of the path, and the result would be
