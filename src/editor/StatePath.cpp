@@ -35,6 +35,7 @@ void Editor::StatePath::handle(const SDL_Event &e, Editor &context) {
         map.setCasilla('S', p.x, p.y);
         path.push_back(p);
         map.agregarCamino(path);
+        path.clear();
     }
 
     const Keybinding& keys = context.getKeys();
