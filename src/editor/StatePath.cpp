@@ -29,13 +29,12 @@ void Editor::StatePath::handle(const SDL_Event &e, Editor &context) {
         /* Do something iff the new point is acceptable as
            an extension of the path, and the result would be
            a sensible path */
-        if (map.estaDentro(p) && (path.size() > 0)) {
-            // Automatically add portal on the last point
-            map.setCasilla('S', p.x, p.y);
-            path.push_back(p);
-            map.agregarCamino(path);
-            path.clear();
-        }
+        if (! (map.estaDentro(p) && (path.size() > 0)) ) return;
+
+        // Automatically add portal on the last point
+        map.setCasilla('S', p.x, p.y);
+        path.push_back(p);
+        map.agregarCamino(path);
     }
 
     const Keybinding& keys = context.getKeys();
