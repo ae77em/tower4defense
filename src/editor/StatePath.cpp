@@ -1,4 +1,5 @@
 #include "Editor.h"
+#include "../sdl/Utils.h"
 
 void Editor::StatePath::handle(const SDL_Event &e, Editor &context) {
     auto& map = context.getMap();
@@ -51,5 +52,22 @@ void Editor::StatePath::onTransition(Editor &context) {
 }
 
 void Editor::StatePath::preRender(Editor &context) {
-    context.getScreen().trace(path);
+    auto& screen = context.getScreen();
+    screen.trace(path);
+
+    if (path.size() == 0) return;
+    const auto c = screen.mouseCurrentTile();
+    const auto& p = path.back();
+
+    /* Select the closest point to c from the points adjacent
+       to the last point in path */
+    const std::vector<Point> surroundings = {
+        {p.x - 1, p.y - 1}, {p.x, p.y - 1}, {p.x + 1, p.y - 1},
+        {p.x - 1, p.y    },                 {p.x + 1, p.y    },
+        {p.x - 1, p.y + 1}, {p.x, p.y + 1}, {p.x + 1, p.y + 1}
+    };
+    tentative_point = Utils::findClosest(c, surroundings);
+
+    /* Show the new tentative segment */
+    screen.trace({p, tentative_point});
 }
