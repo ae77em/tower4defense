@@ -40,7 +40,7 @@ public:
     void draw();
 
     void handleEvent(SDL_Event &e);
-    Point mouseCurrentTile();
+    Point mouseCurrentTile() const;
 };
 
 #endif
