@@ -26,7 +26,8 @@ WorkerLoopGame::WorkerLoopGame(std::map<int,ServerPlayer*>& p,
 }
 
 void WorkerLoopGame::run(){
-    std::cout << "WorkerLoopGame: Hilo donde existe la partida arrancando" << std::endl;
+    std::cout << "WorkerLoopGame: Hilo donde "
+            "existe la partida arrancando" << std::endl;
     unsigned int ciclos = 10000;
     std::string statusGame;
 
@@ -54,7 +55,8 @@ void WorkerLoopGame::run(){
             std::cout<< a->action << "  "<<std::endl;
 
             if(a->action.compare("game-explotion") == 0){
-                std::cout << "WorkerLoopGame: salgo porque explote "<< std::endl;
+                std::cout << "WorkerLoopGame: "
+                        "salgo porque explote "<< std::endl;
 
                 clientDie = true;
                 break;

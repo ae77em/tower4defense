@@ -2,11 +2,15 @@
 #include "../common/MessageFactory.h"
 #include "../common/Protocol.h"
 #include "../common/Request.h"
+#include "../common/modelo/Mapa.h"
 #include <utility>
 #include <map>
 #include <vector>
 #include <string>
 #include <list>
+#include <sys/types.h>
+#include <dirent.h>
+
 
 Server::Server(std::mutex &m, ThreadedQueue<Message> &tq)
         : mutexPlayers(m), queueMessagesClient(tq) {}
@@ -16,8 +20,9 @@ unsigned int Server::getAmountGames() {
     return matches.size();
 }
 
-void Server::createGame(int clientId, std::string matchName) {
-    bool wasCreated = createMatch(matchName);
+void
+Server::createGame(int clientId, std::string matchName, std::string mapName) {
+    bool wasCreated = createMatch(matchName, mapName);
 
     std::string message = "";
 
@@ -100,12 +105,14 @@ void Server::addPlayerToMatch(std::string nameMatch, ServerPlayer *sp) {
 }
 
 //crea el juego y retorna el id del mismo, el id es el nombre del match...
-bool Server::createMatch(std::string nameMatch) {
+bool Server::createMatch(std::string nameMatch, std::string mapName) {
     if (matches.find(nameMatch) == matches.end()) {
         matches.insert(
                 std::pair<std::string, ServerGame *>(nameMatch,
                                                      new ServerGame(
-                                                             mutexPlayers)));
+                                                             mutexPlayers,
+                                                             mapName)
+                ));
         return true;
     }
     return false;
@@ -159,8 +166,9 @@ void Server::run() {
                 case CLIENT_REQUEST_NEW_MATCH: {
                     int clientId = request.getAsInt("clientId");
                     std::string nameMatch = request.getAsString("matchName");
+                    std::string mapName = request.getAsString("mapName");
 
-                    createGame(clientId, nameMatch);
+                    createGame(clientId, nameMatch, mapName);
                     break;
                 }
                 /* this responses are individual */
@@ -175,7 +183,8 @@ void Server::run() {
                 }
                 case CLIENT_REQUEST_GET_ALL_MAPS: {
                     int clientId = MessageFactory::getClientId(messageRequest);
-                    response = MessageFactory::getExistingMapsNotification();
+                    std::vector<std::string> mapsNames = getAllMapsNames();
+                    response = MessageFactory::getExistingMapsNotification(mapsNames);
                     notifyTo(clientId, response);
                     break;
                 }
@@ -200,8 +209,6 @@ void Server::run() {
                     startMatch(clientId, matchName);
                     break;
                 }
-
-
                     /* gaming requests: */
                 case CLIENT_REQUEST_PUT_TOWER: {
                     std::string matchName = request.getAsString("matchName");
@@ -296,8 +303,14 @@ void Server::startMatch(int clientId, std::string matchName) {
     } else {
         serverGame->setPlaying(true);
 
+        std::string mapName = serverGame->getMapName();
+
+        model::Mapa mapa = maps.at(mapName);
+
+        std::string serializedMap = mapa.serialize();
+
         std::string message = MessageFactory::getStartMatchNotification(
-                matchName);
+                matchName, serializedMap);
         serverGame->notifyAll(message);
 
         //VEDR DESPUES COMO SINCRONIZAR PARA QUE NO ARRANQUE MUY ANTES
@@ -407,6 +420,44 @@ void Server::upgradeTower(std::string matchName, int towerId, int upgradeType) {
 void Server::towerInfo(int clientId, std::string matchName, int towerId) {
     ServerGame *serverGame = matches.at(matchName);
     serverGame->towerInfo(clientId, towerId);
+}
+
+void Server::loadMaps() {
+    DIR* dirp = opendir("resources/maps");
+    std::string mapFilename;
+    struct dirent *dp;
+
+    while ((dp = readdir(dirp)) != NULL) {
+        mapFilename.assign("resources/maps");
+        mapFilename.append(dp->d_name);
+        model::Mapa aMap(mapFilename);
+
+        aMap.setNombre(splitFilename(mapFilename));
+
+        maps.insert(std::pair<std::string,model::Mapa>(aMap.getNombre(),std::move(aMap)));
+    }
+
+    closedir(dirp);
+}
+
+std::string Server::splitFilename(std::string str) {
+    std::size_t found = str.find_last_of("/\\");
+
+    std::cout << " file: " << str.substr(found+1) << '\n';
+
+    return str.substr(found+1);
+}
+
+std::vector<std::string> Server::getAllMapsNames() {
+    std::vector<std::string> toReturn;
+    std::string namePosta;
+
+    for (auto it=maps.begin(); it!=maps.end(); ++it){
+        toReturn.push_back(it->first);
+
+    }
+
+    return toReturn;
 }
 
 

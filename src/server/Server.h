@@ -15,6 +15,7 @@
 
 #include "ServerPlayer.h"
 #include "ServerGame.h"
+#include "../common/modelo/Mapa.h"
 #include <map>
 #include <string>
 #include <list>
@@ -28,7 +29,8 @@ private:
 
     ThreadedQueue<Message>& queueMessagesClient;
     std::map<unsigned int,ServerPlayer*> players;
-    std::map<std::string,ServerGame*> matches;
+    std::map<std::string, ServerGame*> matches;
+    std::map<std::string, model::Mapa> maps;
 
 public:
     Server(std::mutex& m,ThreadedQueue<Message>& tq);
@@ -37,8 +39,8 @@ public:
 
     std::string getGamesList();
 
-    void createGame(int clientId, std::string matchName);
-    bool createMatch(std::string basicString);
+    void createGame(int clientId, std::string matchName, std::string string);
+    bool createMatch(std::string basicString, std::string string);
     void notifyAllCreationGame(int gameId,int clientIdWhoCreatedGame);
 
     void addPlayerToMatch(std::string nameMatch, ServerPlayer *sp);
@@ -60,6 +62,10 @@ public:
      * queue: cola encargada de manejar el envío y recepción de datos.
      * */
     void addClient(ThreadedQueue<TextMessage> &queue);
+
+    void loadMaps();
+
+    std::string splitFilename(std::string filename);
 
 private:
     void addPlayerToGame(int clientId,
@@ -89,6 +95,8 @@ private:
     void upgradeTower(std::string matchName, int towerId, int upgradeType);
 
     void towerInfo(int clientId, std::string matchName, int towerId);
+
+    std::vector<std::string> getAllMapsNames();
 };
 
 #endif //TP4_TOWERDEFENSE_SERVER_H

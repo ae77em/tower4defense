@@ -1,5 +1,6 @@
 #include "Mapa.h"
 #include "../Point.h"
+#include "../Message.h"
 #include <string>
 #include <vector>
 #include <stdexcept>
@@ -66,10 +67,10 @@ std::string Mapa::serialize() {
     return Json::writeString(builder, root);
 }
 
-Mapa::Mapa(std::string json) {
+Mapa::Mapa(std::string filename) {
     Json::Value root;
     Json::Reader reader;
-    reader.parse(json, root);
+    reader.parse(filename, root);
 
     extension_x = root["width"].asUInt();
     extension_y = root["height"].asUInt();
@@ -108,4 +109,36 @@ bool Mapa::estaDentro(Point &p) const {
     return p.isPositive()
         && (p.x < (int)extension_x)
         && (p.y < (int)extension_y);
+}
+
+std::string &Mapa::getNombre() {
+    return nombre;
+}
+
+void Mapa::setNombre(std::string s) {
+    nombre = s;
+}
+
+Mapa::Mapa() { }
+
+void Mapa::cargarDesdeString(std::string json) {
+    Message m;
+    m.deserialize(json);
+    Json::Value root = static_cast<Json::Value &&>(m.getData());
+
+    extension_x = root["width"].asUInt();
+    extension_y = root["height"].asUInt();
+
+    // Deserializar las casillas
+    estilo_fondo = root["fondo"].asString().c_str()[0];
+    std::string str_casillas = root["tiles"].asString();
+    casillas = std::vector<char>(str_casillas.begin(), str_casillas.end());
+
+    // Deserializar los caminos
+    for (const auto& path : root["paths"]) {
+        caminos.emplace_back();
+        auto &camino = caminos.back();
+        for (const auto& point : path)
+            camino.push_back(Point::deserialize(point));
+    }
 }

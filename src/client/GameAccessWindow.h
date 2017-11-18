@@ -135,7 +135,7 @@ public:
 
     void setJoinedToMatch(int clientId, std::string matchName);
 
-    void startMatch(std::string matchName);
+    void startMatch(std::string matchName, std::string map);
 
     void notify(std::string &dtl);
 

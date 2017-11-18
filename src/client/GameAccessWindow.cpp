@@ -367,7 +367,7 @@ bool GameAccessWindow::isNotValidClientId() {
     return clientId == -1;
 }
 
-void GameAccessWindow::startMatch(std::string matchName) {
+void GameAccessWindow::startMatch(std::string matchName, std::string map) {
     gameStarted = true;
     pWindow->hide();
 
@@ -376,12 +376,13 @@ void GameAccessWindow::startMatch(std::string matchName) {
                               &other,
                               clientId,
                               myElements,
-                              matchName);
+                              matchName,
+                                map);
 
     game->start();
     game->join();
 
-    pWindow->show();
+    //pWindow->show();
 }
 
 void GameAccessWindow::initDispatcher(Glib::RefPtr<Gtk::Builder> &refPtr) {
@@ -461,7 +462,8 @@ void GameAccessWindow::updateUIData() {
             }
             case SERVER_NOTIFICATION_START_MATCH: {
                 std::string matchName = MessageFactory::getMatchName(message);
-                startMatch(matchName);
+                std::string serializedMap = MessageFactory::getSerializedMap(message);
+                startMatch(matchName, serializedMap);
                 break;
             }
             default:

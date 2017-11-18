@@ -59,10 +59,11 @@
         </child>
         <child>
           <object class="GtkComboBoxText" id="cmbMapas">
-            <property name="width_request">100</property>
+            <property name="width_request">140</property>
             <property name="height_request">40</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="halign">baseline</property>
           </object>
           <packing>
             <property name="x">34</property>
@@ -71,14 +72,14 @@
         </child>
         <child>
           <object class="GtkEntry" id="entryNombrePartida">
-            <property name="width_request">212</property>
+            <property name="width_request">173</property>
             <property name="height_request">46</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="placeholder_text" translatable="yes">Ingrese el nombre de la partida...</property>
+            <property name="placeholder_text" translatable="yes">Nombre de la partida...</property>
           </object>
           <packing>
-            <property name="x">150</property>
+            <property name="x">189</property>
             <property name="y">40</property>
           </packing>
         </child>

@@ -23,13 +23,15 @@ GamePlayWindow::GamePlayWindow(Socket *s,
                                SharedBuffer *ot,
                                int cId,
                                std::vector<std::string> &elems,
-                               std::string mn)
+                               std::string mn,
+                               std::string mp)
         : server(s),
           nonPlayerNotifications(in),
           playerNotifications(ot),
           clientId(cId),
           playerElements(elems),
-          matchName(std::move(mn)) {
+          matchName(std::move(mn)),
+          map(model::Mapa()){
     abmonibleTexture = new Texture();
     blookHawkTexture = new Texture();
     goatmanTexture = new Texture();
@@ -71,8 +73,8 @@ void GamePlayWindow::renderTimeMessages(SDL_Rect &camera) {
     if ((t = (SDL_GetTicks() - timeOfLastSpell)) < TIME_FOR_ENABLE_ACTION) {
         t /= 1000;
         t = 20 - t;
-        std::__cxx11::string message("Puede lanzar hechizo nuevamete en: ");
-        message.append(std::__cxx11::to_string(t));
+        std::string message("Puede lanzar hechizo nuevamete en: ");
+        message.append(std::to_string(t));
         message.append(" seg");
         renderText(camera, message, 1, 100);
     }
@@ -91,6 +93,8 @@ void GamePlayWindow::renderTimeMessages(SDL_Rect &camera) {
 bool GamePlayWindow::init() {
     //Initialization flag
     bool success = true;
+
+    std::cout << "mapa serializadoooo: " << map.serialize() << std::endl;
 
     //Initialize SDL
     if (TTF_Init() < 0) {
@@ -639,7 +643,7 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
             }
             case SERVER_NOTIFICATION_MATCH_ENDED: {
                 nonPlayerNotifications->setClientProcessEnded(true);
-                gameWon = true;
+                gameStatus = GAME_STATUS_WON;
                 break;
             }
             default:
@@ -791,7 +795,7 @@ void GamePlayWindow::run() {
 
             //While application is running
             while (!quit) {
-                gameEnded = gameWon || gameLoose;
+                gameEnded = gameStatus != GAME_STATUS_UNDECIDED;
                 if (gameEnded && gameEndedTime == 0) {
                     gameEndedTime = SDL_GetTicks();
                 }
@@ -875,21 +879,19 @@ void GamePlayWindow::run() {
                 // Muestro los botones de las torres que puedo poner
                 towerButtonsTexture.render(gRenderer, 1, 1);
 
-                if (gameEnded) {
-                    if (gameWon) {
-                        renderText(camera, "Partida ganada...");
-                    } else {
-                        renderText(camera, "Partida perdida...");
-                    }
+                if (gameStatus == GAME_STATUS_WON) {
+                    renderText(camera, "Partida ganada...");
+                } else if (gameStatus == GAME_STATUS_LOOSE) {
+                    renderText(camera, "Partida perdida...");
                 }
 
                 renderTimeMessages(camera);
                 if (!towerDamageDataMessage.empty()){
                     renderText(camera, "Datos de la torre:", 1, 250);
-                    renderText(camera, towerDamageDataMessage, 1, 270);
-                    renderText(camera, towerRangeDataMessage, 1, 290);
-                    renderText(camera, towerReachDataMessage, 1, 310);
-                    renderText(camera, towerSlowdownDataMessage, 1, 330);
+                    renderText(camera, towerDamageDataMessage, 1, 216);
+                    renderText(camera, towerRangeDataMessage, 1, 282);
+                    renderText(camera, towerReachDataMessage, 1, 398);
+                    renderText(camera, towerSlowdownDataMessage, 1, 310);
                 }
 
                 //Update screen

@@ -19,6 +19,7 @@ private:
     std::list<GameAction*>& actions;
     std::mutex& mutexActions;
     std::map<int, Horde*> hordes;
+
     std::vector<ActorTower*> towers;
 
 public:

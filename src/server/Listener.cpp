@@ -28,6 +28,8 @@ void Listener::run() {
     ThreadedQueue<Message> threadedQueue;
     Server server(mutexPlayers, threadedQueue);
 
+    server.loadMaps();
+
     server.start();
     try {
         while (true) {

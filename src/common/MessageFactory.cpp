@@ -32,7 +32,7 @@ std::string MessageFactory::getMapName(Message &message) {
     std::string response;
     Json::Value &root = message.getData();
 
-    response = root.get("mapName", "").asString();
+    response = root.get(MAP_NAME_KEY, "").asString();
 
     return response;
 }
@@ -113,7 +113,8 @@ std::string MessageFactory::getExistingMapsRequest(int clientId) {
     return toReturn;
 }
 
-std::string MessageFactory::getExistingMapsNotification() {
+std::string MessageFactory::getExistingMapsNotification(
+        std::vector<std::string> mapsNames) {
     std::string toReturn;
     Message message;
 
@@ -121,9 +122,10 @@ std::string MessageFactory::getExistingMapsNotification() {
 
     responseRoot[OPERATION_KEY] = SERVER_NOTIFICATION_GET_ALL_MAPS;
     responseRoot["maps"] = Json::arrayValue;
-    /* TODO: obtener la data posta... */
-    responseRoot["maps"].append("mapa1");
-    responseRoot["maps"].append("mapa2");
+    
+    for (std::string mapName : mapsNames){
+        responseRoot["maps"].append(mapName);
+    }
 
     message.setData(responseRoot);
     toReturn = message.serialize();
@@ -276,6 +278,7 @@ std::string MessageFactory::getNewMatchRequest(int clientId,
 
     root[OPERATION_KEY] = CLIENT_REQUEST_NEW_MATCH;
     root[CLIENT_ID_KEY] = clientId;
+    root[MAP_NAME_KEY] = mapName;
     root[MATCH_NAME_KEY] = completeMatchName;
 
     message.setData(root);
@@ -454,13 +457,15 @@ MessageFactory::getStartMatchRequest(int clientId, std::string &matchName) {
 }
 
 
-std::string MessageFactory::getStartMatchNotification(std::string matchName) {
+std::string MessageFactory::getStartMatchNotification(std::string matchName,
+                                               std::string serializedMap) {
     std::string toReturn;
     Json::Value root(Json::objectValue);
     Message message;
 
     root[OPERATION_KEY] = SERVER_NOTIFICATION_START_MATCH;
     root[MATCH_NAME_KEY] = matchName;
+    root["serializedMap"] = serializedMap;
 
     message.setData(root);
 
@@ -721,5 +726,14 @@ std::string MessageFactory::getCastSpellNotification(int x, int y) {
     toReturn = message.serialize();
 
     return toReturn;
+}
+
+std::string MessageFactory::getSerializedMap(Message message) {
+    std::string response;
+    Json::Value &root = message.getData();
+
+    response = root.get("serializedMap", "").asString();
+
+    return response;
 }
 

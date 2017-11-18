@@ -1,6 +1,8 @@
 #ifndef TP4_TOWERDEFENSE_MESSAGEFACTORY_H
 #define TP4_TOWERDEFENSE_MESSAGEFACTORY_H
 
+static const char *const MAP_NAME_KEY = "mapName";
+
 #include <string>
 #include <jsoncpp/json/json.h>
 #include <set>
@@ -74,7 +76,8 @@ public:
     /*
      * Retorna la notificación con todos los mapas existentes para jugar.
      */
-    static std::string getExistingMapsNotification();
+    static std::string getExistingMapsNotification(
+            std::vector<std::string> mapsNames);
 
     /*
      * Retorna el pedido para obtener todas las partidas existentes para jugar.
@@ -130,7 +133,8 @@ public:
 
     static int getDirection(Message message);
 
-    static std::string getStartMatchNotification(std::string name);
+    static std::string
+    getStartMatchNotification(std::string name, std::string serializedMap);
 
     static std::string getMatchStartedNotification(std::string name);
 
@@ -187,6 +191,8 @@ public:
     static std::string getCastSpellNotification(int x, int y);
 
     static std::string getPutTowerNotification(int towerType, int x, int y);
+
+    static std::string getSerializedMap(Message message);
 };
 
 #endif //TP4_TOWERDEFENSE_MESSAGEFACTORY_H

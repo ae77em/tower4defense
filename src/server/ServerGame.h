@@ -16,6 +16,7 @@ private:
     std::map<int,ServerPlayer*> players;
     //lo usaria para bloquear un jugador
     std::mutex& mutexPlayers;
+    std::string mapName;
     bool endSignal;
 
     //lo uso para bloquear la lista de acciones a aplicar sobre el juego
@@ -29,7 +30,11 @@ private:
     std::list<std::string> elements;
 
 public:
-    explicit ServerGame(std::mutex& mutex);
+    const std::string &getMapName() const;
+
+    void setMapName(const std::string &mapName);
+
+    explicit ServerGame(std::mutex& mutex,std::string m);
 
     bool elementsAreAvailables(std::list<std::string> elements);
 

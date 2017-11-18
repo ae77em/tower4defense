@@ -16,8 +16,10 @@ class Mapa {
     std::vector<std::vector<Point>> caminos;
     std::vector<std::vector<model::Enemy>> enemigos;
     char estilo_fondo;
+    std::string nombre;
 
 public:
+    Mapa(); /* para poder usar el from string */
     Mapa(unsigned x, unsigned y);
     explicit Mapa(std::string filename);
     std::string serialize();
@@ -48,6 +50,7 @@ public:
        i ice
        l lava
      */
+
     char getEstiloFondo();
     void setEstiloFondo(char estilo);
 
@@ -59,6 +62,10 @@ public:
     void agregarCamino(const std::vector<Point> &camino);
     std::vector<std::vector<model::Enemy>>& getEnemigos();
     void agregarEnemigo(int indice_camino, const Enemy &e);
+    std::string &getNombre();
+    void setNombre(std::string un_nombre);
+
+    void cargarDesdeString(std::string json);
 };
 
 } // namespace model

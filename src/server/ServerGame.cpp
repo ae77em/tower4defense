@@ -8,7 +8,9 @@
 #include <list>
 #include <string>
 
-ServerGame::ServerGame(std::mutex& m):mutexPlayers(m),
+ServerGame::ServerGame(std::mutex& m,std::string aMapName):
+                                      mutexPlayers(m),
+                                      mapName(aMapName),
                                       endSignal(false),
                                       workerLoopGame(players,
                                                      actions,
@@ -205,5 +207,12 @@ void ServerGame::towerInfo(int clientId, int towerId) {
     notifyTo(clientId, req);
     mutexPlayers.unlock();
     /*****/
+}
+
+const std::string &ServerGame::getMapName() const {
+    return mapName;
+}
+
+void ServerGame::setMapName(const std::string &mapName) {
 }
 

@@ -11,6 +11,12 @@ static const int TOWBER_BUTTONS_HEIGHT = 40;
 
 static const int TIME_FOR_ENABLE_ACTION = 20000;
 
+enum GameStatus {
+    GAME_STATUS_UNDECIDED = 0,
+    GAME_STATUS_WON = 1,
+    GAME_STATUS_LOOSE = 2
+};
+
 #include "../common/Socket.h"
 #include <string>
 #include <SDL2/SDL_rect.h>
@@ -28,6 +34,7 @@ static const int TIME_FOR_ENABLE_ACTION = 20000;
 #include "../sdl/towers/Tower.h"
 #include "../sdl/enemies/DrawableHorde.h"
 #include "../common/Message.h"
+#include "../common/modelo/Mapa.h"
 #include <vector>
 
 class GamePlayWindow : public Thread {
@@ -37,7 +44,8 @@ public:
                    SharedBuffer *other,
                    int clientId,
                    std::vector<std::string> &playerElements,
-                   std::string matchName);
+                   std::string matchName,
+                   std::string map);
 
     virtual ~GamePlayWindow();
 
@@ -82,11 +90,28 @@ private:
 
     void setToFirmTile(Point &point);
 
-    /* A game is, at all times, in one of three states: won, lost,
-       or undecided. There is no point (and some risk) in keeping
-       the information redundantly in several variables. */
-    bool gameWon;
-    bool gameLoose;
+    void handleServerPlayerNotifications(SDL_Rect camera);
+
+    void doCastSpellRequest(const Point &point) const;
+
+    void doPutTowerRequest(const Point &point) const;
+
+    void doUpgradeRequest() const;
+
+    void doTowerInfoRequest() const;
+
+    void renderTimeMessages(SDL_Rect &camera);
+
+    void loadTowerInfo(Message message);
+
+    void setToTowerTile(Point point, Tower *tower);
+
+    bool isAValidPutTowerRequest(Point &point);
+
+    /* *
+     * Attributes
+     * */
+    int gameStatus;
 
     //The window we'll be rendering to
     SDL_Window *gWindow = nullptr;
@@ -140,6 +165,7 @@ private:
     std::vector<Tower *> towers;
     std::vector<std::string> playerElements;
     std::string matchName;
+    model::Mapa map;
 
     TTF_Font *font;
     int typeOfTowerToPut;
@@ -153,24 +179,6 @@ private:
     std::string towerRangeDataMessage;
     std::string towerReachDataMessage;
     std::string towerSlowdownDataMessage;
-
-    void handleServerPlayerNotifications(SDL_Rect camera);
-
-    void doCastSpellRequest(const Point &point) const;
-
-    void doPutTowerRequest(const Point &point) const;
-
-    void doUpgradeRequest() const;
-
-    void doTowerInfoRequest() const;
-
-    void renderTimeMessages(SDL_Rect &camera);
-
-    void loadTowerInfo(Message message);
-
-    void setToTowerTile(Point point, Tower *tower);
-
-    bool isAValidPutTowerRequest(Point &point);
 };
 
 #endif //TP4_TOWERDEFENSE_GAME_H
