@@ -66,7 +66,6 @@ void Editor::Editor::load(std::string filename) {
 
     map_file.close();
     map = model::Mapa(contents);
-    map.setNombre(filename);
 }
 
 void Editor::Editor::save(std::string filename) {

@@ -163,11 +163,11 @@ void Enemy::setDirection(int d) {
     currentDirection = d;
 }
 
-void Enemy::move() {
+void Enemy::move(int maxx, int maxy) {
     walkBox.x += velocityX;
 
     // stop if is the end is reached
-    if ((walkBox.x < 0) || (walkBox.x > TILES_COLUMNS * CARTESIAN_TILE_WIDTH)) {
+    if ((walkBox.x < 0) || (walkBox.x > maxx * CARTESIAN_TILE_WIDTH)) {
         //move back
         walkBox.x -= velocityX;
     }
@@ -175,7 +175,7 @@ void Enemy::move() {
     walkBox.y += velocityY;
 
     // stop if is the end is reached
-    if ((walkBox.y < 0) || (walkBox.y > TILES_ROWS * CARTESIAN_TILE_HEIGHT)) {
+    if ((walkBox.y < 0) || (walkBox.y > maxy * CARTESIAN_TILE_HEIGHT)) {
         //move back
         walkBox.y -= velocityY;
     }

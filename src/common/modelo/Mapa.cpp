@@ -5,6 +5,8 @@
 #include <vector>
 #include <stdexcept>
 #include <jsoncpp/json/json.h>
+#include <iostream>
+#include <fstream>
 
 using namespace model;
 
@@ -67,7 +69,7 @@ std::string Mapa::serialize() {
     return Json::writeString(builder, root);
 }
 
-Mapa::Mapa(std::string filename) {
+Mapa::Mapa(const std::string &filename) {
     Json::Value root;
     Json::Reader reader;
     reader.parse(filename, root);
@@ -119,6 +121,14 @@ void Mapa::setNombre(std::string s) {
     nombre = s;
 }
 
+unsigned Mapa::getExtensionX(){
+    return extension_x;
+}
+
+unsigned Mapa::getExtensionY(){
+    return extension_y;
+}
+
 Mapa::Mapa() { }
 
 void Mapa::cargarDesdeString(std::string json) {
@@ -141,4 +151,20 @@ void Mapa::cargarDesdeString(std::string json) {
         for (const auto& point : path)
             camino.push_back(Point::deserialize(point));
     }
+}
+
+void Mapa::cargarDesdeArchivo(std::string filename){
+    std::fstream map_file;
+    map_file.open(filename, std::ios::in | std::ios::binary);
+    if (!map_file) throw std::runtime_error("Could not open file " + filename);
+
+    // Load file contents into string
+    std::string contents;
+    map_file.seekg(0, std::ios::end);
+    contents.resize(map_file.tellg());
+    map_file.seekg(0, std::ios::beg);
+    map_file.read(&contents[0], contents.size());
+
+    map_file.close();
+    cargarDesdeString(contents);
 }

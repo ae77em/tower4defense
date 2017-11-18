@@ -35,9 +35,6 @@ const int ISO_TILE_WIDTH_HALF = ISO_TILE_WIDTH / 2;
 const int ISO_TILE_HEIGHT_HALF = ISO_TILE_HEIGHT / 2;
 const int SQUARE_TILE_WIDTH = 80; // width of the tile without iso perspective
 const int SQUARE_TILE_HEIGHT = 80; // height of the tile without iso perspective
-const int TILES_ROWS = 24;
-const int TILES_COLUMNS = 16;
-const int TOTAL_TILES = TILES_ROWS * TILES_COLUMNS;
 const int TOTAL_TILE_SPRITES = 8;
 
 //
@@ -93,14 +90,12 @@ enum TileType {
     TILE_TOWER = 7
 };
 
-
 enum UpgradeTypes {
     UPGRADE_DAMAGE = 0,
     UPGRADE_RANGE = 1,
     UPGRADE_SLOWDOWN = 2,
     UPGRADE_REACH = 3
 };
-
 
 enum LTileSpriteMouseEvent {
     BUTTON_SPRITE_DEFAULT = 0,

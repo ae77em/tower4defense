@@ -21,7 +21,7 @@ class Mapa {
 public:
     Mapa(); /* para poder usar el from string */
     Mapa(unsigned x, unsigned y);
-    explicit Mapa(std::string filename);
+    explicit Mapa(const std::string &filename);
     std::string serialize();
 
     /* Devuelve el contenido de la casilla en la posicion x, y.
@@ -50,7 +50,6 @@ public:
        i ice
        l lava
      */
-
     char getEstiloFondo();
     void setEstiloFondo(char estilo);
 
@@ -66,6 +65,12 @@ public:
     void setNombre(std::string un_nombre);
 
     void cargarDesdeString(std::string json);
+
+    void cargarDesdeArchivo(std::string filename);
+
+    unsigned int getExtensionX();
+
+    unsigned int getExtensionY();
 };
 
 } // namespace model

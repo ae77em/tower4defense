@@ -423,18 +423,23 @@ void Server::towerInfo(int clientId, std::string matchName, int towerId) {
 }
 
 void Server::loadMaps() {
-    DIR* dirp = opendir("resources/maps");
+    DIR* dirp = opendir("resources/maps/");
     std::string mapFilename;
     struct dirent *dp;
 
     while ((dp = readdir(dirp)) != NULL) {
-        mapFilename.assign("resources/maps");
-        mapFilename.append(dp->d_name);
-        model::Mapa aMap(mapFilename);
+        if (std::string(dp->d_name).find(".json") != std::string::npos){
+            mapFilename.assign("resources/maps/");
+            mapFilename.append(dp->d_name);
+            model::Mapa aMap;
 
-        aMap.setNombre(splitFilename(mapFilename));
+            aMap.cargarDesdeArchivo(mapFilename);
 
-        maps.insert(std::pair<std::string,model::Mapa>(aMap.getNombre(),std::move(aMap)));
+            aMap.setNombre(dp->d_name);
+
+            std::pair<std::string, model::Mapa> mapPair(aMap.getNombre(),std::move(aMap));
+            maps.insert(mapPair);
+        }
     }
 
     closedir(dirp);
@@ -454,7 +459,6 @@ std::vector<std::string> Server::getAllMapsNames() {
 
     for (auto it=maps.begin(); it!=maps.end(); ++it){
         toReturn.push_back(it->first);
-
     }
 
     return toReturn;

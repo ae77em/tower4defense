@@ -31,7 +31,7 @@ GamePlayWindow::GamePlayWindow(Socket *s,
           clientId(cId),
           playerElements(elems),
           matchName(std::move(mn)),
-          map(model::Mapa()){
+          map(model::Mapa()) {
     abmonibleTexture = new Texture();
     blookHawkTexture = new Texture();
     goatmanTexture = new Texture();
@@ -44,6 +44,12 @@ GamePlayWindow::GamePlayWindow(Socket *s,
     isCastingSpells = false;
     timeOfLastSpell = -TIME_FOR_ENABLE_ACTION;
     timeOfLastTowerPutted = -TIME_FOR_ENABLE_ACTION;
+
+    map.cargarDesdeString(mp);
+
+    TILES_ROWS = map.getExtensionY();
+    TILES_COLUMNS = map.getExtensionX();
+    TOTAL_TILES = TILES_ROWS * TILES_COLUMNS;
 }
 
 GamePlayWindow::~GamePlayWindow() {
@@ -213,7 +219,7 @@ void GamePlayWindow::initializeGameActors() {
         auto horde = new DrawableHorde();
         for (int j = 0; j < 3; ++j) {
             auto greenDaemon = new GreenDaemon(-1, -1, gRenderer,
-                                                 greenDaemonTexture);
+                                               greenDaemonTexture);
             greenDaemon->setSprites();
             horde->addEnemy(greenDaemon);
         }
@@ -234,11 +240,11 @@ void GamePlayWindow::initializeGameActors() {
 
 void GamePlayWindow::close() {
     //Deallocate tiles
-    for (int i = 0; i < TOTAL_TILES; ++i) {
+    /*for (int i = 0; i < TOTAL_TILES; ++i) {
         if (tileSet[i] != nullptr) {
             delete tileSet[i];
         }
-    }
+    }*/
 
     //Free loaded images
     dotTexture.free();
@@ -269,73 +275,77 @@ bool GamePlayWindow::setTiles() {
     bool tilesLoaded = true;
 
     //The tile offset
-    int k = 0;
+    //int k = 0;
+    char tileSaved;
 
     //Open the map
-    std::ifstream map("resources/maps/mapa1.map");
+    //std::ifstream map("resources/maps/mapa1.map");
 
     //If the map couldn't be loaded
-    if (!map.is_open()) {
+    /*if (!map.is_open()) {
         printf("Unable to load map file!\n");
         tilesLoaded = false;
-    } else {
-        //Initialize the tiles
-        for (int i = 0; i < TILES_ROWS; ++i) {
-            for (int j = 0; j < TILES_COLUMNS; ++j) {
-                //Determines what kind of tile will be made
-                int tileType = -1;
+    } else {*/
+    //Initialize the tiles
 
-                //Read tile from map file
-                map >> tileType;
 
-                //If the was a problem in reading the map
-                if (map.fail()) {
-                    //Stop loading map
-                    printf("Error loading map: Unexpected end of file!\n");
-                    tilesLoaded = false;
-                    break;
-                }
+    for (unsigned i = 0; i < map.getExtensionX(); ++i) {
+        for (unsigned j = 0; j < map.getExtensionY(); ++j) {
+            //Determines what kind of tile will be made
+            int tileType = -1;
 
-                //If the number is a valid tile number
-                if ((tileType >= 0)) {
-                    k = i * TILES_COLUMNS + j;
-                    tileSet[k] = new Tile(i, j, tileType);
-                } else {
-                    //If we don't recognize the tile type
-                    //Stop loading map
-                    printf("Error loading map: Invalid tile type at %d!\n", i);
-                    tilesLoaded = false;
-                    break;
-                }
+            //Read tile from map file
+            tileSaved = map.casilla(i, j);
+
+            if (tileSaved == 'E' || tileSaved == 'S'){ // es portal
+                portals.push_back(new Portal());
+                tileType = tileIdTranslator.at(map.getEstiloFondo());
+            } else if (tileSaved == '.' || tileSaved == 'x'){ // firme o camino
+                tileType = tileIdTranslator.at(tileSaved);
+            } else {  // es campo
+                tileType = tileIdTranslator.at(map.getEstiloFondo());
+            }
+
+            //If the number is a valid tile number
+            if (tileType >= 0 && tileType <= TILE_TOWER) {
+                //k = i * TILES_COLUMNS + j;
+                tileSet.push_back(std::move(Tile(i, j, tileType)));
+            } else {
+                //If we don't recognize the tile type
+                //Stop loading map
+                printf("Error loading map: Invalid tile type at %d!\n", i);
+                tilesLoaded = false;
+                break;
             }
         }
-
-        //Clip the sprite sheet
-        if (tilesLoaded) {
-            // de 0 a 6 son los tiles de piso
-            for (unsigned i = 0; i <= TILE_TOWER; ++i) {
-                gTileClips[i].x = 0;
-                gTileClips[i].y = 0;
-                gTileClips[i].w = ISO_TILE_WIDTH;
-                gTileClips[i].h = ISO_TILE_HEIGHT;
-            }
-
-            /* button tower clips definition */
-            for (unsigned i = 0; i < CANT_TOWERS_BUTTONS; ++i) {
-                for (unsigned j = 0; j < CANT_TOWERS_BUTTONS_STATES; ++j) {
-                    towerButtonsClips[i][j].x = i * 80;
-                    towerButtonsClips[i][j].y = j * 80 + 1;
-                    towerButtonsClips[i][j].w = 80;
-                    towerButtonsClips[i][j].h = 80;
-                }
-            }
-        }
-
-        loadPortalSprites();
     }
 
+    //Clip the sprite sheet
+    if (tilesLoaded) {
+        // de 0 a 6 son los tiles de piso
+        for (unsigned i = 0; i <= TILE_TOWER; ++i) {
+            gTileClips[i].x = 0;
+            gTileClips[i].y = 0;
+            gTileClips[i].w = ISO_TILE_WIDTH;
+            gTileClips[i].h = ISO_TILE_HEIGHT;
+        }
+
+        /* button tower clips definition */
+        for (unsigned i = 0; i < CANT_TOWERS_BUTTONS; ++i) {
+            for (unsigned j = 0; j < CANT_TOWERS_BUTTONS_STATES; ++j) {
+                towerButtonsClips[i][j].x = i * 80;
+                towerButtonsClips[i][j].y = j * 80 + 1;
+                towerButtonsClips[i][j].w = 80;
+                towerButtonsClips[i][j].h = 80;
+            }
+        }
+    }
+
+    loadPortalSprites();
+    //}
+
     //Close the file
-    map.close();
+    //map.close();
 
     //If the map was loaded fine
     return tilesLoaded;
@@ -472,12 +482,12 @@ bool GamePlayWindow::isAValidPutTowerRequest(Point &point) {
     return typeOfTowerToPut != -1
            && (SDL_GetTicks() - timeOfLastTowerPutted) >
               TIME_FOR_ENABLE_ACTION
-            && isFirmTerrain(point);
+           && isFirmTerrain(point);
 }
 
 void GamePlayWindow::doTowerInfoRequest() const {
     std::string request =
-        MessageFactory::getTowerInfoRequest(clientId, matchName, towerSelected);
+            MessageFactory::getTowerInfoRequest(clientId, matchName, towerSelected);
     sendToServer(request);
 }
 
@@ -656,10 +666,10 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
 
 bool GamePlayWindow::isClickOnTowerButton(int mousePosX, int mousePosY) const {
     return (mousePosX >= TOWER_BUTTONS_X_POS
-                   && mousePosX <= TOWER_BUTTONS_WIDTH + TOWER_BUTTONS_Y_POS)
+            && mousePosX <= TOWER_BUTTONS_WIDTH + TOWER_BUTTONS_Y_POS)
            &&
            (mousePosY >= TOWER_BUTTONS_Y_POS
-                   && mousePosY <= TOWBER_BUTTONS_HEIGHT + TOWER_BUTTONS_Y_POS);
+            && mousePosY <= TOWBER_BUTTONS_HEIGHT + TOWER_BUTTONS_Y_POS);
 }
 
 bool GamePlayWindow::isFirmTerrain(Point &point) {
@@ -668,8 +678,8 @@ bool GamePlayWindow::isFirmTerrain(Point &point) {
     if (point.isPositive()) {
         int tilePos = point.x * TILES_COLUMNS + point.y;
         isFirmTerrain =
-                tileSet[tilePos]->getType() == TILE_FIRM
-                || tileSet[tilePos]->getType() == TILE_FIRM_MARKED;
+                tileSet.at(tilePos).getType() == TILE_FIRM
+                || tileSet.at(tilePos).getType() == TILE_FIRM_MARKED;
     }
 
     return isFirmTerrain;
@@ -680,9 +690,9 @@ bool GamePlayWindow::isATowerPoint(Point &point) {
 
     if (point.isPositive()) {
         int tilePos = point.x * TILES_COLUMNS + point.y;
-        if (tileSet[tilePos]->getType() == TILE_TOWER){
+        if (tileSet.at(tilePos).getType() == TILE_TOWER) {
             for (unsigned i = 0; i < towers.size(); ++i) {
-                if (tileSet[tilePos]->getTower() == towers[i]) {
+                if (tileSet.at(tilePos).getTower() == towers[i]) {
                     towerSelected = i;
                     isATowerPoint = true;
                     break;
@@ -701,10 +711,10 @@ bool GamePlayWindow::isGroundTerrain(Point &point) {
 
     if (point.isPositive()) {
         int tilePos = point.x * TILES_COLUMNS + point.y;
-        isGroundTerrain = tileSet[tilePos]->getType() == TILE_DESERT
-                          || tileSet[tilePos]->getType() == TILE_GRASS
-                          || tileSet[tilePos]->getType() == TILE_ICE
-                          || tileSet[tilePos]->getType() == TILE_LAVA;
+        isGroundTerrain = tileSet.at(tilePos).getType() == TILE_DESERT
+                          || tileSet.at(tilePos).getType() == TILE_GRASS
+                          || tileSet.at(tilePos).getType() == TILE_ICE
+                          || tileSet.at(tilePos).getType() == TILE_LAVA;
     }
 
     return isGroundTerrain;
@@ -720,26 +730,26 @@ bool GamePlayWindow::hasElement(const std::string &element) const {
 void GamePlayWindow::setToTowerTile(Point point, Tower *tower) {
     if (point.isPositive()) {
         int tilePos = point.x * TILES_COLUMNS + point.y;
-        tileSet[tilePos]->setType(TILE_TOWER);
-        tileSet[tilePos]->setTower(tower);
+        tileSet.at(tilePos).setType(TILE_TOWER);
+        tileSet.at(tilePos).setTower(tower);
     }
 }
 
 void GamePlayWindow::setToMarkedTile(Point &point) {
     if (point.isPositive()) {
         int tilePos = point.x * TILES_COLUMNS + point.y;
-        tileSet[tilePos]->setType(TILE_FIRM_MARKED);
-        tileSet[tilePos]->setIsMarked(true);
-        tileSet[tilePos]->setMarkedTime(SDL_GetTicks());
+        tileSet.at(tilePos).setType(TILE_FIRM_MARKED);
+        tileSet.at(tilePos).setIsMarked(true);
+        tileSet.at(tilePos).setMarkedTime(SDL_GetTicks());
     }
 }
 
 void GamePlayWindow::setToFirmTile(Point &point) {
     if (point.isPositive()) {
         int tilePos = point.x * TILES_COLUMNS + point.y;
-        tileSet[tilePos]->setType(TILE_FIRM);
-        tileSet[tilePos]->setIsMarked(false);
-        tileSet[tilePos]->setMarkedTime(0);
+        tileSet.at(tilePos).setType(TILE_FIRM);
+        tileSet.at(tilePos).setIsMarked(false);
+        tileSet.at(tilePos).setMarkedTime(0);
     }
 }
 
@@ -832,17 +842,19 @@ void GamePlayWindow::run() {
 
                 //Render level
                 for (int i = 0; i < TOTAL_TILES; ++i) {
-                    if (tileSet[i]->itIsMarked()) {
-                        tileSet[i]->verifyIfMustContinueMarked();
+                    if (tileSet.at(i).itIsMarked()) {
+                        tileSet.at(i).verifyIfMustContinueMarked();
 
-                        if (!tileSet[i]->itIsMarked()) {
-                            tileSet[i]->setType(
+                        if (!tileSet.at(i).itIsMarked()) {
+                            tileSet.at(i).setType(
                                     TILE_FIRM); // todo refactor
                         }
                     }
 
-                    tileSet[i]->render(camera, gTileClips, gRenderer,
-                                       gTileTextures);
+                    tileSet.at(i).render(camera,
+                                         gTileClips,
+                                         gRenderer,
+                                         gTileTextures);
                 }
 
                 // Rendereo punto para mover pantalla
@@ -859,7 +871,7 @@ void GamePlayWindow::run() {
                     animables.push_back(reinterpret_cast<Tower *&&>(tower));
                 }
 
-                std::map<int, DrawableHorde*>::iterator it;
+                std::map<int, DrawableHorde *>::iterator it;
                 for (it = hordes.begin(); it != hordes.end(); ++it) {
                     DrawableHorde *horde = it->second;
 
@@ -886,7 +898,7 @@ void GamePlayWindow::run() {
                 }
 
                 renderTimeMessages(camera);
-                if (!towerDamageDataMessage.empty()){
+                if (!towerDamageDataMessage.empty()) {
                     renderText(camera, "Datos de la torre:", 1, 250);
                     renderText(camera, towerDamageDataMessage, 1, 216);
                     renderText(camera, towerRangeDataMessage, 1, 282);

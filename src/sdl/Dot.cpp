@@ -35,7 +35,7 @@ void Dot::move() {
     mBox.x += mVelX;
 
     //If the dot went too far to the left or right
-    int width = (TILES_ROWS + 2) * ISO_TILE_WIDTH;
+    int width = 100000;//(TILES_ROWS + 2) * ISO_TILE_WIDTH;
     if ((mBox.x < -width) || (mBox.x + DOT_WIDTH > width)) {
         //move back
         mBox.x -= mVelX;
@@ -45,7 +45,7 @@ void Dot::move() {
     mBox.y += mVelY;
 
     //If the dot went too far up or down
-    int height = (TILES_COLUMNS - 2) * ISO_TILE_HEIGHT;
+    int height = 100000;//(TILES_COLUMNS - 2) * ISO_TILE_HEIGHT;
     if ((mBox.y < -height) || (mBox.y + DOT_HEIGHT > height)) {
         //move back
         mBox.y -= mVelY;
@@ -60,22 +60,17 @@ void Dot::setCamera(SDL_Rect &camera) {
     //int max_x_pos = ((TILES_ROWS + 2) * ISO_TILE_WIDTH) - camera.w;
 
     //Keep the camera in bounds
-    if (camera.x <
-        -(((CARTESIAN_TILE_WIDTH * MAX(TILES_COLUMNS, TILES_ROWS)) / 2) +
-          camera.w)) {
-        camera.x = -(
-                (CARTESIAN_TILE_WIDTH * MAX(TILES_COLUMNS, TILES_ROWS)) / 2 +
-                camera.w);
+    if (camera.x < -100000) {
+        camera.x = -100000;
     }
     if (camera.y < -CARTESIAN_TILE_HEIGHT) {
         camera.y = -CARTESIAN_TILE_HEIGHT;
     }
-    if (camera.x >
-        (CARTESIAN_TILE_WIDTH * MAX(TILES_COLUMNS, TILES_ROWS)) / 2) {
-        camera.x = (CARTESIAN_TILE_WIDTH * MAX(TILES_COLUMNS, TILES_ROWS)) / 2;
+    if (camera.x > 100000){
+        camera.x = 100000;
     }
-    if (camera.y > CARTESIAN_TILE_HEIGHT * MAX(TILES_COLUMNS, TILES_ROWS)) {
-        camera.y = CARTESIAN_TILE_HEIGHT * MAX(TILES_COLUMNS, TILES_ROWS);
+    if (camera.y > 100000) {
+        camera.y = 100000;
     }
 }
 

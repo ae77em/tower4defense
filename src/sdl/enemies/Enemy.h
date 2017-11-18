@@ -38,6 +38,7 @@ public:
      * Mueve el enemigo, siguiendo el camino indicado, y chequea colisiones.
      * */
     void move();
+    void move(int maxx, int maxy);
 
     /*
      * Renderea un sprite de la animación del enemigo caminando en la pantalla.

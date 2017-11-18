@@ -3,6 +3,7 @@
 
 #include <cstddef>
 #include <string>
+#include <map>
 
 /* Códigos de de requests para acciones previas al juego,
      * i.e. selección de juego, acceso a configuración, etc.

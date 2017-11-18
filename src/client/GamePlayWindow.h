@@ -35,6 +35,7 @@ enum GameStatus {
 #include "../sdl/enemies/DrawableHorde.h"
 #include "../common/Message.h"
 #include "../common/modelo/Mapa.h"
+#include "../sdl/portals/Portal.h"
 #include <vector>
 
 class GamePlayWindow : public Thread {
@@ -122,7 +123,7 @@ private:
     SDL_Rect camera;
 
     //The level tiles
-    Tile *tileSet[TOTAL_TILES];
+    std::vector<Tile> tileSet;
 
     Texture dotTexture;
 
@@ -163,6 +164,7 @@ private:
 
     std::map<int, DrawableHorde *> hordes;
     std::vector<Tower *> towers;
+    std::vector<Portal *> portals;
     std::vector<std::string> playerElements;
     std::string matchName;
     model::Mapa map;
@@ -179,6 +181,34 @@ private:
     std::string towerRangeDataMessage;
     std::string towerReachDataMessage;
     std::string towerSlowdownDataMessage;
+
+    int TILES_ROWS;
+    int TILES_COLUMNS;
+    int TOTAL_TILES;
+
+
+    const std::map<char, int> tileIdTranslator = {
+            /*
+             * Tabla de codigos:
+             *    . espacio transitable
+             *    # espacio vacio/impasable
+             *    x terreno firme (construccion de torres posible)
+             *
+             *    E entrada
+             *    S salida
+             *
+             *   d desert
+             *   g grass
+             *   i ice
+             *   l lava
+             */
+            std::make_pair('x', TILE_FIRM),
+            std::make_pair('.', TILE_WAY),
+            std::make_pair('d', TILE_DESERT),
+            std::make_pair('g', TILE_GRASS),
+            std::make_pair('i', TILE_ICE),
+            std::make_pair('l', TILE_LAVA),
+    };
 };
 
 #endif //TP4_TOWERDEFENSE_GAME_H
