@@ -41,7 +41,6 @@ std::vector<std::vector<Point>>& Mapa::getCaminos() {
 
 void Mapa::agregarCamino(const std::vector<Point> &camino) {
     caminos.push_back(camino);
-    enemigos.emplace_back();
 }
 
 std::string Mapa::serialize() {
@@ -91,12 +90,18 @@ Mapa::Mapa(const std::string &filename) {
     }
 }
 
-std::vector<std::vector<model::Enemy>>& Mapa::getEnemigos() {
-    return enemigos;
+const std::vector<std::pair<int, std::vector<std::string>>>& Mapa::getHordas() {
+    return hordas;
 }
 
-void Mapa::agregarEnemigo(int indice_camino, const Enemy &e) {
-    enemigos.at(indice_camino).push_back(e);
+void Mapa::agregarHorda(int camino, std::vector<std::string> enemigos) {
+    if ( (int)caminos.size() <= camino )
+        throw std::runtime_error("tratando de agregar horda a camino "
+                "inexistente " + std::to_string(camino));
+    if (camino < 0)
+        throw std::runtime_error("tratando de agregar horda con "
+                "indice negativo" + std::to_string(camino));
+    hordas.emplace_back(camino, enemigos);
 }
 
 char Mapa::getEstiloFondo() {
