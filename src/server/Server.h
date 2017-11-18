@@ -10,7 +10,6 @@
 #include "../common/ThreadedQueue.h"
 #include "../common/Thread.h"
 #include "../common/TextMessage.h"
-#include "../common/SocketManager.h"
 #include "../common/Message.h"
 
 #include "ServerPlayer.h"
