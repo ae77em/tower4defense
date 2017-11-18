@@ -8,12 +8,16 @@ void Editor::StatePath::handle(const SDL_Event &e, Editor &context) {
     // Simple, unshifted click adds points to path
     if (e.type == SDL_MOUSEBUTTONDOWN
             && !( KMOD_SHIFT & SDL_GetModState() )) {
-        Point p = screen.mouseCurrentTile();
-        if (map.estaDentro(p)) {
-            // Automatically add portal on the first point
-            if (path.size() == 0) map.setCasilla('E', p.x, p.y);
-
+        // The first point is taken from current mouse position
+        if (path.size() == 0) {
+            Point p = screen.mouseCurrentTile();
+            if (! map.estaDentro(p)) return;
+            map.setCasilla('E', p.x, p.y);
             path.push_back(p);
+        // Points after the first are taken from tentative_point
+        } else {
+            if (! map.estaDentro(tentative_point)) return;
+            path.push_back(tentative_point);
         }
     }
 
