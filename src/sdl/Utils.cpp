@@ -2,6 +2,8 @@
 #include "Utils.h"
 #include "../sdl/Constants.h"
 #include "Animable.h"
+#include <stdexcept>
+#include <cmath>
 
 bool Utils::checkCollision(SDL_Rect a, SDL_Rect b) {
     //The sides of the rectangles
@@ -198,4 +200,26 @@ bool Utils::animablesPositionComparator(Animable *a, Animable *b) {
     }
 
     return toReturn;
+}
+
+Point Utils::findClosest(const Point& p, const std::vector<Point>& l) {
+    if (l.size() == 0)
+        throw std::runtime_error("passed 0 sized vector to findClosest");
+
+    /* Primera aproximacion al minimo, l[0] */
+    auto min = l.begin();
+    int d_sqr = pow((p.x - min->x), 2) + pow((p.y - min->y), 2);
+
+    auto end = l.end();
+    for (auto it = l.begin(); it != end; it++) {
+        int curr_d = pow((p.x - it->x), 2) + pow((p.y - it->y), 2);
+
+        /* Si es una mejor aproximacion, actualizar */
+        if (curr_d < d_sqr) {
+            min = it;
+            d_sqr = curr_d;
+        }
+    }
+
+    return *min;
 }

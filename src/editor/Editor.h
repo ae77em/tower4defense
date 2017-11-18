@@ -57,6 +57,7 @@ class StateTile : public State {
 
 class StatePath : public State {
     std::vector<Point> path;
+    Point tentative_point = {0, 0};
 
     public:
     virtual void handle(const SDL_Event &e, Editor &context);

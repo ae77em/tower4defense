@@ -23,7 +23,7 @@ file(GLOB SERVER_SOURCES
 file(GLOB EDITOR_SOURCES "src/editor/*.cpp" "src/common/*.cpp"
         "src/common/**/*.cpp" "src/sdl/*.cpp") 
 file(GLOB TEST_SOURCES "tests/unit/*.cpp" "src/common/*.cpp"
-        "src/common/**/*.cpp")
+        "src/common/**/*.cpp" "src/sdl/*.cpp")
 file(GLOB SOCKMAN_SOURCES "tests/sockman.cpp" "src/common/*/*.cpp"
         "src/common/*.cpp")
 
@@ -64,6 +64,8 @@ INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS} ${SDL2IMAGE_INCLUDE_DIRS})
 TARGET_LINK_LIBRARIES(game.exe ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES}
         ${SDL2TTF_LIBRARIES})
 TARGET_LINK_LIBRARIES(editor.exe ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES}
+        ${SDL2TTF_LIBRARIES})
+TARGET_LINK_LIBRARIES(unit.exe ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES}
         ${SDL2TTF_LIBRARIES})
 
 SET(GCC_COVERAGE_COMPILE_FLAGS "-Wall -Werror -pedantic -pedantic-errors -O0 -ggdb -DDEBUG -fno-inline -std=c++11")

@@ -151,7 +151,7 @@ void Screen::put(model::Mapa &map) {
             }
 }
 
-Point Screen::mouseCurrentTile() {
+Point Screen::mouseCurrentTile() const {
     return Utils::getMouseRelativePoint(camera);
 }
 
