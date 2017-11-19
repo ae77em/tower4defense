@@ -642,6 +642,40 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
                 gameStatus = GAME_STATUS_WON;
                 break;
             }
+            case SERVER_NOTIFICATION_PUT_TOWER: {
+                std::cout << "llego poner torre" << std::endl;
+                int towerId = request.getAsInt("towerId");
+                int towerType = request.getAsInt("towerType");
+                int x = request.getAsInt("xCoord");
+                int y = request.getAsInt("yCoord");
+
+                putTower(towerId, towerType, x, y);
+                break;
+            }
+            case SERVER_NOTIFICATION_MARK_TILE: {
+                Point point = MessageFactory::getPoint(message);
+
+                if (point.isPositive()) {
+                    setToMarkedTile(point);
+                }
+                break;
+            }
+            case SERVER_NOTIFICATION_TOWER_INFO: {
+                loadTowerInfo(message);
+                break;
+            }
+            case SERVER_NOTIFICATION_CAST_SPELL: {
+                Point point = MessageFactory::getPoint(message);
+
+                if (point.isPositive()) {
+                    setToFirmTile(point);
+                }
+                break;
+            }
+            case SERVER_NOTIFICATION_APPLY_UPGRADE: {
+                // aplicar upgrade
+                break;
+            };
             default:
                 response = "no reconocida";
         }

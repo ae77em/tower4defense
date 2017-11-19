@@ -13,8 +13,7 @@
 
 class Enemy : public Animable {
 public:
-    Enemy(model::Enemy&& base, int x, int y,
-            SDL_Renderer *renderer, Texture *texture);
+    Enemy(int x, int y, SDL_Renderer *renderer, Texture *texture);
 
     virtual ~Enemy();
 
@@ -74,10 +73,6 @@ public:
 
     bool itIsAlive()const;
 
-    void quitLifePoints(int points);
-
-    int getVelocity() const;
-
     /*
      * Modifica la textura que se utilizará para mostrar el enemigo.
      * texture: referencia a la textura a utilizar.
@@ -125,8 +120,6 @@ public:
     Point getPoint();
 
 protected:
-    model::Enemy baseEnemy;
-
     // Defino este monstruo por default...
     const std::string TEXTURE_FILE_PATH = "images/sprites/"
             "enemy-abominable-walk.png";
@@ -175,8 +168,13 @@ protected:
 
     Point currentPoint;
 
+
+
     /* METHODS */
     virtual void initializeSpritesData();
+
+    bool isAlive;
+    float lifePercentaje;
 };
 
 

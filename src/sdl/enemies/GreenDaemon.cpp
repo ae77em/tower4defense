@@ -2,8 +2,7 @@
 #include "../Utils.h"
 
 GreenDaemon::GreenDaemon(int x, int y, SDL_Renderer *renderer,
-    Texture *texture) : Enemy(model::Enemy(300, 1, "greendaemon"), x, y,
-        renderer, texture) {
+    Texture *texture) : Enemy(x, y, renderer, texture) {
     currentDirection = 0;
     initializeSpritesData();
 }

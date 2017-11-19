@@ -61,7 +61,7 @@ void Listener::run(){
                  * la mejor solución, pero es la que me surgió primero, teniendo en cuenta que
                  * las cosas las tenía resueltas por separado...
                  */
-                case SERVER_NOTIFICATION_PUT_TOWER: // ver como sacarlo de
+                /*case SERVER_NOTIFICATION_PUT_TOWER: // ver como sacarlo de
                     // este grupo
                 case SERVER_NOTIFICATION_MARK_TILE:
                 case SERVER_NOTIFICATION_CAST_SPELL:
@@ -69,7 +69,7 @@ void Listener::run(){
                 case SERVER_NOTIFICATION_APPLY_UPGRADE: {
                     buffer2.addData(dataFromServer);
                     break;
-                }
+                }*/
                 default:
                     buffer.addData(dataFromServer);
             }

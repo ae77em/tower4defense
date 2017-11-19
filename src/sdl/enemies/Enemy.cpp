@@ -1,8 +1,8 @@
 #include "Enemy.h"
 #include "../Utils.h"
 
-Enemy::Enemy(model::Enemy&& base, int x, int y, SDL_Renderer *r, Texture *t)
-        : baseEnemy(base), currentPoint(Utils::mapToScreen(x, y)) {
+Enemy::Enemy(int x, int y, SDL_Renderer *r, Texture *t)
+        : currentPoint(Utils::mapToScreen(x, y)) {
     initializeSpritesData();
 
     collisionCircle.r = Enemy::getCollisionCircleRadio();
@@ -63,7 +63,7 @@ bool Enemy::loadMedia() {
 }
 
 void Enemy::kill() {
-    baseEnemy.setLife(0);
+    isAlive = false;
 }
 
 void Enemy::setSprites() {
@@ -114,7 +114,7 @@ void Enemy::renderWalk(SDL_Rect &camera) {
     double isox = screenPoint.x - camera.x;
     double isoy = screenPoint.y - camera.y - offset;
 
-    if (currentDirection > 7){
+    if (currentDirection > 3){
         currentDirection = 0;
     }
 
@@ -185,17 +185,8 @@ const SDL_Rect &Enemy::getWalkBox() const {
     return walkBox;
 }
 
-int Enemy::getVelocity() const {
-    return baseEnemy.getVelocity();
-}
-
 bool Enemy::itIsAlive() const {
-    return baseEnemy.getLife() != 0;
-}
-
-void Enemy::quitLifePoints(int points) {
-    int current = baseEnemy.getLife();
-    baseEnemy.setLife((current <= points) ? 0 : current - points);
+    return isAlive;
 }
 
 void Enemy::shiftColliders() {
@@ -211,27 +202,21 @@ Circle &Enemy::getCollisionCircle() {
 void Enemy::renderLifeBar(int x, int y) {
     int w = 50; // porque sí
     int h = 4; // porque también (?)...
-    double percent = double(baseEnemy.getLife())
-        / double(baseEnemy.getMaxLife());
     SDL_Color fcolor = {0x00, 0xFF, 0x00, 0xFF}; // green
     SDL_Color bcolor = {0xFF, 0x00, 0x00, 0xFF}; // red
 
-    percent = percent > 1.f ? 1.f : percent < 0.f ? 0.f : percent;
+    lifePercentaje = lifePercentaje > 1.f ? 1.f : lifePercentaje < 0.f ? 0.f : lifePercentaje;
     SDL_Color old;
     SDL_GetRenderDrawColor(renderer, &old.r, &old.g, &old.g, &old.a);
     SDL_Rect bgrect = {x, y, w, h};
     SDL_SetRenderDrawColor(renderer, bcolor.r, bcolor.g, bcolor.b, bcolor.a);
     SDL_RenderFillRect(renderer, &bgrect);
     SDL_SetRenderDrawColor(renderer, fcolor.r, fcolor.g, fcolor.b, fcolor.a);
-    int pw = (int) ((float) w * percent);
+    int pw = (int) ((float) w * lifePercentaje);
     int px = x + (w - pw);
     SDL_Rect fgrect = {px, y, pw, h};
     SDL_RenderFillRect(renderer, &fgrect);
     SDL_SetRenderDrawColor(renderer, old.r, old.g, old.b, old.a);
-}
-
-int Enemy::getBonus() {
-    return baseEnemy.getMaxLife() / 2;
 }
 
 int Enemy::getCollisionCircleRadio(){

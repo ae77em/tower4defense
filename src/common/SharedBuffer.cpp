@@ -16,8 +16,8 @@ std::string SharedBuffer::getNextData() {
     });
 
     if (hasData()) {
-        //std::string value = buffer.front();
-        result.assign(buffer.front());
+        std::string value = buffer.front();
+        result.assign(value);
         buffer.pop();
     }
 
