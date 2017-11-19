@@ -11,7 +11,8 @@
 using namespace model;
 
 Mapa::Mapa(unsigned x, unsigned y) :extension_x(x), extension_y(y),
-        casillas(x * y, '.'), caminos(), estilo_fondo('g') {}
+        casillas(x * y, '.'), caminos(), estilo_fondo('g'), nombre(""),
+        delay_hordas_seg(5) {}
 
 char Mapa::casilla(unsigned x, unsigned y) {
     if (x >= extension_x || y >= extension_y)
@@ -41,7 +42,6 @@ std::vector<std::vector<Point>>& Mapa::getCaminos() {
 
 void Mapa::agregarCamino(const std::vector<Point> &camino) {
     caminos.push_back(camino);
-    enemigos.emplace_back();
 }
 
 std::string Mapa::serialize() {
@@ -60,6 +60,16 @@ std::string Mapa::serialize() {
         Json::Value path;
         for (const auto& point : camino) path.append(point.serialize());
         root["paths"].append(path);
+    }
+
+    // Serializar las hordas
+    root["horde_delay"] = delay_hordas_seg;
+    for (const auto& pair : hordas) {
+        Json::Value horde;
+        horde["path_index"] = pair.first;
+        for (const auto& enemy_name : pair.second)
+            horde["enemies"].append(enemy_name);
+        root["hordes"].append(horde);
     }
 
     // Generar string a partir de Json::Value
@@ -91,12 +101,28 @@ Mapa::Mapa(const std::string &filename) {
     }
 }
 
-std::vector<std::vector<model::Enemy>>& Mapa::getEnemigos() {
-    return enemigos;
+const std::vector<std::pair<int, std::vector<std::string>>>& Mapa::getHordas() {
+    return hordas;
 }
 
-void Mapa::agregarEnemigo(int indice_camino, const Enemy &e) {
-    enemigos.at(indice_camino).push_back(e);
+void Mapa::agregarHorda(int camino, std::vector<std::string> enemigos) {
+    if ( (int)caminos.size() <= camino )
+        throw std::runtime_error("tratando de agregar horda a camino "
+                "inexistente " + std::to_string(camino));
+    if (camino < 0)
+        throw std::runtime_error("tratando de agregar horda con "
+                "indice negativo" + std::to_string(camino));
+    hordas.emplace_back(camino, enemigos);
+}
+
+int Mapa::getDelay() const {
+    return delay_hordas_seg;
+}
+
+void Mapa::setDelay(int delay) {
+    if (delay < 0) throw std::runtime_error("delay negativo "
+            + std::to_string(delay));
+    delay_hordas_seg = delay;
 }
 
 char Mapa::getEstiloFondo() {
@@ -121,15 +147,7 @@ void Mapa::setNombre(std::string s) {
     nombre = s;
 }
 
-unsigned Mapa::getExtensionX(){
-    return extension_x;
-}
-
-unsigned Mapa::getExtensionY(){
-    return extension_y;
-}
-
-Mapa::Mapa() { }
+Mapa::Mapa() {}
 
 void Mapa::cargarDesdeString(std::string json) {
     Message m;
@@ -150,6 +168,15 @@ void Mapa::cargarDesdeString(std::string json) {
         auto &camino = caminos.back();
         for (const auto& point : path)
             camino.push_back(Point::deserialize(point));
+    }
+
+    // Deserializar las hordas
+    delay_hordas_seg = root["horde_delay"].asInt();
+    for (const auto& pair : root["hordes"]) {
+        std::vector<std::string> enemigos;
+        for (const auto& name : pair["enemies"])
+            enemigos.push_back(name.asString());
+        hordas.emplace_back(pair["path_index"].asInt(), enemigos);
     }
 }
 

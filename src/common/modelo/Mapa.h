@@ -14,9 +14,12 @@ class Mapa {
     unsigned extension_x, extension_y;
     std::vector<char> casillas;
     std::vector<std::vector<Point>> caminos;
-    std::vector<std::vector<model::Enemy>> enemigos;
+    std::vector<
+        std::pair<int, std::vector<std::string>>
+    > hordas;
     char estilo_fondo;
     std::string nombre;
+    int delay_hordas_seg; // El tiempo en segundos entre las hordas
 
 public:
     Mapa(); /* para poder usar el from string */
@@ -59,18 +62,17 @@ public:
 
     std::vector<std::vector<Point>>& getCaminos();
     void agregarCamino(const std::vector<Point> &camino);
-    std::vector<std::vector<model::Enemy>>& getEnemigos();
-    void agregarEnemigo(int indice_camino, const Enemy &e);
+
+    const std::vector<std::pair<int, std::vector<std::string>>>& getHordas();
+    void agregarHorda(int camino, std::vector<std::string> enemigos);
+    int getDelay() const;
+    void setDelay(int delay);
+
     std::string &getNombre();
     void setNombre(std::string un_nombre);
 
     void cargarDesdeString(std::string json);
-
     void cargarDesdeArchivo(std::string filename);
-
-    unsigned int getExtensionX();
-
-    unsigned int getExtensionY();
 };
 
 } // namespace model

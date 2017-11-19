@@ -47,8 +47,8 @@ GamePlayWindow::GamePlayWindow(Socket *s,
 
     map.cargarDesdeString(mp);
 
-    TILES_ROWS = map.getExtensionY();
-    TILES_COLUMNS = map.getExtensionX();
+    TILES_ROWS = map.dimensiones().y;
+    TILES_COLUMNS = map.dimensiones().x;
     TOTAL_TILES = TILES_ROWS * TILES_COLUMNS;
 }
 
@@ -270,8 +270,8 @@ bool GamePlayWindow::setTiles() {
     char tileSaved;
 
     //Initialize the tiles
-    for (unsigned i = 0; i < map.getExtensionX(); ++i) {
-        for (unsigned j = 0; j < map.getExtensionY(); ++j) {
+    for (int i = 0; i < map.dimensiones().x; ++i) {
+        for (int j = 0; j < map.dimensiones().y; ++j) {
             //Determines what kind of tile will be made
 
             //Read tile from map file
