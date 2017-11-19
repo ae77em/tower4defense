@@ -1,14 +1,14 @@
-#include "Air.h"
+#include "Earth.h"
 #include "../Utils.h"
 
-Air::Air(int x, int y, SDL_Renderer *renderer, Texture &t)
+Earth::Earth(int x, int y, SDL_Renderer *renderer, Texture &t)
         : Tower(x, y, renderer, t) {
     initializeSpritesData(x,y);
 }
 
-Air::~Air(){}
+Earth::~Earth(){}
 
-void Air::initializeSpritesData(int x, int y) {
+void Earth::initializeSpritesData(int x, int y) {
     Point initialSreenPos = Utils::mapToScreen(x, y);
 
     /* datos sprites para iddle */
@@ -35,3 +35,5 @@ void Air::initializeSpritesData(int x, int y) {
     shotBox.w = shotSpriteWidth;
     shotBox.h = shotSpriteHeight;
 }
+
+

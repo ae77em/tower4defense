@@ -171,3 +171,7 @@ ActorRectT ActorEnemy::getRect() {
     return ActorRectT();
 }
 
+bool ActorEnemy::itIsAir() {
+    return isAir;
+}
+

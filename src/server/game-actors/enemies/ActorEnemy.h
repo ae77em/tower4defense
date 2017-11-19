@@ -60,6 +60,8 @@ public:
 
     bool itIsAlive();
 
+    bool itIsAir();
+
     int getShoot(int i);
 
     int receiveDamage(int i);
@@ -84,6 +86,7 @@ protected:
     int remainingLifePoints = 200;
     bool isAir = false;
     bool isAlive = true;
+
 
     int id;
 };

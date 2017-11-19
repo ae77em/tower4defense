@@ -1,22 +1,22 @@
-#include "Air.h"
+#include "Fire.h"
 #include "../Utils.h"
 
-Air::Air(int x, int y, SDL_Renderer *renderer, Texture &t)
+Fire::Fire(int x, int y, SDL_Renderer *renderer, Texture &t)
         : Tower(x, y, renderer, t) {
     initializeSpritesData(x,y);
 }
 
-Air::~Air(){}
+Fire::~Fire(){}
 
-void Air::initializeSpritesData(int x, int y) {
+void Fire::initializeSpritesData(int x, int y) {
     Point initialSreenPos = Utils::mapToScreen(x, y);
 
     /* datos sprites para iddle */
-    idleStartX = 2;
-    idleStartY = 568;
-    idleSpriteWidth = 57;
-    idleSpriteHeight = 99;
-    numberOfIdleSprites = 17;
+    idleStartX = 1;
+    idleStartY = 1;
+    idleSpriteWidth = 62;
+    idleSpriteHeight = 103;
+    numberOfIdleSprites = 15;
 
     idleBox.x = initialSreenPos.x;
     idleBox.y = initialSreenPos.y;
@@ -24,14 +24,15 @@ void Air::initializeSpritesData(int x, int y) {
     idleBox.h = idleSpriteHeight;
 
     /* datos sprites para disparar */
-    shotStartX = 2;
-    shotStartY = 18;
-    shotSpriteWidth = 57;
-    shotSpriteHeight = 99;
-    numberOfShotSprites = 17;
+    shotStartX = 1;
+    shotStartY = 1;
+    shotSpriteWidth = 62;
+    shotSpriteHeight = 103;
+    numberOfShotSprites = 15;
 
     shotBox.x = initialSreenPos.x;
     shotBox.y = initialSreenPos.y;
     shotBox.w = shotSpriteWidth;
     shotBox.h = shotSpriteHeight;
 }
+

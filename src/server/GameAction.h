@@ -11,6 +11,7 @@ public:
     std::string action;
     int x;
     int y;
+    int typeOfTower;
 };
 
 #endif //TP4_TOWERDEFENSE_ACTIONGAME_H

@@ -11,6 +11,10 @@
 #include "../sdl/enemies/BloodHawk.h"
 #include "../sdl/enemies/Goatman.h"
 #include "../sdl/enemies/Spectre.h"
+#include "../sdl/towers/Air.h"
+#include "../sdl/towers/Fire.h"
+#include "../sdl/towers/Earth.h"
+#include "../sdl/towers/Water.h"
 
 #include <iostream>
 #include <fstream>
@@ -42,6 +46,11 @@ GamePlayWindow::GamePlayWindow(Socket *s,
     spectreTexture = new Texture();
     zombieTexture = new Texture();
 
+    airTexture = new Texture();
+    fireTexture = new Texture();
+    waterTexture = new Texture();
+    earthTexture = new Texture();
+
     typeOfTowerToPut = -1;
     towerIdThatRequiresInfo = -1;
     isCastingSpells = false;
@@ -56,12 +65,19 @@ GamePlayWindow::GamePlayWindow(Socket *s,
 }
 
 GamePlayWindow::~GamePlayWindow() {
+    /* enemies text */
     delete abmonibleTexture;
     delete blookHawkTexture;
     delete goatmanTexture;
     delete greenDaemonTexture;
     delete spectreTexture;
     delete zombieTexture;
+
+    /* towers text */
+    delete airTexture;
+    delete fireTexture;
+    delete waterTexture;
+    delete earthTexture;
 
     for (unsigned i = 0; i < hordes.size(); ++i) {
         std::vector<Enemy *> enemies =
@@ -177,10 +193,10 @@ bool GamePlayWindow::loadMedia() {
             .loadFromFile("images/sprites/portal-blue2.png", gRenderer);
     redPortalTexture
             .loadFromFile("images/sprites/portal-red.png", gRenderer);
-
     towerButtonsTexture
             .loadFromFile("images/sprites/towers-buttons.png", gRenderer);
 
+    /* enemies */
     abmonibleTexture
             ->loadFromFile("images/sprites/enemy-abominable.png",
                            gRenderer, 0xFF, 0x00, 0x99);
@@ -200,6 +216,23 @@ bool GamePlayWindow::loadMedia() {
             ->loadFromFile("images/sprites/enemy-zombie.png",
                            gRenderer, 0xAA, 0xAA, 0xAA);
 
+    /* towers */
+    airTexture
+            ->loadFromFile("images/sprites/tower-air.png",
+                           gRenderer, 0xFF, 0x00, 0x99);
+
+    earthTexture
+            ->loadFromFile("images/sprites/tower-earth.png",
+                           gRenderer, 0xAA, 0xAA, 0xAA);
+
+    waterTexture
+            ->loadFromFile("images/sprites/tower-water.png",
+                           gRenderer, 0xAA, 0xAA, 0xAA);
+
+    fireTexture
+            ->loadFromFile("images/sprites/tower-fire.png",
+                           gRenderer, 0xAA, 0xAA, 0xAA);
+
     //Load tile map
     if (!setTiles()) {
         printf("Failed to load tile set!\n");
@@ -210,76 +243,12 @@ bool GamePlayWindow::loadMedia() {
 }
 
 void GamePlayWindow::initializeGameActors() {
-    auto tower = new Tower(800, 240, gRenderer, gSpriteSheetTextureTower);
+/*    auto tower = new Tower(800, 240, gRenderer, gSpriteSheetTextureTower);
     tower->loadMedia();
     tower->setSprites();
 
-    towers.push_back(tower);
-
-    /*for (int i = 0; i < 2; ++i) {
-        auto horde = new DrawableHorde();
-        for (int j = 0; j < 3; ++j) {
-            auto greenDaemon = new GreenDaemon(-1, -1, gRenderer,
-                                               greenDaemonTexture);
-            greenDaemon->setSprites();
-            horde->addEnemy(greenDaemon);
-        }
-        std::pair<int, DrawableHorde *> pair(i, horde);
-        hordes.insert(pair);
-
-        auto horde2 = new DrawableHorde();
-        for (int j = 0; j < 3; ++j) {
-            Enemy *zombie = new Zombie(-1, -1, gRenderer,
-                                       zombieTexture);
-            zombie->setSprites();
-            horde2->addEnemy(zombie);
-        }
-        std::pair<int, DrawableHorde *> pair2(i + 1, horde2);
-        hordes.insert(pair2);
-    }*/
+    towers.push_back(tower);*/
 }
-
-void GamePlayWindow::addNewHorde(int hordeId, int enemyType, int amount) {
-    Enemy *enemy = nullptr;
-    auto horde = new DrawableHorde();
-
-    for (int i = 0; i < amount; ++i) {
-        switch (enemyType) {
-            case ENEMY_ABMONIBLE: {
-                enemy = new Abmonible(-1, -1, gRenderer, abmonibleTexture);
-                break;
-            }
-            case ENEMY_BLOOD_HAWK: {
-                enemy = new BloodHawk(-1, -1, gRenderer, blookHawkTexture);
-                break;
-            }
-            case ENEMY_GOATMAN: {
-                enemy = new Goatman(-1, -1, gRenderer, goatmanTexture);
-                break;
-            }
-            case ENEMY_GREEN_DAEMON: {
-                enemy = new GreenDaemon(-1, -1, gRenderer, greenDaemonTexture);
-                break;
-            }
-            case ENEMY_SPECTRE: {
-                enemy = new Spectre(-1, -1, gRenderer, spectreTexture);
-                break;
-            }
-            case ENEMY_ZOMBIE: {
-                enemy = new Zombie(-1, -1, gRenderer, zombieTexture);
-                break;
-            }
-            default: {
-                enemy = new Abmonible(-1, -1, gRenderer, abmonibleTexture);
-            }
-        }
-        horde->addEnemy(enemy);
-    }
-
-    std::pair<int, DrawableHorde *> pair(hordeId, horde);
-    hordes.insert(pair);
-}
-
 
 void GamePlayWindow::close() {
     //Free loaded images
@@ -580,7 +549,7 @@ void GamePlayWindow::handleServerPlayerNotifications(SDL_Rect camera) {
                   << " al listener del juego..." << std::endl;
 
         switch (op) {
-            case SERVER_NOTIFICATION_PUT_TOWER: {
+            /*case SERVER_NOTIFICATION_PUT_TOWER: {
                 Point point = MessageFactory::getPoint(message);
 
                 auto newTower = new Tower(point.x * CARTESIAN_TILE_WIDTH,
@@ -595,7 +564,7 @@ void GamePlayWindow::handleServerPlayerNotifications(SDL_Rect camera) {
                                           point.y * CARTESIAN_TILE_HEIGHT);
                 }
                 break;
-            }
+            }*/
             case SERVER_NOTIFICATION_MARK_TILE: {
                 Point point = MessageFactory::getPoint(message);
 
@@ -681,6 +650,15 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
                 int amount = request.getAsInt("amount");
 
                 addNewHorde(hordeId, hordeType, amount);
+                break;
+            }
+            case SERVER_NOTIFICATION_PUT_TOWER:{
+                int towerId = request.getAsInt("towerId");
+                int towerType = request.getAsInt("towerType");
+                int x = request.getAsInt("xCoord");
+                int y = request.getAsInt("yCoord");
+
+                putTower(towerId, towerType, x, y);
                 break;
             }
             case SERVER_NOTIFICATION_MATCH_ENDED: {
@@ -811,7 +789,7 @@ void GamePlayWindow::loadTowerInfo(Message message) {
 void GamePlayWindow::run() {
     unsigned int gameEndedTime = 0;
     bool gameEnded;
-    std::vector<Tower *> animables;
+    std::vector<Animable *> animables;
 
     //Start up SDL and create window
     if (!init()) {
@@ -879,24 +857,26 @@ void GamePlayWindow::run() {
                  */
                 animables.clear();
 
-                for (Tower *tower : towers) {
-                    animables.push_back(reinterpret_cast<Tower *&&>(tower));
+                std::map<int, Tower *>::iterator tIt;
+                for (tIt = towers.begin(); tIt != towers.end(); ++tIt) {
+                    animables.push_back(
+                            reinterpret_cast<Animable *&&>(tIt->second));
                 }
 
-                std::map<int, DrawableHorde *>::iterator it;
-                for (it = hordes.begin(); it != hordes.end(); ++it) {
-                    DrawableHorde *horde = it->second;
+                std::map<int, DrawableHorde *>::iterator hIt;
+                for (hIt = hordes.begin(); hIt != hordes.end(); ++hIt) {
+                    DrawableHorde *horde = hIt->second;
 
-                    for (auto enemy : horde->getEnemies()) {
+                    for (Enemy* enemy : horde->getEnemies()) {
                         animables.push_back(
-                                reinterpret_cast<Tower *&&>(enemy));
+                                reinterpret_cast<Animable *&&>(enemy));
                     }
                 }
 
                 std::sort(animables.begin(), animables.end(),
                           Utils::animablesPositionComparator);
 
-                for (Tower *animable : animables) {
+                for (Animable *animable : animables) {
                     animable->animate(camera);
                 }
 
@@ -950,4 +930,82 @@ void GamePlayWindow::renderLevel() {
     }
 }
 
+void GamePlayWindow::putTower(int id, int type, int x, int y) {
+    Tower *toPut = nullptr;
+    Point point(x,y);
 
+    switch (type){
+        case TOWER_AIR:{
+            toPut = new Air(x, y, gRenderer, *airTexture);
+            break;
+        }
+        case TOWER_EARTH:{
+            toPut = new Earth(x, y, gRenderer, *earthTexture);
+            break;
+        }
+        case TOWER_WATER:{
+            toPut = new Water(x, y, gRenderer, *waterTexture);
+            break;
+        }
+        case TOWER_FIRE:{
+            toPut = new Fire(x, y, gRenderer, *fireTexture);
+            break;
+        }
+        default:{
+            toPut = new Tower(x, y, gRenderer, gSpriteSheetTextureTower);
+        }
+    }
+
+    toPut->setSprites();
+    towers.insert(std::make_pair(id, toPut));
+
+    if (point.isPositive()) {
+        setToTowerTile(point, toPut);
+        toPut->setPosition(point.x * CARTESIAN_TILE_HEIGHT,
+                              point.y * CARTESIAN_TILE_HEIGHT);
+    }
+
+}
+
+
+void GamePlayWindow::addNewHorde(int hordeId, int enemyType, int amount) {
+    Enemy *enemy = nullptr;
+    auto horde = new DrawableHorde();
+
+    for (int i = 0; i < amount; ++i) {
+        switch (enemyType) {
+            case ENEMY_ABMONIBLE: {
+                enemy = new Abmonible(-1, -1, gRenderer, abmonibleTexture);
+                break;
+            }
+            case ENEMY_BLOOD_HAWK: {
+                enemy = new BloodHawk(-1, -1, gRenderer, blookHawkTexture);
+                break;
+            }
+            case ENEMY_GOATMAN: {
+                enemy = new Goatman(-1, -1, gRenderer, goatmanTexture);
+                break;
+            }
+            case ENEMY_GREEN_DAEMON: {
+                enemy = new GreenDaemon(-1, -1, gRenderer, greenDaemonTexture);
+                break;
+            }
+            case ENEMY_SPECTRE: {
+                enemy = new Spectre(-1, -1, gRenderer, spectreTexture);
+                break;
+            }
+            case ENEMY_ZOMBIE: {
+                enemy = new Zombie(-1, -1, gRenderer, zombieTexture);
+                break;
+            }
+            default: {
+                enemy = new Abmonible(-1, -1, gRenderer, abmonibleTexture);
+            }
+        }
+        enemy->setSprites();
+        horde->addEnemy(enemy);
+    }
+
+    std::pair<int, DrawableHorde *> pair(hordeId, horde);
+    hordes.insert(pair);
+}

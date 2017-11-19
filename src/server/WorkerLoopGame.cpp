@@ -7,6 +7,10 @@
 #include "GameNotification.h"
 #include "../common/modelo/Mapa.h"
 #include "../common/Protocol.h"
+#include "game-actors/towers/ActorTowerFire.h"
+#include "game-actors/towers/ActorTowerWater.h"
+#include "game-actors/towers/ActorTowerAir.h"
+#include "game-actors/towers/ActorTowerEarth.h"
 
 #include <iostream>
 #include <chrono>
@@ -31,7 +35,7 @@ WorkerLoopGame::WorkerLoopGame(std::map<int,ServerPlayer*>& p,
 void WorkerLoopGame::run(){
     std::cout << "WorkerLoopGame: Hilo donde "
             "existe la partida arrancando" << std::endl;
-    unsigned int ciclos = 10000;
+    unsigned int ciclos = 100000;
     std::string statusGame;
 
     std::list<GameAction *> actionsGame;
@@ -49,7 +53,7 @@ void WorkerLoopGame::run(){
             createHordeAndNotify();
         }
 
-        std::cout << "WorkerLoopGame: ciclo  "<< ciclos << std::endl;
+        //std::cout << "WorkerLoopGame: ciclo  "<< ciclos << std::endl;
 
         //std::list<GameAction*> obtainedActions = getActions();
 
@@ -68,10 +72,12 @@ void WorkerLoopGame::run(){
 
                 clientDie = true;
                 break;
-            }  else if (a->action.compare("put-tower")){
-                ActorTower *tower = new ActorTower();
-                tower->setPosition(a->x, a->y);
-                towers.push_back( tower );
+            }  else if (a->action.compare(STR_PUT_TOWER) == 0){
+                putTower(a);
+            } else if (a->action.compare(STR_GET_TOWER_INFO) == 0){
+                // get tower info
+            } else if (a->action.compare(STR_UPGRADE_TOWER) == 0){
+                // get upgrade tower
             }
             actionsGame.push_back(a);
         }
@@ -101,7 +107,8 @@ void WorkerLoopGame::run(){
         //GET STATUS GAMES
         statusGame = getGameStatus();
 
-        //NOTIFICO EL ESTADO DEL JUEGO A TODOS LO JUGADORES LUEGO DE LA MODIFICACION DE MODELO
+        // NOTIFICO EL ESTADO DEL JUEGO A TODOS LO JUGADORES
+        // LUEGO DE LA MODIFICACION DE MODELO
         for (auto it=players.begin(); it!=players.end(); ++it){
             it->second->sendData(statusGame);
         }
@@ -111,7 +118,7 @@ void WorkerLoopGame::run(){
         actionsGame.clear();//limpio la lista para no ejecutar request viejos
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-        if(ciclos > 0){
+        if(ciclos == 0){
             gameFinish = true;
             cause = "se terminaron los ciclos";
         }
@@ -135,7 +142,7 @@ void WorkerLoopGame::buildGameContext() {
     timeBetweenHordeCreation = 5000; //milisegundos
     timeLastHordeCreation = 0;
 
-    hordeType.push_back((int)ENEMY_ABMONIBLE);
+    hordeType.push_back((int)ENEMY_ZOMBIE);
     hordeType.push_back((int)ENEMY_BLOOD_HAWK);
     hordeType.push_back((int)ENEMY_SPECTRE);
 
@@ -230,4 +237,37 @@ void WorkerLoopGame::createHordeAndNotify() {
     }
 
     ++hordeId;
+}
+
+void WorkerLoopGame::putTower(GameAction *pAction) {
+    int type = pAction->typeOfTower;
+
+    std::cout << "voy a poner torre de tipo "
+              << std::to_string(type)
+              << std::endl;
+
+    ActorTower *tower = nullptr;
+
+    switch(type){
+        case TOWER_FIRE:{
+            tower = new ActorTowerFire();
+            break;
+        }
+        case TOWER_WATER:{
+            tower = new ActorTowerWater();
+            break;
+        }
+        case TOWER_AIR:{
+            tower = new ActorTowerAir();
+            break;
+        }
+        case TOWER_EARTH:{
+            tower = new ActorTowerEarth();
+            break;
+        }
+
+    }
+
+    tower->setPosition(pAction->x, pAction->y);
+    towers.push_back(tower);
 }

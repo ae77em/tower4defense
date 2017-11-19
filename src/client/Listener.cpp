@@ -65,7 +65,7 @@ void Listener::run(){
                  * la mejor solución, pero es la que me surgió primero, teniendo en cuenta que
                  * las cosas las tenía resueltas por separado...
                  */
-                case SERVER_NOTIFICATION_PUT_TOWER:
+                //case SERVER_NOTIFICATION_PUT_TOWER:
                 case SERVER_NOTIFICATION_MARK_TILE:
                 case SERVER_NOTIFICATION_CAST_SPELL:
                 case SERVER_NOTIFICATION_TOWER_INFO:

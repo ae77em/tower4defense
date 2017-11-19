@@ -3,6 +3,16 @@
 
 Tower::Tower(int x, int y, SDL_Renderer *r, Texture &t)
         : texture(t), currentPoint(Utils::mapToScreen(x, y)) {
+
+    idleSpriteWidth = IDLE_SPRITE_WIDTH + separationBetweenSprites;
+    idleSpriteHeight = IDLE_SPRITE_HEIGHT + separationBetweenSprites;
+
+    shotSpriteWidth = SHOT_SPRITE_WIDTH + separationBetweenSprites;
+    shotSpriteHeight = SHOT_SPRITE_HEIGHT + separationBetweenSprites;
+
+    numberOfIdleSprites = NUMBER_OF_IDLE_SPRITES;
+    numberOfShotSprites = NUMBER_OF_SHOT_SPRITES;
+
     idleBox.x = currentPoint.x;
     idleBox.y = currentPoint.y;
     idleBox.w = IDLE_SPRITE_WIDTH;

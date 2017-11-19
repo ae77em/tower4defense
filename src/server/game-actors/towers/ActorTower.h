@@ -35,13 +35,17 @@ public:
 
     Circle &getCollisionCircle();
 
-    int getShotDamage();
+    virtual int getShotDamage(ActorEnemy enemy);
 
     void setIsShooting(bool isShooting);
 
     void sumExperiencePoints(int points);
 
     int getExperiencePoints();
+
+    int getSlowDownPercentaje();
+
+    void setSlowDownPercentaje(double perc);
 
     bool itIsShooting();
 
@@ -53,12 +57,20 @@ protected:
     bool isShooting;
     int lastShotTime;
     int shotDamage;
+    double slowDownPercentaje;
     int experiencePoints;
+
+
+    int levelRange = 0;
+    int levelDamage = 0;
+    int levelReach = 0;
+    int levelSlowdown = 0;
+
     Circle collisionCircle;
     Point currentPoint = Point(0, 0);
     ActorRectT rect;
 
-    void initialize();
+    virtual void initialize();
 
     void shootTo(ActorEnemy *pEnemy);
 

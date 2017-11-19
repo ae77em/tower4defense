@@ -159,6 +159,12 @@ private:
     Texture *spectreTexture = nullptr;
     Texture *zombieTexture = nullptr;
 
+    // Towers textures
+    Texture *earthTexture = nullptr;
+    Texture *airTexture = nullptr;
+    Texture *waterTexture = nullptr;
+    Texture *fireTexture = nullptr;
+
     // Comunication with the game server
     Socket *server = nullptr;
     SharedBuffer *nonPlayerNotifications = nullptr;
@@ -167,7 +173,7 @@ private:
     int clientId;
 
     std::map<int, DrawableHorde *> hordes;
-    std::vector<Tower *> towers;
+    std::map<int, Tower *> towers;
     std::vector<Portal *> portals;
     std::vector<std::string> playerElements;
     std::string matchName;
@@ -213,6 +219,8 @@ private:
         std::make_pair('i', TILE_ICE),
         std::make_pair('l', TILE_LAVA)
     };
+
+    void putTower(int id, int type, int x, int y);
 };
 
 #endif //TP4_TOWERDEFENSE_GAME_H

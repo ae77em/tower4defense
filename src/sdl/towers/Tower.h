@@ -9,9 +9,6 @@
 #include "../Animable.h"
 #include <string>
 
-const int NUMBER_OF_IDLE_SPRITES = 8;
-const int NUMBER_OF_SHOT_SPRITES = 8;
-
 class Tower : public Animable {
 public:
     Tower(int x, int y, SDL_Renderer *renderer, Texture &t);
@@ -100,11 +97,16 @@ protected:
             FRONT_RIGHT_SPRITE_ROW
     };
 
+    static const int NUMBER_OF_IDLE_SPRITES = 8;
+    static const int NUMBER_OF_SHOT_SPRITES = 8;
+
     const int IDLE_SPRITE_WIDTH = 104;
     const int IDLE_SPRITE_HEIGHT = 127;
 
     const int SHOT_SPRITE_WIDTH = 104;
     const int SHOT_SPRITE_HEIGHT = 127;
+
+    const int separationBetweenSprites = 1;
 
     SDL_Rect idleBox;
     SDL_Rect shotBox;
@@ -114,11 +116,11 @@ protected:
     SDL_Rect idleSprites[NUMBER_OF_IDLE_SPRITES];
     SDL_Rect shotSprites[NUMBER_OF_SHOT_SPRITES];
 
-    int idleSpriteWidth = IDLE_SPRITE_WIDTH + 1;
-    int idleSpriteHeight = IDLE_SPRITE_HEIGHT + 1;
+    int idleSpriteWidth = IDLE_SPRITE_WIDTH + separationBetweenSprites;
+    int idleSpriteHeight = IDLE_SPRITE_HEIGHT + separationBetweenSprites;
 
-    int shotSpriteWidth = SHOT_SPRITE_WIDTH + 1;
-    int shotSpriteHeight = SHOT_SPRITE_HEIGHT + 1;
+    int shotSpriteWidth = SHOT_SPRITE_WIDTH + separationBetweenSprites;
+    int shotSpriteHeight = SHOT_SPRITE_HEIGHT + separationBetweenSprites;
 
     int numberOfIdleSprites = NUMBER_OF_IDLE_SPRITES;
     int numberOfShotSprites = NUMBER_OF_SHOT_SPRITES;

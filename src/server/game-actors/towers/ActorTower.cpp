@@ -2,12 +2,15 @@
 #include "../../../sdl/Constants.h"
 #include <string>
 
-ActorTower::ActorTower() { }
+ActorTower::ActorTower() {
+    initialize();
+}
 
 void ActorTower::initialize() {
     shotRatio = 2;
     shotDamage = 50;
     shotMsTimeGap = 3000; //miliseconds
+    slowDownPercentaje = 0.0;
     collisionCircle.r = (CARTESIAN_TILE_WIDTH / 2) * shotRatio;
 }
 
@@ -25,7 +28,7 @@ Circle &ActorTower::getCollisionCircle() {
     return collisionCircle;
 }
 
-int ActorTower::getShotDamage() {
+int ActorTower::getShotDamage(ActorEnemy enemy) {
     return shotDamage;
 }
 
@@ -71,10 +74,6 @@ void ActorTower::live(Horde *horde) {
 
     for (ActorEnemy *enemy : enemies){
         Circle &collisionCircleEnemy = enemy->getCollisionCircle();
-
-        // si hay colisión:
-        // estado: shooting
-        // disparar al bicho
         if (collisionCircle.hasCollisionWith(collisionCircleEnemy)){
             isShooting = true;
             shootTo(enemy);
@@ -112,4 +111,12 @@ void ActorTower::setPosition(int x, int y) {
 }
 
 ActorTower::~ActorTower() { }
+
+int ActorTower::getSlowDownPercentaje() {
+    return slowDownPercentaje;
+}
+
+void ActorTower::setSlowDownPercentaje(double perc) {
+    slowDownPercentaje = perc;
+}
 

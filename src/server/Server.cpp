@@ -219,6 +219,10 @@ void Server::run() {
                     int x = request.getAsInt(XCOORD_KEY);
                     int y = request.getAsInt(YCOORD_KEY);
 
+                    std::cout << "put tower: "
+                              << messageRequest.getJsonString()
+                              << std::endl;
+
                     putTower(matchName, towerType, x, y);
                     break;
                 }

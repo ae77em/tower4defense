@@ -1,6 +1,12 @@
 #ifndef TP4_TOWERDEFENSE_LOOPGAME_H
 #define TP4_TOWERDEFENSE_LOOPGAME_H
 
+static const char *const STR_PUT_TOWER = "put-tower";
+
+static const char *const STR_GET_TOWER_INFO = "get-tower-info";
+
+static const char *const STR_UPGRADE_TOWER = "upgrade-tower";
+
 #include "../common/Thread.h"
 #include "ServerPlayer.h"
 #include "GameActor.h"
@@ -45,6 +51,8 @@ public:
     void createHordeAndNotify();
 
     void setTimeCreationHorde();
+
+    void putTower(GameAction *pAction);
 };
 
 

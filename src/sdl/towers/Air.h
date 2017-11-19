@@ -4,7 +4,8 @@
 
 #include "Tower.h"
 
-class Air : Tower {
+class Air : public Tower {
+public:
     Air(int x, int y, SDL_Renderer *renderer, Texture &t);
     ~Air();
 
