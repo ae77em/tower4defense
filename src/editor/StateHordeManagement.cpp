@@ -8,14 +8,22 @@ void StateHordeManagement::onTransition(Editor &context) {
     context.getScreen().setDialog("Click on portal to add new horde");
 }
 
+void StateHordeManagement::preRender(Editor &context) {
+    //TODO Show current hordes
+}
+
 void StateHordeManagement::handle(const SDL_Event &e, Editor &context) {
     auto& screen = context.getScreen();
     auto& map = context.getMap();
 
     if (e.type == SDL_MOUSEBUTTONDOWN) {
+        //TODO Intercept click and delete horde
+
         Point p = context.getScreen().mouseCurrentTile();
-        if (map.estaDentro(p) && (map.casilla(p.x, p.y) == 'E'))
+        if (map.estaDentro(p) && (map.casilla(p.x, p.y) == 'E')) {
             screen.setDialog("Clicked on entry portal");
+            context.transition(new StateHordeCreation());
+        }
     }
 
     const auto& keys = context.getKeys();
