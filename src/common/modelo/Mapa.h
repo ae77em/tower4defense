@@ -22,9 +22,7 @@ class Mapa {
     int delay_hordas_seg; // El tiempo en segundos entre las hordas
 
 public:
-    Mapa(); /* para poder usar el from string */
     Mapa(unsigned x, unsigned y);
-    explicit Mapa(const std::string &filename);
     std::string serialize();
 
     /* Devuelve el contenido de la casilla en la posicion x, y.
@@ -71,8 +69,8 @@ public:
     std::string &getNombre();
     void setNombre(std::string un_nombre);
 
-    void cargarDesdeString(std::string json);
-    void cargarDesdeArchivo(std::string filename);
+    static Mapa cargarDesdeString(std::string json);
+    static Mapa cargarDesdeArchivo(std::string filename);
 };
 
 } // namespace model

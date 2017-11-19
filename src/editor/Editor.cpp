@@ -53,19 +53,7 @@ const Keybinding& Editor::Editor::getKeys() {
 }
 
 void Editor::Editor::load(std::string filename) {
-	std::fstream map_file;
-    map_file.open(filename, std::ios::in | std::ios::binary);
-    if (!map_file) throw std::runtime_error("Could not open file " + filename);
-
-    // Load file contents into string
-    std::string contents;
-    map_file.seekg(0, std::ios::end);
-    contents.resize(map_file.tellg());
-    map_file.seekg(0, std::ios::beg);
-    map_file.read(&contents[0], contents.size());
-
-    map_file.close();
-    map = model::Mapa(contents);
+    map = model::Mapa::cargarDesdeArchivo(filename);
 }
 
 void Editor::Editor::save(std::string filename) {

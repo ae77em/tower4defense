@@ -31,7 +31,7 @@ GamePlayWindow::GamePlayWindow(Socket *s,
           clientId(cId),
           playerElements(elems),
           matchName(std::move(mn)),
-          map(model::Mapa()) {
+          map(0, 0) {
     abmonibleTexture = new Texture();
     blookHawkTexture = new Texture();
     goatmanTexture = new Texture();
@@ -45,7 +45,7 @@ GamePlayWindow::GamePlayWindow(Socket *s,
     timeOfLastSpell = -TIME_FOR_ENABLE_ACTION;
     timeOfLastTowerPutted = -TIME_FOR_ENABLE_ACTION;
 
-    map.cargarDesdeString(mp);
+    map = model::Mapa::cargarDesdeString(mp);
 
     TILES_ROWS = map.dimensiones().y;
     TILES_COLUMNS = map.dimensiones().x;

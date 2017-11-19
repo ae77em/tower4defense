@@ -79,28 +79,6 @@ std::string Mapa::serialize() {
     return Json::writeString(builder, root);
 }
 
-Mapa::Mapa(const std::string &filename) {
-    Json::Value root;
-    Json::Reader reader;
-    reader.parse(filename, root);
-
-    extension_x = root["width"].asUInt();
-    extension_y = root["height"].asUInt();
-
-    // Deserializar las casillas
-    estilo_fondo = root["fondo"].asString().c_str()[0];
-    std::string str_casillas = root["tiles"].asString();
-    casillas = std::vector<char>(str_casillas.begin(), str_casillas.end());
-
-    // Deserializar los caminos
-    for (const auto& path : root["paths"]) {
-        caminos.emplace_back();
-        auto &camino = caminos.back();
-        for (const auto& point : path)
-            camino.push_back(Point::deserialize(point));
-    }
-}
-
 const std::vector<std::pair<int, std::vector<std::string>>>& Mapa::getHordas() {
     return hordas;
 }
@@ -147,40 +125,39 @@ void Mapa::setNombre(std::string s) {
     nombre = s;
 }
 
-Mapa::Mapa() {}
-
-void Mapa::cargarDesdeString(std::string json) {
+Mapa Mapa::cargarDesdeString(std::string json) {
     Message m;
     m.deserialize(json);
     Json::Value root = static_cast<Json::Value &&>(m.getData());
 
-    extension_x = root["width"].asUInt();
-    extension_y = root["height"].asUInt();
+    Mapa map(root["width"].asUInt(), root["height"].asUInt());
 
     // Deserializar las casillas
-    estilo_fondo = root["fondo"].asString().c_str()[0];
+    map.estilo_fondo = root["fondo"].asString().c_str()[0];
     std::string str_casillas = root["tiles"].asString();
-    casillas = std::vector<char>(str_casillas.begin(), str_casillas.end());
+    map.casillas = std::vector<char>(str_casillas.begin(), str_casillas.end());
 
     // Deserializar los caminos
     for (const auto& path : root["paths"]) {
-        caminos.emplace_back();
-        auto &camino = caminos.back();
+        map.caminos.emplace_back();
+        auto &camino = map.caminos.back();
         for (const auto& point : path)
             camino.push_back(Point::deserialize(point));
     }
 
     // Deserializar las hordas
-    delay_hordas_seg = root["horde_delay"].asInt();
+    map.delay_hordas_seg = root["horde_delay"].asInt();
     for (const auto& pair : root["hordes"]) {
         std::vector<std::string> enemigos;
         for (const auto& name : pair["enemies"])
             enemigos.push_back(name.asString());
-        hordas.emplace_back(pair["path_index"].asInt(), enemigos);
+        map.hordas.emplace_back(pair["path_index"].asInt(), enemigos);
     }
+
+    return map;
 }
 
-void Mapa::cargarDesdeArchivo(std::string filename){
+Mapa Mapa::cargarDesdeArchivo(std::string filename){
     std::fstream map_file;
     map_file.open(filename, std::ios::in | std::ios::binary);
     if (!map_file) throw std::runtime_error("Could not open file " + filename);
@@ -193,5 +170,5 @@ void Mapa::cargarDesdeArchivo(std::string filename){
     map_file.read(&contents[0], contents.size());
 
     map_file.close();
-    cargarDesdeString(contents);
+    return cargarDesdeString(contents);
 }

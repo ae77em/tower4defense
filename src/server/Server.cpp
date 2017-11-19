@@ -431,10 +431,8 @@ void Server::loadMaps() {
         if (std::string(dp->d_name).find(".json") != std::string::npos){
             mapFilename.assign("resources/maps/");
             mapFilename.append(dp->d_name);
-            model::Mapa aMap;
 
-            aMap.cargarDesdeArchivo(mapFilename);
-
+            model::Mapa aMap = model::Mapa::cargarDesdeArchivo(mapFilename);
             aMap.setNombre(dp->d_name);
 
             std::pair<std::string, model::Mapa> mapPair(aMap.getNombre(),std::move(aMap));
