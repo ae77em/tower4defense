@@ -13,8 +13,8 @@ struct Keybinding {
     SDL_Keycode up, down, left, right;
     SDL_Keycode water, earth, fire, air;
     SDL_Keycode portal_entry, portal_exit;
-    SDL_Keycode road;
-    SDL_Keycode firm_ground;
+    SDL_Keycode road, firm_ground;
+    SDL_Keycode horde;
     SDL_Keycode cancel;
 };
 
