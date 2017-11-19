@@ -11,7 +11,8 @@
 using namespace model;
 
 Mapa::Mapa(unsigned x, unsigned y) :extension_x(x), extension_y(y),
-        casillas(x * y, '.'), caminos(), estilo_fondo('g') {}
+        casillas(x * y, '.'), caminos(), estilo_fondo('g'), nombre(""),
+        delay_hordas_seg(5) {}
 
 char Mapa::casilla(unsigned x, unsigned y) {
     if (x >= extension_x || y >= extension_y)
@@ -102,6 +103,16 @@ void Mapa::agregarHorda(int camino, std::vector<std::string> enemigos) {
         throw std::runtime_error("tratando de agregar horda con "
                 "indice negativo" + std::to_string(camino));
     hordas.emplace_back(camino, enemigos);
+}
+
+int Mapa::getDelay() const {
+    return delay_hordas_seg;
+}
+
+void Mapa::setDelay(int delay) {
+    if (delay < 0) throw std::runtime_error("delay negativo "
+            + std::to_string(delay));
+    delay_hordas_seg = delay;
 }
 
 char Mapa::getEstiloFondo() {
