@@ -70,9 +70,6 @@ public:
 
     void cargarDesdeString(std::string json);
     void cargarDesdeArchivo(std::string filename);
-
-    unsigned int getExtensionX();
-    unsigned int getExtensionY();
 };
 
 } // namespace model

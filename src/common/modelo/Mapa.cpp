@@ -126,15 +126,7 @@ void Mapa::setNombre(std::string s) {
     nombre = s;
 }
 
-unsigned Mapa::getExtensionX(){
-    return extension_x;
-}
-
-unsigned Mapa::getExtensionY(){
-    return extension_y;
-}
-
-Mapa::Mapa() { }
+Mapa::Mapa() {}
 
 void Mapa::cargarDesdeString(std::string json) {
     Message m;
