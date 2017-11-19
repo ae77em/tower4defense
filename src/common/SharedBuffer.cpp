@@ -16,7 +16,7 @@ std::string SharedBuffer::getNextData() {
     });
 
     if (hasData()) {
-        std::string value = buffer.front();
+        std::string value = static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>> &&>(buffer.front());
         result.assign(value);
         buffer.pop();
     }

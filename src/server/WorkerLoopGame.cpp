@@ -270,4 +270,14 @@ void WorkerLoopGame::putTower(GameAction *pAction) {
 
     tower->setPosition(pAction->x, pAction->y);
     towers.push_back(tower);
+
+    std::string statusGame =
+            GameNotification::getPutTowerNotification(towers.size()-1,
+                                                      type,
+                                                      pAction->x,
+                                                      pAction->y);
+
+    for (auto it=players.begin(); it!=players.end(); ++it){
+        it->second->sendData(statusGame);
+    }
 }

@@ -71,3 +71,21 @@ GameNotification::getNewHordeNotification(int id,
 
     return message.serialize();
 }
+
+std::string
+GameNotification::getPutTowerNotification(int id, int towerType, int x, int y) {
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = SERVER_NOTIFICATION_PUT_TOWER;
+    root["towerId"] = id;
+    root["towerType"] = towerType;
+    root[XCOORD_KEY] = x;
+    root[YCOORD_KEY] = y;
+
+    message.setData(root);
+    toReturn = message.serialize();
+
+    return toReturn;
+}

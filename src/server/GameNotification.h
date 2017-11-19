@@ -12,8 +12,14 @@ public:
     static std::string getStatusMatchNotification(std::map<int, Horde *> hordes,
                                               std::vector<ActorTower *> towers);
 
-    static std::string getNewHordeNotification(int id, int hordeType, int
-    amount);
+    static std::string getNewHordeNotification(int id,
+                                               int hordeType,
+                                               int amount);
+
+    static std::string getPutTowerNotification(int id,
+                                               int towerType,
+                                               int x,
+                                               int y);
 };
 
 

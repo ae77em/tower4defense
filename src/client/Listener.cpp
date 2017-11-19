@@ -26,8 +26,6 @@ void Listener::run(){
         std::string dataFromServer;
         TextMessage textMessage("");
 
-        std::cout << "llegue al listener---" << std::endl;
-
         while (true) {
             dataFromServer = textMessage.receiveFrom(*server).getMessage();
 
@@ -37,8 +35,6 @@ void Listener::run(){
             message.deserialize(dataFromServer);
 
             int op = MessageFactory::getOperation(message);
-
-            std::cout << "llego operación: " << std::to_string(op) << std::endl;
 
             switch (op){
                 /*
@@ -65,7 +61,8 @@ void Listener::run(){
                  * la mejor solución, pero es la que me surgió primero, teniendo en cuenta que
                  * las cosas las tenía resueltas por separado...
                  */
-                //case SERVER_NOTIFICATION_PUT_TOWER:
+                case SERVER_NOTIFICATION_PUT_TOWER: // ver como sacarlo de
+                    // este grupo
                 case SERVER_NOTIFICATION_MARK_TILE:
                 case SERVER_NOTIFICATION_CAST_SPELL:
                 case SERVER_NOTIFICATION_TOWER_INFO:
@@ -74,9 +71,6 @@ void Listener::run(){
                     break;
                 }
                 default:
-                    std::cout << "Llegó notificación no de acceso..."
-                            "la mando la juego..." << std::endl;
-                    std::cout << dataFromServer << std::endl;
                     buffer.addData(dataFromServer);
             }
 

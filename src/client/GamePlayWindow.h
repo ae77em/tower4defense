@@ -38,6 +38,39 @@ enum GameStatus {
 #include "../sdl/portals/Portal.h"
 #include <vector>
 
+
+struct lessThanByPoint {
+    bool operator()(Animable *a, Animable *b) {
+        bool toReturn;
+        Point A(0, 0), B(0, 0);
+        /* si por algún motivo falla... */
+        if (a) {
+            A = a->getPoint();
+        } else {
+            return false;
+        }
+        if (b) {
+            B = b->getPoint();
+        } else {
+            return true;
+        }
+
+        if (A.x < B.x) {
+            toReturn = true;
+        } else if (A.x > B.x) {
+            toReturn = false;
+        } else {
+            if (A.y <= B.y) {
+                toReturn = true;
+            } else {
+                toReturn = false;
+            }
+        }
+
+        return toReturn;
+    }
+};
+
 class GamePlayWindow : public Thread {
 public:
     GamePlayWindow(Socket *socket,
@@ -160,10 +193,10 @@ private:
     Texture *zombieTexture = nullptr;
 
     // Towers textures
-    Texture *earthTexture = nullptr;
-    Texture *airTexture = nullptr;
-    Texture *waterTexture = nullptr;
-    Texture *fireTexture = nullptr;
+    Texture earthTexture;
+    Texture airTexture;
+    Texture waterTexture;
+    Texture fireTexture;
 
     // Comunication with the game server
     Socket *server = nullptr;
@@ -178,6 +211,9 @@ private:
     std::vector<std::string> playerElements;
     std::string matchName;
     model::Mapa map;
+
+    std::priority_queue<Animable *, std::vector<Animable *>, lessThanByPoint>
+            animables;
 
     TTF_Font *font;
     int typeOfTowerToPut;
@@ -221,6 +257,8 @@ private:
     };
 
     void putTower(int id, int type, int x, int y);
+
+    void loadAnimables();
 };
 
 #endif //TP4_TOWERDEFENSE_GAME_H

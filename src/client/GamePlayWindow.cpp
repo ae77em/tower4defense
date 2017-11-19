@@ -25,6 +25,7 @@
 #include <map>
 #include <vector>
 
+
 GamePlayWindow::GamePlayWindow(Socket *s,
                                SharedBuffer *in,
                                SharedBuffer *ot,
@@ -45,11 +46,6 @@ GamePlayWindow::GamePlayWindow(Socket *s,
     greenDaemonTexture = new Texture();
     spectreTexture = new Texture();
     zombieTexture = new Texture();
-
-    airTexture = new Texture();
-    fireTexture = new Texture();
-    waterTexture = new Texture();
-    earthTexture = new Texture();
 
     typeOfTowerToPut = -1;
     towerIdThatRequiresInfo = -1;
@@ -73,12 +69,6 @@ GamePlayWindow::~GamePlayWindow() {
     delete spectreTexture;
     delete zombieTexture;
 
-    /* towers text */
-    delete airTexture;
-    delete fireTexture;
-    delete waterTexture;
-    delete earthTexture;
-
     for (unsigned i = 0; i < hordes.size(); ++i) {
         std::vector<Enemy *> enemies =
                 static_cast<std::vector<Enemy *> &&>(hordes[i]->getEnemies());
@@ -88,9 +78,9 @@ GamePlayWindow::~GamePlayWindow() {
         delete hordes[i];
     }
 
-    for (unsigned i = 0; i < towers.size(); ++i) {
+    /*for (unsigned i = 0; i < towers.size(); ++i) {
         delete towers[i];
-    }
+    }*/
 }
 
 void GamePlayWindow::renderTimeMessages(SDL_Rect &camera) {
@@ -109,7 +99,7 @@ void GamePlayWindow::renderTimeMessages(SDL_Rect &camera) {
         t /= 1000;
         t = 20 - t;
         std::string message("Puede poner torre nuevamente en: ");
-        message.append(std::__cxx11::to_string(t));
+        message.append(std::to_string(t));
         message.append(" seg");
         renderText(camera, message, 1, 150);
     }
@@ -218,20 +208,20 @@ bool GamePlayWindow::loadMedia() {
 
     /* towers */
     airTexture
-            ->loadFromFile("images/sprites/tower-air.png",
-                           gRenderer, 0xFF, 0x00, 0x99);
+            .loadFromFile("images/sprites/tower-air.png",
+                          gRenderer, 0xFF, 0x00, 0x99);
 
     earthTexture
-            ->loadFromFile("images/sprites/tower-earth.png",
-                           gRenderer, 0xAA, 0xAA, 0xAA);
+            .loadFromFile("images/sprites/tower-earth.png",
+                          gRenderer, 0xFF, 0x00, 0x99);
 
     waterTexture
-            ->loadFromFile("images/sprites/tower-water.png",
-                           gRenderer, 0xAA, 0xAA, 0xAA);
+            .loadFromFile("images/sprites/tower-water.png",
+                          gRenderer, 0xFF, 0x00, 0x99);
 
     fireTexture
-            ->loadFromFile("images/sprites/tower-fire.png",
-                           gRenderer, 0xAA, 0xAA, 0xAA);
+            .loadFromFile("images/sprites/tower-fire.png",
+                          gRenderer, 0xFF, 0x00, 0x99);
 
     //Load tile map
     if (!setTiles()) {
@@ -544,27 +534,21 @@ void GamePlayWindow::handleServerPlayerNotifications(SDL_Rect camera) {
 
         message.deserialize(notification);
 
-        int op = MessageFactory::getOperation(message);
-        std::cout << "llego op: " << std::to_string(op)
-                  << " al listener del juego..." << std::endl;
+        Request request(message);
+
+        int op = request.getAsInt(OPERATION_KEY);
 
         switch (op) {
-            /*case SERVER_NOTIFICATION_PUT_TOWER: {
-                Point point = MessageFactory::getPoint(message);
+            case SERVER_NOTIFICATION_PUT_TOWER: {
+                std::cout << "llego poner torre" << std::endl;
+                int towerId = request.getAsInt("towerId");
+                int towerType = request.getAsInt("towerType");
+                int x = request.getAsInt("xCoord");
+                int y = request.getAsInt("yCoord");
 
-                auto newTower = new Tower(point.x * CARTESIAN_TILE_WIDTH,
-                                          point.y * CARTESIAN_TILE_HEIGHT,
-                                          gRenderer,
-                                          gSpriteSheetTextureTower);
-                towers.push_back(newTower);
-
-                if (point.isPositive()) {
-                    setToTowerTile(point, newTower);
-                    newTower->setPosition(point.x * CARTESIAN_TILE_HEIGHT,
-                                          point.y * CARTESIAN_TILE_HEIGHT);
-                }
+                putTower(towerId, towerType, x, y);
                 break;
-            }*/
+            }
             case SERVER_NOTIFICATION_MARK_TILE: {
                 Point point = MessageFactory::getPoint(message);
 
@@ -644,21 +628,12 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
                 }
                 break;
             }
-            case SERVER_NOTIFICATION_CREATE_HORDE:{
+            case SERVER_NOTIFICATION_CREATE_HORDE: {
                 int hordeId = request.getAsInt("hordeId");
                 int hordeType = request.getAsInt("hordeType");
                 int amount = request.getAsInt("amount");
 
                 addNewHorde(hordeId, hordeType, amount);
-                break;
-            }
-            case SERVER_NOTIFICATION_PUT_TOWER:{
-                int towerId = request.getAsInt("towerId");
-                int towerType = request.getAsInt("towerType");
-                int x = request.getAsInt("xCoord");
-                int y = request.getAsInt("yCoord");
-
-                putTower(towerId, towerType, x, y);
                 break;
             }
             case SERVER_NOTIFICATION_MATCH_ENDED: {
@@ -789,7 +764,6 @@ void GamePlayWindow::loadTowerInfo(Message message) {
 void GamePlayWindow::run() {
     unsigned int gameEndedTime = 0;
     bool gameEnded;
-    std::vector<Animable *> animables;
 
     //Start up SDL and create window
     if (!init()) {
@@ -850,34 +824,13 @@ void GamePlayWindow::run() {
                 // Rendereo punto para mover pantalla
                 dot.render(dotTexture, camera, gRenderer);
 
-                /* Remuevo los animables del vector (ojo, siguen existiendo,
-                 * pero no están en el vector), ya que pueden ir cambiando de
-                 * posición en cada iteración, y los vuelvo a cargar y ordenar,
-                 * para volver a mostrarlos bien.
-                 */
-                animables.clear();
+                loadAnimables();
 
-                std::map<int, Tower *>::iterator tIt;
-                for (tIt = towers.begin(); tIt != towers.end(); ++tIt) {
-                    animables.push_back(
-                            reinterpret_cast<Animable *&&>(tIt->second));
-                }
-
-                std::map<int, DrawableHorde *>::iterator hIt;
-                for (hIt = hordes.begin(); hIt != hordes.end(); ++hIt) {
-                    DrawableHorde *horde = hIt->second;
-
-                    for (Enemy* enemy : horde->getEnemies()) {
-                        animables.push_back(
-                                reinterpret_cast<Animable *&&>(enemy));
-                    }
-                }
-
-                std::sort(animables.begin(), animables.end(),
-                          Utils::animablesPositionComparator);
-
-                for (Animable *animable : animables) {
-                    animable->animate(camera);
+                Animable *anPtr = nullptr;
+                while (!animables.empty()) {
+                    anPtr = animables.top();
+                    anPtr->animate(camera);
+                    animables.pop();
                 }
 
                 // Muestro los botones de las torres que puedo poner
@@ -910,6 +863,33 @@ void GamePlayWindow::run() {
     server->shutdown(); // TODO ver si esto corresponde hacerlo acá...
 }
 
+void GamePlayWindow::loadAnimables() {/* Remuevo los animables del vector (ojo, siguen existiendo,
+                 * pero no están en el vector), ya que pueden ir cambiando de
+                 * posición en cada iteración, y los vuelvo a cargar y ordenar,
+                 * para volver a mostrarlos bien.
+                 */
+    animables = std::priority_queue<Animable *, std::vector<Animable *>,
+            lessThanByPoint>();
+
+    Tower *tp = nullptr;
+    std::map<int, Tower *>::const_iterator tIt;
+    for (tIt = towers.begin(); tIt != towers.end(); ++tIt) {
+        tp = tIt->second;
+        animables.push(tp);
+    }
+
+    std::map<int, DrawableHorde *>::const_iterator hIt;
+    //Enemy *en = nullptr;
+    for (hIt = hordes.begin(); hIt != hordes.end(); ++hIt) {
+        DrawableHorde *horde = hIt->second;
+
+        for (Enemy *enemy : horde->getEnemies()) {
+            animables.push(enemy);
+        }
+    }
+
+}
+
 void GamePlayWindow::renderLevel() {
     for (int i = 0; i < TOTAL_TILES; ++i) {
         if (tileSet.at(i).itIsMarked()) {
@@ -921,38 +901,38 @@ void GamePlayWindow::renderLevel() {
             }
         }
 
-        if (tileSet.at(i).isDrawable()){
+        if (tileSet.at(i).isDrawable()) {
             tileSet.at(i).render(camera,
-                             gTileClips,
-                             gRenderer,
-                             gTileTextures);
+                                 gTileClips,
+                                 gRenderer,
+                                 gTileTextures);
         }
     }
 }
 
 void GamePlayWindow::putTower(int id, int type, int x, int y) {
     Tower *toPut = nullptr;
-    Point point(x,y);
+    Point point(x, y);
 
-    switch (type){
-        case TOWER_AIR:{
-            toPut = new Air(x, y, gRenderer, *airTexture);
+    switch (type) {
+        case TOWER_AIR: {
+            toPut = new Air(-1, -1, gRenderer, airTexture);
             break;
         }
-        case TOWER_EARTH:{
-            toPut = new Earth(x, y, gRenderer, *earthTexture);
+        case TOWER_EARTH: {
+            toPut = new Earth(-1, -1, gRenderer, earthTexture);
             break;
         }
-        case TOWER_WATER:{
-            toPut = new Water(x, y, gRenderer, *waterTexture);
+        case TOWER_WATER: {
+            toPut = new Water(-1, -1, gRenderer, waterTexture);
             break;
         }
-        case TOWER_FIRE:{
-            toPut = new Fire(x, y, gRenderer, *fireTexture);
+        case TOWER_FIRE: {
+            toPut = new Fire(-1, -1, gRenderer, fireTexture);
             break;
         }
-        default:{
-            toPut = new Tower(x, y, gRenderer, gSpriteSheetTextureTower);
+        default: {
+            toPut = new Tower(-1, -1, gRenderer, gSpriteSheetTextureTower);
         }
     }
 
@@ -962,7 +942,7 @@ void GamePlayWindow::putTower(int id, int type, int x, int y) {
     if (point.isPositive()) {
         setToTowerTile(point, toPut);
         toPut->setPosition(point.x * CARTESIAN_TILE_HEIGHT,
-                              point.y * CARTESIAN_TILE_HEIGHT);
+                           point.y * CARTESIAN_TILE_HEIGHT);
     }
 
 }
