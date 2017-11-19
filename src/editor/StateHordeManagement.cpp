@@ -9,9 +9,17 @@ void StateHordeManagement::onTransition(Editor &context) {
 }
 
 void StateHordeManagement::handle(const SDL_Event &e, Editor &context) {
+    auto& screen = context.getScreen();
+    auto& map = context.getMap();
+
+    if (e.type == SDL_MOUSEBUTTONDOWN) {
+        Point p = context.getScreen().mouseCurrentTile();
+        if (map.estaDentro(p) && (map.casilla(p.x, p.y) == 'E'))
+            screen.setDialog("Clicked on entry portal");
+    }
+
     const auto& keys = context.getKeys();
     if (e.type == SDL_KEYDOWN && e.key.keysym.sym == keys.cancel) {
-        auto& screen = context.getScreen();
         screen.setDialog("");
         context.transition(new StateTile());
     }
