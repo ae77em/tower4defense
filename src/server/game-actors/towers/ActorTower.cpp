@@ -78,10 +78,11 @@ void ActorTower::live(Horde *horde) {
         if (collisionCircle.hasCollisionWith(collisionCircleEnemy)){
             isShooting = true;
             shootTo(enemy);
+        } else {
+            // si no hay colisión:
+            // estado: iddle
+            isShooting = false;
         }
-        // si no hay colisión:
-        // estado: iddle
-
     }
 }
 
@@ -95,6 +96,7 @@ void ActorTower::shootTo(ActorEnemy *pEnemy) {
     if (now - lastShotTime >= shotMsTimeGap){
         // si puedo disparar le disparo, esto es, le saco toda la vida que puedo
         if (pEnemy->itIsAlive()){
+            std::cout << "disparé..." << std::endl;
             doShootTo(pEnemy);
         }
     }

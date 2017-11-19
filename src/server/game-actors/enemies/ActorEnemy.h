@@ -64,7 +64,7 @@ public:
 
     int receiveDamage(int i);
 
-private:
+protected:
     std::vector<Point> path;
     Point currentPoint = Point(-1, -1);
     Circle collisionCircle;

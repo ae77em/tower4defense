@@ -5,6 +5,8 @@
 #include "game-actors/enemies/Horde.h"
 #include "../common/MessageFactory.h"
 #include "GameNotification.h"
+#include "../common/modelo/Mapa.h"
+#include "../common/Protocol.h"
 
 #include <iostream>
 #include <chrono>
@@ -19,11 +21,12 @@
 //PUEDE SER QUE SE ESTE REMOVIENDO ALGUNO EN OTRO HILO Y LUEGO EXPLOTE
 WorkerLoopGame::WorkerLoopGame(std::map<int,ServerPlayer*>& p,
                                std::list<GameAction*>& a,
-                               std::mutex& m):
+                               std::mutex& m,
+                                model::Mapa& mp):
                                                 players(p),
                                                 actions(a),
-                                                mutexActions(m){
-}
+                                                mutexActions(m),
+                                                map(mp) { }
 
 void WorkerLoopGame::run(){
     std::cout << "WorkerLoopGame: Hilo donde "
@@ -41,6 +44,11 @@ void WorkerLoopGame::run(){
 
     //while(isRunning()){
     while (!gameFinish){
+
+        if( isTimeToCreateHorde() ){
+            createHordeAndNotify();
+        }
+
         std::cout << "WorkerLoopGame: ciclo  "<< ciclos << std::endl;
 
         //std::list<GameAction*> obtainedActions = getActions();
@@ -60,8 +68,11 @@ void WorkerLoopGame::run(){
 
                 clientDie = true;
                 break;
+            }  else if (a->action.compare("put-tower")){
+                ActorTower *tower = new ActorTower();
+                tower->setPosition(a->x, a->y);
+                towers.push_back( tower );
             }
-
             actionsGame.push_back(a);
         }
 
@@ -72,43 +83,20 @@ void WorkerLoopGame::run(){
         if(clientDie)
             break;
 
-
-        //TOMO LAS ACCIONES PARSEADAS DE LOS REQUEST Y LAS
-        // APLICO A TODOS LOS ACTORES
-        /*for (GameAction* a : actionsGame) {
-            for (GameActor* g : gameActors){
-
-            }
-        }*/
-
-        //luego de modificar el estado de cada actor hago que vivan
-        /*for (GameActor* g : gameActors) {
-            g->live();
-        }*/
-        /* hago que los enemigos caminen */
-
         for (hordeIt = hordes.begin(); hordeIt != hordes.end(); ++hordeIt){
             std::vector<ActorEnemy*> enemies = hordeIt->second->getEnemies();
 
             for (auto enemy : enemies) {
                 enemy->live();
-
-                /*if(ciclos > 0){
-                    gameFinish = true;
-                    cause = "enemigos llegaron al final";
-
-                }*/
             }
-
         }
 
         /* ahora hago andar las torres */
-        //for (auto tower : towers){
-            /* verificar colisión con bicho */
-            /* si hay colisión */
-                /* sumar puntos a torre */
-                /* sacar vida a bicho */
-        //}
+        for (auto tower : towers){
+            for (hordeIt = hordes.begin(); hordeIt != hordes.end(); ++hordeIt) {
+                tower->live(hordeIt->second);
+            }
+        }
 
         //GET STATUS GAMES
         statusGame = getGameStatus();
@@ -134,7 +122,8 @@ void WorkerLoopGame::run(){
     // ESTA PARTE NO SE SI TIENE SENTIDO,
     // DEBERIA DEE HABER SALIDO TODOS LOS CLIENTES
     std::cout << "WorkerLoopGame: TERMINO PARTIDA CAUSA: "<< cause << std::endl;
-    std::cout << "WorkerLoopGame: Hilo donde existe la partida se termino" << std::endl;
+    std::cout << "WorkerLoopGame: Hilo donde "
+            "existe la partida se termino" << std::endl;
     std::cout << "WorkerLoopGame: Aviso que terminó la partida." << std::endl;
     statusGame = MessageFactory::getMatchEndedNotification();
     for (auto it=players.begin(); it!=players.end(); ++it){
@@ -143,76 +132,16 @@ void WorkerLoopGame::run(){
 }
 
 void WorkerLoopGame::buildGameContext() {
-    std::vector<Point> camino1;
-    // supongo que recorro una matriz de baldosas de
-    // CARTESIAN_TILE_WIDTH x CARTESIAN_TILE_HEIGHT
-    camino1.push_back(Point(0 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(1 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(2 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(3 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(4 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(4 * CARTESIAN_TILE_WIDTH,6 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(4 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(5 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(6 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(7 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(8 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(9 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(10 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(11 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(12 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(12 * CARTESIAN_TILE_WIDTH,6 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(12 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(13 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(14 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(15 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(16 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
+    timeBetweenHordeCreation = 5000; //milisegundos
+    timeLastHordeCreation = 0;
 
-    Horde *horda1 = new Horde();
+    hordeType.push_back((int)ENEMY_ABMONIBLE);
+    hordeType.push_back((int)ENEMY_BLOOD_HAWK);
+    hordeType.push_back((int)ENEMY_SPECTRE);
 
-    for (int x = 0; x < 3; ++x){
-        ActorEnemy* enemy = new ActorEnemy();
-        enemy->setPath(camino1);
-        enemy->setId(x);
-        enemy->setCurrentPathPosition(-x * CARTESIAN_TILE_WIDTH / 2);
+    paths = map.getCaminos();
 
-        horda1->addEnemy(enemy);
-    }
-    hordes.insert(std::pair<int, Horde*>(0, horda1));
-
-    std::vector<Point> camino2;
-    // supongo que recorro una matriz de baldosas de
-    // CARTESIAN_TILE_WIDTH x CARTESIAN_TILE_HEIGHT
-    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 0 * CARTESIAN_TILE_HEIGHT));
-    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 1 * CARTESIAN_TILE_HEIGHT));
-    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 2 * CARTESIAN_TILE_HEIGHT));
-    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 3 * CARTESIAN_TILE_HEIGHT));
-    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 4 * CARTESIAN_TILE_HEIGHT));
-    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 5 * CARTESIAN_TILE_HEIGHT));
-    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 6 * CARTESIAN_TILE_HEIGHT));
-    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 7 * CARTESIAN_TILE_HEIGHT));
-    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 8 * CARTESIAN_TILE_HEIGHT));
-    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 9 * CARTESIAN_TILE_HEIGHT));
-    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 10 * CARTESIAN_TILE_HEIGHT));
-    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 11 * CARTESIAN_TILE_HEIGHT));
-    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 12 * CARTESIAN_TILE_HEIGHT));
-    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 13 * CARTESIAN_TILE_HEIGHT));
-    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 14 * CARTESIAN_TILE_HEIGHT));
-    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 15 * CARTESIAN_TILE_HEIGHT));
-
-
-    Horde *horda2 = new Horde();
-
-    for (int x = 0; x < 3; ++x){
-        ActorEnemy* enemy = new ActorEnemy();
-        enemy->setPath(camino2);
-        enemy->setId(x);
-        enemy->setCurrentPathPosition(-x * CARTESIAN_TILE_WIDTH / 2);
-
-        horda2->addEnemy(enemy);
-    }
-    hordes.insert(std::pair<int, Horde*>(1, horda2));
-
+    hordeId = 0;
 
     /* ESTA ES LÓGICA DE NEGOCIO, Y VA EN EL SERVER...
      * bool towerIsShooting =
@@ -261,4 +190,44 @@ void WorkerLoopGame::buildGameContext() {
 std::string WorkerLoopGame::getGameStatus() {
     //despues ver como parsear todos los actores
     return GameNotification::getStatusMatchNotification(hordes, towers);
+}
+
+bool WorkerLoopGame::isTimeToCreateHorde() {
+    time_t now;
+    time(&now);
+
+    return (now - timeLastHordeCreation) > timeBetweenHordeCreation;
+}
+
+void WorkerLoopGame::setTimeCreationHorde(){
+    time_t now;
+    time(&now);
+
+    timeLastHordeCreation = now;
+}
+
+void WorkerLoopGame::createHordeAndNotify() {
+    setTimeCreationHorde();
+
+    time_t now;
+    time(&now);
+
+    unsigned hordeIndex = now % hordeType.size();
+    int nextHordeType = hordeType.at(hordeIndex);
+
+    unsigned pathIndex = now % paths.size();
+    std::vector<Point> path = static_cast<std::vector<Point> &&>(paths.at(pathIndex));
+
+    Horde *h = Horde::createHorde(nextHordeType, 3, path);
+
+    hordes.insert(std::make_pair(hordeId, h));
+
+    std::string statusGame =
+        GameNotification::getNewHordeNotification(hordeId, nextHordeType, 3);
+
+    for (auto it=players.begin(); it!=players.end(); ++it){
+        it->second->sendData(statusGame);
+    }
+
+    ++hordeId;
 }

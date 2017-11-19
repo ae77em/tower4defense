@@ -55,6 +55,7 @@ enum ServerPlayingNotifications {
     SERVER_NOTIFICATION_CAST_SPELL = 302,
     SERVER_NOTIFICATION_TOWER_INFO = 303,
     SERVER_NOTIFICATION_APPLY_UPGRADE = 304,
+    SERVER_NOTIFICATION_CREATE_HORDE = 305,
     /* Del 399 para abajo (en forma descendente), las notificaciones que
      * corresponden a eventos no disparados por el usuario. */
     SERVER_NOTIFICATION_MATCH_ENDED = 399,

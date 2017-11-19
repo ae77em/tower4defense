@@ -111,6 +111,8 @@ private:
 
     void renderLevel();
 
+    void addNewHorde(int hordeId, int enemyType, int amount);
+
     /* *
      * Attributes
      * */

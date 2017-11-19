@@ -7,9 +7,11 @@
 #include <map>
 #include <vector>
 
-std::string GameNotification::getStatusMatchNotification(std::map<int,
-        Horde *> hordes,
+std::string GameNotification::getStatusMatchNotification(
+        std::map<int, Horde *> hordes,
         std::vector<ActorTower *> towers) {
+    Json::Value aTower(Json::objectValue);
+
     std::string toReturn;
     Json::Value root(Json::objectValue);
     Message message;
@@ -38,8 +40,6 @@ std::string GameNotification::getStatusMatchNotification(std::map<int,
 
     ActorTower *currentTower = nullptr;
     for (unsigned i = 0; i < towers.size(); ++i) {
-        Json::Value aTower(Json::objectValue);
-
         currentTower = towers[i];
 
         aTower[TOWER_ID_KEY] = i;
@@ -48,6 +48,24 @@ std::string GameNotification::getStatusMatchNotification(std::map<int,
         root["towers"].append(aTower);
     }
 
+
+    message.setData(root);
+
+    return message.serialize();
+}
+
+std::string
+GameNotification::getNewHordeNotification(int id,
+                                        int hordeType,
+                                        int amount) {
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = SERVER_NOTIFICATION_CREATE_HORDE;
+    root[HORDE_ID_KEY] = id;
+    root["hordeType"] = hordeType;
+    root["amount"] = amount;
 
     message.setData(root);
 

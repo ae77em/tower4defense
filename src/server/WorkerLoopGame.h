@@ -8,6 +8,7 @@
 #include "game-actors/enemies/ActorEnemy.h"
 #include "game-actors/enemies/Horde.h"
 #include "game-actors/towers/ActorTower.h"
+#include "../common/modelo/Mapa.h"
 #include <map>
 #include <string>
 #include <list>
@@ -18,20 +19,32 @@ private:
     std::map<int,ServerPlayer*>& players;
     std::list<GameAction*>& actions;
     std::mutex& mutexActions;
-    std::map<int, Horde*> hordes;
+    model::Mapa& map;
 
+    std::map<int, Horde*> hordes;
     std::vector<ActorTower*> towers;
+
+    int timeBetweenHordeCreation, timeLastHordeCreation, hordeId;
+    std::vector<int> hordeType;
+    std::vector<std::vector<Point>> paths;
 
 public:
     WorkerLoopGame(std::map<int,ServerPlayer*>& p,
                    std::list<GameAction*>& a,
-                   std::mutex& m);
+                   std::mutex& m,
+                   model::Mapa& map);
 
     void run();
 
     void buildGameContext();
 
     std::string getGameStatus();
+
+    bool isTimeToCreateHorde();
+
+    void createHordeAndNotify();
+
+    void setTimeCreationHorde();
 };
 
 

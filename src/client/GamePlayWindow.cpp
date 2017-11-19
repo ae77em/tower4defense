@@ -8,6 +8,9 @@
 #include "../sdl/enemies/Zombie.h"
 #include "../common/TextMessage.h"
 #include "../common/Request.h"
+#include "../sdl/enemies/BloodHawk.h"
+#include "../sdl/enemies/Goatman.h"
+#include "../sdl/enemies/Spectre.h"
 
 #include <iostream>
 #include <fstream>
@@ -213,7 +216,7 @@ void GamePlayWindow::initializeGameActors() {
 
     towers.push_back(tower);
 
-    for (int i = 0; i < 2; ++i) {
+    /*for (int i = 0; i < 2; ++i) {
         auto horde = new DrawableHorde();
         for (int j = 0; j < 3; ++j) {
             auto greenDaemon = new GreenDaemon(-1, -1, gRenderer,
@@ -233,8 +236,50 @@ void GamePlayWindow::initializeGameActors() {
         }
         std::pair<int, DrawableHorde *> pair2(i + 1, horde2);
         hordes.insert(pair2);
-    }
+    }*/
 }
+
+void GamePlayWindow::addNewHorde(int hordeId, int enemyType, int amount) {
+    Enemy *enemy = nullptr;
+    auto horde = new DrawableHorde();
+
+    for (int i = 0; i < amount; ++i) {
+        switch (enemyType) {
+            case ENEMY_ABMONIBLE: {
+                enemy = new Abmonible(-1, -1, gRenderer, abmonibleTexture);
+                break;
+            }
+            case ENEMY_BLOOD_HAWK: {
+                enemy = new BloodHawk(-1, -1, gRenderer, blookHawkTexture);
+                break;
+            }
+            case ENEMY_GOATMAN: {
+                enemy = new Goatman(-1, -1, gRenderer, goatmanTexture);
+                break;
+            }
+            case ENEMY_GREEN_DAEMON: {
+                enemy = new GreenDaemon(-1, -1, gRenderer, greenDaemonTexture);
+                break;
+            }
+            case ENEMY_SPECTRE: {
+                enemy = new Spectre(-1, -1, gRenderer, spectreTexture);
+                break;
+            }
+            case ENEMY_ZOMBIE: {
+                enemy = new Zombie(-1, -1, gRenderer, zombieTexture);
+                break;
+            }
+            default: {
+                enemy = new Abmonible(-1, -1, gRenderer, abmonibleTexture);
+            }
+        }
+        horde->addEnemy(enemy);
+    }
+
+    std::pair<int, DrawableHorde *> pair(hordeId, horde);
+    hordes.insert(pair);
+}
+
 
 void GamePlayWindow::close() {
     //Free loaded images
@@ -593,11 +638,12 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
         notification = nonPlayerNotifications->getNextData();
 
         Message message;
+        message.deserialize(notification);
+        Request request(message);
         std::string response;
 
-        message.deserialize(notification);
+        int op = request.getAsInt(OPERATION_KEY);
 
-        int op = MessageFactory::getOperation(message);
         std::cout << "llego op: " << std::to_string(op)
                   << " al listener del juego..." << std::endl;
 
@@ -627,6 +673,14 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
                         }
                     }
                 }
+                break;
+            }
+            case SERVER_NOTIFICATION_CREATE_HORDE:{
+                int hordeId = request.getAsInt("hordeId");
+                int hordeType = request.getAsInt("hordeType");
+                int amount = request.getAsInt("amount");
+
+                addNewHorde(hordeId, hordeType, amount);
                 break;
             }
             case SERVER_NOTIFICATION_MATCH_ENDED: {

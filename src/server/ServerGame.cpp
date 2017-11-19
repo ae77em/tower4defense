@@ -2,19 +2,21 @@
 #include "../sdl/Constants.h"
 #include "../common/Protocol.h"
 #include "../common/MessageFactory.h"
+#include "../common/modelo/Mapa.h"
 
 #include <algorithm>
 #include <utility>
 #include <list>
 #include <string>
 
-ServerGame::ServerGame(std::mutex& m,std::string aMapName):
+ServerGame::ServerGame(std::mutex &m, model::Mapa aMap):
                                       mutexPlayers(m),
-                                      mapName(aMapName),
+                                      map(std::move(aMap)),
                                       endSignal(false),
                                       workerLoopGame(players,
                                                      actions,
-                                                     mutexActionsGame)
+                                                     mutexActionsGame,
+                                      map)
                                       {
     elements.push_back(STR_WATER);
     elements.push_back(STR_AIR);
@@ -122,7 +124,7 @@ int ServerGame::getAmountPlayers() {
 
 void ServerGame::kill() {
     mutexActionsGame.lock();
-    actions.push_back( new GameAction("game-explotion") );
+    actions.push_back(new GameAction("game-explotion", 0, 0, 0));
     mutexActionsGame.unlock();
 
 
@@ -147,15 +149,15 @@ void ServerGame::putTower(int typeOfTower, int x, int y) {
     message.deserialize(req);
 
     mutexActionsGame.lock();
-    actions.push_back( new GameAction("putTower") );
+    actions.push_back(new GameAction("put-tower", x, y, typeOfTower));
     mutexActionsGame.unlock();
 
-    /** HASTA TENER DEFINIDO EL ACCESO A EL LOOP DE JUEGO CON LA INFO ***/
+    /** HASTA TENER DEFINIDO EL ACCESO A EL LOOP DE JUEGO CON LA INFO ***//*
     req = MessageFactory::getPutTowerNotification(typeOfTower, x, y);
     mutexPlayers.lock();
     notifyAll(req);
     mutexPlayers.unlock();
-    /*****/
+    *//*****/
 }
 
 void ServerGame::castSpell(int x, int y) {
@@ -164,7 +166,7 @@ void ServerGame::castSpell(int x, int y) {
     message.deserialize(req);
 
     mutexActionsGame.lock();
-    actions.push_back( new GameAction("castSpell") );
+    actions.push_back(new GameAction("castSpell", 0, 0, 0));
     mutexActionsGame.unlock();
 
     /** HASTA TENER DEFINIDO EL ACCESO A EL LOOP DE JUEGO CON LA INFO ***/
@@ -181,7 +183,7 @@ void ServerGame::upgradeTower(int towerId, int upgradeType) {
     message.deserialize(req);
 
     mutexActionsGame.lock();
-    actions.push_back( new GameAction("upgradeTower") );
+    actions.push_back(new GameAction("upgradeTower", 0, 0, 0));
     mutexActionsGame.unlock();
 
     /** HASTA TENER DEFINIDO EL ACCESO A EL LOOP DE JUEGO CON LA INFO ***/
@@ -198,7 +200,7 @@ void ServerGame::towerInfo(int clientId, int towerId) {
 
 
     mutexActionsGame.lock();
-    actions.push_back( new GameAction("towerInfo") );
+    actions.push_back(new GameAction("towerInfo", 0, 0, 0));
     mutexActionsGame.unlock();
 
     /** HASTA TENER DEFINIDO EL ACCESO A EL LOOP DE JUEGO CON LA INFO ***/
@@ -209,8 +211,8 @@ void ServerGame::towerInfo(int clientId, int towerId) {
     /*****/
 }
 
-const std::string &ServerGame::getMapName() const {
-    return mapName;
+std::string &ServerGame::getMapName() {
+    return map.getNombre();
 }
 
 void ServerGame::setMapName(const std::string &mapName) {

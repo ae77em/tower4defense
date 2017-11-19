@@ -9,7 +9,7 @@
 
 #include <string>
 
-class ActorTower : public GameActor {
+class ActorTower  {
 public:
     ActorTower();
 

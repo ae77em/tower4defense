@@ -20,10 +20,16 @@ file(GLOB SERVER_SOURCES
         "src/server/*/*/*.cpp"
         "src/common/*.cpp"
         "src/common/*/*.cpp")
-file(GLOB EDITOR_SOURCES "src/editor/*.cpp" "src/common/*.cpp"
-        "src/common/**/*.cpp" "src/sdl/*.cpp") 
-file(GLOB TEST_SOURCES "tests/unit/*.cpp" "src/common/*.cpp"
-        "src/common/**/*.cpp" "src/sdl/*.cpp")
+file(GLOB EDITOR_SOURCES
+        "src/editor/*.cpp"
+        "src/common/*.cpp"
+        "src/common/**/*.cpp"
+        "src/sdl/*.cpp")
+file(GLOB TEST_SOURCES
+        "tests/unit/*.cpp"
+        "src/common/*.cpp"
+        "src/common/**/*.cpp"
+        "src/sdl/*.cpp")
 
 add_executable(game.exe ${CLIENT_SOURCES})
 add_executable(server.exe ${SERVER_SOURCES})

@@ -22,6 +22,7 @@ unsigned int Server::getAmountGames() {
 
 void
 Server::createGame(int clientId, std::string matchName, std::string mapName) {
+
     bool wasCreated = createMatch(matchName, mapName);
 
     std::string message = "";
@@ -106,12 +107,14 @@ void Server::addPlayerToMatch(std::string nameMatch, ServerPlayer *sp) {
 
 //crea el juego y retorna el id del mismo, el id es el nombre del match...
 bool Server::createMatch(std::string nameMatch, std::string mapName) {
+    model::Mapa aMap = maps[mapName];
+
     if (matches.find(nameMatch) == matches.end()) {
         matches.insert(
                 std::pair<std::string, ServerGame *>(nameMatch,
                                                      new ServerGame(
                                                              mutexPlayers,
-                                                             mapName)
+                                                             aMap)
                 ));
         return true;
     }

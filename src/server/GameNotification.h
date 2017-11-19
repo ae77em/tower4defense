@@ -11,6 +11,9 @@ class GameNotification {
 public:
     static std::string getStatusMatchNotification(std::map<int, Horde *> hordes,
                                               std::vector<ActorTower *> towers);
+
+    static std::string getNewHordeNotification(int id, int hordeType, int
+    amount);
 };
 
 
