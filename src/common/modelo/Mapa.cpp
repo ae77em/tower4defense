@@ -62,6 +62,16 @@ std::string Mapa::serialize() {
         root["paths"].append(path);
     }
 
+    // Serializar las hordas
+    root["horde_delay"] = delay_hordas_seg;
+    for (const auto& pair : hordas) {
+        Json::Value horde;
+        horde["path_index"] = pair.first;
+        for (const auto& enemy_name : pair.second)
+            horde["enemies"].append(enemy_name);
+        root["hordes"].append(horde);
+    }
+
     // Generar string a partir de Json::Value
     Json::StreamWriterBuilder builder;
     builder["commentStyle"] = "None";
@@ -158,6 +168,15 @@ void Mapa::cargarDesdeString(std::string json) {
         auto &camino = caminos.back();
         for (const auto& point : path)
             camino.push_back(Point::deserialize(point));
+    }
+
+    // Deserializar las hordas
+    delay_hordas_seg = root["horde_delay"].asInt();
+    for (const auto& pair : root["hordes"]) {
+        std::vector<std::string> enemigos;
+        for (const auto& name : pair["enemies"])
+            enemigos.push_back(name.asString());
+        hordas.emplace_back(pair["path_index"].asInt(), enemigos);
     }
 }
 
