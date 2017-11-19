@@ -10,7 +10,7 @@ class Serializable {
 		virtual ~Serializable() {}
 
 		virtual std::string serialize() = 0;
-		virtual bool deserialize(std::string obj_serial) = 0;
+		virtual bool deserialize(std::string &obj_serial) = 0;
 };
 
 #endif

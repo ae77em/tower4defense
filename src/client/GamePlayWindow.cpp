@@ -609,6 +609,7 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
                     Point scenarioPoint = MessageFactory::getPoint(aMessage);
                     // no dibujo cosas fuera del escenario...
                     if (scenarioPoint.isPositive()) {
+
                         int dir = MessageFactory::getDirection(aMessage);
                         int enemyId = MessageFactory::getEnemyId(aMessage);
                         int hordeId = MessageFactory::getHordeId(aMessage);
