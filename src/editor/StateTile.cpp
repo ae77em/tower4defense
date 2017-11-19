@@ -30,5 +30,7 @@ void Editor::StateTile::handle(const SDL_Event &e, Editor &context) {
         context.transition(new StatePath());
     } else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_COMMA) {
         context.transition(new StateCommand());
+    } else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == keys.horde) {
+        context.transition(new StateHordeManagement());
     }
 }

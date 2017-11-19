@@ -76,6 +76,12 @@ class StateCommand : public State {
     virtual void onTransition(Editor &context);
 };
 
+class StateHordeManagement : public State {
+    public:
+    virtual void handle(const SDL_Event &e, Editor &context);
+    virtual void onTransition(Editor &context);
+};
+
 } //namespace Editor
 
 #endif
