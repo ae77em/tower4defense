@@ -33,17 +33,6 @@ Tower::Tower(int x, int y, SDL_Renderer *r, Texture &t)
 
 Tower::~Tower(){}
 
-bool Tower::loadMedia() {
-    bool success = true;
-    if (!texture.loadFromFile("images/sprites/tower-earth.png",
-                              renderer, 0xFF, 0x00, 0x99)) {
-        printf("Failed to load dot texture!\n");
-        success = false;
-    }
-
-    return success;
-}
-
 void Tower::setPosition(int x, int y) {
     idleBox.x = x;
     idleBox.y = y;
