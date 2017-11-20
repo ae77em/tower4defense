@@ -31,7 +31,7 @@ void Editor::Editor::run() {
         screen.put(map);
 
         //TODO move path tracing to screen::put(map)
-        for (const auto& camino : map.getCaminos())
+        for (const auto& camino : map.getPaths())
             screen.trace(camino);
 
         /* Let state effect last-minute changes */
@@ -44,7 +44,7 @@ Screen& Editor::Editor::getScreen() {
     return screen;
 }
 
-model::Mapa& Editor::Editor::getMap() {
+model::Map& Editor::Editor::getMap() {
     return map;
 }
 
@@ -53,19 +53,7 @@ const Keybinding& Editor::Editor::getKeys() {
 }
 
 void Editor::Editor::load(std::string filename) {
-	std::fstream map_file;
-    map_file.open(filename, std::ios::in | std::ios::binary);
-    if (!map_file) throw std::runtime_error("Could not open file " + filename);
-
-    // Load file contents into string
-    std::string contents;
-    map_file.seekg(0, std::ios::end);
-    contents.resize(map_file.tellg());
-    map_file.seekg(0, std::ios::beg);
-    map_file.read(&contents[0], contents.size());
-
-    map_file.close();
-    map = model::Mapa(contents);
+    map = model::Map::loadFromFile(filename);
 }
 
 void Editor::Editor::save(std::string filename) {
@@ -76,7 +64,7 @@ void Editor::Editor::save(std::string filename) {
 }
 
 void Editor::Editor::new_map(unsigned side) {
-    map = model::Mapa(side, side);
+    map = model::Map(side, side);
 }
 
 void Editor::Editor::inhibitScrolling() {

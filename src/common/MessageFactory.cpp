@@ -28,15 +28,6 @@ std::vector<std::string> MessageFactory::getMatches(Message &message) {
     return response;
 }
 
-std::string MessageFactory::getMapName(Message &message) {
-    std::string response;
-    Json::Value &root = message.getData();
-
-    response = root.get(MAP_NAME_KEY, "").asString();
-
-    return response;
-}
-
 std::string MessageFactory::getMatchName(Message &message) {
     std::string response;
     Json::Value &root = message.getData();
@@ -61,43 +52,10 @@ std::string MessageFactory::getClientIdNotification(int clientId) {
     return toReturn;
 }
 
-std::string
-MessageFactory::getGamesNotification(int clientId, std::string games) {
-    std::string toReturn;
-    Json::Value root(Json::objectValue);
-    Message message;
-
-    root[OPERATION_KEY] = CLIENT_REQUEST_GET_ALL_MATCHES;
-    root["games"] = games;
-    root[CLIENT_ID_KEY] = clientId;
-
-    message.setData(root);
-
-    toReturn = message.serialize();
-
-    return toReturn;
-}
-
-
 /* ****************************************************************************
  * NON-GAMING REQUESTS
  * ****************************************************************************
  * */
-std::string MessageFactory::getGamesRequest(int clientId) {
-    std::string toReturn;
-    Json::Value root(Json::objectValue);
-    Message message;
-
-    root[OPERATION_KEY] = CLIENT_REQUEST_GET_ALL_MATCHES;
-    root[CLIENT_ID_KEY] = clientId;
-
-    message.setData(root);
-
-    toReturn = message.serialize();
-
-    return toReturn;
-}
-
 std::string MessageFactory::getExistingMapsRequest(int clientId) {
     std::string toReturn;
     Json::Value root(Json::objectValue);
@@ -372,12 +330,6 @@ int MessageFactory::getClientId(Message &request) {
     return clientId;
 }
 
-int MessageFactory::getMatchId(Message &request) {
-    Json::Value &root = request.getData();
-    int matchId = root["matchId"].asInt();
-    return matchId;
-}
-
 std::string MessageFactory::getClientEndConectionNotification(int clientId) {
     std::string toReturn;
     Json::Value root(Json::objectValue);
@@ -385,27 +337,6 @@ std::string MessageFactory::getClientEndConectionNotification(int clientId) {
 
     root[OPERATION_KEY] = SERVER_NOTIFICATION_END_CLIENT_CONNECTION;
     root[CLIENT_ID_KEY] = clientId;
-
-    message.setData(root);
-
-    toReturn = message.serialize();
-
-    return toReturn;
-}
-
-std::string
-MessageFactory::getMovementNotification(int enemyId, int moveable, int x, int y,
-                                        int direction) {
-    std::string toReturn;
-    Json::Value root(Json::objectValue);
-    Message message;
-
-    root[OPERATION_KEY] = SERVER_NOTIFICATION_MOVE_ENEMY;
-    root[ENEMY_ID_KEY] = enemyId;
-    root[XCOORD_KEY] = x;
-    root[YCOORD_KEY] = y;
-    root["typeOfMoveable"] = moveable;
-    root["direction"] = direction;
 
     message.setData(root);
 
@@ -540,21 +471,6 @@ MessageFactory::getEnterMatchRequest(int clientId, std::string matchName,
     for (std::string element : elements) {
         root["elements"].append(element);
     }
-
-    message.setData(root);
-
-    return message.serialize();
-}
-
-std::string MessageFactory::getEnteredInMatchNotification(int clientId,
-                                                      std::string matchName) {
-    std::string toReturn;
-    Json::Value root(Json::objectValue);
-    Message message;
-
-    root[OPERATION_KEY] = SERVER_NOTIFICATION_ENTERED_MATCH;
-    root[CLIENT_ID_KEY] = clientId;
-    root[MATCH_NAME_KEY] = matchName;
 
     message.setData(root);
 

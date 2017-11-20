@@ -2,14 +2,14 @@
 #include "../sdl/Constants.h"
 #include "../common/Protocol.h"
 #include "../common/MessageFactory.h"
-#include "../common/modelo/Mapa.h"
+#include "../common/model/Map.h"
 
 #include <algorithm>
 #include <utility>
 #include <list>
 #include <string>
 
-ServerGame::ServerGame(std::mutex &m, model::Mapa aMap):
+ServerGame::ServerGame(std::mutex &m, model::Map aMap):
                                       mutexPlayers(m),
                                       map(std::move(aMap)),
                                       endSignal(false),
@@ -212,7 +212,7 @@ void ServerGame::towerInfo(int clientId, int towerId) {
 }
 
 std::string &ServerGame::getMapName() {
-    return map.getNombre();
+    return map.getName();
 }
 
 void ServerGame::setMapName(const std::string &mapName) {

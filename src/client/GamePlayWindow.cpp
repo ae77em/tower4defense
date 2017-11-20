@@ -39,7 +39,7 @@ GamePlayWindow::GamePlayWindow(Socket *s,
           clientId(cId),
           playerElements(elems),
           matchName(std::move(mn)),
-          map(model::Mapa()) {
+          map(model::Map::loadFromString(mp)) {
     abmonibleTexture = new Texture();
     blookHawkTexture = new Texture();
     goatmanTexture = new Texture();
@@ -53,10 +53,8 @@ GamePlayWindow::GamePlayWindow(Socket *s,
     timeOfLastSpell = -TIME_FOR_ENABLE_ACTION;
     timeOfLastTowerPutted = -TIME_FOR_ENABLE_ACTION;
 
-    map.cargarDesdeString(mp);
-
-    TILES_ROWS = map.getExtensionY();
-    TILES_COLUMNS = map.getExtensionX();
+    TILES_ROWS = map.dimensions().y;
+    TILES_COLUMNS = map.dimensions().x;
     TOTAL_TILES = TILES_ROWS * TILES_COLUMNS;
 }
 
@@ -274,18 +272,18 @@ bool GamePlayWindow::setTiles() {
     char tileSaved;
 
     //Initialize the tiles
-    for (unsigned i = 0; i < map.getExtensionX(); ++i) {
-        for (unsigned j = 0; j < map.getExtensionY(); ++j) {
+    for (int i = 0; i < map.dimensions().x; ++i) {
+        for (int j = 0; j < map.dimensions().y; ++j) {
             //Determines what kind of tile will be made
 
             //Read tile from map file
-            tileSaved = map.casilla(i, j);
+            tileSaved = map.tile(i, j);
 
             if (tileSaved == 'E' || tileSaved == 'S') { // es portal
                 portals.push_back(new Portal());
-                tileType = tileIdTranslator.at(map.getEstiloFondo());
+                tileType = tileIdTranslator.at(map.getBackgroundStyle());
             } else if (tileSaved == '.') { // campo
-                tileType = tileIdTranslator.at(map.getEstiloFondo());
+                tileType = tileIdTranslator.at(map.getBackgroundStyle());
             } else if (tileSaved == 'x') { // firme
                 tileType = tileIdTranslator.at(tileSaved);
             } else if (tileSaved == '#') { // es la nada

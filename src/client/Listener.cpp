@@ -48,8 +48,7 @@ void Listener::run(){
                 case SERVER_NOTIFICATION_GET_ALL_MATCHES:
                 case SERVER_NOTIFICATION_NEW_MATCH:
                 case SERVER_NOTIFICATION_ENTER_EXISTING_MATCH:
-                case SERVER_NOTIFICATION_GET_UNAVAILABLE_ELEMENTS:
-                case SERVER_NOTIFICATION_ENTERED_MATCH: {
+                case SERVER_NOTIFICATION_GET_UNAVAILABLE_ELEMENTS: {
                     notificable.notify(dataFromServer);
                     break;
                 }

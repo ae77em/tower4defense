@@ -3,7 +3,7 @@
 #include "Animation.h"
 #include "Constants.h"
 #include "Utils.h"
-#include "../common/modelo/Mapa.h"
+#include "../common/model/Map.h"
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_ttf.h>
 #include <stdexcept>
@@ -118,16 +118,16 @@ void Screen::clear() {
     SDL_RenderClear(renderer);
 }
 
-void Screen::put(model::Mapa &map) {
-    Texture &curr_tile_style = (map.getEstiloFondo() == 'd') ? tile_desert
-        : (map.getEstiloFondo() == 'g') ? tile_grass
-        : (map.getEstiloFondo() == 'i') ? tile_ice
-        : (map.getEstiloFondo() == 'l') ? tile_lava
+void Screen::put(model::Map &map) {
+    Texture &curr_tile_style = (map.getBackgroundStyle() == 'd') ? tile_desert
+        : (map.getBackgroundStyle() == 'g') ? tile_grass
+        : (map.getBackgroundStyle() == 'i') ? tile_ice
+        : (map.getBackgroundStyle() == 'l') ? tile_lava
         : tile_desert;
-    Point dimensions = map.dimensiones();
+    Point dimensions = map.dimensions();
     for (int x = 0; x < dimensions.x; ++x)
         for (int y = 0; y < dimensions.y; ++y)
-            switch (map.casilla(x, y)) {
+            switch (map.tile(x, y)) {
                 case '#': break;
                 case '.': put(x, y, curr_tile_style); break;
                 case 'x': put(x, y, tile_firm); break;
@@ -141,7 +141,7 @@ void Screen::put(model::Mapa &map) {
 
     for (int x = 0; x < dimensions.x; ++x)
         for (int y = 0; y < dimensions.y; ++y)
-            switch (map.casilla(x, y)) {
+            switch (map.tile(x, y)) {
                 case '~': put(x, y, waterTower); break;
                 case '*': put(x, y, earthTower); break;
                 case '!': put(x, y, fireTower); break;

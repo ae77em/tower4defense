@@ -454,12 +454,6 @@ void GameAccessWindow::updateUIData() {
                 }
                 break;
             }
-            case SERVER_NOTIFICATION_ENTERED_MATCH: {
-                int clientId = MessageFactory::getClientId(message);
-                std::string matchName = MessageFactory::getMatchName(message);
-                setJoinedToMatch(clientId, matchName);
-                break;
-            }
             case SERVER_NOTIFICATION_START_MATCH: {
                 std::string matchName = MessageFactory::getMatchName(message);
                 std::string serializedMap = MessageFactory::getSerializedMap(message);

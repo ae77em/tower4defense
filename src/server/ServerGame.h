@@ -7,7 +7,7 @@
 #include "ServerPlayer.h"
 #include "WorkerLoopGame.h"
 #include "GameAction.h"
-#include "../common/modelo/Mapa.h"
+#include "../common/model/Map.h"
 #include <map>
 #include <string>
 #include <list>
@@ -17,7 +17,7 @@ private:
     std::map<int,ServerPlayer*> players;
     //lo usaria para bloquear un jugador
     std::mutex& mutexPlayers;
-    model::Mapa map;
+    model::Map map;
     bool endSignal;
 
     //lo uso para bloquear la lista de acciones a aplicar sobre el juego
@@ -35,7 +35,7 @@ public:
 
     void setMapName(const std::string &mapName);
 
-    explicit ServerGame(std::mutex &mutex, model::Mapa aMap);
+    explicit ServerGame(std::mutex &mutex, model::Map aMap);
 
     bool elementsAreAvailables(std::list<std::string> elements);
 

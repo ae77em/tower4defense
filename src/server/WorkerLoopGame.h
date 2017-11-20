@@ -14,7 +14,7 @@ static const char *const STR_UPGRADE_TOWER = "upgrade-tower";
 #include "game-actors/enemies/ActorEnemy.h"
 #include "game-actors/enemies/Horde.h"
 #include "game-actors/towers/ActorTower.h"
-#include "../common/modelo/Mapa.h"
+#include "../common/model/Map.h"
 #include <map>
 #include <string>
 #include <list>
@@ -25,7 +25,7 @@ private:
     std::map<int,ServerPlayer*>& players;
     std::list<GameAction*>& actions;
     std::mutex& mutexActions;
-    model::Mapa& map;
+    model::Map& map;
 
     std::map<int, Horde*> hordes;
     std::vector<ActorTower*> towers;
@@ -38,7 +38,7 @@ public:
     WorkerLoopGame(std::map<int,ServerPlayer*>& p,
                    std::list<GameAction*>& a,
                    std::mutex& m,
-                   model::Mapa& map);
+                   model::Map& map);
 
     void run();
 

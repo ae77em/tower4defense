@@ -10,18 +10,20 @@ namespace model {
 
 /* Representa el terrento del juego, independiente de su representacion
    visual o de las criaturas que se encuentren en el. */
-class Mapa {
+class Map {
     unsigned extension_x, extension_y;
-    std::vector<char> casillas;
-    std::vector<std::vector<Point>> caminos;
-    std::vector<std::vector<model::Enemy>> enemigos;
-    char estilo_fondo;
-    std::string nombre;
+    std::vector<char> tiles;
+    std::vector<std::vector<Point>> paths;
+    std::vector<
+        std::pair<int, std::vector<std::string>>
+    > hordas;
+    char background_style;
+    std::string name;
+    int delay_hordes_seg; // El tiempo en segundos entre las hordas
 
 public:
-    Mapa(); /* para poder usar el from string */
-    Mapa(unsigned x, unsigned y);
-    explicit Mapa(const std::string &filename);
+    Map();
+    Map(unsigned x, unsigned y);
     std::string serialize();
 
     /* Devuelve el contenido de la casilla en la posicion x, y.
@@ -41,8 +43,8 @@ public:
             E entrada
             S salida
      */
-    char casilla(unsigned x, unsigned y);
-    void setCasilla(char value, unsigned x, unsigned y);
+    char tile(unsigned x, unsigned y);
+    void setTile(char value, unsigned x, unsigned y);
 
     /* Devuelve el estilo de las casillas de espacio transitable.
        d desert
@@ -50,27 +52,26 @@ public:
        i ice
        l lava
      */
-    char getEstiloFondo();
-    void setEstiloFondo(char estilo);
+    char getBackgroundStyle();
+    void setBackgroundStyle(char estilo);
 
-    Point dimensiones();
+    Point dimensions();
     /* Devuelve verdadero si el parametro esta dentro de los bordes */
-    bool estaDentro(Point &p) const;
+    bool isIn(Point &p) const;
 
-    std::vector<std::vector<Point>>& getCaminos();
-    void agregarCamino(const std::vector<Point> &camino);
-    std::vector<std::vector<model::Enemy>>& getEnemigos();
-    void agregarEnemigo(int indice_camino, const Enemy &e);
-    std::string &getNombre();
-    void setNombre(std::string un_nombre);
+    std::vector<std::vector<Point>>& getPaths();
+    void addPaths(const std::vector<Point> &camino);
 
-    void cargarDesdeString(std::string json);
+    const std::vector<std::pair<int, std::vector<std::string>>>& getHordes();
+    void addHorde(int path, std::vector<std::string> enemies);
+    int getDelay() const;
+    void setDelay(int delay);
 
-    void cargarDesdeArchivo(std::string filename);
+    std::string &getName();
+    void setName(std::string aName);
 
-    unsigned int getExtensionX();
-
-    unsigned int getExtensionY();
+    static Map loadFromString(std::string json);
+    static Map loadFromFile(std::string filename);
 };
 
 } // namespace model

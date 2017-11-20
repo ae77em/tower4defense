@@ -1,7 +1,7 @@
 #ifndef TP4_TOWERDEFENSE_SDL_ENEMY_H
 #define TP4_TOWERDEFENSE_SDL_ENEMY_H
 
-#include "../../common/modelo/Enemy.h"
+#include "../../common/model/Enemy.h"
 #include <vector>
 #include <array>
 #include "../Texture.h"

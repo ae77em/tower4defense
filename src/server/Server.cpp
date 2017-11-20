@@ -2,7 +2,7 @@
 #include "../common/MessageFactory.h"
 #include "../common/Protocol.h"
 #include "../common/Request.h"
-#include "../common/modelo/Mapa.h"
+#include "../common/model/Map.h"
 #include <utility>
 #include <map>
 #include <vector>
@@ -96,7 +96,7 @@ void Server::addPlayerToMatch(std::string nameMatch, ServerPlayer *sp) {
 
 //crea el juego y retorna el id del mismo, el id es el nombre del match...
 bool Server::createMatch(std::string nameMatch, std::string mapName) {
-    model::Mapa aMap = maps[mapName];
+    model::Map aMap = maps[mapName];
 
     if (matches.find(nameMatch) == matches.end()) {
         matches.insert(
@@ -301,7 +301,7 @@ void Server::startMatch(int clientId, std::string matchName) {
 
         std::string mapName = serverGame->getMapName();
 
-        model::Mapa mapa = maps.at(mapName);
+        model::Map mapa = maps.at(mapName);
 
         std::string serializedMap = mapa.serialize();
 
@@ -427,13 +427,11 @@ void Server::loadMaps() {
         if (std::string(dp->d_name).find(".json") != std::string::npos){
             mapFilename.assign("resources/maps/");
             mapFilename.append(dp->d_name);
-            model::Mapa aMap;
 
-            aMap.cargarDesdeArchivo(mapFilename);
+            model::Map aMap = model::Map::loadFromFile(mapFilename);
+            aMap.setName(dp->d_name);
 
-            aMap.setNombre(dp->d_name);
-
-            std::pair<std::string, model::Mapa> mapPair(aMap.getNombre(),std::move(aMap));
+            std::pair<std::string, model::Map> mapPair(aMap.getName(),std::move(aMap));
             maps.insert(mapPair);
         }
     }

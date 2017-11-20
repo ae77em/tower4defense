@@ -5,7 +5,7 @@
 #include "game-actors/enemies/Horde.h"
 #include "../common/MessageFactory.h"
 #include "GameNotification.h"
-#include "../common/modelo/Mapa.h"
+#include "../common/model/Map.h"
 #include "../common/Protocol.h"
 #include "game-actors/towers/ActorTowerFire.h"
 #include "game-actors/towers/ActorTowerWater.h"
@@ -26,7 +26,7 @@
 WorkerLoopGame::WorkerLoopGame(std::map<int,ServerPlayer*>& p,
                                std::list<GameAction*>& a,
                                std::mutex& m,
-                                model::Mapa& mp):
+                                model::Map& mp):
                                                 players(p),
                                                 actions(a),
                                                 mutexActions(m),
@@ -146,7 +146,7 @@ void WorkerLoopGame::buildGameContext() {
     hordeType.push_back((int)ENEMY_GOATMAN);
     hordeType.push_back((int)ENEMY_SPECTRE);
 
-    paths = map.getCaminos();
+    paths = map.getPaths();
 
     hordeId = 0;
 
