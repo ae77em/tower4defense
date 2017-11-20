@@ -32,7 +32,7 @@ file(GLOB TEST_SOURCES
         "src/sdl/*.cpp")
 
 add_executable(game.exe ${CLIENT_SOURCES} src/sdl/towers/Fire.cpp src/sdl/towers/Fire.h src/sdl/towers/Earth.cpp src/sdl/towers/Earth.h)
-add_executable(server.exe ${SERVER_SOURCES} src/server/game-actors/towers/ActorTowerAir.cpp src/server/game-actors/towers/ActorTowerAir.h src/server/game-actors/towers/ActorTowerEarth.cpp src/server/game-actors/towers/ActorTowerEarth.h src/server/game-actors/towers/ActorTowerFire.cpp src/server/game-actors/towers/ActorTowerFire.h src/server/game-actors/towers/ActorTowerWater.cpp src/server/game-actors/towers/ActorTowerWater.h)
+add_executable(server.exe ${SERVER_SOURCES} src/server/game-actors/towers/ActorTowerAir.cpp src/server/game-actors/towers/ActorTowerAir.h src/server/game-actors/towers/ActorTowerEarth.cpp src/server/game-actors/towers/ActorTowerEarth.h src/server/game-actors/towers/ActorTowerFire.cpp src/server/game-actors/towers/ActorTowerFire.h src/server/game-actors/towers/ActorTowerWater.cpp src/server/game-actors/towers/ActorTowerWater.h src/server/game-actors/enemies/ActorEnemyBloodHawk.cpp src/server/game-actors/enemies/ActorEnemyBloodHawk.h src/server/game-actors/enemies/ActorEnemyGreenDaemon.cpp src/server/game-actors/enemies/ActorEnemyGreenDaemon.h src/server/game-actors/enemies/ActorEnemySpectre.cpp src/server/game-actors/enemies/ActorEnemySpectre.h src/server/game-actors/enemies/ActorEnemyGoatman.cpp src/server/game-actors/enemies/ActorEnemyGoatman.h src/server/game-actors/enemies/ActorEnemyZombie.cpp src/server/game-actors/enemies/ActorEnemyZombie.h)
 add_executable(editor.exe ${EDITOR_SOURCES})
 add_executable(unit.exe ${TEST_SOURCES})
 
@@ -68,6 +68,7 @@ TARGET_LINK_LIBRARIES(editor.exe ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES}
 TARGET_LINK_LIBRARIES(unit.exe ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES}
         ${SDL2TTF_LIBRARIES})
 
-SET(GCC_COVERAGE_COMPILE_FLAGS "-Wall -Werror -pedantic -pedantic-errors -O0 -ggdb -DDEBUG -fno-inline -std=c++11")
+SET(GCC_COVERAGE_COMPILE_FLAGS "-I -Wall -Werror -pedantic -pedantic-errors -O0
+-ggdb -DDEBUG -fno-inline -std=c++11")
 add_definitions(${GCC_COVERAGE_COMPILE_FLAGS})
 

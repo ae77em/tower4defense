@@ -53,6 +53,10 @@ public:
     void setTimeCreationHorde();
 
     void putTower(GameAction *pAction);
+
+    void notifyMatchLoose();
+
+    bool actionsSuccessfullAttended(std::list<GameAction *> &actionsGame);
 };
 
 

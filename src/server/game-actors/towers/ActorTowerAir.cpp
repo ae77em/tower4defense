@@ -17,4 +17,6 @@ int ActorTowerAir::getShotDamage(ActorEnemy enemy) {
     }
 }
 
+ActorTowerAir::ActorTowerAir(int id) : ActorTower(id) { }
+
 

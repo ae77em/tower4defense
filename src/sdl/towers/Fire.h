@@ -21,12 +21,6 @@ public:
     void setSprites();
 
     /*
-     * Toma los datos de configuración de la torre de un archivo y lo nutre
-     * con eso.
-     */
-    void deserialize(std::string data);
-
-    /*
      * Renderea un sprite de la animación de la torre esperando.
      * camera: cuadrado que representa el lugar visible del mapa.
      * */

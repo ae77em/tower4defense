@@ -221,7 +221,7 @@ public:
     /*
      * Retorna notificación de fin de partida.
      */
-    static std::string getMatchEndedNotification();
+    static std::string getMatchEndedNotification(int matchStatus);
 
     /*
      * Retorna el pedido de info de una torre.

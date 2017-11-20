@@ -66,6 +66,10 @@ public:
 
     int receiveDamage(int i);
 
+    bool hasEndedThePath();
+
+    double getRemainingEnergyPercentaje();
+
 protected:
     std::vector<Point> path;
     Point currentPoint = Point(-1, -1);
@@ -80,6 +84,8 @@ protected:
     int yPosition = 0;
     bool isWalking = false;
     bool isVisible = false;
+    int xFinalIntoTile = -1;
+    int yFinalIntoTile = -1;
 
     int velocity = 1;
     int initialEnergy = 200;
@@ -87,9 +93,11 @@ protected:
     int remainingLifePoints = 200;
     bool isAir = false;
     bool isAlive = true;
+    bool endedThePath = false;
 
 
     int id;
+
 };
 
 #endif //TP4_TOWERDEFENSE_SERVER_ENEMY_H

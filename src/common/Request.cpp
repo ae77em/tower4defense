@@ -23,6 +23,12 @@ bool Request::getAsBool(std::string key){
     return root[key].asBool();
 }
 
+double Request::getAsDouble(std::string key){
+    Json::Value &root = requestMessage.getData();
+
+    return root[key].asDouble();
+}
+
 std::list<std::string> Request::getAsStringVector(std::string key){
     Json::Value &root = requestMessage.getData();
     std::list<std::string> elements;

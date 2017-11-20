@@ -121,7 +121,9 @@ void Enemy::renderWalk(SDL_Rect &camera) {
     texture->renderSprite(renderer, isox, isoy,
                           &walkingSprites[currentDirection][frameToDraw]);
 
-    renderLifeBar(isox, isoy);
+    int isoxLifebar = isox + ((walkBox.w - LIFE_BAR_WIDTH) / 2); // lo centro...
+    
+    renderLifeBar(isoxLifebar, isoy);
 }
 
 void Enemy::renderDie(SDL_Rect &camera) {
@@ -202,19 +204,19 @@ Circle &Enemy::getCollisionCircle() {
 }
 
 void Enemy::renderLifeBar(int x, int y) {
-    int w = 50; // porque sí
-    int h = 4; // porque también (?)...
+    int w = LIFE_BAR_WIDTH; // porque sí
+    int h = LIFE_BAR_HEIGHT; // porque también (?)...
     SDL_Color fcolor = {0x00, 0xFF, 0x00, 0xFF}; // green
     SDL_Color bcolor = {0xFF, 0x00, 0x00, 0xFF}; // red
 
-    lifePercentaje = lifePercentaje > 1.f ? 1.f : lifePercentaje < 0.f ? 0.f : lifePercentaje;
+    energyPercentaje = energyPercentaje > 1.f ? 1.f : energyPercentaje < 0.f ? 0.f : energyPercentaje;
     SDL_Color old;
     SDL_GetRenderDrawColor(renderer, &old.r, &old.g, &old.g, &old.a);
     SDL_Rect bgrect = {x, y, w, h};
     SDL_SetRenderDrawColor(renderer, bcolor.r, bcolor.g, bcolor.b, bcolor.a);
     SDL_RenderFillRect(renderer, &bgrect);
     SDL_SetRenderDrawColor(renderer, fcolor.r, fcolor.g, fcolor.b, fcolor.a);
-    int pw = (int) ((float) w * lifePercentaje);
+    int pw = (int) ((float) w * energyPercentaje);
     int px = x + (w - pw);
     SDL_Rect fgrect = {px, y, pw, h};
     SDL_RenderFillRect(renderer, &fgrect);
@@ -243,5 +245,9 @@ bool Enemy::itIsVisible() {
 
 void Enemy::setIsVisible(bool isVisible) {
     Enemy::isVisible = isVisible;
+}
+
+void Enemy::setEnergyPercentaje(double ep) {
+    energyPercentaje = ep;
 }
 

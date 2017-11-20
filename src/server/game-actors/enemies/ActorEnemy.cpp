@@ -5,9 +5,9 @@
 #include <string>
 #include <vector>
 
-ActorEnemy::ActorEnemy(){ }
+ActorEnemy::ActorEnemy() {}
 
-ActorEnemy::~ActorEnemy(){ }
+ActorEnemy::~ActorEnemy() {}
 
 const std::vector<Point> &ActorEnemy::getPath() const {
     return path;
@@ -34,11 +34,18 @@ void ActorEnemy::setCurrentPathPosition(int currPos) {
 }
 
 void ActorEnemy::advance() {
-    if (currentPathPosition >= 0 && currentPathPosition < (int)path.size()) {
-        int xFinal, yFinal;
-
+    // Iniciamos en un múltiplo de -40, salen en fila los bichos...vamos
+    // aumentando de a uno hasta que se hace cero, y ahí usamos la variable
+    // para avanzar en el índice del camino...solución medio fea, pero bueno.
+    if (currentPathPosition < 0) {
+        ++currentPathPosition;
+        isVisible = false;
+    }
+        // El enemigo avanza en el camino hasta que muere o llega al final.
+    else if (currentPathPosition >= 0 &&
+             currentPathPosition < (int) path.size()) {
         if (xPositionIntoTile > CARTESIAN_TILE_WIDTH ||
-            yPositionIntoTile > CARTESIAN_TILE_HEIGHT){
+            yPositionIntoTile > CARTESIAN_TILE_HEIGHT) {
             ++currentPathPosition;
             xPositionIntoTile = 0;
             yPositionIntoTile = 0;
@@ -48,35 +55,38 @@ void ActorEnemy::advance() {
 
         if ((unsigned) currentPathPosition < path.size() - 1) {
             Point point = path.at(currentPathPosition + 1);
-            xFinal = point.x;
-            yFinal = point.y;
+            xFinalIntoTile = point.x;
+            yFinalIntoTile = point.y;
         }
 
-        int xMovement = Utils::getNextMapDisplacement(currentPoint.x, xFinal);
-        int yMovement = Utils::getNextMapDisplacement(currentPoint.y, yFinal);
+        int xMovement = Utils::getNextMapDisplacement(currentPoint.x,
+                                                      xFinalIntoTile);
+        int yMovement = Utils::getNextMapDisplacement(currentPoint.y,
+                                                      yFinalIntoTile);
 
-        int x = path.at(currentPathPosition).x + xMovement;
-        int y = path.at(currentPathPosition).y + yMovement;
+        // El enemigo tiene movimiento para algún lugar, lo muevo.
+        if (xMovement > 0 || yMovement > 0) {
+            int x = path.at(currentPathPosition).x + xMovement;
+            int y = path.at(currentPathPosition).y + yMovement;
 
-        currentDirection =
-                Utils::getMovementDirection(
-                        Utils::getNextMapDisplacement(x, xFinal),
-                        Utils::getNextMapDisplacement(y, yFinal));
+            currentDirection =
+                    Utils::getMovementDirection(
+                            Utils::getNextMapDisplacement(x, xFinalIntoTile),
+                            Utils::getNextMapDisplacement(y, yFinalIntoTile));
 
-        xPositionIntoTile += xMovement;
-        yPositionIntoTile += yMovement;
+            xPositionIntoTile += xMovement;
+            yPositionIntoTile += yMovement;
 
-        xPosition = path.at(currentPathPosition).x + xPositionIntoTile;
-        yPosition = path.at(currentPathPosition).y + yPositionIntoTile;
+            xPosition = path.at(currentPathPosition).x + xPositionIntoTile;
+            yPosition = path.at(currentPathPosition).y + yPositionIntoTile;
 
-        collisionCircle.x = xPosition + (CARTESIAN_TILE_WIDTH * 0.5);
-        collisionCircle.y = xPosition + (CARTESIAN_TILE_HEIGHT * 0.5);
-        isVisible = true;
-    } else if (currentPathPosition < (int)path.size()) {
-        ++currentPathPosition;
-        isVisible = false;
-    } else {
-        isVisible = false;
+            collisionCircle.x = xPosition + (CARTESIAN_TILE_WIDTH * 0.5);
+            collisionCircle.y = yPosition + (CARTESIAN_TILE_HEIGHT * 0.5);
+            isVisible = true;
+        } else { // El enemigo llegó al final...perdimos la partida.
+            isVisible = false;
+            endedThePath = true;
+        }
     }
 }
 
@@ -124,7 +134,11 @@ void ActorEnemy::live() {
 }
 
 int ActorEnemy::getEnergy() {
-    return remainingLifePoints;
+    return energy;
+}
+
+double ActorEnemy::getRemainingEnergyPercentaje() {
+    return double(energy) / double(initialEnergy);
 }
 
 std::string ActorEnemy::getClass() {
@@ -159,7 +173,7 @@ int ActorEnemy::receiveDamage(int damage) {
     int actualDamage = std::min(damage, energy);
     energy -= actualDamage;
 
-    if (energy > 0){
+    if (energy > 0) {
         damagePoints = actualDamage;
     } else {
         int bonus = initialEnergy * 0.5;
@@ -176,5 +190,9 @@ ActorRectT ActorEnemy::getRect() {
 
 bool ActorEnemy::itIsAir() {
     return isAir;
+}
+
+bool ActorEnemy::hasEndedThePath() {
+    return endedThePath;
 }
 
