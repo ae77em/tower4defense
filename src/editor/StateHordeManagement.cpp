@@ -5,11 +5,8 @@
 using namespace Editor;
 
 void StateHordeManagement::onTransition(Editor &context) {
-    context.getScreen().setDialog("Click on portal to add new horde");
-}
-
-void StateHordeManagement::preRender(Editor &context) {
-    //TODO Show current hordes
+    context.getScreen().setDialog("Click on portal to add new horde. "
+            "hordes: " + std::to_string(context.getMap().getHordas().size()));
 }
 
 void StateHordeManagement::handle(const SDL_Event &e, Editor &context) {

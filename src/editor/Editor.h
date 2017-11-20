@@ -81,7 +81,6 @@ class StateHordeManagement : public State {
     public:
     virtual void handle(const SDL_Event &e, Editor &context);
     virtual void onTransition(Editor &context);
-    virtual void preRender(Editor &context);
 };
 
 /* Mostrar enemigos en la horda actual, y agregar nuevos enemigos */
