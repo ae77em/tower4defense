@@ -12,5 +12,7 @@ void StateHordeCreation::handle(const SDL_Event &e, Editor &context) {
 }
 
 void StateHordeCreation::preRender(Editor &context) {
-    //TODO Show enemy buttons
+    context.getScreen().setDialog("1:abominable  2:hawk  3:goatman  "
+            "4:daemon  5:spectre  6:zombie  monsters: "
+            + std::to_string(1337));
 }
