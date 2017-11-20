@@ -90,17 +90,6 @@ void Server::notifyAll(std::string message) {
     }
 }
 
-void Server::notifyAllExpeptTo(int clientId, std::string message) {
-    std::cout << "Notificando a: " << players.size() - 1 << " jugadores"
-              << std::endl;
-
-    for (std::pair<unsigned int, ServerPlayer *> player : players) {
-        if ((int) player.first != clientId) {
-            player.second->sendData(message);
-        }
-    }
-}
-
 void Server::addPlayerToMatch(std::string nameMatch, ServerPlayer *sp) {
     matches.at(nameMatch)->addPlayer(sp);
 }
