@@ -3,8 +3,7 @@
 #include <string>
 #include <list>
 
-Request::Request(Message& m):requestMessage(m){
-}
+Request::Request(Message& m):requestMessage(m){ }
 
 std::string Request::getAsString(std::string key){
     Json::Value &root = requestMessage.getData();
@@ -16,6 +15,12 @@ int Request::getAsInt(std::string key){
     Json::Value &root = requestMessage.getData();
 
     return root[key].asInt();
+}
+
+int Request::getAsBool(std::string key){
+    Json::Value &root = requestMessage.getData();
+
+    return root[key].asBool();
 }
 
 std::list<std::string> Request::getAsStringVector(std::string key){

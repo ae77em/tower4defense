@@ -23,7 +23,7 @@ Horde *Horde::createHorde(int enemyType, int amount, std::vector<Point> path){
 
     for (Point pathPoint : path){
         x = pathPoint.x * CARTESIAN_TILE_WIDTH;
-        y = pathPoint.x * CARTESIAN_TILE_WIDTH;
+        y = pathPoint.y * CARTESIAN_TILE_HEIGHT;
         actualPath.push_back(Point(x,y));
     }
 

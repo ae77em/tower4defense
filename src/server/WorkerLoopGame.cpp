@@ -52,9 +52,6 @@ void WorkerLoopGame::run(){
         if( isTimeToCreateHorde() ){
             createHordeAndNotify();
         }
-
-        //std::cout << "WorkerLoopGame: ciclo  "<< ciclos << std::endl;
-
         //std::list<GameAction*> obtainedActions = getActions();
 
         mutexActions.lock();

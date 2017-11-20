@@ -16,6 +16,8 @@ public:
     int getAsInt(std::string key);
 
     std::list<std::string> getAsStringVector(std::string key);
+
+    int getAsBool(std::string key);
 };
 
 

@@ -119,6 +119,10 @@ public:
 
     Point getPoint();
 
+    bool itIsVisible();
+
+    void setIsVisible(bool isVisible);
+
 protected:
     /* Point for get the sprites */
     int walkingStartX = 1765;
@@ -164,6 +168,9 @@ protected:
 
     bool isAlive;
     float lifePercentaje;
+    bool isVisible;
+
+protected:
 
     /* METHODS */
     virtual void initializeSpritesData();

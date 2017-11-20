@@ -99,6 +99,8 @@ static std::string ENEMY_ID_KEY = "enemyId";
 static std::string HORDE_ID_KEY = "hordeId";
 static std::string MATCH_NAME_KEY = "matchName";
 static std::string TOWER_ID_KEY = "towerId";
+static std::string IS_VISIBLE_KEY = "isVisible";
+static std::string IS_ALIVE_KEY = "isAlive";
 
 class Protocol {
 public:

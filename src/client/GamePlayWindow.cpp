@@ -604,19 +604,24 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
                         MessageFactory::getMovementNotifications(message);
 
                 for (Message &aMessage : messages) {
+
+                    Request request(aMessage);
+
                     Point scenarioPoint = MessageFactory::getPoint(aMessage);
                     // no dibujo cosas fuera del escenario...
                     if (scenarioPoint.isPositive()) {
 
                         int dir = MessageFactory::getDirection(aMessage);
-                        int enemyId = MessageFactory::getEnemyId(aMessage);
-                        int hordeId = MessageFactory::getHordeId(aMessage);
+                        int enemyId = request.getAsInt(ENEMY_ID_KEY);
+                        int hordeId = request.getAsInt(HORDE_ID_KEY);
+                        bool isVisible = request.getAsBool(IS_VISIBLE_KEY);
 
                         try {
                             DrawableHorde horde = hordes.at(hordeId);
                             Enemy *enemy = horde.getEnemieAt(enemyId);
                             enemy->setDirection(dir);
                             enemy->moveTo(scenarioPoint.x, scenarioPoint.y);
+                            enemy->setIsVisible(isVisible);
                         } catch (...) {
                             std::cerr << "No es posible mover el enemigo "
                                       << std::to_string(enemyId);
@@ -900,11 +905,12 @@ void GamePlayWindow::renderMessages() {
                 }
 }
 
-void GamePlayWindow::loadAnimables() {/* Remuevo los animables del vector (ojo, siguen existiendo,
-                 * pero no están en el vector), ya que pueden ir cambiando de
-                 * posición en cada iteración, y los vuelvo a cargar y ordenar,
-                 * para volver a mostrarlos bien.
-                 */
+/* Remuevo los animables del vector (ojo, siguen existiendo,
+    * pero no están en el vector), ya que pueden ir cambiando de
+    * posición en cada iteración, y los vuelvo a cargar y ordenar,
+    * para volver a mostrarlos bien.
+    */
+void GamePlayWindow::loadAnimables() {
     animables = std::priority_queue<Animable *, std::vector<Animable *>,
             lessThanByPoint>();
 

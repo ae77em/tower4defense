@@ -146,10 +146,12 @@ void Enemy::renderDie(SDL_Rect &camera) {
 }
 
 void Enemy::animate(SDL_Rect &camera) {
-    if (itIsAlive()) {
-        renderWalk(camera);
-    } else {
-        renderDie(camera);
+    if (isVisible){
+        if (itIsAlive()) {
+            renderWalk(camera);
+        } else {
+            renderDie(camera);
+        }
     }
 }
 
@@ -233,5 +235,13 @@ void Enemy::setRenderer(SDL_Renderer *r) {
 
 Point Enemy::getPoint() {
     return currentPoint;
+}
+
+bool Enemy::itIsVisible() {
+    return isVisible;
+}
+
+void Enemy::setIsVisible(bool isVisible) {
+    Enemy::isVisible = isVisible;
 }
 

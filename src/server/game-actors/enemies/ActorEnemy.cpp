@@ -71,9 +71,10 @@ void ActorEnemy::advance() {
 
         collisionCircle.x = xPosition + (CARTESIAN_TILE_WIDTH * 0.5);
         collisionCircle.y = xPosition + (CARTESIAN_TILE_HEIGHT * 0.5);
-
+        isVisible = true;
     } else {
         ++currentPathPosition;
+        isVisible = false;
     }
 }
 

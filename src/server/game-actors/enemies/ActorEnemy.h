@@ -79,6 +79,7 @@ protected:
     int xPosition = 0;
     int yPosition = 0;
     bool isWalking = false;
+    bool isVisible = false;
 
     int velocity = 1;
     int initialEnergy = 200;
