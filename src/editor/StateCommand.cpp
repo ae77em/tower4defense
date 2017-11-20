@@ -40,6 +40,17 @@ static std::string change_background(Editor::Editor &context,
     return "";
 }
 
+static std::string delay(Editor::Editor &context, const std::string& command) {
+    int delay;
+    try {
+        delay = stol(command);
+    } catch (std::invalid_argument) {
+        return "bad argument to delay: " + command;
+    }
+    context.getMap().setDelay(delay);
+    return "delay set";
+}
+
 Editor::StateCommand::StateCommand() {
     dispatch_table["_default_"] = [](Editor& context, const std::string& c){
         return std::string("command not recognized");
@@ -54,6 +65,7 @@ Editor::StateCommand::StateCommand() {
     dispatch_table["new"] = new_map;
     dispatch_table["bg"] = change_background;
     dispatch_table["background"] = change_background;
+    dispatch_table["delay"] = delay;
 }
 
 void Editor::StateCommand::handle(const SDL_Event &e, Editor &context) {

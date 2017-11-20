@@ -76,6 +76,24 @@ class StateCommand : public State {
     virtual void onTransition(Editor &context);
 };
 
+/* Mostrar hordas del mapa, y agregar hordas nuevas */
+class StateHordeManagement : public State {
+    public:
+    virtual void handle(const SDL_Event &e, Editor &context);
+    virtual void onTransition(Editor &context);
+};
+
+/* Mostrar enemigos en la horda actual, y agregar nuevos enemigos */
+class StateHordeCreation : public State {
+    int index;
+    std::vector<std::string> enemies;
+
+    public:
+    explicit StateHordeCreation(int path_index);
+    virtual void handle(const SDL_Event &e, Editor &context);
+    virtual void preRender(Editor &context);
+};
+
 } //namespace Editor
 
 #endif
