@@ -81,8 +81,6 @@ private:
 
     std::vector<std::string> getMatchesNames();
 
-    void notifyAllExpeptTo(int clientId, std::string message);
-
     void notifyPlayerAdded(std::string matchName);
 
     void markTile(std::string matchName, int x, int y);
