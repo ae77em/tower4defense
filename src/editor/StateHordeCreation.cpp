@@ -14,6 +14,13 @@ void StateHordeCreation::handle(const SDL_Event &e, Editor &context) {
     else if (e.key.keysym.sym == SDLK_5) enemies.push_back("spectre");
     else if (e.key.keysym.sym == SDLK_6) enemies.push_back("zombie");
 
+    else if (enemies.size() != 0
+            && (e.key.keysym.sym == SDLK_RETURN
+                || e.key.keysym.sym == SDLK_KP_ENTER)) {
+        context.getMap().agregarHorda(0, enemies);
+        context.transition(new StateHordeManagement());
+    }
+
     const auto& keys = context.getKeys();
     if (e.key.keysym.sym == keys.cancel) {
         context.transition(new StateHordeManagement());
