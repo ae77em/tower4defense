@@ -16,8 +16,6 @@ void StateHordeManagement::handle(const SDL_Event &e, Editor &context) {
     if (e.type == SDL_MOUSEBUTTONDOWN) {
         Point p = context.getScreen().mouseCurrentTile();
         if (map.estaDentro(p) && (map.casilla(p.x, p.y) == 'E')) {
-            screen.setDialog("Clicked on entry portal");
-
             // Find the path that starts on the clicked tile
             int path_index = -1;
             const auto& paths = map.getCaminos();
