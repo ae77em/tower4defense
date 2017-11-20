@@ -86,6 +86,8 @@ class StateHordeManagement : public State {
 
 /* Mostrar enemigos en la horda actual, y agregar nuevos enemigos */
 class StateHordeCreation : public State {
+    std::vector<std::string> enemies;
+
     public:
     virtual void handle(const SDL_Event &e, Editor &context);
     virtual void preRender(Editor &context);
