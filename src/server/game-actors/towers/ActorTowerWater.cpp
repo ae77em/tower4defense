@@ -8,3 +8,5 @@ void ActorTowerWater::initialize() {
     slowDownPercentaje = 0.0;
     collisionCircle.r = (CARTESIAN_TILE_WIDTH / 2) * shotRatio;
 }
+
+ActorTowerWater::ActorTowerWater(int id) : ActorTower(id) { }

@@ -81,7 +81,7 @@ void ActorEnemy::advance() {
             yPosition = path.at(currentPathPosition).y + yPositionIntoTile;
 
             collisionCircle.x = xPosition + (CARTESIAN_TILE_WIDTH * 0.5);
-            collisionCircle.y = xPosition + (CARTESIAN_TILE_HEIGHT * 0.5);
+            collisionCircle.y = yPosition + (CARTESIAN_TILE_HEIGHT * 0.5);
             isVisible = true;
         } else { // El enemigo llegó al final...perdimos la partida.
             isVisible = false;
@@ -134,7 +134,11 @@ void ActorEnemy::live() {
 }
 
 int ActorEnemy::getEnergy() {
-    return remainingLifePoints;
+    return energy;
+}
+
+double ActorEnemy::getRemainingEnergyPercentaje() {
+    return double(energy) / double(initialEnergy);
 }
 
 std::string ActorEnemy::getClass() {

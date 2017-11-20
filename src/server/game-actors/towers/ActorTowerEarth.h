@@ -6,6 +6,8 @@
 
 class ActorTowerEarth : public ActorTower {
 
+public:
+    ActorTowerEarth(int id);
 };
 
 

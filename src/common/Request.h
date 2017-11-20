@@ -18,6 +18,8 @@ public:
     std::list<std::string> getAsStringVector(std::string key);
 
     bool getAsBool(std::string key);
+
+    double getAsDouble(std::string key);
 };
 
 

@@ -553,6 +553,8 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
                     int enemyId = request.getAsInt(ENEMY_ID_KEY);
                     int hordeId = request.getAsInt(HORDE_ID_KEY);
                     bool isVisible = request.getAsBool(IS_VISIBLE_KEY);
+                    double energyPercentaje =
+                            request.getAsDouble(ENERGY_PERCENTAJE_KEY);
 
                     try {
                         DrawableHorde horde = hordes.at(hordeId);
@@ -560,6 +562,7 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
                         enemy->setDirection(dir);
                         enemy->moveTo(scenarioPoint.x, scenarioPoint.y);
                         enemy->setIsVisible(isVisible);
+                        enemy->setEnergyPercentaje(energyPercentaje);
                     } catch (...) {
                         std::cerr << "No es posible mover el enemigo "
                                   << std::to_string(enemyId);

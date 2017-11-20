@@ -8,7 +8,6 @@ class ActorEnemyAbmonible : public ActorEnemy {
 public:
     ActorEnemyAbmonible();
     virtual ~ActorEnemyAbmonible();
-    //std::vector<ActorEnemyAbmonible>
 };
 
 

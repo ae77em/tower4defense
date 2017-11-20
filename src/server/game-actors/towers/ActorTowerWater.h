@@ -6,6 +6,8 @@
 
 class ActorTowerWater : public ActorTower {
 public:
+    ActorTowerWater(int id);
+
     void initialize();
 };
 

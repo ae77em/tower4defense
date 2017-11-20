@@ -42,92 +42,89 @@ void WorkerLoopGame::run() {
     std::list<GameAction *> actionsGame;
     std::map<int, Horde *>::iterator hordeIt;
 
-    bool clientDie = false;
     bool gameFinish = false;
     std::string cause = "";
 
-    //while(isRunning()){
     while (!gameFinish) {
 
         if (isTimeToCreateHorde()) {
             createHordeAndNotify();
         }
-        //std::list<GameAction*> obtainedActions = getActions();
 
-        mutexActions.lock();
-        //GRONCHADA PARA REFACTORIZAR
-        //IMPLEMENTAR CLASE QUE HAGA EL CIERRE DEL GAME LOOP
-
-        /* Estos son los requests enviados por el cliente, por ejemplo,
-         * poner torre... */
-        for (GameAction *a : this->actions) {
-            std::cout << a->action << "  " << std::endl;
-
-            if (a->action.compare("game-explotion") == 0) {
-                std::cout << "WorkerLoopGame: "
-                        "salgo porque explote " << std::endl;
-
-                clientDie = true;
-                break;
-            } else if (a->action.compare(STR_PUT_TOWER) == 0) {
-                putTower(a);
-            } else if (a->action.compare(STR_GET_TOWER_INFO) == 0) {
-                // get tower info
-            } else if (a->action.compare(STR_UPGRADE_TOWER) == 0) {
-                // get upgrade tower
-            }
-            actionsGame.push_back(a);
-        }
-
-        this->actions.clear();
-
-        mutexActions.unlock();
-
-        if (clientDie) {
+        if (!actionsSuccessfullAttended(actionsGame)) {
             break;
         }
 
+        /* Muevo los enemigos. */
         for (hordeIt = hordes.begin(); hordeIt != hordes.end(); ++hordeIt) {
             std::vector<ActorEnemy *> enemies = hordeIt->second->getEnemies();
 
             for (auto enemy : enemies) {
                 enemy->advance();
-
-                if (enemy->hasEndedThePath()){
+                if (enemy->hasEndedThePath()) {
                     gameFinish = true;
                     notifyMatchLoose();
                 }
             }
         }
 
-        /* ahora hago andar las torres */
+        /* Hago actuar las torres. */
         for (auto tower : towers) {
             for (hordeIt = hordes.begin(); hordeIt != hordes.end(); ++hordeIt) {
-                tower->live(hordeIt->second);
+                tower->attack(hordeIt->second);
             }
         }
 
-        //GET STATUS GAMES
+        /* Obtengo el estado actual */
         statusGame = getGameStatus();
 
-        // NOTIFICO EL ESTADO DEL JUEGO A TODOS LO JUGADORES
-        // LUEGO DE LA MODIFICACION DE MODELO
+        /* Notifico el estado del juego a todos los jugadores. */
         for (auto it = players.begin(); it != players.end(); ++it) {
             it->second->sendData(statusGame);
         }
 
-        actionsGame.clear();//limpio la lista para no ejecutar request viejos
-        std::this_thread::sleep_for(std::chrono::milliseconds(25)); // poco
-        // menos de 60 fps
+        /* Limpio la lista para no ejecutar request viejos. */
+        actionsGame.clear();
+
+        /* Poco menos de 60 fps. Lo dejo así para darle tiempo a los request
+         * de los usuarios a impactarse de forma relativamente instantánea. */
+        std::this_thread::sleep_for(std::chrono::milliseconds(25));
+    }
+}
+
+bool WorkerLoopGame::actionsSuccessfullAttended(
+        std::list<GameAction *> &actionsGame) {
+    bool actionSuccessful = true;
+    mutexActions.lock();
+    //GRONCHADA PARA REFACTORIZAR
+    //IMPLEMENTAR CLASE QUE HAGA EL CIERRE DEL GAME LOOP
+
+    /* Estos son los requests enviados por el cliente, por ejemplo,
+     * poner torre... */
+    for (GameAction *a : actions) {
+        std::cout << a->action << "  " << std::endl;
+
+        if (a->action.compare("game-explotion") == 0) {
+            std::cout
+                    << "WorkerLoopGame: salgo porque explote "
+                    << std::endl;
+            actionSuccessful = false;
+            break;
+        } else if (a->action.compare(STR_PUT_TOWER) == 0) {
+            putTower(a);
+        } else if (a->action.compare(STR_GET_TOWER_INFO) == 0) {
+            // get tower info
+        } else if (a->action.compare(STR_UPGRADE_TOWER) == 0) {
+            // get upgrade tower
+        }
+        actionsGame.push_back(a);
     }
 
-    // ESTA PARTE NO SE SI TIENE SENTIDO,
-    // DEBERIA DEE HABER SALIDO TODOS LOS CLIENTES
-    std::cout << "WorkerLoopGame: TERMINO PARTIDA CAUSA: " << cause
-              << std::endl;
-    std::cout << "WorkerLoopGame: Hilo donde "
-            "existe la partida se termino" << std::endl;
-    std::cout << "WorkerLoopGame: Aviso que terminó la partida." << std::endl;
+    actions.clear();
+
+    mutexActions.unlock();
+
+    return actionSuccessful;
 }
 
 void WorkerLoopGame::buildGameContext() {
@@ -193,30 +190,27 @@ void WorkerLoopGame::createHordeAndNotify() {
 void WorkerLoopGame::putTower(GameAction *pAction) {
     int type = pAction->typeOfTower;
 
-    std::cout << "voy a poner torre de tipo "
-              << std::to_string(type)
-              << std::endl;
-
     ActorTower *tower = nullptr;
+
+    int towerId = towers.size();
 
     switch (type) {
         case TOWER_FIRE: {
-            tower = new ActorTowerFire();
+            tower = new ActorTowerFire(towerId);
             break;
         }
         case TOWER_WATER: {
-            tower = new ActorTowerWater();
+            tower = new ActorTowerWater(towerId);
             break;
         }
         case TOWER_AIR: {
-            tower = new ActorTowerAir();
+            tower = new ActorTowerAir(towerId);
             break;
         }
         case TOWER_EARTH: {
-            tower = new ActorTowerEarth();
+            tower = new ActorTowerEarth(towerId);
             break;
         }
-
     }
 
     int actualX = pAction->x * CARTESIAN_TILE_WIDTH;
@@ -225,7 +219,7 @@ void WorkerLoopGame::putTower(GameAction *pAction) {
     towers.push_back(tower);
 
     std::string statusGame =
-            GameNotification::getPutTowerNotification(towers.size() - 1,
+            GameNotification::getPutTowerNotification(towerId,
                                                       type,
                                                       actualX,
                                                       actualY);

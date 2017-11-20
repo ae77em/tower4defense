@@ -102,6 +102,7 @@ static std::string TOWER_ID_KEY = "towerId";
 static std::string IS_VISIBLE_KEY = "isVisible";
 static std::string IS_ALIVE_KEY = "isAlive";
 static std::string MATCH_STATUS_KEY = "matchStatus";
+static std::string ENERGY_PERCENTAJE_KEY = "energyPercentaje";
 
 class Protocol {
 public:

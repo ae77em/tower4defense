@@ -68,6 +68,8 @@ public:
 
     bool hasEndedThePath();
 
+    double getRemainingEnergyPercentaje();
+
 protected:
     std::vector<Point> path;
     Point currentPoint = Point(-1, -1);
@@ -95,6 +97,7 @@ protected:
 
 
     int id;
+
 };
 
 #endif //TP4_TOWERDEFENSE_SERVER_ENEMY_H

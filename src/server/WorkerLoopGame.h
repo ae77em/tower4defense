@@ -55,6 +55,8 @@ public:
     void putTower(GameAction *pAction);
 
     void notifyMatchLoose();
+
+    bool actionsSuccessfullAttended(std::list<GameAction *> &actionsGame);
 };
 
 

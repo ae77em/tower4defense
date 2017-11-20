@@ -1,6 +1,10 @@
 #ifndef TP4_TOWERDEFENSE_SDL_ENEMY_H
 #define TP4_TOWERDEFENSE_SDL_ENEMY_H
 
+static const int LIFE_BAR_WIDTH = 50;
+
+static const int LIFE_BAR_HEIGHT = 4;
+
 #include "../../common/model/Enemy.h"
 #include <vector>
 #include <array>
@@ -123,6 +127,8 @@ public:
 
     void setIsVisible(bool isVisible);
 
+    void setEnergyPercentaje(double energyPercentaje);
+
 protected:
     /* Point for get the sprites */
     int walkingStartX = 1765;
@@ -167,7 +173,7 @@ protected:
     Point currentPoint;
 
     bool isAlive;
-    float lifePercentaje;
+    float energyPercentaje;
     bool isVisible;
 
 protected:

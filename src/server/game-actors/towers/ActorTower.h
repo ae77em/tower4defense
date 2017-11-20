@@ -13,13 +13,15 @@ class ActorTower  {
 public:
     ActorTower();
 
+    ActorTower(int id);
+
     virtual ~ActorTower();
 
     std::string getClass();
 
     void live();
 
-    void live(Horde *horde);
+    void attack(Horde *horde);
 
     int getXPosition();
 
@@ -51,6 +53,12 @@ public:
 
     void setPosition(int x, int y);
 
+    virtual void initialize();
+
+    void shootTo(ActorEnemy *pEnemy);
+
+    void doShootTo(ActorEnemy *pEnemy);
+
 protected:
     int shotRatio;
     int shotMsTimeGap;
@@ -70,11 +78,7 @@ protected:
     Point currentPoint = Point(0, 0);
     ActorRectT rect;
 
-    virtual void initialize();
-
-    void shootTo(ActorEnemy *pEnemy);
-
-    void doShootTo(ActorEnemy *pEnemy);
+    int id;
 };
 
 

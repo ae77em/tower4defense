@@ -8,3 +8,5 @@ void ActorTowerFire::initialize() {
     slowDownPercentaje = 0.0;
     collisionCircle.r = (CARTESIAN_TILE_WIDTH / 2) * shotRatio;
 }
+
+ActorTowerFire::ActorTowerFire(int id) : ActorTower(id) { }

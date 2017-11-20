@@ -68,12 +68,19 @@ bool ActorTower::itIsShooting() {
     return isShooting;
 }
 
-void ActorTower::live(Horde *horde) {
+void ActorTower::attack(Horde *horde) {
     std::vector<ActorEnemy*> enemies = horde->getEnemies();
 
     for (ActorEnemy *enemy : enemies){
         Circle &collisionCircleEnemy = enemy->getCollisionCircle();
+
         if (collisionCircle.hasCollisionWith(collisionCircleEnemy)){
+            std::cout
+                    << " torre "
+                    << id
+                    << " dispara a monstruo "
+                    << enemy->getId()
+                    << std::endl;
             isShooting = true;
             shootTo(enemy);
         } else {
@@ -117,5 +124,9 @@ int ActorTower::getSlowDownPercentaje() {
 
 void ActorTower::setSlowDownPercentaje(double perc) {
     slowDownPercentaje = perc;
+}
+
+ActorTower::ActorTower(int id) {
+    this->id = id;
 }
 
