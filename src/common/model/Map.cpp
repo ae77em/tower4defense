@@ -172,3 +172,5 @@ Map Map::loadFromFile(std::string filename){
     map_file.close();
     return loadFromString(contents);
 }
+
+Map::Map() { }

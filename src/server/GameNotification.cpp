@@ -7,9 +7,11 @@
 #include <map>
 #include <vector>
 
-std::string GameNotification::getStatusMatchNotification(std::map<int,
-        Horde *> hordes,
+std::string GameNotification::getStatusMatchNotification(
+        std::map<int, Horde *> hordes,
         std::vector<ActorTower *> towers) {
+    Json::Value aTower(Json::objectValue);
+
     std::string toReturn;
     Json::Value root(Json::objectValue);
     Message message;
@@ -29,6 +31,7 @@ std::string GameNotification::getStatusMatchNotification(std::map<int,
             aEnemy[YCOORD_KEY] = g->getYPosition();
             aEnemy["direction"] = g->getDirection();
             aEnemy["energy"] = g->getEnergy();
+            aEnemy[IS_VISIBLE_KEY] = g->getEnergy();
 
             root["enemies"].append(aEnemy);
         }
@@ -38,8 +41,6 @@ std::string GameNotification::getStatusMatchNotification(std::map<int,
 
     ActorTower *currentTower = nullptr;
     for (unsigned i = 0; i < towers.size(); ++i) {
-        Json::Value aTower(Json::objectValue);
-
         currentTower = towers[i];
 
         aTower[TOWER_ID_KEY] = i;
@@ -52,4 +53,40 @@ std::string GameNotification::getStatusMatchNotification(std::map<int,
     message.setData(root);
 
     return message.serialize();
+}
+
+std::string
+GameNotification::getNewHordeNotification(int id,
+                                        int hordeType,
+                                        int amount) {
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = SERVER_NOTIFICATION_CREATE_HORDE;
+    root[HORDE_ID_KEY] = id;
+    root["hordeType"] = hordeType;
+    root["amount"] = amount;
+
+    message.setData(root);
+
+    return message.serialize();
+}
+
+std::string
+GameNotification::getPutTowerNotification(int id, int towerType, int x, int y) {
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = SERVER_NOTIFICATION_PUT_TOWER;
+    root["towerId"] = id;
+    root["towerType"] = towerType;
+    root[XCOORD_KEY] = x;
+    root[YCOORD_KEY] = y;
+
+    message.setData(root);
+    toReturn = message.serialize();
+
+    return toReturn;
 }

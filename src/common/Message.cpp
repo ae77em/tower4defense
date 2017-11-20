@@ -16,7 +16,7 @@ void Message::cleanup() {
     this->data.clear();
 }
 
-bool Message::deserialize(std::string messageData) {
+bool Message::deserialize(std::string &messageData) {
     Json::Reader reader;
     std::string jsonString;
     std::string errs;
@@ -31,10 +31,6 @@ bool Message::deserialize(std::string messageData) {
                            true);
 
     return parseOk;
-}
-
-bool Message::deserialize(char *messageData) {
-    return deserialize(std::string(messageData));
 }
 
 std::string Message::serialize() {

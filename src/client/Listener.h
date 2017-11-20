@@ -12,13 +12,13 @@ private:
     Socket *server;
     Notificable &notificable;
     SharedBuffer &buffer;
-    SharedBuffer &buffer2;
+    //SharedBuffer &buffer2;
 
 public:
     Listener(Socket *server,
              Notificable &b,
-             SharedBuffer &bfr,
-             SharedBuffer &other);
+             SharedBuffer &bfr/*,
+             SharedBuffer &other*/);
 
     virtual ~Listener();
 

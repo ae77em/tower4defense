@@ -13,8 +13,7 @@
 
 class Enemy : public Animable {
 public:
-    Enemy(model::Enemy&& base, int x, int y,
-            SDL_Renderer *renderer, Texture *texture);
+    Enemy(int x, int y, SDL_Renderer *renderer, Texture *texture);
 
     virtual ~Enemy();
 
@@ -74,10 +73,6 @@ public:
 
     bool itIsAlive()const;
 
-    void quitLifePoints(int points);
-
-    int getVelocity() const;
-
     /*
      * Modifica la textura que se utilizará para mostrar el enemigo.
      * texture: referencia a la textura a utilizar.
@@ -124,13 +119,11 @@ public:
 
     Point getPoint();
 
+    bool itIsVisible();
+
+    void setIsVisible(bool isVisible);
+
 protected:
-    model::Enemy baseEnemy;
-
-    // Defino este monstruo por default...
-    const std::string TEXTURE_FILE_PATH = "images/sprites/"
-            "enemy-abominable-walk.png";
-
     /* Point for get the sprites */
     int walkingStartX = 1765;
     int walkingStartY = 3537;
@@ -148,8 +141,6 @@ protected:
 
     int currentDirection = 0;
     int separationBetweenSprites = 1;
-
-    const int MAX_VELOCITY = 10;
 
     /* ATRIBUTOS RELACIONADOS CON DIBUJO */
     SDL_Rect walkBox;
@@ -174,6 +165,12 @@ protected:
     Texture *texture = new Texture();
 
     Point currentPoint;
+
+    bool isAlive;
+    float lifePercentaje;
+    bool isVisible;
+
+protected:
 
     /* METHODS */
     virtual void initializeSpritesData();

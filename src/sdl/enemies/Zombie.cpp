@@ -2,7 +2,7 @@
 #include "../Utils.h"
 
 Zombie::Zombie(int x, int y, SDL_Renderer *renderer, Texture *texture)
-    : Enemy(model::Enemy(20, 10, "zombie"), x, y, renderer, texture) {
+    : Enemy(x, y, renderer, texture) {
     currentDirection = 0;
     initializeSpritesData();
 }

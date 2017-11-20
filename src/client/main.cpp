@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
     gameAccess.setClientId(clientId);
 
     /* instancio los canales de comunicación con el server */
-    Listener listener(&server, gameAccess, toReceive, other);
+    Listener listener(&server, gameAccess, toReceive/*, other*/);
     Sender sender(&server, toSend);
 
     /* inicio el juego */

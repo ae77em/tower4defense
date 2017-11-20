@@ -20,13 +20,19 @@ file(GLOB SERVER_SOURCES
         "src/server/*/*/*.cpp"
         "src/common/*.cpp"
         "src/common/*/*.cpp")
-file(GLOB EDITOR_SOURCES "src/editor/*.cpp" "src/common/*.cpp"
-        "src/common/**/*.cpp" "src/sdl/*.cpp") 
-file(GLOB TEST_SOURCES "tests/unit/*.cpp" "src/common/*.cpp"
-        "src/common/**/*.cpp" "src/sdl/*.cpp")
+file(GLOB EDITOR_SOURCES
+        "src/editor/*.cpp"
+        "src/common/*.cpp"
+        "src/common/**/*.cpp"
+        "src/sdl/*.cpp")
+file(GLOB TEST_SOURCES
+        "tests/unit/*.cpp"
+        "src/common/*.cpp"
+        "src/common/**/*.cpp"
+        "src/sdl/*.cpp")
 
-add_executable(game.exe ${CLIENT_SOURCES})
-add_executable(server.exe ${SERVER_SOURCES})
+add_executable(game.exe ${CLIENT_SOURCES} src/sdl/towers/Fire.cpp src/sdl/towers/Fire.h src/sdl/towers/Earth.cpp src/sdl/towers/Earth.h)
+add_executable(server.exe ${SERVER_SOURCES} src/server/game-actors/towers/ActorTowerAir.cpp src/server/game-actors/towers/ActorTowerAir.h src/server/game-actors/towers/ActorTowerEarth.cpp src/server/game-actors/towers/ActorTowerEarth.h src/server/game-actors/towers/ActorTowerFire.cpp src/server/game-actors/towers/ActorTowerFire.h src/server/game-actors/towers/ActorTowerWater.cpp src/server/game-actors/towers/ActorTowerWater.h)
 add_executable(editor.exe ${EDITOR_SOURCES})
 add_executable(unit.exe ${TEST_SOURCES})
 

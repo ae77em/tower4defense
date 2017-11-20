@@ -5,6 +5,12 @@
 #include "game-actors/enemies/Horde.h"
 #include "../common/MessageFactory.h"
 #include "GameNotification.h"
+#include "../common/model/Map.h"
+#include "../common/Protocol.h"
+#include "game-actors/towers/ActorTowerFire.h"
+#include "game-actors/towers/ActorTowerWater.h"
+#include "game-actors/towers/ActorTowerAir.h"
+#include "game-actors/towers/ActorTowerEarth.h"
 
 #include <iostream>
 #include <chrono>
@@ -19,16 +25,17 @@
 //PUEDE SER QUE SE ESTE REMOVIENDO ALGUNO EN OTRO HILO Y LUEGO EXPLOTE
 WorkerLoopGame::WorkerLoopGame(std::map<int,ServerPlayer*>& p,
                                std::list<GameAction*>& a,
-                               std::mutex& m):
+                               std::mutex& m,
+                                model::Map& mp):
                                                 players(p),
                                                 actions(a),
-                                                mutexActions(m){
-}
+                                                mutexActions(m),
+                                                map(mp) { }
 
 void WorkerLoopGame::run(){
     std::cout << "WorkerLoopGame: Hilo donde "
             "existe la partida arrancando" << std::endl;
-    unsigned int ciclos = 10000;
+    unsigned int ciclos = 100000;
     std::string statusGame;
 
     std::list<GameAction *> actionsGame;
@@ -41,8 +48,10 @@ void WorkerLoopGame::run(){
 
     //while(isRunning()){
     while (!gameFinish){
-        std::cout << "WorkerLoopGame: ciclo  "<< ciclos << std::endl;
 
+        if( isTimeToCreateHorde() ){
+            createHordeAndNotify();
+        }
         //std::list<GameAction*> obtainedActions = getActions();
 
         mutexActions.lock();
@@ -60,8 +69,13 @@ void WorkerLoopGame::run(){
 
                 clientDie = true;
                 break;
+            }  else if (a->action.compare(STR_PUT_TOWER) == 0){
+                putTower(a);
+            } else if (a->action.compare(STR_GET_TOWER_INFO) == 0){
+                // get tower info
+            } else if (a->action.compare(STR_UPGRADE_TOWER) == 0){
+                // get upgrade tower
             }
-
             actionsGame.push_back(a);
         }
 
@@ -72,48 +86,26 @@ void WorkerLoopGame::run(){
         if(clientDie)
             break;
 
-
-        //TOMO LAS ACCIONES PARSEADAS DE LOS REQUEST Y LAS
-        // APLICO A TODOS LOS ACTORES
-        /*for (GameAction* a : actionsGame) {
-            for (GameActor* g : gameActors){
-
-            }
-        }*/
-
-        //luego de modificar el estado de cada actor hago que vivan
-        /*for (GameActor* g : gameActors) {
-            g->live();
-        }*/
-        /* hago que los enemigos caminen */
-
         for (hordeIt = hordes.begin(); hordeIt != hordes.end(); ++hordeIt){
             std::vector<ActorEnemy*> enemies = hordeIt->second->getEnemies();
 
             for (auto enemy : enemies) {
                 enemy->live();
-
-                /*if(ciclos > 0){
-                    gameFinish = true;
-                    cause = "enemigos llegaron al final";
-
-                }*/
             }
-
         }
 
         /* ahora hago andar las torres */
-        //for (auto tower : towers){
-            /* verificar colisión con bicho */
-            /* si hay colisión */
-                /* sumar puntos a torre */
-                /* sacar vida a bicho */
-        //}
+        for (auto tower : towers){
+            for (hordeIt = hordes.begin(); hordeIt != hordes.end(); ++hordeIt) {
+                tower->live(hordeIt->second);
+            }
+        }
 
         //GET STATUS GAMES
         statusGame = getGameStatus();
 
-        //NOTIFICO EL ESTADO DEL JUEGO A TODOS LO JUGADORES LUEGO DE LA MODIFICACION DE MODELO
+        // NOTIFICO EL ESTADO DEL JUEGO A TODOS LO JUGADORES
+        // LUEGO DE LA MODIFICACION DE MODELO
         for (auto it=players.begin(); it!=players.end(); ++it){
             it->second->sendData(statusGame);
         }
@@ -123,7 +115,7 @@ void WorkerLoopGame::run(){
         actionsGame.clear();//limpio la lista para no ejecutar request viejos
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-        if(ciclos > 0){
+        if(ciclos == 0){
             gameFinish = true;
             cause = "se terminaron los ciclos";
         }
@@ -134,7 +126,8 @@ void WorkerLoopGame::run(){
     // ESTA PARTE NO SE SI TIENE SENTIDO,
     // DEBERIA DEE HABER SALIDO TODOS LOS CLIENTES
     std::cout << "WorkerLoopGame: TERMINO PARTIDA CAUSA: "<< cause << std::endl;
-    std::cout << "WorkerLoopGame: Hilo donde existe la partida se termino" << std::endl;
+    std::cout << "WorkerLoopGame: Hilo donde "
+            "existe la partida se termino" << std::endl;
     std::cout << "WorkerLoopGame: Aviso que terminó la partida." << std::endl;
     statusGame = MessageFactory::getMatchEndedNotification();
     for (auto it=players.begin(); it!=players.end(); ++it){
@@ -143,78 +136,110 @@ void WorkerLoopGame::run(){
 }
 
 void WorkerLoopGame::buildGameContext() {
-    std::vector<Point> camino1;
-    // supongo que recorro una matriz de baldosas de
-    // CARTESIAN_TILE_WIDTH x CARTESIAN_TILE_HEIGHT
-    camino1.push_back(Point(0 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(1 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(2 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(3 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(4 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(4 * CARTESIAN_TILE_WIDTH,6 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(4 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(5 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(6 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(7 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(8 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(9 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(10 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(11 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(12 * CARTESIAN_TILE_WIDTH,7 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(12 * CARTESIAN_TILE_WIDTH,6 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(12 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(13 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(14 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(15 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
-    camino1.push_back(Point(16 * CARTESIAN_TILE_WIDTH,5 * CARTESIAN_TILE_HEIGHT));
+    timeBetweenHordeCreation = 5000; //milisegundos
+    timeLastHordeCreation = 0;
 
-    Horde *horda1 = new Horde();
+    hordeType.push_back((int)ENEMY_ZOMBIE);
+    hordeType.push_back((int)ENEMY_GOATMAN);
+    hordeType.push_back((int)ENEMY_SPECTRE);
 
-    for (int x = 0; x < 3; ++x){
-        ActorEnemy* enemy = new ActorEnemy();
-        enemy->setPath(camino1);
-        enemy->setId(x);
-        enemy->setCurrentPathPosition(-x * CARTESIAN_TILE_WIDTH / 2);
+    paths = map.getPaths();
 
-        horda1->addEnemy(enemy);
+    hordeId = 0;
+}
+
+std::string WorkerLoopGame::getGameStatus() {
+    //despues ver como parsear todos los actores
+    return GameNotification::getStatusMatchNotification(hordes, towers);
+}
+
+bool WorkerLoopGame::isTimeToCreateHorde() {
+    time_t now;
+    time(&now);
+
+    return (now - timeLastHordeCreation) > timeBetweenHordeCreation;
+}
+
+void WorkerLoopGame::setTimeCreationHorde(){
+    time_t now;
+    time(&now);
+
+    timeLastHordeCreation = now;
+}
+
+void WorkerLoopGame::createHordeAndNotify() {
+    setTimeCreationHorde();
+
+    time_t now;
+    time(&now);
+
+    unsigned hordeIndex = now % hordeType.size();
+    int nextHordeType = hordeType.at(hordeIndex);
+
+    unsigned pathIndex = now % paths.size();
+    std::vector<Point> path = static_cast<std::vector<Point> &&>(paths.at(pathIndex));
+
+    Horde *h = Horde::createHorde(nextHordeType, 3, path);
+
+    hordes.insert(std::make_pair(hordeId, h));
+
+    std::string statusGame =
+        GameNotification::getNewHordeNotification(hordeId, nextHordeType, 3);
+
+    for (auto it=players.begin(); it!=players.end(); ++it){
+        it->second->sendData(statusGame);
     }
-    hordes.insert(std::pair<int, Horde*>(0, horda1));
 
-    std::vector<Point> camino2;
-    // supongo que recorro una matriz de baldosas de
-    // CARTESIAN_TILE_WIDTH x CARTESIAN_TILE_HEIGHT
-    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 0 * CARTESIAN_TILE_HEIGHT));
-    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 1 * CARTESIAN_TILE_HEIGHT));
-    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 2 * CARTESIAN_TILE_HEIGHT));
-    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 3 * CARTESIAN_TILE_HEIGHT));
-    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 4 * CARTESIAN_TILE_HEIGHT));
-    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 5 * CARTESIAN_TILE_HEIGHT));
-    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 6 * CARTESIAN_TILE_HEIGHT));
-    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 7 * CARTESIAN_TILE_HEIGHT));
-    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 8 * CARTESIAN_TILE_HEIGHT));
-    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 9 * CARTESIAN_TILE_HEIGHT));
-    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 10 * CARTESIAN_TILE_HEIGHT));
-    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 11 * CARTESIAN_TILE_HEIGHT));
-    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 12 * CARTESIAN_TILE_HEIGHT));
-    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 13 * CARTESIAN_TILE_HEIGHT));
-    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 14 * CARTESIAN_TILE_HEIGHT));
-    camino2.push_back(Point(7 * CARTESIAN_TILE_WIDTH, 15 * CARTESIAN_TILE_HEIGHT));
+    ++hordeId;
+}
 
+void WorkerLoopGame::putTower(GameAction *pAction) {
+    int type = pAction->typeOfTower;
 
-    Horde *horda2 = new Horde();
+    std::cout << "voy a poner torre de tipo "
+              << std::to_string(type)
+              << std::endl;
 
-    for (int x = 0; x < 3; ++x){
-        ActorEnemy* enemy = new ActorEnemy();
-        enemy->setPath(camino2);
-        enemy->setId(x);
-        enemy->setCurrentPathPosition(-x * CARTESIAN_TILE_WIDTH / 2);
+    ActorTower *tower = nullptr;
 
-        horda2->addEnemy(enemy);
+    switch(type){
+        case TOWER_FIRE:{
+            tower = new ActorTowerFire();
+            break;
+        }
+        case TOWER_WATER:{
+            tower = new ActorTowerWater();
+            break;
+        }
+        case TOWER_AIR:{
+            tower = new ActorTowerAir();
+            break;
+        }
+        case TOWER_EARTH:{
+            tower = new ActorTowerEarth();
+            break;
+        }
+
     }
-    hordes.insert(std::pair<int, Horde*>(1, horda2));
+
+    int actualX = pAction->x * CARTESIAN_TILE_WIDTH;
+    int actualY = pAction->y * CARTESIAN_TILE_HEIGHT;
+    tower->setPosition(pAction->x, pAction->y);
+    towers.push_back(tower);
+
+    std::string statusGame =
+            GameNotification::getPutTowerNotification(towers.size()-1,
+                                                      type,
+                                                      actualX,
+                                                      actualY);
+
+    for (auto it=players.begin(); it!=players.end(); ++it){
+        it->second->sendData(statusGame);
+    }
+}
 
 
-    /* ESTA ES LÓGICA DE NEGOCIO, Y VA EN EL SERVER...
+/* ESTA ES LÓGICA DE NEGOCIO, Y VA EN EL SERVER...
      * bool towerIsShooting =
             enemy->itIsAlive() &&
             enemy->getCollisionCircle().hasCollisionWith(tower.getCollisionCircle());
@@ -256,9 +281,3 @@ void WorkerLoopGame::buildGameContext() {
 
     std::cout << "la torre tiene " << tower.getExperiencePoints() << " de experiencia." << std::endl;
      */
-}
-
-std::string WorkerLoopGame::getGameStatus() {
-    //despues ver como parsear todos los actores
-    return GameNotification::getStatusMatchNotification(hordes, towers);
-}

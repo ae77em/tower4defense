@@ -71,9 +71,12 @@ void ActorEnemy::advance() {
 
         collisionCircle.x = xPosition + (CARTESIAN_TILE_WIDTH * 0.5);
         collisionCircle.y = xPosition + (CARTESIAN_TILE_HEIGHT * 0.5);
-
-    } else {
+        isVisible = true;
+    } else if (currentPathPosition < (int)path.size()) {
         ++currentPathPosition;
+        isVisible = false;
+    } else {
+        isVisible = false;
     }
 }
 
@@ -169,5 +172,9 @@ int ActorEnemy::receiveDamage(int damage) {
 
 ActorRectT ActorEnemy::getRect() {
     return ActorRectT();
+}
+
+bool ActorEnemy::itIsAir() {
+    return isAir;
 }
 

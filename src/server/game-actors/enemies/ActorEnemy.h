@@ -60,11 +60,13 @@ public:
 
     bool itIsAlive();
 
+    bool itIsAir();
+
     int getShoot(int i);
 
     int receiveDamage(int i);
 
-private:
+protected:
     std::vector<Point> path;
     Point currentPoint = Point(-1, -1);
     Circle collisionCircle;
@@ -77,6 +79,7 @@ private:
     int xPosition = 0;
     int yPosition = 0;
     bool isWalking = false;
+    bool isVisible = false;
 
     int velocity = 1;
     int initialEnergy = 200;
@@ -84,6 +87,7 @@ private:
     int remainingLifePoints = 200;
     bool isAir = false;
     bool isAlive = true;
+
 
     int id;
 };

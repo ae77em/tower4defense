@@ -38,6 +38,39 @@ enum GameStatus {
 #include "../sdl/portals/Portal.h"
 #include <vector>
 
+
+struct lessThanByPoint {
+    bool operator()(Animable *a, Animable *b) {
+        bool toReturn;
+        Point A(0, 0), B(0, 0);
+        /* si por algún motivo falla... */
+        if (a) {
+            A = a->getPoint();
+        } else {
+            return false;
+        }
+        if (b) {
+            B = b->getPoint();
+        } else {
+            return true;
+        }
+
+        if (A.x < B.x) {
+            toReturn = true;
+        } else if (A.x > B.x) {
+            toReturn = false;
+        } else {
+            if (A.y <= B.y) {
+                toReturn = true;
+            } else {
+                toReturn = false;
+            }
+        }
+
+        return toReturn;
+    }
+};
+
 class GamePlayWindow : public Thread {
 public:
     GamePlayWindow(Socket *socket,
@@ -69,8 +102,6 @@ private:
 
     void renderText(SDL_Rect &camera, std::string text, int x = 50, int y = 50);
 
-    void initializeGameActors();
-
     void handleLeftButtonClick(Point &point);
 
     bool isFirmTerrain(Point &point);
@@ -91,8 +122,6 @@ private:
 
     void setToFirmTile(Point &point);
 
-    void handleServerPlayerNotifications(SDL_Rect camera);
-
     void doCastSpellRequest(const Point &point) const;
 
     void doPutTowerRequest(const Point &point) const;
@@ -110,6 +139,16 @@ private:
     bool isAValidPutTowerRequest(Point &point);
 
     void renderLevel();
+
+    void addNewHorde(int hordeId, int enemyType, int amount);
+
+    void putTower(int id, int type, int x, int y);
+
+    void loadAnimables();
+
+    void renderMessages();
+
+    bool pointIsInPaths(Point point, std::vector<std::vector<Point>> &vector);
 
     /* *
      * Attributes
@@ -157,6 +196,12 @@ private:
     Texture *spectreTexture = nullptr;
     Texture *zombieTexture = nullptr;
 
+    // Towers textures
+    Texture earthTexture;
+    Texture airTexture;
+    Texture waterTexture;
+    Texture fireTexture;
+
     // Comunication with the game server
     Socket *server = nullptr;
     SharedBuffer *nonPlayerNotifications = nullptr;
@@ -164,12 +209,15 @@ private:
 
     int clientId;
 
-    std::map<int, DrawableHorde *> hordes;
-    std::vector<Tower *> towers;
+    std::map<int, DrawableHorde> hordes;
+    std::map<int, Tower *> towers;
     std::vector<Portal *> portals;
     std::vector<std::string> playerElements;
     std::string matchName;
     model::Map map;
+
+    std::priority_queue<Animable *, std::vector<Animable *>, lessThanByPoint>
+            animables;
 
     TTF_Font *font;
     int typeOfTowerToPut;

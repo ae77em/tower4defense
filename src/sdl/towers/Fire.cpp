@@ -1,8 +1,10 @@
-#include "Tower.h"
+#include "Fire.h"
 #include "../Utils.h"
 
-Tower::Tower(int x, int y, SDL_Renderer *r, Texture &t)
-        : texture(t), currentPoint(Utils::mapToScreen(x, y)) {
+Fire::Fire(int x, int y, SDL_Renderer *r, Texture &t)
+        : Tower(x, y, renderer, texture),
+          texture(t),
+          currentPoint(Utils::mapToScreen(x, y)) {
 
     idleSpriteWidth = IDLE_SPRITE_WIDTH + separationBetweenSprites;
     idleSpriteHeight = IDLE_SPRITE_HEIGHT + separationBetweenSprites;
@@ -31,16 +33,16 @@ Tower::Tower(int x, int y, SDL_Renderer *r, Texture &t)
     setSprites();
 }
 
-Tower::~Tower(){}
+Fire::~Fire(){}
 
-void Tower::setPosition(int x, int y) {
+void Fire::setPosition(int x, int y) {
     idleBox.x = x;
     idleBox.y = y;
 
     shiftColliders();
 }
 
-void Tower::setSprites() {
+void Fire::setSprites() {
     for (int i = 0; i < numberOfIdleSprites; ++i) {
         idleSprites[i].x = idleStartX + (i * idleSpriteWidth);
         idleSprites[i].y = idleStartY;
@@ -57,7 +59,7 @@ void Tower::setSprites() {
     }
 }
 
-void Tower::animate(SDL_Rect &camera) {
+void Fire::animate(SDL_Rect &camera) {
     if (isShooting) {
         renderShot(camera);
     } else {
@@ -65,11 +67,11 @@ void Tower::animate(SDL_Rect &camera) {
     }
 }
 
-void Tower::setIsShooting(bool isShooting) {
-    Tower::isShooting = isShooting;
+void Fire::setIsShooting(bool isShooting) {
+    Fire::isShooting = isShooting;
 }
 
-void Tower::renderIdle(SDL_Rect &camera) {
+void Fire::renderIdle(SDL_Rect &camera) {
     int frameToDraw = (SDL_GetTicks() / 100) % NUMBER_OF_IDLE_SPRITES;
     DecimalPoint screenPoint = Utils::cartesianToIso(idleBox.x, idleBox.y);
 
@@ -87,7 +89,7 @@ void Tower::renderIdle(SDL_Rect &camera) {
     texture.renderSprite(renderer, isox, isoy, &idleSprites[frameToDraw]);
 }
 
-void Tower::renderShot(SDL_Rect &camera) {
+void Fire::renderShot(SDL_Rect &camera) {
     int frameToDraw = (SDL_GetTicks() / 100) % NUMBER_OF_SHOT_SPRITES;
 
     DecimalPoint screenPoint = Utils::cartesianToIso(shotBox.x, shotBox.y);
@@ -100,21 +102,21 @@ void Tower::renderShot(SDL_Rect &camera) {
     texture.renderSprite(renderer, isox, isoy, &shotSprites[frameToDraw]);
 }
 
-void Tower::shiftColliders() {
+void Fire::shiftColliders() {
     // tanto el box de idle como el de disparo tienen las mismas dimensiones,
     // así que es indistinto qué medida tomamos
     collisionCircle.x = idleBox.x;
     collisionCircle.y = idleBox.y;
 }
 
-Circle &Tower::getCollisionCircle() {
+Circle &Fire::getCollisionCircle() {
     return collisionCircle;
 }
 
-Point Tower::getPoint() {
+Point Fire::getPoint() {
     return currentPoint;
 }
 
-const SDL_Rect & Tower::getIdleBox() const {
+const SDL_Rect & Fire::getIdleBox() const {
     return idleBox;
 }

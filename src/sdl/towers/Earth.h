@@ -1,5 +1,5 @@
-#ifndef TP4_TOWERDEFENSE_TOWER_H
-#define TP4_TOWERDEFENSE_TOWER_H
+#ifndef TP4_TOWERDEFENSE_EARTH_H
+#define TP4_TOWERDEFENSE_EARTH_H
 
 #include <vector>
 #include "../Texture.h"
@@ -7,13 +7,14 @@
 #include "../Constants.h"
 #include "../../common/Circle.h"
 #include "../Animable.h"
+#include "Tower.h"
 #include <string>
 
-class Tower : public Animable {
+class Earth : public Tower {
 public:
-    Tower(int x, int y, SDL_Renderer *renderer, Texture &t);
+    Earth(int x, int y, SDL_Renderer *renderer, Texture &t);
 
-    ~Tower();
+    ~Earth();
 
     /*
      * Setea la posición de la torre en la pantalla.
@@ -100,4 +101,5 @@ protected:
     bool isShooting;
 };
 
-#endif //TP4_TOWERDEFENSE_TOWER_H
+
+#endif //TP4_TOWERDEFENSE_EARTH_H

@@ -22,6 +22,7 @@ class Map {
     int delay_hordes_seg; // El tiempo en segundos entre las hordas
 
 public:
+    Map();
     Map(unsigned x, unsigned y);
     std::string serialize();
 

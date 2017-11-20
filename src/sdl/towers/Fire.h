@@ -1,19 +1,14 @@
-#ifndef TP4_TOWERDEFENSE_TOWER_H
-#define TP4_TOWERDEFENSE_TOWER_H
+#ifndef TP4_TOWERDEFENSE_FIRE_H
+#define TP4_TOWERDEFENSE_FIRE_H
 
-#include <vector>
-#include "../Texture.h"
-#include "../../common/Point.h"
-#include "../Constants.h"
-#include "../../common/Circle.h"
-#include "../Animable.h"
-#include <string>
 
-class Tower : public Animable {
+#include "Tower.h"
+
+class Fire : public Tower {
 public:
-    Tower(int x, int y, SDL_Renderer *renderer, Texture &t);
+    Fire(int x, int y, SDL_Renderer *renderer, Texture &t);
 
-    ~Tower();
+    ~Fire();
 
     /*
      * Setea la posición de la torre en la pantalla.
@@ -60,14 +55,14 @@ public:
     void setIsShooting(bool isShooting);
 
 protected:
-    static const int NUMBER_OF_IDLE_SPRITES = 8;
-    static const int NUMBER_OF_SHOT_SPRITES = 8;
+    static const int NUMBER_OF_IDLE_SPRITES = 15;
+    static const int NUMBER_OF_SHOT_SPRITES = 15;
 
-    const int IDLE_SPRITE_WIDTH = 104;
-    const int IDLE_SPRITE_HEIGHT = 127;
+    const int IDLE_SPRITE_WIDTH = 62;
+    const int IDLE_SPRITE_HEIGHT = 103;
 
-    const int SHOT_SPRITE_WIDTH = 104;
-    const int SHOT_SPRITE_HEIGHT = 127;
+    const int SHOT_SPRITE_WIDTH = 62;
+    const int SHOT_SPRITE_HEIGHT = 103;
 
     const int separationBetweenSprites = 1;
 
@@ -90,9 +85,9 @@ protected:
 
     // seteo los sprites para espera...
     int idleStartX = 1;
-    int idleStartY = 16;
+    int idleStartY = 1;
     int shotStartX = 1;
-    int shotStartY = 287;
+    int shotStartY = 1;
 
     Point currentPoint;
     Circle collisionCircle;
@@ -100,4 +95,5 @@ protected:
     bool isShooting;
 };
 
-#endif //TP4_TOWERDEFENSE_TOWER_H
+
+#endif //TP4_TOWERDEFENSE_FIRE_H

@@ -2,7 +2,7 @@
 #include "../Utils.h"
 
 Spectre::Spectre(int x, int y, SDL_Renderer *renderer, Texture *texture)
-    : Enemy(model::Enemy(100, 6, "spectre"), x, y, renderer, texture) {
+    : Enemy(x, y, renderer, texture) {
     currentDirection = 0;
     initializeSpritesData();
 }

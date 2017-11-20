@@ -2,7 +2,7 @@
 #include "../Utils.h"
 
 Goatman::Goatman(int x, int y, SDL_Renderer *renderer, Texture *texture)
-        : Enemy(model::Enemy(100, 2, "goatman"), x, y, renderer, texture) {
+        : Enemy(x, y, renderer, texture) {
     currentDirection = 0;
     initializeSpritesData();
 }

@@ -39,13 +39,13 @@ public:
      * Serializes/loads the data in the string passed by parameter
      * into the data Json object.
      * */
-    bool deserialize(std::string messageData);
+    bool deserialize(std::string &messageData);
 
     /*
      * Serializes/loads the data in the cstring passed by parameter
      * into the data Json object.
      * */
-    bool deserialize(char *messageData);
+    //bool deserialize(char *messageData);
 
     /*
      * Returns the data into the Json object in string format.

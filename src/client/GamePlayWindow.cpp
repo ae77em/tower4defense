@@ -8,6 +8,13 @@
 #include "../sdl/enemies/Zombie.h"
 #include "../common/TextMessage.h"
 #include "../common/Request.h"
+#include "../sdl/enemies/BloodHawk.h"
+#include "../sdl/enemies/Goatman.h"
+#include "../sdl/enemies/Spectre.h"
+#include "../sdl/towers/Air.h"
+#include "../sdl/towers/Fire.h"
+#include "../sdl/towers/Earth.h"
+#include "../sdl/towers/Water.h"
 
 #include <iostream>
 #include <fstream>
@@ -17,6 +24,7 @@
 #include <string>
 #include <map>
 #include <vector>
+
 
 GamePlayWindow::GamePlayWindow(Socket *s,
                                SharedBuffer *in,
@@ -31,7 +39,7 @@ GamePlayWindow::GamePlayWindow(Socket *s,
           clientId(cId),
           playerElements(elems),
           matchName(std::move(mn)),
-          map(0, 0) {
+          map(model::Map::loadFromString(mp)) {
     abmonibleTexture = new Texture();
     blookHawkTexture = new Texture();
     goatmanTexture = new Texture();
@@ -53,6 +61,7 @@ GamePlayWindow::GamePlayWindow(Socket *s,
 }
 
 GamePlayWindow::~GamePlayWindow() {
+    /* enemies text */
     delete abmonibleTexture;
     delete blookHawkTexture;
     delete goatmanTexture;
@@ -61,12 +70,10 @@ GamePlayWindow::~GamePlayWindow() {
     delete zombieTexture;
 
     for (unsigned i = 0; i < hordes.size(); ++i) {
-        std::vector<Enemy *> enemies =
-                static_cast<std::vector<Enemy *> &&>(hordes[i]->getEnemies());
+        std::vector<Enemy *> enemies = hordes[i].getEnemies();
         for (unsigned j = 0; j < enemies.size(); ++j) {
             delete enemies[j];
         }
-        delete hordes[i];
     }
 
     for (unsigned i = 0; i < towers.size(); ++i) {
@@ -90,7 +97,7 @@ void GamePlayWindow::renderTimeMessages(SDL_Rect &camera) {
         t /= 1000;
         t = 20 - t;
         std::string message("Puede poner torre nuevamente en: ");
-        message.append(std::__cxx11::to_string(t));
+        message.append(std::to_string(t));
         message.append(" seg");
         renderText(camera, message, 1, 150);
     }
@@ -174,10 +181,10 @@ bool GamePlayWindow::loadMedia() {
             .loadFromFile("images/sprites/portal-blue2.png", gRenderer);
     redPortalTexture
             .loadFromFile("images/sprites/portal-red.png", gRenderer);
-
     towerButtonsTexture
             .loadFromFile("images/sprites/towers-buttons.png", gRenderer);
 
+    /* enemies */
     abmonibleTexture
             ->loadFromFile("images/sprites/enemy-abominable.png",
                            gRenderer, 0xFF, 0x00, 0x99);
@@ -197,6 +204,23 @@ bool GamePlayWindow::loadMedia() {
             ->loadFromFile("images/sprites/enemy-zombie.png",
                            gRenderer, 0xAA, 0xAA, 0xAA);
 
+    /* towers */
+    airTexture
+            .loadFromFile("images/sprites/tower-air.png",
+                          gRenderer, 0xFF, 0x00, 0x99);
+
+    earthTexture
+            .loadFromFile("images/sprites/tower-earth.png",
+                          gRenderer, 0xFF, 0x00, 0x99);
+
+    waterTexture
+            .loadFromFile("images/sprites/tower-water.png",
+                          gRenderer, 0xFF, 0x00, 0x99);
+
+    fireTexture
+            .loadFromFile("images/sprites/tower-fire.png",
+                          gRenderer, 0xFF, 0x00, 0x99);
+
     //Load tile map
     if (!setTiles()) {
         printf("Failed to load tile set!\n");
@@ -204,36 +228,6 @@ bool GamePlayWindow::loadMedia() {
     }
 
     return success;
-}
-
-void GamePlayWindow::initializeGameActors() {
-    auto tower = new Tower(800, 240, gRenderer, gSpriteSheetTextureTower);
-    tower->loadMedia();
-    tower->setSprites();
-
-    towers.push_back(tower);
-
-    for (int i = 0; i < 2; ++i) {
-        auto horde = new DrawableHorde();
-        for (int j = 0; j < 3; ++j) {
-            auto greenDaemon = new GreenDaemon(-1, -1, gRenderer,
-                                               greenDaemonTexture);
-            greenDaemon->setSprites();
-            horde->addEnemy(greenDaemon);
-        }
-        std::pair<int, DrawableHorde *> pair(i, horde);
-        hordes.insert(pair);
-
-        auto horde2 = new DrawableHorde();
-        for (int j = 0; j < 3; ++j) {
-            Enemy *zombie = new Zombie(-1, -1, gRenderer,
-                                       zombieTexture);
-            zombie->setSprites();
-            horde2->addEnemy(zombie);
-        }
-        std::pair<int, DrawableHorde *> pair2(i + 1, horde2);
-        hordes.insert(pair2);
-    }
 }
 
 void GamePlayWindow::close() {
@@ -266,6 +260,8 @@ bool GamePlayWindow::setTiles() {
     bool tilesLoaded = true;
     int tileType;
 
+    std::vector<std::vector<Point>> &paths = map.getPaths();
+
     //The tile offset
     char tileSaved;
 
@@ -287,6 +283,12 @@ bool GamePlayWindow::setTiles() {
             } else if (tileSaved == '#') { // es la nada
                 tileType = tileIdTranslator.at(tileSaved);
             }
+
+            Point pt(i,j);
+            if (pointIsInPaths(pt, paths)){
+                tileType = TILE_WAY;
+            }
+
 
             //If the number is a valid tile number
             if (tileType >= TILE_EMPTY && tileType <= TILE_TOWER) {
@@ -418,8 +420,7 @@ void GamePlayWindow::handleLeftButtonClick(Point &point) {
                 typeOfTowerToPut = TOWER_EARTH;
             }
         } else if (mousePosX <= 200) {
-            if (hasElement(STR_EARTH) &&
-                (SDL_GetTicks() - timeOfLastSpell) > TIME_FOR_ENABLE_ACTION) {
+            if ((SDL_GetTicks() - timeOfLastSpell) > TIME_FOR_ENABLE_ACTION) {
                 isCastingSpells = true;
             }
         } else if (towerSelected != -1) {
@@ -511,44 +512,79 @@ void GamePlayWindow::handleRightButtonClick(Point point) {
         sendToServer(request);
     }
 }
-
-void GamePlayWindow::handleServerPlayerNotifications(SDL_Rect camera) {
+void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
     int transactionsCounter = 0;
     std::string notification;
 
-    while (playerNotifications->hasData() &&
-           transactionsCounter < 10) {
+    while (nonPlayerNotifications->isProcessingYet() &&
+           transactionsCounter < MAX_SERVER_NOTIFICATIONS_PER_FRAME) {
         ++transactionsCounter;
-        notification = playerNotifications->getNextData();
-
-        std::cout << "lo que tengo en el segundo buffer" << notification
-                  << std::endl;
-
+        notification = nonPlayerNotifications->getNextData();
 
         Message message;
+        message.deserialize(notification);
+        Request request(message);
         std::string response;
 
-        message.deserialize(notification);
+        int op = request.getAsInt(OPERATION_KEY);
 
-        int op = MessageFactory::getOperation(message);
         std::cout << "llego op: " << std::to_string(op)
                   << " al listener del juego..." << std::endl;
 
         switch (op) {
-            case SERVER_NOTIFICATION_PUT_TOWER: {
-                Point point = MessageFactory::getPoint(message);
+            case SERVER_NOTIFICATION_SCENARIO_STATUS: {
+                std::vector<Message> messages =
+                        MessageFactory::getMovementNotifications(message);
 
-                auto newTower = new Tower(point.x * CARTESIAN_TILE_WIDTH,
-                                          point.y * CARTESIAN_TILE_HEIGHT,
-                                          gRenderer,
-                                          gSpriteSheetTextureTower);
-                towers.push_back(newTower);
+                for (Message &aMessage : messages) {
 
-                if (point.isPositive()) {
-                    setToTowerTile(point, newTower);
-                    newTower->setPosition(point.x * CARTESIAN_TILE_HEIGHT,
-                                          point.y * CARTESIAN_TILE_HEIGHT);
+                    Request request(aMessage);
+
+                    Point scenarioPoint = MessageFactory::getPoint(aMessage);
+                    // no dibujo cosas fuera del escenario...
+                    //if (scenarioPoint.isPositive()) {
+                    int dir = MessageFactory::getDirection(aMessage);
+                    int enemyId = request.getAsInt(ENEMY_ID_KEY);
+                    int hordeId = request.getAsInt(HORDE_ID_KEY);
+                    bool isVisible = request.getAsBool(IS_VISIBLE_KEY);
+
+                    try {
+                        DrawableHorde horde = hordes.at(hordeId);
+                        Enemy *enemy = horde.getEnemieAt(enemyId);
+                        enemy->setDirection(dir);
+                        enemy->moveTo(scenarioPoint.x, scenarioPoint.y);
+                        enemy->setIsVisible(isVisible);
+                    } catch (...) {
+                        std::cerr << "No es posible mover el enemigo "
+                                  << std::to_string(enemyId);
+                        std::cerr << " de la horda "
+                                  << std::to_string(hordeId);
+                    }
+                    //}
                 }
+                break;
+            }
+            case SERVER_NOTIFICATION_CREATE_HORDE: {
+                int hordeId = request.getAsInt("hordeId");
+                int hordeType = request.getAsInt("hordeType");
+                int amount = request.getAsInt("amount");
+
+                addNewHorde(hordeId, hordeType, amount);
+                break;
+            }
+            case SERVER_NOTIFICATION_MATCH_ENDED: {
+                nonPlayerNotifications->setClientProcessEnded(true);
+                gameStatus = GAME_STATUS_WON;
+                break;
+            }
+            case SERVER_NOTIFICATION_PUT_TOWER: {
+                std::cout << "llego poner torre" << std::endl;
+                int towerId = request.getAsInt("towerId");
+                int towerType = request.getAsInt("towerType");
+                int x = request.getAsInt("xCoord") / CARTESIAN_TILE_WIDTH;
+                int y = request.getAsInt("yCoord") / CARTESIAN_TILE_HEIGHT;
+
+                putTower(towerId, towerType, x, y);
                 break;
             }
             case SERVER_NOTIFICATION_MARK_TILE: {
@@ -575,65 +611,6 @@ void GamePlayWindow::handleServerPlayerNotifications(SDL_Rect camera) {
                 // aplicar upgrade
                 break;
             };
-            default:
-                response = "no reconocida";
-        }
-
-        std::cout << "notification: " << notification << std::endl;
-    }
-}
-
-void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
-    int transactionsCounter = 0;
-    std::string notification;
-
-    while (nonPlayerNotifications->isProcessingYet() &&
-           transactionsCounter < MAX_SERVER_NOTIFICATIONS_PER_FRAME) {
-        ++transactionsCounter;
-        notification = nonPlayerNotifications->getNextData();
-
-        Message message;
-        std::string response;
-
-        message.deserialize(notification);
-
-        int op = MessageFactory::getOperation(message);
-        std::cout << "llego op: " << std::to_string(op)
-                  << " al listener del juego..." << std::endl;
-
-        switch (op) {
-            case SERVER_NOTIFICATION_SCENARIO_STATUS: {
-                std::vector<Message> messages =
-                        MessageFactory::getMovementNotifications(message);
-
-                for (Message &aMessage : messages) {
-                    Point scenarioPoint = MessageFactory::getPoint(aMessage);
-                    // no dibujo cosas fuera del escenario...
-                    if (scenarioPoint.isPositive()) {
-                        int dir = MessageFactory::getDirection(aMessage);
-                        int enemyId = MessageFactory::getEnemyId(aMessage);
-                        int hordeId = MessageFactory::getHordeId(aMessage);
-
-                        try {
-                            DrawableHorde *horde = hordes.at(hordeId);
-                            Enemy *enemy = horde->getEnemieAt(enemyId);
-                            enemy->setDirection(dir);
-                            enemy->moveTo(scenarioPoint.x, scenarioPoint.y);
-                        } catch (...) {
-                            std::cerr << "No es posible mover el enemigo "
-                                      << std::to_string(enemyId);
-                            std::cerr << " de la horda "
-                                      << std::to_string(hordeId);
-                        }
-                    }
-                }
-                break;
-            }
-            case SERVER_NOTIFICATION_MATCH_ENDED: {
-                nonPlayerNotifications->setClientProcessEnded(true);
-                gameStatus = GAME_STATUS_WON;
-                break;
-            }
             default:
                 response = "no reconocida";
         }
@@ -757,7 +734,6 @@ void GamePlayWindow::loadTowerInfo(Message message) {
 void GamePlayWindow::run() {
     unsigned int gameEndedTime = 0;
     bool gameEnded;
-    std::vector<Tower *> animables;
 
     //Start up SDL and create window
     if (!init()) {
@@ -779,8 +755,6 @@ void GamePlayWindow::run() {
             //Level camera
             camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
 
-            initializeGameActors();
-
             //While application is running
             while (!quit) {
                 gameEnded = gameStatus != GAME_STATUS_UNDECIDED;
@@ -801,7 +775,6 @@ void GamePlayWindow::run() {
                     handleMouseEvents(camera, e);
                 }
 
-                handleServerPlayerNotifications(camera);
                 handleServerNotifications(camera);
 
                 //Move the dot
@@ -818,51 +791,19 @@ void GamePlayWindow::run() {
                 // Rendereo punto para mover pantalla
                 dot.render(dotTexture, camera, gRenderer);
 
-                /* Remuevo los animables del vector (ojo, siguen existiendo,
-                 * pero no están en el vector), ya que pueden ir cambiando de
-                 * posición en cada iteración, y los vuelvo a cargar y ordenar,
-                 * para volver a mostrarlos bien.
-                 */
-                animables.clear();
+                loadAnimables();
 
-                for (Tower *tower : towers) {
-                    animables.push_back(reinterpret_cast<Tower *&&>(tower));
-                }
-
-                std::map<int, DrawableHorde *>::iterator it;
-                for (it = hordes.begin(); it != hordes.end(); ++it) {
-                    DrawableHorde *horde = it->second;
-
-                    for (auto enemy : horde->getEnemies()) {
-                        animables.push_back(
-                                reinterpret_cast<Tower *&&>(enemy));
-                    }
-                }
-
-                std::sort(animables.begin(), animables.end(),
-                          Utils::animablesPositionComparator);
-
-                for (Tower *animable : animables) {
-                    animable->animate(camera);
+                Animable *anPtr = nullptr;
+                while (!animables.empty()) {
+                    anPtr = animables.top();
+                    anPtr->animate(camera);
+                    animables.pop();
                 }
 
                 // Muestro los botones de las torres que puedo poner
                 towerButtonsTexture.render(gRenderer, 1, 1);
 
-                if (gameStatus == GAME_STATUS_WON) {
-                    renderText(camera, "Partida ganada...");
-                } else if (gameStatus == GAME_STATUS_LOOSE) {
-                    renderText(camera, "Partida perdida...");
-                }
-
-                renderTimeMessages(camera);
-                if (!towerDamageDataMessage.empty()) {
-                    renderText(camera, "Datos de la torre:", 1, 250);
-                    renderText(camera, towerDamageDataMessage, 1, 216);
-                    renderText(camera, towerRangeDataMessage, 1, 282);
-                    renderText(camera, towerReachDataMessage, 1, 398);
-                    renderText(camera, towerSlowdownDataMessage, 1, 310);
-                }
+                renderMessages();
 
                 //Update screen
                 SDL_RenderPresent(gRenderer);
@@ -876,6 +817,51 @@ void GamePlayWindow::run() {
     server->shutdown(); // TODO ver si esto corresponde hacerlo acá...
 }
 
+void GamePlayWindow::renderMessages() {
+    if (gameStatus == GAME_STATUS_WON) {
+        renderText(camera, "Partida ganada...");
+    } else if (gameStatus == GAME_STATUS_LOOSE) {
+        renderText(camera, "Partida perdida...");
+    }
+
+    renderTimeMessages(camera);
+    if (!towerDamageDataMessage.empty()) {
+        renderText(camera, "Datos de la torre:", 1, 250);
+        renderText(camera, towerDamageDataMessage, 1, 266);
+        renderText(camera, towerRangeDataMessage, 1, 282);
+        renderText(camera, towerReachDataMessage, 1, 398);
+        renderText(camera, towerSlowdownDataMessage, 1, 310);
+    }
+}
+
+/* Remuevo los animables del vector (ojo, siguen existiendo,
+    * pero no están en el vector), ya que pueden ir cambiando de
+    * posición en cada iteración, y los vuelvo a cargar y ordenar,
+    * para volver a mostrarlos bien.
+    */
+void GamePlayWindow::loadAnimables() {
+    animables = std::priority_queue<Animable *, std::vector<Animable *>,
+            lessThanByPoint>();
+
+    Tower *tp = nullptr;
+    std::map<int, Tower *>::const_iterator tIt;
+    for (tIt = towers.begin(); tIt != towers.end(); ++tIt) {
+        tp = tIt->second;
+        animables.push(tp);
+    }
+
+    std::map<int, DrawableHorde>::const_iterator hIt;
+    //Enemy *en = nullptr;
+    for (hIt = hordes.begin(); hIt != hordes.end(); ++hIt) {
+        DrawableHorde horde = hIt->second;
+
+        for (Enemy *enemy : horde.getEnemies()) {
+            animables.push(enemy);
+        }
+    }
+
+}
+
 void GamePlayWindow::renderLevel() {
     for (int i = 0; i < TOTAL_TILES; ++i) {
         if (tileSet.at(i).itIsMarked()) {
@@ -887,13 +873,104 @@ void GamePlayWindow::renderLevel() {
             }
         }
 
-        if (tileSet.at(i).isDrawable()){
+        if (tileSet.at(i).isDrawable()) {
             tileSet.at(i).render(camera,
-                             gTileClips,
-                             gRenderer,
-                             gTileTextures);
+                                 gTileClips,
+                                 gRenderer,
+                                 gTileTextures);
         }
     }
 }
 
+void GamePlayWindow::putTower(int id, int type, int x, int y) {
+    Point point(x, y);
 
+    Tower *toPut = nullptr;
+    switch (type) {
+        case TOWER_AIR: {
+            toPut = new Air(x, y, gRenderer, airTexture);
+            break;
+        }
+        case TOWER_EARTH: {
+            toPut = new Earth(x, y, gRenderer, earthTexture);
+            break;
+        }
+        case TOWER_WATER: {
+            toPut = new Water(x, y, gRenderer, waterTexture);
+            break;
+        }
+        case TOWER_FIRE: {
+            toPut = new Fire(x, y, gRenderer, fireTexture);
+            break;
+        }
+        default: {
+            toPut = new Tower(x, y, gRenderer, earthTexture);
+        }
+    }
+
+    toPut->setSprites();
+    towers.insert(std::make_pair(id, toPut));
+
+    setToTowerTile(point, toPut);
+}
+
+
+void GamePlayWindow::addNewHorde(int hordeId, int enemyType, int amount) {
+    Enemy *enemy = nullptr;
+    DrawableHorde horde;
+
+    for (int i = 0; i < amount; ++i) {
+        switch (enemyType) {
+            case ENEMY_ABMONIBLE: {
+                enemy = new Abmonible(-1, -1, gRenderer, abmonibleTexture);
+                break;
+            }
+            case ENEMY_BLOOD_HAWK: {
+                enemy = new BloodHawk(-1, -1, gRenderer, blookHawkTexture);
+                break;
+            }
+            case ENEMY_GOATMAN: {
+                enemy = new Goatman(-1, -1, gRenderer, goatmanTexture);
+                break;
+            }
+            case ENEMY_GREEN_DAEMON: {
+                enemy = new GreenDaemon(-1, -1, gRenderer, greenDaemonTexture);
+                break;
+            }
+            case ENEMY_SPECTRE: {
+                enemy = new Spectre(-1, -1, gRenderer, spectreTexture);
+                break;
+            }
+            case ENEMY_ZOMBIE: {
+                enemy = new Zombie(-1, -1, gRenderer, zombieTexture);
+                break;
+            }
+            default: {
+                enemy = new Abmonible(-1, -1, gRenderer, abmonibleTexture);
+            }
+        }
+        enemy->setSprites();
+        enemy->setIsVisible(false);
+        horde.addEnemy(enemy);
+    }
+
+    hordes.insert(std::make_pair(hordeId, horde));
+}
+
+bool GamePlayWindow::pointIsInPaths(Point point,
+                                    std::vector<std::vector<Point>> &vector) {
+    bool isInPaths = false;
+    for (unsigned i = 0; i < vector.size(); ++i){
+        std::vector<Point> innerVector = vector.at(i);
+        for (unsigned j = 0; j < innerVector.size(); ++j){
+            if (point.x == innerVector.at(j).x
+                    && point.y == innerVector.at(j).y){
+                isInPaths = true;
+                break;
+            }
+        }
+        if (isInPaths) break;
+    }
+
+    return isInPaths;
+}

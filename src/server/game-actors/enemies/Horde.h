@@ -7,14 +7,21 @@
 class Horde {
 public:
     Horde();
+
+    Horde(int t);
+
     virtual ~Horde();
 
     void setEnemies(std::vector<ActorEnemy *> enemies);
     std::vector<ActorEnemy *> getEnemies();
     void addEnemy(ActorEnemy *enemy);
 
+    static Horde *createHorde(int enemyType, int amount, std::vector<Point> path);
+
 private:
     std::vector<ActorEnemy*> enemies;
+
+    int type;
 };
 
 
