@@ -950,22 +950,26 @@ void GamePlayWindow::putTower(int id, int type, int x, int y) {
     Point point(x, y);
 
     switch (type) {
-        case TOWER_AIR: {
+        case TOWER_AIR:
+        /*{
             toPut = new Air(-1, -1, gRenderer, airTexture);
             break;
-        }
-        case TOWER_EARTH: {
+        }*/
+        case TOWER_EARTH:
+        /*{
             toPut = new Earth(-1, -1, gRenderer, earthTexture);
             break;
-        }
-        case TOWER_WATER: {
+        }*/
+        case TOWER_WATER:
+        /*{
             toPut = new Water(-1, -1, gRenderer, waterTexture);
             break;
-        }
-        case TOWER_FIRE: {
+        }*/
+        case TOWER_FIRE:
+        /*{
             toPut = new Fire(-1, -1, gRenderer, fireTexture);
             break;
-        }
+        }*/
         default: {
             toPut = new Tower(-1, -1, gRenderer, gSpriteSheetTextureTower);
         }

@@ -143,7 +143,7 @@ void WorkerLoopGame::buildGameContext() {
     timeLastHordeCreation = 0;
 
     hordeType.push_back((int)ENEMY_ZOMBIE);
-    hordeType.push_back((int)ENEMY_BLOOD_HAWK);
+    hordeType.push_back((int)ENEMY_GOATMAN);
     hordeType.push_back((int)ENEMY_SPECTRE);
 
     paths = map.getCaminos();

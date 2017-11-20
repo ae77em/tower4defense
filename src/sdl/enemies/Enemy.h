@@ -120,10 +120,6 @@ public:
     Point getPoint();
 
 protected:
-    // Defino este monstruo por default...
-    const std::string TEXTURE_FILE_PATH = "images/sprites/"
-            "enemy-abominable-walk.png";
-
     /* Point for get the sprites */
     int walkingStartX = 1765;
     int walkingStartY = 3537;
@@ -141,8 +137,6 @@ protected:
 
     int currentDirection = 0;
     int separationBetweenSprites = 1;
-
-    const int MAX_VELOCITY = 10;
 
     /* ATRIBUTOS RELACIONADOS CON DIBUJO */
     SDL_Rect walkBox;
@@ -168,13 +162,11 @@ protected:
 
     Point currentPoint;
 
-
+    bool isAlive;
+    float lifePercentaje;
 
     /* METHODS */
     virtual void initializeSpritesData();
-
-    bool isAlive;
-    float lifePercentaje;
 };
 
 
