@@ -4,6 +4,9 @@
 
 using namespace Editor;
 
+StateHordeCreation::StateHordeCreation(int path_index)
+        : index(path_index), enemies() {}
+
 void StateHordeCreation::handle(const SDL_Event &e, Editor &context) {
     if (e.type != SDL_KEYDOWN) return;
 
@@ -17,7 +20,7 @@ void StateHordeCreation::handle(const SDL_Event &e, Editor &context) {
     else if (enemies.size() != 0
             && (e.key.keysym.sym == SDLK_RETURN
                 || e.key.keysym.sym == SDLK_KP_ENTER)) {
-        context.getMap().agregarHorda(0, enemies);
+        context.getMap().agregarHorda(index, enemies);
         context.transition(new StateHordeManagement());
     }
 

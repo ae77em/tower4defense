@@ -14,12 +14,24 @@ void StateHordeManagement::handle(const SDL_Event &e, Editor &context) {
     auto& map = context.getMap();
 
     if (e.type == SDL_MOUSEBUTTONDOWN) {
-        //TODO Intercept click and delete horde
-
         Point p = context.getScreen().mouseCurrentTile();
         if (map.estaDentro(p) && (map.casilla(p.x, p.y) == 'E')) {
             screen.setDialog("Clicked on entry portal");
-            context.transition(new StateHordeCreation());
+
+            // Find the path that starts on the clicked tile
+            int path_index = -1;
+            const auto& paths = map.getCaminos();
+            for (unsigned i = 0; i < paths.size(); i++) {
+                if (paths[i][0].x == p.x && paths[i][0].y == p.y) {
+                    path_index = (int)i;
+                    break;
+                }
+            }
+
+            // Could not find path
+            if (path_index == -1) return;
+
+            context.transition(new StateHordeCreation(path_index));
         }
     }
 
