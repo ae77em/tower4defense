@@ -113,7 +113,7 @@ void WorkerLoopGame::run(){
         ciclos--;
 
         actionsGame.clear();//limpio la lista para no ejecutar request viejos
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::this_thread::sleep_for(std::chrono::milliseconds(33));
 
         if(ciclos == 0){
             gameFinish = true;
