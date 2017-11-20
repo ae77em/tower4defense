@@ -2,7 +2,7 @@
 #include "../common/MessageFactory.h"
 #include "../common/Protocol.h"
 #include "../common/Request.h"
-#include "../common/modelo/Mapa.h"
+#include "../common/model/Map.h"
 #include <utility>
 #include <map>
 #include <vector>
@@ -305,7 +305,7 @@ void Server::startMatch(int clientId, std::string matchName) {
 
         std::string mapName = serverGame->getMapName();
 
-        model::Mapa mapa = maps.at(mapName);
+        model::Map mapa = maps.at(mapName);
 
         std::string serializedMap = mapa.serialize();
 
@@ -432,10 +432,10 @@ void Server::loadMaps() {
             mapFilename.assign("resources/maps/");
             mapFilename.append(dp->d_name);
 
-            model::Mapa aMap = model::Mapa::cargarDesdeArchivo(mapFilename);
-            aMap.setNombre(dp->d_name);
+            model::Map aMap = model::Map::loadFromFile(mapFilename);
+            aMap.setName(dp->d_name);
 
-            std::pair<std::string, model::Mapa> mapPair(aMap.getNombre(),std::move(aMap));
+            std::pair<std::string, model::Map> mapPair(aMap.getName(),std::move(aMap));
             maps.insert(mapPair);
         }
     }

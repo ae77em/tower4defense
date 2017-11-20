@@ -14,7 +14,7 @@
 
 #include "ServerPlayer.h"
 #include "ServerGame.h"
-#include "../common/modelo/Mapa.h"
+#include "../common/model/Map.h"
 #include <map>
 #include <string>
 #include <list>
@@ -29,7 +29,7 @@ private:
     ThreadedQueue<Message>& queueMessagesClient;
     std::map<unsigned int,ServerPlayer*> players;
     std::map<std::string, ServerGame*> matches;
-    std::map<std::string, model::Mapa> maps;
+    std::map<std::string, model::Map> maps;
 
 public:
     Server(std::mutex& m,ThreadedQueue<Message>& tq);

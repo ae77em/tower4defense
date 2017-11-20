@@ -36,7 +36,7 @@ static std::string new_map(Editor::Editor &context,
 
 static std::string change_background(Editor::Editor &context,
         const std::string& command) {
-    context.getMap().setEstiloFondo(command[0]);
+    context.getMap().setBackgroundStyle(command[0]);
     return "";
 }
 

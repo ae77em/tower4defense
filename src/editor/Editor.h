@@ -1,6 +1,6 @@
 #include "../sdl/Screen.h"
 #include "../sdl/Keybinding.h"
-#include "../common/modelo/Mapa.h"
+#include "../common/model/Map.h"
 #include "../common/Point.h"
 #include <SDL2/SDL.h>
 #include <string>
@@ -19,7 +19,7 @@ class State;
 class Editor {
     std::unique_ptr<State> state;
     Screen screen;
-    model::Mapa map;
+    model::Map map;
     Keybinding keys;
     bool scrolling_enabled;
 
@@ -37,7 +37,7 @@ class Editor {
     void enableScrolling();
 
     Screen& getScreen();
-    model::Mapa& getMap();
+    model::Map& getMap();
     const Keybinding& getKeys();
 };
 

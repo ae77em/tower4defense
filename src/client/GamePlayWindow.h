@@ -34,7 +34,7 @@ enum GameStatus {
 #include "../sdl/towers/Tower.h"
 #include "../sdl/enemies/DrawableHorde.h"
 #include "../common/Message.h"
-#include "../common/modelo/Mapa.h"
+#include "../common/model/Map.h"
 #include "../sdl/portals/Portal.h"
 #include <vector>
 
@@ -169,7 +169,7 @@ private:
     std::vector<Portal *> portals;
     std::vector<std::string> playerElements;
     std::string matchName;
-    model::Mapa map;
+    model::Map map;
 
     TTF_Font *font;
     int typeOfTowerToPut;

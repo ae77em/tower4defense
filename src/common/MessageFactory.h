@@ -17,14 +17,14 @@ static const char *const MAP_NAME_KEY = "mapName";
 
 class MessageFactory {
 public:
+    /*
+     * Retorna la notificación client id de cliente nuevo conectado.
+     */
     static std::string getClientIdNotification(int clientId);
 
-    static std::string getClientIdRequest(std::string message);
-
-    static std::string getGamesRequest(int clientId);
-
-    static std::string getGamesNotification(int clientId, std::string games);
-
+    /*
+     * Retorna notificación de error de creación de nueva partida.
+     */
     static std::string
     getNewMatchErrorNotification(int clientId, std::string matchName,
                                  std::string cause);
@@ -103,84 +103,168 @@ public:
     static std::string getNewMatchRequest(int clientId, std::string &mapName,
                                           std::string &matchName);
 
+    /*
+     * Retorna la notificación indicando que la partida a la cual se intenta
+     * unir no está más disponible.
+     */
     static std::string getMatchNotAvailableNotification(std::string matchName,
                                                   std::string errorMessage);
 
+    /*
+     * Retorna la notificación indicando que el jugador se unió a la partida.
+     */
     static std::string getAddPlayerToMatchNotification(std::string gameId,
                                               int clientIdWasAdded,
                                               std::list<std::string> elements);
 
+    /*
+     * Retorna la notificación indicando que el jugador se unió a la partida.
+     */
     static std::string
     getAddPlayerAndRunMatchNotification(std::string gameID, int clientId);
 
+    /*
+     * Retorna el dato client id de un mensaje. Si no lo tiene retorna 0.
+     */
     static int getClientId(Message &message);
 
-    static int getMatchId(Message &message);
-
+    /*
+     * Retorna el los mapas de un mensaje.
+     */
     static std::vector<std::string> getMaps(Message &message);
 
-    static std::string getMapName(Message &message);
-
+    /*
+     * Retorna el nombre de la partida de un mensaje.
+     */
     static std::string getMatchName(Message &message);
 
+    /*
+     * Retorna la notificación de que un jugador cerró la conexión con el juego.
+     */
     static std::string getClientEndConectionNotification(int clientId);
 
-    static std::string
-    getMovementNotification(int enemyId, int moveable, int x, int y,
-                            int direction);
-
+    /*
+     * Retorna un punto del mensaje. Debe tener un sólo punto.
+     */
     static Point getPoint(Message message);
 
+    /*
+     * Retorna la dirección que un enemigo puede seguir contenida en el
+     * mensaje.
+     */
     static int getDirection(Message message);
 
+
+    /*
+     * Retorna la notificación de inicio de partida.
+     */
     static std::string
     getStartMatchNotification(std::string name, std::string serializedMap);
 
+    /*
+     * Retorna la notificación de partida ya iniciada.
+     */
     static std::string getMatchStartedNotification(std::string name);
 
+    /*
+     * Retorna la notificación con los elementos que ya no están disponibles
+     * en una partida dada.
+     */
     static std::string
     getUnavailableElementsNotification(std::list<std::string> elements);
 
+    /*
+     * Retorna los elementos de juego (tierra, aire, etc) contenidos en un
+     * mensaje.
+     */
     static std::list<std::string> getElements(Message message);
 
+    /*
+     * Retorna el id de enemigo contenido en un mensaje, si lo tiene.
+     */
     static int getEnemyId(Message message);
 
+    /*
+     * Retorna el pedido para obtener los elementos que ya no están
+     * disponibles en una partida dada.
+     */
     static std::string
     getUnavailableElementsRequest(int clientId, std::string matchName);
 
+    /*
+     * Retorna el request para entrar a una partida.
+     */
     static std::string getEnterMatchRequest(int clientId, std::string matchName,
                                             std::vector<std::string> elements);
 
+    /*
+     * Retorna el request para iniciar una partida.
+     */
     static std::string
     getStartMatchRequest(int clientId, std::string &matchName);
 
+    /*
+     * Retorna las partidas que pueda contener un mensaje.
+     */
     static std::vector<std::string> getMatches(Message &message);
 
-    static std::string
-    getEnteredInMatchNotification(int clientId, std::string matchName);
-
+    /*
+     * Retorna las notificaciones de movimiento que pueda contener un mensaje.
+     */
     static std::vector<Message> getMovementNotifications(Message message);
 
+    /*
+     * Retorna id de hora que pueda contener un mensaje.
+     */
     static int getHordeId(Message message);
 
+    /*
+     * Retorna notificación de fin de partida.
+     */
     static std::string getMatchEndedNotification();
 
+    /*
+     * Retorna el pedido de info de una torre.
+     */
     static std::string
     getTowerInfoRequest(int clientId, std::string matchName, int towerId);
 
+    /*
+     * Retorna el pedido de lanzamiento de hechizo.
+     */
     static std::string getCastSpellRequest(std::string matchName, int x, int y);
 
+    /*
+     * Retorna el pedido de poner torre.
+     */
     static std::string getPutTowerGameRequest(int towType, int x, int y);
 
+    /*
+     * Retorna el pedido de lanzamiento de hechizo, sin distinguir a qué
+     * juego pertenece.
+     */
     static std::string getCastSpellGameRequest(int x, int y);
 
+    /*
+     * Retorna el pedido de upgrade de torre.
+     */
     static std::string
     getUpgradeRequest(std::string matchName, int towerId, int upgradeType);
 
+    /*
+     * Retorna el pedido de upgrade de torre, sin distinguir a qué
+     * juego pertenece.
+     */
     static std::string getUpgradeTowerGameRequest(int towerId, int upgradeType);
 
+    /*
+     * Retorna el pedido de info de torre.
+     */
     static std::string getTowerInfoGameRequest(int towerId);
 
+    /*
+     * Retorna la notificación con la info de la torre.
+     */
     static std::string
     getTowerInfoNotification(int towerId,
                              int damage,
@@ -188,10 +272,19 @@ public:
                              int reach = 0,
                              int slowDown = 0);
 
+    /*
+     * Retorna la notificación de lanzamiento de hechizo.
+     */
     static std::string getCastSpellNotification(int x, int y);
 
+    /*
+     * Retorna la notificación de poner torre.
+     */
     static std::string getPutTowerNotification(int towerType, int x, int y);
 
+    /*
+     * Retorna el mapa serializado.
+     */
     static std::string getSerializedMap(Message message);
 };
 

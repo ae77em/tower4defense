@@ -11,12 +11,12 @@ void Editor::StatePath::handle(const SDL_Event &e, Editor &context) {
         // The first point is taken from current mouse position
         if (path.size() == 0) {
             Point p = screen.mouseCurrentTile();
-            if (! map.estaDentro(p)) return;
-            map.setCasilla('E', p.x, p.y);
+            if (!map.isIn(p)) return;
+            map.setTile('E', p.x, p.y);
             path.push_back(p);
         // Points after the first are taken from tentative_point
         } else {
-            if (! map.estaDentro(tentative_point)) return;
+            if (!map.isIn(tentative_point)) return;
             path.push_back(tentative_point);
         }
     }
@@ -29,12 +29,12 @@ void Editor::StatePath::handle(const SDL_Event &e, Editor &context) {
         /* Do something iff the new point is acceptable as
            an extension of the path, and the result would be
            a sensible path */
-        if (! (map.estaDentro(p) && (path.size() > 0)) ) return;
+        if (! (map.isIn(p) && (path.size() > 0)) ) return;
 
         // Automatically add portal on the last point
-        map.setCasilla('S', p.x, p.y);
+        map.setTile('S', p.x, p.y);
         path.push_back(p);
-        map.agregarCamino(path);
+        map.addPaths(path);
         path.clear();
     }
 

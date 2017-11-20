@@ -3,9 +3,9 @@
 void Editor::StateTile::handle(const SDL_Event &e, Editor &context) {
     if (e.type == SDL_MOUSEBUTTONDOWN) {
         Point p = context.getScreen().mouseCurrentTile();
-        Point d = context.getMap().dimensiones();
+        Point d = context.getMap().dimensions();
         if ((p.isPositive()) && (p.x < d.x) && (p.y < d.y))
-            context.getMap().setCasilla(tile, p.x, p.y);
+            context.getMap().setTile(tile, p.x, p.y);
     }
 
     const Keybinding& keys = context.getKeys();

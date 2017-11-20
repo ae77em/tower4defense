@@ -1,4 +1,4 @@
-#include "Mapa.h"
+#include "Map.h"
 #include "../Point.h"
 #include "../Message.h"
 #include <string>
@@ -10,60 +10,60 @@
 
 using namespace model;
 
-Mapa::Mapa(unsigned x, unsigned y) :extension_x(x), extension_y(y),
-        casillas(x * y, '.'), caminos(), estilo_fondo('g'), nombre(""),
-        delay_hordas_seg(5) {}
+Map::Map(unsigned x, unsigned y) :extension_x(x), extension_y(y),
+        tiles(x * y, '.'), paths(), background_style('g'), name(""),
+        delay_hordes_seg(5) {}
 
-char Mapa::casilla(unsigned x, unsigned y) {
+char Map::tile(unsigned x, unsigned y) {
     if (x >= extension_x || y >= extension_y)
         throw std::runtime_error("out of bounds access: " + std::to_string(x)
                 + "," + std::to_string(y) + " on "
                 + std::to_string(extension_x) + " x "
                 + std::to_string(extension_y) + " map");
-    return casillas[x + y * extension_x];
+    return tiles[x + y * extension_x];
 }
 
-Point Mapa::dimensiones() {
+Point Map::dimensions() {
     return Point(extension_x, extension_y);
 }
 
-void Mapa::setCasilla(char value, unsigned x, unsigned y) {
+void Map::setTile(char value, unsigned x, unsigned y) {
     if (x >= extension_x || y >= extension_y)
         throw std::runtime_error("out of bounds access: " + std::to_string(x)
                 + "," + std::to_string(y) + " on "
                 + std::to_string(extension_x) + " x "
                 + std::to_string(extension_y) + " map");
-    casillas[x + y * extension_x] = value;
+    tiles[x + y * extension_x] = value;
 }
 
-std::vector<std::vector<Point>>& Mapa::getCaminos() {
-    return caminos;
+std::vector<std::vector<Point>>& Map::getPaths() {
+    return paths;
 }
 
-void Mapa::agregarCamino(const std::vector<Point> &camino) {
-    caminos.push_back(camino);
+void Map::addPaths(const std::vector<Point> &camino) {
+    paths.push_back(camino);
 }
 
-std::string Mapa::serialize() {
+std::string Map::serialize() {
     Json::Value root;
 
     root["width"] = extension_x;
     root["height"] = extension_y;
 
     // Serializar las casillas
-    root["fondo"] = std::string(&estilo_fondo, 1);
-    std::string string_casillas(casillas.data(), extension_x * extension_y);
+    root["fondo"] = std::string(&background_style, 1);
+    std::string string_casillas(tiles.data(), extension_x * extension_y);
     root["tiles"] = string_casillas;
 
     // Serializar los caminos
-    for (const auto& camino : caminos) {
+    for (const auto& camino : paths) {
         Json::Value path;
         for (const auto& point : camino) path.append(point.serialize());
         root["paths"].append(path);
     }
 
     // Serializar las hordas
-    root["horde_delay"] = delay_hordas_seg;
+    root["horde_delay"] = delay_hordes_seg;
     for (const auto& pair : hordas) {
         Json::Value horde;
         horde["path_index"] = pair.first;
@@ -79,12 +79,12 @@ std::string Mapa::serialize() {
     return Json::writeString(builder, root);
 }
 
-const std::vector<std::pair<int, std::vector<std::string>>>& Mapa::getHordas() {
+const std::vector<std::pair<int, std::vector<std::string>>>& Map::getHordes() {
     return hordas;
 }
 
-void Mapa::agregarHorda(int camino, std::vector<std::string> enemigos) {
-    if ( (int)caminos.size() <= camino )
+void Map::addHorde(int camino, std::vector<std::string> enemigos) {
+    if ( (int)paths.size() <= camino )
         throw std::runtime_error("tratando de agregar horda a camino "
                 "inexistente " + std::to_string(camino));
     if (camino < 0)
@@ -93,60 +93,60 @@ void Mapa::agregarHorda(int camino, std::vector<std::string> enemigos) {
     hordas.emplace_back(camino, enemigos);
 }
 
-int Mapa::getDelay() const {
-    return delay_hordas_seg;
+int Map::getDelay() const {
+    return delay_hordes_seg;
 }
 
-void Mapa::setDelay(int delay) {
+void Map::setDelay(int delay) {
     if (delay < 0) throw std::runtime_error("delay negativo "
             + std::to_string(delay));
-    delay_hordas_seg = delay;
+    delay_hordes_seg = delay;
 }
 
-char Mapa::getEstiloFondo() {
-    return estilo_fondo;
+char Map::getBackgroundStyle() {
+    return background_style;
 }
 
-void Mapa::setEstiloFondo(char estilo) {
-    estilo_fondo = estilo;
+void Map::setBackgroundStyle(char estilo) {
+    background_style = estilo;
 }
 
-bool Mapa::estaDentro(Point &p) const {
+bool Map::isIn(Point &p) const {
     return p.isPositive()
         && (p.x < (int)extension_x)
         && (p.y < (int)extension_y);
 }
 
-std::string &Mapa::getNombre() {
-    return nombre;
+std::string &Map::getName() {
+    return name;
 }
 
-void Mapa::setNombre(std::string s) {
-    nombre = s;
+void Map::setName(std::string s) {
+    name = s;
 }
 
-Mapa Mapa::cargarDesdeString(std::string json) {
+Map Map::loadFromString(std::string json) {
     Message m;
     m.deserialize(json);
     Json::Value root = static_cast<Json::Value &&>(m.getData());
 
-    Mapa map(root["width"].asUInt(), root["height"].asUInt());
+    Map map(root["width"].asUInt(), root["height"].asUInt());
 
     // Deserializar las casillas
-    map.estilo_fondo = root["fondo"].asString().c_str()[0];
+    map.background_style = root["fondo"].asString().c_str()[0];
     std::string str_casillas = root["tiles"].asString();
-    map.casillas = std::vector<char>(str_casillas.begin(), str_casillas.end());
+    map.tiles = std::vector<char>(str_casillas.begin(), str_casillas.end());
 
     // Deserializar los caminos
     for (const auto& path : root["paths"]) {
-        map.caminos.emplace_back();
-        auto &camino = map.caminos.back();
+        map.paths.emplace_back();
+        auto &camino = map.paths.back();
         for (const auto& point : path)
             camino.push_back(Point::deserialize(point));
     }
 
     // Deserializar las hordas
-    map.delay_hordas_seg = root["horde_delay"].asInt();
+    map.delay_hordes_seg = root["horde_delay"].asInt();
     for (const auto& pair : root["hordes"]) {
         std::vector<std::string> enemigos;
         for (const auto& name : pair["enemies"])
@@ -157,7 +157,7 @@ Mapa Mapa::cargarDesdeString(std::string json) {
     return map;
 }
 
-Mapa Mapa::cargarDesdeArchivo(std::string filename){
+Map Map::loadFromFile(std::string filename){
     std::fstream map_file;
     map_file.open(filename, std::ios::in | std::ios::binary);
     if (!map_file) throw std::runtime_error("Could not open file " + filename);
@@ -170,5 +170,5 @@ Mapa Mapa::cargarDesdeArchivo(std::string filename){
     map_file.read(&contents[0], contents.size());
 
     map_file.close();
-    return cargarDesdeString(contents);
+    return loadFromString(contents);
 }

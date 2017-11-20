@@ -8,7 +8,7 @@
 #include "Animation.h"
 #include "Dot.h"
 #include "Constants.h"
-#include "../common/modelo/Mapa.h"
+#include "../common/model/Map.h"
 #include "../common/Point.h"
 #include <memory>
 
@@ -34,7 +34,7 @@ public:
     ~Screen();
 
     void clear();
-    void put(model::Mapa &map);
+    void put(model::Map &map);
     void trace(const std::vector<Point> &path);
     void setDialog(const std::string &text);
     void draw();
