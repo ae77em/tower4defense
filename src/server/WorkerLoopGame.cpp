@@ -88,7 +88,7 @@ void WorkerLoopGame::run() {
 
         /* Poco menos de 60 fps. Lo dejo así para darle tiempo a los request
          * de los usuarios a impactarse de forma relativamente instantánea. */
-        std::this_thread::sleep_for(std::chrono::milliseconds(25));
+        std::this_thread::sleep_for(std::chrono::milliseconds(33));
     }
 }
 
