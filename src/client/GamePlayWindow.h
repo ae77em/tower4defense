@@ -205,7 +205,7 @@ private:
 
     int clientId;
 
-    std::map<int, DrawableHorde *> hordes;
+    std::map<int, DrawableHorde> hordes;
     std::map<int, Tower *> towers;
     std::vector<Portal *> portals;
     std::vector<std::string> playerElements;
@@ -259,6 +259,8 @@ private:
     void putTower(int id, int type, int x, int y);
 
     void loadAnimables();
+
+    void renderMessages();
 };
 
 #endif //TP4_TOWERDEFENSE_GAME_H

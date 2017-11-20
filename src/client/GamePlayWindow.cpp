@@ -67,18 +67,18 @@ GamePlayWindow::~GamePlayWindow() {
     delete spectreTexture;
     delete zombieTexture;
 
-    for (unsigned i = 0; i < hordes.size(); ++i) {
+    /*for (unsigned i = 0; i < hordes.size(); ++i) {
         std::vector<Enemy *> enemies =
                 static_cast<std::vector<Enemy *> &&>(hordes[i]->getEnemies());
         for (unsigned j = 0; j < enemies.size(); ++j) {
             delete enemies[j];
         }
         delete hordes[i];
-    }
-
-    /*for (unsigned i = 0; i < towers.size(); ++i) {
-        delete towers[i];
     }*/
+
+    for (unsigned i = 0; i < towers.size(); ++i) {
+        delete towers[i];
+    }
 }
 
 void GamePlayWindow::renderTimeMessages(SDL_Rect &camera) {
@@ -613,8 +613,8 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
                         int hordeId = MessageFactory::getHordeId(aMessage);
 
                         try {
-                            DrawableHorde *horde = hordes.at(hordeId);
-                            Enemy *enemy = horde->getEnemieAt(enemyId);
+                            DrawableHorde horde = hordes.at(hordeId);
+                            Enemy *enemy = horde.getEnemieAt(enemyId);
                             enemy->setDirection(dir);
                             enemy->moveTo(scenarioPoint.x, scenarioPoint.y);
                         } catch (...) {
@@ -869,20 +869,7 @@ void GamePlayWindow::run() {
                 // Muestro los botones de las torres que puedo poner
                 towerButtonsTexture.render(gRenderer, 1, 1);
 
-                if (gameStatus == GAME_STATUS_WON) {
-                    renderText(camera, "Partida ganada...");
-                } else if (gameStatus == GAME_STATUS_LOOSE) {
-                    renderText(camera, "Partida perdida...");
-                }
-
-                renderTimeMessages(camera);
-                if (!towerDamageDataMessage.empty()) {
-                    renderText(camera, "Datos de la torre:", 1, 250);
-                    renderText(camera, towerDamageDataMessage, 1, 216);
-                    renderText(camera, towerRangeDataMessage, 1, 282);
-                    renderText(camera, towerReachDataMessage, 1, 398);
-                    renderText(camera, towerSlowdownDataMessage, 1, 310);
-                }
+                renderMessages();
 
                 //Update screen
                 SDL_RenderPresent(gRenderer);
@@ -894,6 +881,23 @@ void GamePlayWindow::run() {
     }
 
     server->shutdown(); // TODO ver si esto corresponde hacerlo acá...
+}
+
+void GamePlayWindow::renderMessages() {
+    if (gameStatus == GAME_STATUS_WON) {
+                    renderText(camera, "Partida ganada...");
+                } else if (gameStatus == GAME_STATUS_LOOSE) {
+                    renderText(camera, "Partida perdida...");
+                }
+
+    renderTimeMessages(camera);
+    if (!towerDamageDataMessage.empty()) {
+                    renderText(camera, "Datos de la torre:", 1, 250);
+                    renderText(camera, towerDamageDataMessage, 1, 266);
+                    renderText(camera, towerRangeDataMessage, 1, 282);
+                    renderText(camera, towerReachDataMessage, 1, 398);
+                    renderText(camera, towerSlowdownDataMessage, 1, 310);
+                }
 }
 
 void GamePlayWindow::loadAnimables() {/* Remuevo los animables del vector (ojo, siguen existiendo,
@@ -911,12 +915,12 @@ void GamePlayWindow::loadAnimables() {/* Remuevo los animables del vector (ojo, 
         animables.push(tp);
     }
 
-    std::map<int, DrawableHorde *>::const_iterator hIt;
+    std::map<int, DrawableHorde>::const_iterator hIt;
     //Enemy *en = nullptr;
     for (hIt = hordes.begin(); hIt != hordes.end(); ++hIt) {
-        DrawableHorde *horde = hIt->second;
+        DrawableHorde horde = hIt->second;
 
-        for (Enemy *enemy : horde->getEnemies()) {
+        for (Enemy *enemy : horde.getEnemies()) {
             animables.push(enemy);
         }
     }
@@ -987,7 +991,7 @@ void GamePlayWindow::putTower(int id, int type, int x, int y) {
 
 void GamePlayWindow::addNewHorde(int hordeId, int enemyType, int amount) {
     Enemy *enemy = nullptr;
-    auto horde = new DrawableHorde();
+    DrawableHorde horde;
 
     for (int i = 0; i < amount; ++i) {
         switch (enemyType) {
@@ -1020,9 +1024,8 @@ void GamePlayWindow::addNewHorde(int hordeId, int enemyType, int amount) {
             }
         }
         enemy->setSprites();
-        horde->addEnemy(enemy);
+        horde.addEnemy(enemy);
     }
 
-    std::pair<int, DrawableHorde *> pair(hordeId, horde);
-    hordes.insert(pair);
+    hordes.insert(std::make_pair(hordeId, horde));
 }
