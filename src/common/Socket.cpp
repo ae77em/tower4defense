@@ -16,10 +16,6 @@ Socket::Socket() {
     this->socket = ::socket(AF_INET, SOCK_STREAM, 0);
     const int en = errno;
 
-    // TODO: este error seria mas util con el output de strerror en lugar del
-    // codigo de error. strerror no es thread safe y strerror_r viene en dos
-    // versiones, la disponibilidad de las mismas variando con el sistema
-    // operativo y el compilador usado.
     if (this->socket == -1) throw std::runtime_error("No se pudo crear"
             " el socket. errno: " + std::to_string(en));
 }

@@ -53,6 +53,8 @@ public:
     void setTimeCreationHorde();
 
     void putTower(GameAction *pAction);
+
+    void notifyMatchLoose();
 };
 
 

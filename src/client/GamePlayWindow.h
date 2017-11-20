@@ -153,7 +153,7 @@ private:
     /* *
      * Attributes
      * */
-    int gameStatus;
+    int gameStatus = GAME_STATUS_UNDECIDED;
 
     //The window we'll be rendering to
     SDL_Window *gWindow = nullptr;

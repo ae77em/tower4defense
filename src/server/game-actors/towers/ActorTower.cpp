@@ -69,7 +69,6 @@ bool ActorTower::itIsShooting() {
 }
 
 void ActorTower::live(Horde *horde) {
-    // evaluar colisión
     std::vector<ActorEnemy*> enemies = horde->getEnemies();
 
     for (ActorEnemy *enemy : enemies){

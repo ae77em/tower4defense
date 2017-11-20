@@ -491,12 +491,13 @@ std::vector<Message> MessageFactory::getMovementNotifications(Message message) {
     return messagesToReturn;
 }
 
-std::string MessageFactory::getMatchEndedNotification() {
+std::string MessageFactory::getMatchEndedNotification(int matchStatus) {
     std::string toReturn;
     Json::Value root(Json::objectValue);
     Message message;
 
     root[OPERATION_KEY] = SERVER_NOTIFICATION_MATCH_ENDED;
+    root[MATCH_STATUS_KEY] = matchStatus;
 
     message.setData(root);
 

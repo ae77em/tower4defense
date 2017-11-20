@@ -4,11 +4,11 @@
 
 #include "ActorEnemy.h"
 
-class ActorAbmonible : public ActorEnemy {
+class ActorEnemyAbmonible : public ActorEnemy {
 public:
-    ActorAbmonible();
-    virtual ~ActorAbmonible();
-    //std::vector<ActorAbmonible>
+    ActorEnemyAbmonible();
+    virtual ~ActorEnemyAbmonible();
+    //std::vector<ActorEnemyAbmonible>
 };
 
 

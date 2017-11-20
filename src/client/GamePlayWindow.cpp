@@ -107,15 +107,19 @@ bool GamePlayWindow::init() {
 
     //Initialize SDL
     if (TTF_Init() < 0) {
-        printf("TTF could not initialize! SDL Error: %s\n", TTF_GetError());
+        std::cerr << "TTF could not initialize! SDL Error: "
+                  << TTF_GetError()
+                  << std::endl;
         success = false;
     } else if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        printf("SDL could not initialize! SDL Error: %s\n", SDL_GetError());
+        std::cerr << "SDL could not initialize! SDL Error: "
+                  << SDL_GetError()
+                  << std::endl;
         success = false;
     } else {
         //Set texture filtering to linear
         if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1")) {
-            printf("Warning: Linear texture filtering not enabled!");
+            std::cout << "Warning: Linear texture filtering not enabled!";
         }
 
         //Create window
@@ -124,8 +128,9 @@ bool GamePlayWindow::init() {
                                    SCREEN_HEIGHT, SDL_WINDOW_SHOWN |
                                                   SDL_WINDOW_RESIZABLE);
         if (gWindow == nullptr) {
-            printf("Window could not be created! SDL Error: %s\n",
-                   SDL_GetError());
+            std::cerr << "Window could not be created! SDL Error: "
+                      << SDL_GetError()
+                      << std::endl;
             success = false;
         } else {
             //Create renderer for window
@@ -133,8 +138,9 @@ bool GamePlayWindow::init() {
                                            SDL_RENDERER_ACCELERATED |
                                            SDL_RENDERER_PRESENTVSYNC);
             if (gRenderer == nullptr) {
-                printf("Renderer could not be created! SDL Error: %s\n",
-                       SDL_GetError());
+                std::cerr << "Renderer could not be created! SDL Error: "
+                          << SDL_GetError()
+                          << std::endl;
                 success = false;
             } else {
                 //Initialize renderer color
@@ -143,9 +149,10 @@ bool GamePlayWindow::init() {
                 //Initialize PNG loading
                 int imgFlags = IMG_INIT_PNG;
                 if (!(IMG_Init(imgFlags) & imgFlags)) {
-                    printf("SDL_image could not initialize! "
-                                   "SDL_image Error: %s\n",
-                           IMG_GetError());
+                    std::cerr << "SDL_image could not initialize! "
+                            "SDL_image Error: "
+                              << IMG_GetError()
+                              << std::endl;
                     success = false;
                 }
 
@@ -510,6 +517,7 @@ void GamePlayWindow::handleRightButtonClick(Point point) {
         sendToServer(request);
     }
 }
+
 void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
     int transactionsCounter = 0;
     std::string notification;
@@ -572,7 +580,7 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
             }
             case SERVER_NOTIFICATION_MATCH_ENDED: {
                 nonPlayerNotifications->setClientProcessEnded(true);
-                gameStatus = GAME_STATUS_WON;
+                gameStatus = request.getAsInt(MATCH_STATUS_KEY);
                 break;
             }
             case SERVER_NOTIFICATION_PUT_TOWER: {
@@ -679,7 +687,6 @@ bool GamePlayWindow::hasElement(const std::string &element) const {
             != playerElements.end();
 }
 
-
 void GamePlayWindow::setToTowerTile(Point point, Tower *tower) {
     if (point.isPositive()) {
         int tilePos = point.x * TILES_COLUMNS + point.y;
@@ -731,7 +738,7 @@ void GamePlayWindow::loadTowerInfo(Message message) {
 
 void GamePlayWindow::run() {
     unsigned int gameEndedTime = 0;
-    bool gameEnded;
+    bool gameEnded = false;
 
     //Start up SDL and create window
     if (!init()) {
@@ -756,8 +763,12 @@ void GamePlayWindow::run() {
             //While application is running
             while (!quit) {
                 gameEnded = gameStatus != GAME_STATUS_UNDECIDED;
-                if (gameEnded && gameEndedTime == 0) {
-                    gameEndedTime = SDL_GetTicks();
+                if (gameEnded){
+                    if (gameEndedTime == 0) {
+                        gameEndedTime = SDL_GetTicks();
+                    } else if (SDL_GetTicks() - gameEndedTime > 3000) {
+                        quit = true;
+                    }
                 }
 
                 //Handle events on queue
@@ -827,8 +838,8 @@ void GamePlayWindow::renderMessages() {
         renderText(camera, "Datos de la torre:", 1, 250);
         renderText(camera, towerDamageDataMessage, 1, 266);
         renderText(camera, towerRangeDataMessage, 1, 282);
-        renderText(camera, towerReachDataMessage, 1, 398);
-        renderText(camera, towerSlowdownDataMessage, 1, 310);
+        renderText(camera, towerReachDataMessage, 1, 298);
+        renderText(camera, towerSlowdownDataMessage, 1, 314);
     }
 }
 
@@ -911,7 +922,6 @@ void GamePlayWindow::putTower(int id, int type, int x, int y) {
 
     setToTowerTile(point, toPut);
 }
-
 
 void GamePlayWindow::addNewHorde(int hordeId, int enemyType, int amount) {
     Enemy *enemy = nullptr;
