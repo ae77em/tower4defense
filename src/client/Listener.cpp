@@ -12,12 +12,12 @@
 
 Listener::Listener(Socket *s,
                    Notificable &ga,
-                   SharedBuffer &bfr,
-                   SharedBuffer &other)
+                   SharedBuffer &bfr/*,
+                   SharedBuffer &other*/)
         : server(s),
           notificable(ga),
-          buffer(bfr),
-          buffer2(other) { }
+          buffer(bfr)/*,
+          buffer2(other)*/ { }
 
 Listener::~Listener() {}
 

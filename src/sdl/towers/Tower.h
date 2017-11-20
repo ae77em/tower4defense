@@ -79,14 +79,14 @@ protected:
     SDL_Rect idleSprites[NUMBER_OF_IDLE_SPRITES];
     SDL_Rect shotSprites[NUMBER_OF_SHOT_SPRITES];
 
-    int idleSpriteWidth = IDLE_SPRITE_WIDTH + separationBetweenSprites;
-    int idleSpriteHeight = IDLE_SPRITE_HEIGHT + separationBetweenSprites;
+    int idleSpriteWidth;
+    int idleSpriteHeight;
 
-    int shotSpriteWidth = SHOT_SPRITE_WIDTH + separationBetweenSprites;
-    int shotSpriteHeight = SHOT_SPRITE_HEIGHT + separationBetweenSprites;
+    int shotSpriteWidth;
+    int shotSpriteHeight;
 
-    int numberOfIdleSprites = NUMBER_OF_IDLE_SPRITES;
-    int numberOfShotSprites = NUMBER_OF_SHOT_SPRITES;
+    int numberOfIdleSprites;
+    int numberOfShotSprites;
 
     // seteo los sprites para espera...
     int idleStartX = 1;

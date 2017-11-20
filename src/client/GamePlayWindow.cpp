@@ -67,14 +67,12 @@ GamePlayWindow::~GamePlayWindow() {
     delete spectreTexture;
     delete zombieTexture;
 
-    /*for (unsigned i = 0; i < hordes.size(); ++i) {
-        std::vector<Enemy *> enemies =
-                static_cast<std::vector<Enemy *> &&>(hordes[i]->getEnemies());
+    for (unsigned i = 0; i < hordes.size(); ++i) {
+        std::vector<Enemy *> enemies = hordes[i].getEnemies();
         for (unsigned j = 0; j < enemies.size(); ++j) {
             delete enemies[j];
         }
-        delete hordes[i];
-    }*/
+    }
 
     for (unsigned i = 0; i < towers.size(); ++i) {
         delete towers[i];
@@ -230,14 +228,6 @@ bool GamePlayWindow::loadMedia() {
     return success;
 }
 
-void GamePlayWindow::initializeGameActors() {
-/*    auto tower = new Tower(800, 240, gRenderer, gSpriteSheetTextureTower);
-    tower->loadMedia();
-    tower->setSprites();
-
-    towers.push_back(tower);*/
-}
-
 void GamePlayWindow::close() {
     //Free loaded images
     dotTexture.free();
@@ -268,6 +258,8 @@ bool GamePlayWindow::setTiles() {
     bool tilesLoaded = true;
     int tileType;
 
+    std::vector<std::vector<Point>> &paths = map.getPaths();
+
     //The tile offset
     char tileSaved;
 
@@ -289,6 +281,12 @@ bool GamePlayWindow::setTiles() {
             } else if (tileSaved == '#') { // es la nada
                 tileType = tileIdTranslator.at(tileSaved);
             }
+
+            Point pt(i,j);
+            if (pointIsInPaths(pt, paths)){
+                tileType = TILE_WAY;
+            }
+
 
             //If the number is a valid tile number
             if (tileType >= TILE_EMPTY && tileType <= TILE_TOWER) {
@@ -420,8 +418,7 @@ void GamePlayWindow::handleLeftButtonClick(Point &point) {
                 typeOfTowerToPut = TOWER_EARTH;
             }
         } else if (mousePosX <= 200) {
-            if (hasElement(STR_EARTH) &&
-                (SDL_GetTicks() - timeOfLastSpell) > TIME_FOR_ENABLE_ACTION) {
+            if ((SDL_GetTicks() - timeOfLastSpell) > TIME_FOR_ENABLE_ACTION) {
                 isCastingSpells = true;
             }
         } else if (towerSelected != -1) {
@@ -513,72 +510,6 @@ void GamePlayWindow::handleRightButtonClick(Point point) {
         sendToServer(request);
     }
 }
-
-void GamePlayWindow::handleServerPlayerNotifications(SDL_Rect camera) {
-    int transactionsCounter = 0;
-    std::string notification;
-
-    while (playerNotifications->hasData() &&
-           transactionsCounter < 10) {
-        ++transactionsCounter;
-        notification = playerNotifications->getNextData();
-
-        std::cout << "lo que tengo en el segundo buffer" << notification
-                  << std::endl;
-
-
-        Message message;
-        std::string response;
-
-        message.deserialize(notification);
-
-        Request request(message);
-
-        int op = request.getAsInt(OPERATION_KEY);
-
-        switch (op) {
-            case SERVER_NOTIFICATION_PUT_TOWER: {
-                std::cout << "llego poner torre" << std::endl;
-                int towerId = request.getAsInt("towerId");
-                int towerType = request.getAsInt("towerType");
-                int x = request.getAsInt("xCoord");
-                int y = request.getAsInt("yCoord");
-
-                putTower(towerId, towerType, x, y);
-                break;
-            }
-            case SERVER_NOTIFICATION_MARK_TILE: {
-                Point point = MessageFactory::getPoint(message);
-
-                if (point.isPositive()) {
-                    setToMarkedTile(point);
-                }
-                break;
-            }
-            case SERVER_NOTIFICATION_TOWER_INFO: {
-                loadTowerInfo(message);
-                break;
-            }
-            case SERVER_NOTIFICATION_CAST_SPELL: {
-                Point point = MessageFactory::getPoint(message);
-
-                if (point.isPositive()) {
-                    setToFirmTile(point);
-                }
-                break;
-            }
-            case SERVER_NOTIFICATION_APPLY_UPGRADE: {
-                // aplicar upgrade
-                break;
-            };
-            default:
-                response = "no reconocida";
-        }
-
-        std::cout << "notification: " << notification << std::endl;
-    }
-}
-
 void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
     int transactionsCounter = 0;
     std::string notification;
@@ -609,26 +540,25 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
 
                     Point scenarioPoint = MessageFactory::getPoint(aMessage);
                     // no dibujo cosas fuera del escenario...
-                    if (scenarioPoint.isPositive()) {
+                    //if (scenarioPoint.isPositive()) {
+                    int dir = MessageFactory::getDirection(aMessage);
+                    int enemyId = request.getAsInt(ENEMY_ID_KEY);
+                    int hordeId = request.getAsInt(HORDE_ID_KEY);
+                    bool isVisible = request.getAsBool(IS_VISIBLE_KEY);
 
-                        int dir = MessageFactory::getDirection(aMessage);
-                        int enemyId = request.getAsInt(ENEMY_ID_KEY);
-                        int hordeId = request.getAsInt(HORDE_ID_KEY);
-                        bool isVisible = request.getAsBool(IS_VISIBLE_KEY);
-
-                        try {
-                            DrawableHorde horde = hordes.at(hordeId);
-                            Enemy *enemy = horde.getEnemieAt(enemyId);
-                            enemy->setDirection(dir);
-                            enemy->moveTo(scenarioPoint.x, scenarioPoint.y);
-                            enemy->setIsVisible(isVisible);
-                        } catch (...) {
-                            std::cerr << "No es posible mover el enemigo "
-                                      << std::to_string(enemyId);
-                            std::cerr << " de la horda "
-                                      << std::to_string(hordeId);
-                        }
+                    try {
+                        DrawableHorde horde = hordes.at(hordeId);
+                        Enemy *enemy = horde.getEnemieAt(enemyId);
+                        enemy->setDirection(dir);
+                        enemy->moveTo(scenarioPoint.x, scenarioPoint.y);
+                        enemy->setIsVisible(isVisible);
+                    } catch (...) {
+                        std::cerr << "No es posible mover el enemigo "
+                                  << std::to_string(enemyId);
+                        std::cerr << " de la horda "
+                                  << std::to_string(hordeId);
                     }
+                    //}
                 }
                 break;
             }
@@ -649,8 +579,8 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
                 std::cout << "llego poner torre" << std::endl;
                 int towerId = request.getAsInt("towerId");
                 int towerType = request.getAsInt("towerType");
-                int x = request.getAsInt("xCoord");
-                int y = request.getAsInt("yCoord");
+                int x = request.getAsInt("xCoord") / CARTESIAN_TILE_WIDTH;
+                int y = request.getAsInt("yCoord") / CARTESIAN_TILE_HEIGHT;
 
                 putTower(towerId, towerType, x, y);
                 break;
@@ -823,8 +753,6 @@ void GamePlayWindow::run() {
             //Level camera
             camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
 
-            initializeGameActors();
-
             //While application is running
             while (!quit) {
                 gameEnded = gameStatus != GAME_STATUS_UNDECIDED;
@@ -845,7 +773,6 @@ void GamePlayWindow::run() {
                     handleMouseEvents(camera, e);
                 }
 
-                handleServerPlayerNotifications(camera);
                 handleServerNotifications(camera);
 
                 //Move the dot
@@ -890,19 +817,19 @@ void GamePlayWindow::run() {
 
 void GamePlayWindow::renderMessages() {
     if (gameStatus == GAME_STATUS_WON) {
-                    renderText(camera, "Partida ganada...");
-                } else if (gameStatus == GAME_STATUS_LOOSE) {
-                    renderText(camera, "Partida perdida...");
-                }
+        renderText(camera, "Partida ganada...");
+    } else if (gameStatus == GAME_STATUS_LOOSE) {
+        renderText(camera, "Partida perdida...");
+    }
 
     renderTimeMessages(camera);
     if (!towerDamageDataMessage.empty()) {
-                    renderText(camera, "Datos de la torre:", 1, 250);
-                    renderText(camera, towerDamageDataMessage, 1, 266);
-                    renderText(camera, towerRangeDataMessage, 1, 282);
-                    renderText(camera, towerReachDataMessage, 1, 398);
-                    renderText(camera, towerSlowdownDataMessage, 1, 310);
-                }
+        renderText(camera, "Datos de la torre:", 1, 250);
+        renderText(camera, towerDamageDataMessage, 1, 266);
+        renderText(camera, towerRangeDataMessage, 1, 282);
+        renderText(camera, towerReachDataMessage, 1, 398);
+        renderText(camera, towerSlowdownDataMessage, 1, 310);
+    }
 }
 
 /* Remuevo los animables del vector (ojo, siguen existiendo,
@@ -954,40 +881,35 @@ void GamePlayWindow::renderLevel() {
 }
 
 void GamePlayWindow::putTower(int id, int type, int x, int y) {
-    Tower *toPut = nullptr;
     Point point(x, y);
 
+    Tower *toPut = nullptr;
     switch (type) {
         case TOWER_AIR: {
-            toPut = new Air(-1, -1, gRenderer, airTexture);
+            toPut = new Air(x, y, gRenderer, airTexture);
             break;
         }
         case TOWER_EARTH: {
-            toPut = new Earth(-1, -1, gRenderer, earthTexture);
+            toPut = new Earth(x, y, gRenderer, earthTexture);
             break;
         }
         case TOWER_WATER: {
-            toPut = new Water(-1, -1, gRenderer, waterTexture);
+            toPut = new Water(x, y, gRenderer, waterTexture);
             break;
         }
         case TOWER_FIRE: {
-            toPut = new Fire(-1, -1, gRenderer, fireTexture);
+            toPut = new Fire(x, y, gRenderer, fireTexture);
             break;
         }
         default: {
-            toPut = new Tower(-1, -1, gRenderer, earthTexture);
+            toPut = new Tower(x, y, gRenderer, earthTexture);
         }
     }
 
     toPut->setSprites();
     towers.insert(std::make_pair(id, toPut));
 
-    if (point.isPositive()) {
-        setToTowerTile(point, toPut);
-        toPut->setPosition(point.x * CARTESIAN_TILE_HEIGHT,
-                           point.y * CARTESIAN_TILE_HEIGHT);
-    }
-
+    setToTowerTile(point, toPut);
 }
 
 
@@ -1026,8 +948,27 @@ void GamePlayWindow::addNewHorde(int hordeId, int enemyType, int amount) {
             }
         }
         enemy->setSprites();
+        enemy->setIsVisible(false);
         horde.addEnemy(enemy);
     }
 
     hordes.insert(std::make_pair(hordeId, horde));
+}
+
+bool GamePlayWindow::pointIsInPaths(Point point,
+                                    std::vector<std::vector<Point>> &vector) {
+    bool isInPaths = false;
+    for (unsigned i = 0; i < vector.size(); ++i){
+        std::vector<Point> innerVector = vector.at(i);
+        for (unsigned j = 0; j < innerVector.size(); ++j){
+            if (point.x == innerVector.at(j).x
+                    && point.y == innerVector.at(j).y){
+                isInPaths = true;
+                break;
+            }
+        }
+        if (isInPaths) break;
+    }
+
+    return isInPaths;
 }

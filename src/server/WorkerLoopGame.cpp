@@ -146,49 +146,6 @@ void WorkerLoopGame::buildGameContext() {
     paths = map.getPaths();
 
     hordeId = 0;
-
-    /* ESTA ES LÓGICA DE NEGOCIO, Y VA EN EL SERVER...
-     * bool towerIsShooting =
-            enemy->itIsAlive() &&
-            enemy->getCollisionCircle().hasCollisionWith(tower.getCollisionCircle());
-    if (towerIsShooting) {
-        tower.setIsShooting(true);
-        int shotDamage = tower.getShotDamage();
-        enemy->quitLifePoints(shotDamage);
-        tower.sumExperiencePoints(shotDamage);
-        std::cout << "la torre tiene " << tower.getExperiencePoints() << " de experiencia."
-                  << std::endl;
-    } else {
-        tower.setIsShooting(false);
-    }
-
-    if (enemy->itIsAlive()) {
-        enemy->setDirection(dir);
-        enemy->moveTo(point.x, point.y);
-    } else if (towerIsShooting) {
-        tower.sumExperiencePoints(enemy->getBonus());
-        std::cout << "la torre sumó bonus de " << enemy->getBonus() << " puntos de experiencia."
-                  << std::endl;
-
-        std::vector<Enemy*> enemies = static_cast<std::vector<Enemy *> &&>(horde->getEnemies());
-        for (Enemy *enemy1 : enemies) {
-            if (enemy1->itIsAlive()) {
-                gameWon = false;
-                break;
-            } else {
-                gameWon = true;
-            }
-        }
-    }
-
-    if (enemy->itIsAlive()) {
-        if (point.x >= finalPoint.x && point.y >= finalPoint.y) {
-            gameLoose = true;
-        }
-    }
-
-    std::cout << "la torre tiene " << tower.getExperiencePoints() << " de experiencia." << std::endl;
-     */
 }
 
 std::string WorkerLoopGame::getGameStatus() {
@@ -265,16 +222,62 @@ void WorkerLoopGame::putTower(GameAction *pAction) {
 
     }
 
+    int actualX = pAction->x * CARTESIAN_TILE_WIDTH;
+    int actualY = pAction->y * CARTESIAN_TILE_HEIGHT;
     tower->setPosition(pAction->x, pAction->y);
     towers.push_back(tower);
 
     std::string statusGame =
             GameNotification::getPutTowerNotification(towers.size()-1,
                                                       type,
-                                                      pAction->x,
-                                                      pAction->y);
+                                                      actualX,
+                                                      actualY);
 
     for (auto it=players.begin(); it!=players.end(); ++it){
         it->second->sendData(statusGame);
     }
 }
+
+
+/* ESTA ES LÓGICA DE NEGOCIO, Y VA EN EL SERVER...
+     * bool towerIsShooting =
+            enemy->itIsAlive() &&
+            enemy->getCollisionCircle().hasCollisionWith(tower.getCollisionCircle());
+    if (towerIsShooting) {
+        tower.setIsShooting(true);
+        int shotDamage = tower.getShotDamage();
+        enemy->quitLifePoints(shotDamage);
+        tower.sumExperiencePoints(shotDamage);
+        std::cout << "la torre tiene " << tower.getExperiencePoints() << " de experiencia."
+                  << std::endl;
+    } else {
+        tower.setIsShooting(false);
+    }
+
+    if (enemy->itIsAlive()) {
+        enemy->setDirection(dir);
+        enemy->moveTo(point.x, point.y);
+    } else if (towerIsShooting) {
+        tower.sumExperiencePoints(enemy->getBonus());
+        std::cout << "la torre sumó bonus de " << enemy->getBonus() << " puntos de experiencia."
+                  << std::endl;
+
+        std::vector<Enemy*> enemies = static_cast<std::vector<Enemy *> &&>(horde->getEnemies());
+        for (Enemy *enemy1 : enemies) {
+            if (enemy1->itIsAlive()) {
+                gameWon = false;
+                break;
+            } else {
+                gameWon = true;
+            }
+        }
+    }
+
+    if (enemy->itIsAlive()) {
+        if (point.x >= finalPoint.x && point.y >= finalPoint.y) {
+            gameLoose = true;
+        }
+    }
+
+    std::cout << "la torre tiene " << tower.getExperiencePoints() << " de experiencia." << std::endl;
+     */

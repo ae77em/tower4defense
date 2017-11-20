@@ -17,7 +17,7 @@ int Request::getAsInt(std::string key){
     return root[key].asInt();
 }
 
-int Request::getAsBool(std::string key){
+bool Request::getAsBool(std::string key){
     Json::Value &root = requestMessage.getData();
 
     return root[key].asBool();

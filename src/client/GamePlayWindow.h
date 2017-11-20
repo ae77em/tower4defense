@@ -102,8 +102,6 @@ private:
 
     void renderText(SDL_Rect &camera, std::string text, int x = 50, int y = 50);
 
-    void initializeGameActors();
-
     void handleLeftButtonClick(Point &point);
 
     bool isFirmTerrain(Point &point);
@@ -124,8 +122,6 @@ private:
 
     void setToFirmTile(Point &point);
 
-    void handleServerPlayerNotifications(SDL_Rect camera);
-
     void doCastSpellRequest(const Point &point) const;
 
     void doPutTowerRequest(const Point &point) const;
@@ -145,6 +141,14 @@ private:
     void renderLevel();
 
     void addNewHorde(int hordeId, int enemyType, int amount);
+
+    void putTower(int id, int type, int x, int y);
+
+    void loadAnimables();
+
+    void renderMessages();
+
+    bool pointIsInPaths(Point point, std::vector<std::vector<Point>> &vector);
 
     /* *
      * Attributes
@@ -255,12 +259,6 @@ private:
         std::make_pair('i', TILE_ICE),
         std::make_pair('l', TILE_LAVA)
     };
-
-    void putTower(int id, int type, int x, int y);
-
-    void loadAnimables();
-
-    void renderMessages();
 };
 
 #endif //TP4_TOWERDEFENSE_GAME_H

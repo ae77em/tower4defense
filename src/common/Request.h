@@ -17,7 +17,7 @@ public:
 
     std::list<std::string> getAsStringVector(std::string key);
 
-    int getAsBool(std::string key);
+    bool getAsBool(std::string key);
 };
 
 
