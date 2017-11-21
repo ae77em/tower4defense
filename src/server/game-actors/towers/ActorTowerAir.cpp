@@ -2,11 +2,11 @@
 #include "../../../sdl/Constants.h"
 
 void ActorTowerAir::initialize() {
-    shotRatio = 5;
+    range = 5;
     shotDamage = 2;
     shotMsTimeGap = 5000; //miliseconds
     slowDownPercentaje = 0.0;
-    collisionCircle.r = (CARTESIAN_TILE_WIDTH / 2) * shotRatio;
+    collisionCircle.r = (CARTESIAN_TILE_WIDTH / 2) * range;
 }
 
 int ActorTowerAir::getShotDamage(ActorEnemy enemy) {

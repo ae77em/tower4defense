@@ -267,10 +267,10 @@ public:
      */
     static std::string
     getTowerInfoNotification(int towerId,
-                             int damage,
-                             int range,
-                             int reach = 0,
-                             int slowDown = 0);
+                             std::string damageInfo,
+                             std::string rangeInfo,
+                             std::string reachInfo = 0,
+                             std::string slowDownInfo = 0);
 
     /*
      * Retorna la notificación de lanzamiento de hechizo.

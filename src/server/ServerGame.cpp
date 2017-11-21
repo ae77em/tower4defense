@@ -184,21 +184,11 @@ void ServerGame::upgradeTower(int towerId, int upgradeType) {
 }
 
 void ServerGame::towerInfo(int clientId, int towerId) {
-    std::string req = MessageFactory::getTowerInfoGameRequest(towerId);
-    Message message;
-    message.deserialize(req);
-
-
     mutexActionsGame.lock();
-    actions.push_back(new GameAction("towerInfo"));
+    actions.push_back(new GameActionGetTowerInfo(STR_GET_TOWER_INFO,
+                                                 towerId,
+                                                 clientId));
     mutexActionsGame.unlock();
-
-    /** HASTA TENER DEFINIDO EL ACCESO A EL LOOP DE JUEGO CON LA INFO ***/
-    req = MessageFactory::getTowerInfoNotification(towerId, 999, 999, 999);
-    mutexPlayers.lock();
-    notifyTo(clientId, req);
-    mutexPlayers.unlock();
-    /*****/
 }
 
 std::string &ServerGame::getMapName() {

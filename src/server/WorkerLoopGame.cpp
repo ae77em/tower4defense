@@ -13,6 +13,7 @@
 #include "game-actors/towers/ActorTowerEarth.h"
 #include "../client/GamePlayWindow.h"
 #include "game-actions/GameActionPutTower.h"
+#include "game-actions/GameActionGetTowerInfo.h"
 
 #include <iostream>
 #include <chrono>
@@ -117,7 +118,7 @@ bool WorkerLoopGame::actionsSuccessfullAttended(std::list<GameAction *> &actions
         } else if (actionName == STR_PUT_TOWER) {
             putTower(dynamic_cast<GameActionPutTower *>(action));
         } else if (actionName == STR_GET_TOWER_INFO) {
-            // get tower info
+            sendTowerInfo(dynamic_cast<GameActionGetTowerInfo *>(action));
         } else if (actionName == STR_UPGRADE_TOWER) {
             // get upgrade tower
         }
@@ -222,7 +223,7 @@ void WorkerLoopGame::putTower(GameActionPutTower *pAction) {
 
     int actualX = pAction->getX() * CARTESIAN_TILE_WIDTH;
     int actualY = pAction->getY() * CARTESIAN_TILE_HEIGHT;
-    tower->setPosition(pAction->getX(), pAction->getY());
+    tower->setPosition(actualX, actualY);
     towers.push_back(tower);
 
     std::string statusGame =
@@ -242,4 +243,19 @@ void WorkerLoopGame::notifyMatchLoose() {
     for (auto it = players.begin(); it != players.end(); ++it) {
         it->second->sendData(statusGame);
     }
+}
+
+void WorkerLoopGame::sendTowerInfo(GameActionGetTowerInfo *pInfo) {
+    int towerId = pInfo->getTowerId();
+    int clientId = pInfo->getClientId();
+
+    ActorTower tower = *towers.at(towerId);
+
+    std::string data = MessageFactory::getTowerInfoNotification(towerId,
+                                             tower.getShotDamageInfo(),
+                                             tower.getRangeInfo(),
+                                             tower.getReachInfo(),
+                                             tower.getSlowDownPercentajeInfo());
+
+    players.at(clientId)->sendData(data);
 }

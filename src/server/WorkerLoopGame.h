@@ -10,6 +10,7 @@
 #include "game-actors/towers/ActorTower.h"
 #include "../common/model/Map.h"
 #include "game-actions/GameActionPutTower.h"
+#include "game-actions/GameActionGetTowerInfo.h"
 #include <map>
 #include <string>
 #include <list>
@@ -56,6 +57,8 @@ public:
     void notifyMatchLoose();
 
     bool actionsSuccessfullAttended(std::list<GameAction *> &actionsGame);
+
+    void sendTowerInfo(GameActionGetTowerInfo *pInfo);
 };
 
 

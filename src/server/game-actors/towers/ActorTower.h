@@ -59,14 +59,28 @@ public:
 
     void doShootTo(ActorEnemy *pEnemy);
 
+    int getRange();
+
+    int getReach();
+
+    /* Para retornar info al juego de la torre */
+    std::string getRangeInfo();
+
+    std::string getReachInfo();
+
+    std::string getSlowDownPercentajeInfo();
+
+    std::string getShotDamageInfo();
+
 protected:
-    int shotRatio;
-    int shotMsTimeGap;
-    bool isShooting;
-    int lastShotTime;
-    int shotDamage;
-    double slowDownPercentaje;
-    int experiencePoints;
+    int range = 0;
+    int reach = 0;
+    int shotMsTimeGap = 0;
+    bool isShooting = 0;
+    int lastShotTime = 0;
+    int shotDamage = 0;
+    double slowDownPercentaje = 0.0;
+    int experiencePoints = 0;
 
 
     int levelRange = 0;

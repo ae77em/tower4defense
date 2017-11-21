@@ -610,18 +610,21 @@ std::string MessageFactory::getUpgradeRequest(std::string matchName,
 }
 
 std::string
-MessageFactory::getTowerInfoNotification(int towerId, int damage, int range,
-                                         int reach, int slowDown) {
+MessageFactory::getTowerInfoNotification(int towerId,
+                                         std::string damageInfo,
+                                         std::string rangeInfo,
+                                         std::string reachInfo,
+                                         std::string slowDownInfo) {
     std::string toReturn;
     Json::Value root(Json::objectValue);
     Message message;
 
     root[OPERATION_KEY] = SERVER_NOTIFICATION_TOWER_INFO;
     root[TOWER_ID_KEY] = towerId;
-    root["damage"] = damage;
-    root["range"] = range;
-    root["reach"] = reach;
-    root["slowDown"] = slowDown;
+    root["damage"] = damageInfo;
+    root["range"] = rangeInfo;
+    root["reach"] = reachInfo;
+    root["slowDown"] = slowDownInfo;
 
     message.setData(root);
 

@@ -7,11 +7,12 @@ ActorTower::ActorTower() {
 }
 
 void ActorTower::initialize() {
-    shotRatio = 2;
+    range = 2;
+    reach = 1;
     shotDamage = 50;
     shotMsTimeGap = 3000; //miliseconds
     slowDownPercentaje = 0.0;
-    collisionCircle.r = (CARTESIAN_TILE_WIDTH / 2) * shotRatio;
+    collisionCircle.r = (CARTESIAN_TILE_WIDTH / 2) * range;
 }
 
 void ActorTower::live(){ }
@@ -45,23 +46,11 @@ int ActorTower::getExperiencePoints() {
 }
 
 std::string ActorTower::getClass() {
-    return std::__cxx11::string();
-}
-
-int ActorTower::getXPosition() {
-    return 0;
-}
-
-int ActorTower::getYPosition() {
-    return 0;
-}
-
-int ActorTower::getEnergy() {
-    return 0;
+    return "ActorTower";
 }
 
 int ActorTower::getId() {
-    return 0;
+    return id;
 }
 
 bool ActorTower::itIsShooting() {
@@ -108,7 +97,7 @@ void ActorTower::shootTo(ActorEnemy *pEnemy) {
 }
 
 void ActorTower::doShootTo(ActorEnemy *pEnemy) {
-    experiencePoints += pEnemy->receiveDamage(shotDamage);
+    sumExperiencePoints(pEnemy->receiveDamage(shotDamage));
 }
 
 void ActorTower::setPosition(int x, int y) {
@@ -128,5 +117,29 @@ void ActorTower::setSlowDownPercentaje(double perc) {
 
 ActorTower::ActorTower(int id) {
     this->id = id;
+}
+
+int ActorTower::getRange() {
+    return range;
+}
+
+int ActorTower::getReach() {
+    return 0;
+}
+
+std::string ActorTower::getRangeInfo() {
+    return std::to_string(range);
+}
+
+std::string ActorTower::getReachInfo() {
+    return std::to_string(reach);
+}
+
+std::string ActorTower::getSlowDownPercentajeInfo() {
+    return std::to_string(slowDownPercentaje);
+}
+
+std::string ActorTower::getShotDamageInfo() {
+    return std::to_string(shotDamage);
 }
 
