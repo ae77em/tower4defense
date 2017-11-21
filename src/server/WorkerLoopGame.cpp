@@ -12,6 +12,7 @@
 #include "game-actors/towers/ActorTowerAir.h"
 #include "game-actors/towers/ActorTowerEarth.h"
 #include "../client/GamePlayWindow.h"
+#include "game-actions/GameActionPutTower.h"
 
 #include <iostream>
 #include <chrono>
@@ -86,14 +87,14 @@ void WorkerLoopGame::run() {
         /* Limpio la lista para no ejecutar request viejos. */
         actionsGame.clear();
 
-        /* Poco menos de 60 fps. Lo dejo así para darle tiempo a los request
-         * de los usuarios a impactarse de forma relativamente instantánea. */
+        /* Aproximadamente 30 fps. Lo dejamos así para darle tiempo a los
+         * request de los usuarios a impactarse de forma relativamente
+         * instantánea. */
         std::this_thread::sleep_for(std::chrono::milliseconds(33));
     }
 }
 
-bool WorkerLoopGame::actionsSuccessfullAttended(
-        std::list<GameAction *> &actionsGame) {
+bool WorkerLoopGame::actionsSuccessfullAttended(std::list<GameAction *> &actionsGame) {
     bool actionSuccessful = true;
     mutexActions.lock();
     //GRONCHADA PARA REFACTORIZAR
@@ -101,23 +102,26 @@ bool WorkerLoopGame::actionsSuccessfullAttended(
 
     /* Estos son los requests enviados por el cliente, por ejemplo,
      * poner torre... */
-    for (GameAction *a : actions) {
-        std::cout << a->action << "  " << std::endl;
+    std::string actionName;
+    for (GameAction *action : actions) {
+        std::cout << action->getName() << "  " << std::endl;
 
-        if (a->action.compare("game-explotion") == 0) {
+        actionName = action->getName();
+
+        if (actionName == "game-explotion") {
             std::cout
                     << "WorkerLoopGame: salgo porque explote "
                     << std::endl;
             actionSuccessful = false;
             break;
-        } else if (a->action.compare(STR_PUT_TOWER) == 0) {
-            putTower(a);
-        } else if (a->action.compare(STR_GET_TOWER_INFO) == 0) {
+        } else if (actionName == STR_PUT_TOWER) {
+            putTower(dynamic_cast<GameActionPutTower *>(action));
+        } else if (actionName == STR_GET_TOWER_INFO) {
             // get tower info
-        } else if (a->action.compare(STR_UPGRADE_TOWER) == 0) {
+        } else if (actionName == STR_UPGRADE_TOWER) {
             // get upgrade tower
         }
-        actionsGame.push_back(a);
+        actionsGame.push_back(action);
     }
 
     actions.clear();
@@ -128,6 +132,7 @@ bool WorkerLoopGame::actionsSuccessfullAttended(
 }
 
 void WorkerLoopGame::buildGameContext() {
+    /* HAY QUE LEVANTAR LAS HORDAS DEL ARCHIVO */
     timeBetweenHordeCreation = 5000; //milisegundos
     timeLastHordeCreation = 0;
 
@@ -160,6 +165,8 @@ void WorkerLoopGame::setTimeCreationHorde() {
 }
 
 void WorkerLoopGame::createHordeAndNotify() {
+    /* HAY QUE LEVANTAR LAS HORDAS DEL ARCHIVO */
+
     setTimeCreationHorde();
 
     time_t now;
@@ -187,8 +194,8 @@ void WorkerLoopGame::createHordeAndNotify() {
     ++hordeId;
 }
 
-void WorkerLoopGame::putTower(GameAction *pAction) {
-    int type = pAction->typeOfTower;
+void WorkerLoopGame::putTower(GameActionPutTower *pAction) {
+    int type = pAction->getTypeOfTower();
 
     ActorTower *tower = nullptr;
 
@@ -213,9 +220,9 @@ void WorkerLoopGame::putTower(GameAction *pAction) {
         }
     }
 
-    int actualX = pAction->x * CARTESIAN_TILE_WIDTH;
-    int actualY = pAction->y * CARTESIAN_TILE_HEIGHT;
-    tower->setPosition(pAction->x, pAction->y);
+    int actualX = pAction->getX() * CARTESIAN_TILE_WIDTH;
+    int actualY = pAction->getY() * CARTESIAN_TILE_HEIGHT;
+    tower->setPosition(pAction->getX(), pAction->getY());
     towers.push_back(tower);
 
     std::string statusGame =
@@ -236,47 +243,3 @@ void WorkerLoopGame::notifyMatchLoose() {
         it->second->sendData(statusGame);
     }
 }
-
-
-/* ESTA ES LÓGICA DE NEGOCIO, Y VA EN EL SERVER...
-     * bool towerIsShooting =
-            enemy->itIsAlive() &&
-            enemy->getCollisionCircle().hasCollisionWith(tower.getCollisionCircle());
-    if (towerIsShooting) {
-        tower.setIsShooting(true);
-        int shotDamage = tower.getShotDamage();
-        enemy->quitLifePoints(shotDamage);
-        tower.sumExperiencePoints(shotDamage);
-        std::cout << "la torre tiene " << tower.getExperiencePoints() << " de experiencia."
-                  << std::endl;
-    } else {
-        tower.setIsShooting(false);
-    }
-
-    if (enemy->itIsAlive()) {
-        enemy->setDirection(dir);
-        enemy->moveTo(point.x, point.y);
-    } else if (towerIsShooting) {
-        tower.sumExperiencePoints(enemy->getBonus());
-        std::cout << "la torre sumó bonus de " << enemy->getBonus() << " puntos de experiencia."
-                  << std::endl;
-
-        std::vector<Enemy*> enemies = static_cast<std::vector<Enemy *> &&>(horde->getEnemies());
-        for (Enemy *enemy1 : enemies) {
-            if (enemy1->itIsAlive()) {
-                gameWon = false;
-                break;
-            } else {
-                gameWon = true;
-            }
-        }
-    }
-
-    if (enemy->itIsAlive()) {
-        if (point.x >= finalPoint.x && point.y >= finalPoint.y) {
-            gameLoose = true;
-        }
-    }
-
-    std::cout << "la torre tiene " << tower.getExperiencePoints() << " de experiencia." << std::endl;
-     */

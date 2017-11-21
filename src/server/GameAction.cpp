@@ -1,4 +1,9 @@
 #include "GameAction.h"
 
-GameAction::GameAction(const char a[10], int ax, int ay, int type)
-        : action(a), x(ax), y(ay), typeOfTower(type) { }
+GameAction::GameAction(std::string n) : name(n) { }
+
+GameAction::~GameAction() { }
+
+const std::string &GameAction::getName() const {
+    return name;
+}

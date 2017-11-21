@@ -3,6 +3,7 @@
 #include "../common/Protocol.h"
 #include "../common/MessageFactory.h"
 #include "../common/model/Map.h"
+#include "game-actions/GameActionPutTower.h"
 
 #include <algorithm>
 #include <utility>
@@ -124,7 +125,7 @@ int ServerGame::getAmountPlayers() {
 
 void ServerGame::kill() {
     mutexActionsGame.lock();
-    actions.push_back(new GameAction("game-explotion", 0, 0, 0));
+    actions.push_back(new GameAction("game-explotion"));
     mutexActionsGame.unlock();
 
 
@@ -144,20 +145,9 @@ void ServerGame::markTile(int x, int y){
 }
 
 void ServerGame::putTower(int typeOfTower, int x, int y) {
-    std::string req = MessageFactory::getPutTowerGameRequest(typeOfTower, x, y);
-    Message message;
-    message.deserialize(req);
-
     mutexActionsGame.lock();
-    actions.push_back(new GameAction("put-tower", x, y, typeOfTower));
+    actions.push_back(new GameActionPutTower(STR_PUT_TOWER, typeOfTower, x, y));
     mutexActionsGame.unlock();
-
-    /** HASTA TENER DEFINIDO EL ACCESO A EL LOOP DE JUEGO CON LA INFO ***//*
-    req = MessageFactory::getPutTowerNotification(typeOfTower, x, y);
-    mutexPlayers.lock();
-    notifyAll(req);
-    mutexPlayers.unlock();
-    *//*****/
 }
 
 void ServerGame::castSpell(int x, int y) {
@@ -166,7 +156,7 @@ void ServerGame::castSpell(int x, int y) {
     message.deserialize(req);
 
     mutexActionsGame.lock();
-    actions.push_back(new GameAction("castSpell", 0, 0, 0));
+    actions.push_back(new GameAction("castSpell"));
     mutexActionsGame.unlock();
 
     /** HASTA TENER DEFINIDO EL ACCESO A EL LOOP DE JUEGO CON LA INFO ***/
@@ -183,7 +173,7 @@ void ServerGame::upgradeTower(int towerId, int upgradeType) {
     message.deserialize(req);
 
     mutexActionsGame.lock();
-    actions.push_back(new GameAction("upgradeTower", 0, 0, 0));
+    actions.push_back(new GameAction("upgradeTower"));
     mutexActionsGame.unlock();
 
     /** HASTA TENER DEFINIDO EL ACCESO A EL LOOP DE JUEGO CON LA INFO ***/
@@ -200,7 +190,7 @@ void ServerGame::towerInfo(int clientId, int towerId) {
 
 
     mutexActionsGame.lock();
-    actions.push_back(new GameAction("towerInfo", 0, 0, 0));
+    actions.push_back(new GameAction("towerInfo"));
     mutexActionsGame.unlock();
 
     /** HASTA TENER DEFINIDO EL ACCESO A EL LOOP DE JUEGO CON LA INFO ***/

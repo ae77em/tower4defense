@@ -321,7 +321,8 @@ MessageFactory::getAddPlayerToMatchNotification(std::string matchName,
 std::string
 MessageFactory::getAddPlayerAndRunMatchNotification(std::string gameID,
                                                     int clientId) {
-    return std::__cxx11::string();
+    // TODO VER DE TERMINAR ESTO...SI HAY TIEMPO
+    return std::string();
 }
 
 int MessageFactory::getClientId(Message &request) {

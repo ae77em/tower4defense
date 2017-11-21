@@ -1,12 +1,6 @@
 #ifndef TP4_TOWERDEFENSE_LOOPGAME_H
 #define TP4_TOWERDEFENSE_LOOPGAME_H
 
-static const char *const STR_PUT_TOWER = "put-tower";
-
-static const char *const STR_GET_TOWER_INFO = "get-tower-info";
-
-static const char *const STR_UPGRADE_TOWER = "upgrade-tower";
-
 #include "../common/Thread.h"
 #include "ServerPlayer.h"
 #include "GameActor.h"
@@ -15,10 +9,15 @@ static const char *const STR_UPGRADE_TOWER = "upgrade-tower";
 #include "game-actors/enemies/Horde.h"
 #include "game-actors/towers/ActorTower.h"
 #include "../common/model/Map.h"
+#include "game-actions/GameActionPutTower.h"
 #include <map>
 #include <string>
 #include <list>
 #include <vector>
+
+static const std::string STR_PUT_TOWER = "put-tower";
+static const std::string STR_GET_TOWER_INFO = "get-tower-info";
+static const std::string STR_UPGRADE_TOWER = "upgrade-tower";
 
 class WorkerLoopGame : public Thread{
 private:
@@ -52,7 +51,7 @@ public:
 
     void setTimeCreationHorde();
 
-    void putTower(GameAction *pAction);
+    void putTower(GameActionPutTower *pAction);
 
     void notifyMatchLoose();
 

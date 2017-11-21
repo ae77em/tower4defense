@@ -5,13 +5,15 @@
 
 class GameAction {
 public:
-    GameAction(const char a[10], int i, int i1, int i2);
-    ~GameAction();
+    GameAction(std::string n);
+    virtual ~GameAction();
 
-    std::string action;
-    int x;
-    int y;
-    int typeOfTower;
+private:
+    std::string name;
+public:
+    const std::string &getName() const;
+
+    void setAction(const std::string &action);
 };
 
 #endif //TP4_TOWERDEFENSE_ACTIONGAME_H

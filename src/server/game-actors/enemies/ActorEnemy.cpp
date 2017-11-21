@@ -41,7 +41,7 @@ void ActorEnemy::advance() {
         ++currentPathPosition;
         isVisible = false;
     }
-        // El enemigo avanza en el camino hasta que muere o llega al final.
+    // El enemigo avanza en el camino hasta que muere o llega al final.
     else if (currentPathPosition >= 0 &&
              currentPathPosition < (int) path.size()) {
         if (xPositionIntoTile > CARTESIAN_TILE_WIDTH ||
@@ -80,8 +80,8 @@ void ActorEnemy::advance() {
             xPosition = path.at(currentPathPosition).x + xPositionIntoTile;
             yPosition = path.at(currentPathPosition).y + yPositionIntoTile;
 
-            collisionCircle.x = xPosition + (CARTESIAN_TILE_WIDTH * 0.5);
-            collisionCircle.y = yPosition + (CARTESIAN_TILE_HEIGHT * 0.5);
+            collisionCircle.x = xPosition + int(CARTESIAN_TILE_WIDTH * 0.5);
+            collisionCircle.y = yPosition + int(CARTESIAN_TILE_HEIGHT * 0.5);
             isVisible = true;
         } else { // El enemigo llegó al final...perdimos la partida.
             isVisible = false;
