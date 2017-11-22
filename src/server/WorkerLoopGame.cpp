@@ -153,9 +153,8 @@ void WorkerLoopGame::createHordeAndNotify() {
 
     /* Agregar nueva horda al juego */
     //FIXME: siempre crea el mismo tipo de horda
-    //FIXME: todas las hordas tienen el mismo camino
     Horde *h = Horde::createHorde(0, map.getHordes()[hordeId].second.size(),
-            map.getPaths()[0]);
+            map.getPaths()[map.getHordes()[hordeId].first]);
     hordes.insert(std::make_pair(hordeId, h));
 
     /* Notificar a los clientes sobre la nueva horda */
