@@ -32,12 +32,6 @@ private:
 
     int timeLastHordeCreation, hordeId;
 
-public:
-    WorkerLoopGame(std::map<int,ServerPlayer*>& p,
-                   std::list<GameAction*>& a,
-                   std::mutex& m,
-                   model::Map map);
-
     void run();
 
     std::string getGameStatus();
@@ -53,6 +47,12 @@ public:
     bool actionsSuccessfullAttended(std::list<GameAction *> &actionsGame);
 
     void sendTowerInfo(GameActionGetTowerInfo *pInfo);
+
+public:
+    WorkerLoopGame(std::map<int,ServerPlayer*>& p,
+                   std::list<GameAction*>& a,
+                   std::mutex& m,
+                   model::Map map);
 };
 
 
