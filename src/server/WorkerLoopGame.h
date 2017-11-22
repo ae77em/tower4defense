@@ -32,7 +32,6 @@ private:
 
     int timeBetweenHordeCreation, timeLastHordeCreation, hordeId;
     std::vector<int> hordeType;
-    std::vector<std::vector<Point>> paths;
 
 public:
     WorkerLoopGame(std::map<int,ServerPlayer*>& p,

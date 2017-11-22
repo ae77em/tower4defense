@@ -141,8 +141,6 @@ void WorkerLoopGame::buildGameContext() {
     hordeType.push_back((int) ENEMY_GOATMAN);
     hordeType.push_back((int) ENEMY_SPECTRE);
 
-    paths = map.getPaths();
-
     hordeId = 0;
 }
 
@@ -176,9 +174,9 @@ void WorkerLoopGame::createHordeAndNotify() {
     unsigned hordeIndex = now % hordeType.size();
     int nextHordeType = hordeType.at(hordeIndex);
 
-    unsigned pathIndex = now % paths.size();
-    std::vector<Point> path = static_cast<std::vector<Point> &&>(paths.at(
-            pathIndex));
+    unsigned pathIndex = now % map.getPaths().size();
+    std::vector<Point> path = static_cast<std::vector<Point> &&>(
+            map.getPaths().at(pathIndex));
 
     Horde *h = Horde::createHorde(nextHordeType, 3, path);
 
