@@ -5,7 +5,9 @@
 #include <string>
 #include <vector>
 
-ActorEnemy::ActorEnemy() {}
+ActorEnemy::ActorEnemy() {
+    collisionCircle.r = CARTESIAN_TILE_HEIGHT * 0.5;
+}
 
 ActorEnemy::~ActorEnemy() {}
 
@@ -25,7 +27,7 @@ void ActorEnemy::setDirection(int currDir) {
     currentDirection = currDir;
 }
 
-int ActorEnemy::getCurrentPosition() const {
+int ActorEnemy::getCurrentPathPosition() const {
     return currentPathPosition;
 }
 

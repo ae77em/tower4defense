@@ -34,7 +34,7 @@ public:
 
     void setCurrentPoint(const Point &currentPoint);
 
-    int getCurrentPosition() const;
+    int getCurrentPathPosition() const;
 
     void setCurrentPathPosition(int currentPosition);
 

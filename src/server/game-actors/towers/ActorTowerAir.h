@@ -6,9 +6,8 @@
 
 class ActorTowerAir : public ActorTower {
 public:
-    ActorTowerAir(int id);
-
-    void initialize();
+    explicit ActorTowerAir(int id);
+    ~ActorTowerAir();
 
     int getShotDamage(ActorEnemy enemy);
 

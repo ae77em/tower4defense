@@ -2,13 +2,14 @@
 #include "../../../sdl/Constants.h"
 
 ActorTowerWater::ActorTowerWater(int id) : ActorTower(id) {
-    initialize();
+    range = 3;
+    reach = 0;
+    shotDamage = 4;
+    shotMsTimeGap = 3;
+    isShooting = false;
+    lastShotTime = 0;
+    slowDownPercentaje = 0.25;
+    experiencePoints = 0;
 }
 
-void ActorTowerWater::initialize() {
-    range = 3;
-    shotDamage = 6;
-    shotMsTimeGap = 3000; //miliseconds
-    slowDownPercentaje = 0.0;
-    collisionCircle.r = (CARTESIAN_TILE_WIDTH / 2) * range;
-}
+ActorTowerWater::~ActorTowerWater() { }

@@ -7,8 +7,7 @@
 class ActorTowerFire : public ActorTower {
 public:
     ActorTowerFire(int id);
-
-    void initialize();
+    ~ActorTowerFire();
 };
 
 

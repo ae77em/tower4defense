@@ -6,9 +6,8 @@
 
 class ActorTowerWater : public ActorTower {
 public:
-    ActorTowerWater(int id);
-
-    void initialize();
+    explicit ActorTowerWater(int id);
+    ~ActorTowerWater();
 };
 
 

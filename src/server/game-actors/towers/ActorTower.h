@@ -13,7 +13,7 @@ class ActorTower  {
 public:
     ActorTower();
 
-    ActorTower(int id);
+    explicit ActorTower(int id);
 
     virtual ~ActorTower();
 
@@ -53,8 +53,6 @@ public:
 
     void setPosition(int x, int y);
 
-    virtual void initialize();
-
     void shootTo(ActorEnemy *pEnemy);
 
     void doShootTo(ActorEnemy *pEnemy);
@@ -73,26 +71,33 @@ public:
     std::string getShotDamageInfo();
 
 protected:
-    int range = 0;
-    int reach = 0;
-    int shotMsTimeGap = 0;
-    bool isShooting = 0;
-    int lastShotTime = 0;
-    int shotDamage = 0;
-    double slowDownPercentaje = 0.0;
-    int experiencePoints = 0;
+    int range;
+    int reach;
+    int shotMsTimeGap;
+    bool isShooting;
+    int lastShotTime;
+    int shotDamage;
+    double slowDownPercentaje;
+    int experiencePoints;
 
-
-    int levelRange = 0;
-    int levelDamage = 0;
-    int levelReach = 0;
-    int levelSlowdown = 0;
+    int levelRange;
+    int levelDamage;
+    int levelReach;
+    int levelSlowdown;
 
     Circle collisionCircle;
     Point currentPoint = Point(0, 0);
-    ActorRectT rect;
+    //ActorRectT rect;
 
     int id;
+
+    bool isReadyToShoot() const;
+
+    void updateLastShotTime();
+
+    int getCollisionCircleRadio();
+
+    void initialize();
 };
 
 

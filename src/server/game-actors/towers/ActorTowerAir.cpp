@@ -1,13 +1,18 @@
 #include "ActorTowerAir.h"
 #include "../../../sdl/Constants.h"
 
-void ActorTowerAir::initialize() {
+ActorTowerAir::ActorTowerAir(int id) : ActorTower(id) {
     range = 5;
+    reach = 0;
     shotDamage = 2;
-    shotMsTimeGap = 5000; //miliseconds
+    shotMsTimeGap = 5;
+    isShooting = false;
+    lastShotTime = 0;
     slowDownPercentaje = 0.0;
-    collisionCircle.r = (CARTESIAN_TILE_WIDTH / 2) * range;
+    experiencePoints = 0;
 }
+
+ActorTowerAir::~ActorTowerAir() { }
 
 int ActorTowerAir::getShotDamage(ActorEnemy enemy) {
     if (enemy.itIsAir()){
@@ -16,7 +21,3 @@ int ActorTowerAir::getShotDamage(ActorEnemy enemy) {
         return 2 + 2 * levelDamage;
     }
 }
-
-ActorTowerAir::ActorTowerAir(int id) : ActorTower(id) { }
-
-

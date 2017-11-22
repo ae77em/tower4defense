@@ -1,12 +1,15 @@
 #include "ActorTowerEarth.h"
 #include "../../../sdl/Constants.h"
 
-ActorTowerEarth::ActorTowerEarth(int id) : ActorTower(id) { }
-
-void ActorTowerEarth::initialize() {
+ActorTowerEarth::ActorTowerEarth(int id) : ActorTower(id) {
     range = 2;
+    reach = 0;
     shotDamage = 20;
-    shotMsTimeGap = 3000; //miliseconds
+    shotMsTimeGap = 3;
+    isShooting = false;
+    lastShotTime = 0;
     slowDownPercentaje = 0.0;
-    collisionCircle.r = (CARTESIAN_TILE_WIDTH / 2) * range;
+    experiencePoints = 0;
 }
+
+ActorTowerEarth::~ActorTowerEarth() { }
