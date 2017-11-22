@@ -155,20 +155,14 @@ bool WorkerLoopGame::isTimeToCreateHorde() {
     return (now - timeLastHordeCreation) > map.getDelay();
 }
 
-void WorkerLoopGame::setTimeCreationHorde() {
-    time_t now;
-    time(&now);
-
-    timeLastHordeCreation = now;
-}
-
 void WorkerLoopGame::createHordeAndNotify() {
     /* HAY QUE LEVANTAR LAS HORDAS DEL ARCHIVO */
 
-    setTimeCreationHorde();
-
     time_t now;
     time(&now);
+
+    /* Actualizar el momento de creacion de ultima horda */
+    timeLastHordeCreation = now;
 
     unsigned hordeIndex = now % hordeType.size();
     int nextHordeType = hordeType.at(hordeIndex);

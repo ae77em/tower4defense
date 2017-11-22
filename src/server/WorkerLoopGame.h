@@ -49,8 +49,6 @@ public:
 
     void createHordeAndNotify();
 
-    void setTimeCreationHorde();
-
     void putTower(GameActionPutTower *pAction);
 
     void notifyMatchLoose();
