@@ -122,7 +122,7 @@ void ActorTower::attack(Horde *horde) {
 
 void ActorTower::shootTo(ActorEnemy *pEnemy) {
     // si puedo disparar le disparo, esto es, le saco toda la vida que puedo
-    if (pEnemy->itIsAlive()) {
+    if (pEnemy->getIsAlive()) {
         doShootTo(pEnemy);
     }
 }

@@ -159,7 +159,7 @@ Circle &ActorEnemy::getCollisionCircle() {
     return collisionCircle;
 }
 
-bool ActorEnemy::itIsAlive() {
+bool ActorEnemy::getIsAlive() {
     return isAlive;
 }
 

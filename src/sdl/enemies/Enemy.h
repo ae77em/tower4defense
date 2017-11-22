@@ -75,7 +75,7 @@ public:
 
     void renderLifeBar(int x, int y);
 
-    bool itIsAlive()const;
+    bool getIsAlive()const;
 
     /*
      * Modifica la textura que se utilizará para mostrar el enemigo.
@@ -124,6 +124,8 @@ public:
     Point getPoint();
 
     bool itIsVisible();
+
+    void setIsAlive(bool isAlive);
 
     void setIsVisible(bool isVisible);
 
@@ -180,6 +182,7 @@ protected:
 
     /* METHODS */
     virtual void initializeSpritesData();
+
 };
 
 

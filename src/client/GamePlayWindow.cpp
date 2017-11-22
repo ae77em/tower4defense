@@ -551,7 +551,8 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
                     int dir = MessageFactory::getDirection(aMessage);
                     int enemyId = request.getAsInt(ENEMY_ID_KEY);
                     int hordeId = request.getAsInt(HORDE_ID_KEY);
-                    bool isVisible = request.getAsBool(IS_VISIBLE_KEY);
+                    //bool isVisible = request.getAsBool(IS_VISIBLE_KEY);
+                    bool isAlive = request.getAsBool(IS_ALIVE_KEY);
                     double energyPercentaje =
                             request.getAsDouble(ENERGY_PERCENTAJE_KEY);
 
@@ -562,8 +563,9 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
                         /* El dato que me llega es la posición relativa al
                          * escenario  de juego, no las coordenadas.
                          * */
+                        enemy->setIsAlive(isAlive);
                         enemy->moveTo(scenarioPoint.x, scenarioPoint.y);
-                        enemy->setIsVisible(isVisible);
+                        //enemy->setIsVisible(isVisible);
                         enemy->setEnergyPercentaje(energyPercentaje);
                     } catch (...) {
                         std::cerr << "No es posible mover el enemigo "

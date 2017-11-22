@@ -58,6 +58,8 @@ public:
     void sendTowerInfo(GameActionGetTowerInfo *pInfo);
 
     void notifyMatchWin();
+
+    bool allHordesWereCreatedYet();
 };
 
 
