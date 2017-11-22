@@ -134,7 +134,6 @@ bool WorkerLoopGame::actionsSuccessfullAttended(std::list<GameAction *> &actions
 
 void WorkerLoopGame::buildGameContext() {
     /* HAY QUE LEVANTAR LAS HORDAS DEL ARCHIVO */
-    timeBetweenHordeCreation = 5000; //milisegundos
     timeLastHordeCreation = 0;
 
     hordeType.push_back((int) ENEMY_ZOMBIE);
@@ -153,7 +152,7 @@ bool WorkerLoopGame::isTimeToCreateHorde() {
     time_t now;
     time(&now);
 
-    return (now - timeLastHordeCreation) > timeBetweenHordeCreation;
+    return (now - timeLastHordeCreation) > map.getDelay();
 }
 
 void WorkerLoopGame::setTimeCreationHorde() {

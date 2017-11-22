@@ -30,7 +30,7 @@ private:
     std::map<int, Horde*> hordes;
     std::vector<ActorTower*> towers;
 
-    int timeBetweenHordeCreation, timeLastHordeCreation, hordeId;
+    int timeLastHordeCreation, hordeId;
     std::vector<int> hordeType;
 
 public:
