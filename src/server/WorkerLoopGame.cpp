@@ -29,7 +29,7 @@
 WorkerLoopGame::WorkerLoopGame(std::map<int, ServerPlayer *> &p,
                                std::list<GameAction *> &a,
                                std::mutex &m,
-                               model::Map &mp) :
+                               model::Map mp) :
         players(p),
         actions(a),
         mutexActions(m),
@@ -151,14 +151,11 @@ bool WorkerLoopGame::actionsSuccessfullAttended(std::list<GameAction *> &actions
 
 void WorkerLoopGame::buildGameContext() {
     /* HAY QUE LEVANTAR LAS HORDAS DEL ARCHIVO */
-    timeBetweenHordeCreation = 5; //milisegundos
     timeLastHordeCreation = 0;
 
     hordeType.push_back((int) ENEMY_ZOMBIE);
     //hordeType.push_back((int) ENEMY_GOATMAN);
     //hordeType.push_back((int) ENEMY_SPECTRE);
-
-    paths = map.getPaths();
 
     hordeId = 0;
 }
@@ -172,30 +169,24 @@ bool WorkerLoopGame::isTimeToCreateHorde() {
     time_t now;
     time(&now);
 
-    return (now - timeLastHordeCreation) > timeBetweenHordeCreation;
-}
-
-void WorkerLoopGame::setTimeCreationHorde() {
-    time_t now;
-    time(&now);
-
-    timeLastHordeCreation = now;
+    return (now - timeLastHordeCreation) > map.getDelay();
 }
 
 void WorkerLoopGame::createHordeAndNotify() {
     /* HAY QUE LEVANTAR LAS HORDAS DEL ARCHIVO */
 
-    setTimeCreationHorde();
-
     time_t now;
     time(&now);
+
+    /* Actualizar el momento de creacion de ultima horda */
+    timeLastHordeCreation = now;
 
     unsigned hordeIndex = now % hordeType.size();
     int nextHordeType = hordeType.at(hordeIndex);
 
-    unsigned pathIndex = now % paths.size();
-    std::vector<Point> path = static_cast<std::vector<Point> &&>(paths.at(
-            pathIndex));
+    unsigned pathIndex = now % map.getPaths().size();
+    std::vector<Point> path = static_cast<std::vector<Point> &&>(
+            map.getPaths().at(pathIndex));
 
     Horde *h = Horde::createHorde(nextHordeType, 3, path);
 

@@ -94,20 +94,17 @@ void Server::addPlayerToMatch(std::string nameMatch, ServerPlayer *sp) {
     matches.at(nameMatch)->addPlayer(sp);
 }
 
-//crea el juego y retorna el id del mismo, el id es el nombre del match...
+// Crea el juego y lo agrega a la lista de partidas en curso
 bool Server::createMatch(std::string nameMatch, std::string mapName) {
     model::Map aMap = maps[mapName];
 
-    if (matches.find(nameMatch) == matches.end()) {
-        matches.insert(
-                std::pair<std::string, ServerGame *>(nameMatch,
-                                                     new ServerGame(
-                                                             mutexPlayers,
-                                                             aMap)
-                ));
-        return true;
-    }
-    return false;
+    // Si ya existe un juego con el mismo nombre
+    if (matches.find(nameMatch) != matches.end()) return false;
+
+    matches.insert(std::pair<std::string, ServerGame*>(
+            nameMatch,
+            new ServerGame(mutexPlayers, aMap)));
+    return true;
 }
 
 void Server::createAndRunPlayer(Socket *s) {
