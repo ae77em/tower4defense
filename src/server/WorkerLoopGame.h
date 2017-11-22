@@ -25,7 +25,7 @@ private:
     std::map<int,ServerPlayer*>& players;
     std::list<GameAction*>& actions;
     std::mutex& mutexActions;
-    model::Map& map;
+    model::Map map;
 
     std::map<int, Horde*> hordes;
     std::vector<ActorTower*> towers;
@@ -38,7 +38,7 @@ public:
     WorkerLoopGame(std::map<int,ServerPlayer*>& p,
                    std::list<GameAction*>& a,
                    std::mutex& m,
-                   model::Map& map);
+                   model::Map map);
 
     void run();
 

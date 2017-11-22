@@ -29,7 +29,7 @@
 WorkerLoopGame::WorkerLoopGame(std::map<int, ServerPlayer *> &p,
                                std::list<GameAction *> &a,
                                std::mutex &m,
-                               model::Map &mp) :
+                               model::Map mp) :
         players(p),
         actions(a),
         mutexActions(m),
