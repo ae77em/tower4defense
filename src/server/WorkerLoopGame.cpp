@@ -153,13 +153,14 @@ void WorkerLoopGame::createHordeAndNotify() {
 
     /* Agregar nueva horda al juego */
     //FIXME: siempre crea el mismo tipo de horda
-    Horde *h = Horde::createHorde(0, map.getHordes()[hordeId].second.size(),
+    int horde_size = map.getHordes()[hordeId].second.size();
+    Horde *h = Horde::createHorde(0, horde_size,
             map.getPaths()[map.getHordes()[hordeId].first]);
     hordes.insert(std::make_pair(hordeId, h));
 
     /* Notificar a los clientes sobre la nueva horda */
     std::string statusGame = GameNotification::getNewHordeNotification(
-            hordeId, 0, 3);
+            hordeId, 0, horde_size);
     for (auto it = players.begin(); it != players.end(); ++it) {
         it->second->sendData(statusGame);
     }
