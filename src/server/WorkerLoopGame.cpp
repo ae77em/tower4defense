@@ -43,8 +43,6 @@ void WorkerLoopGame::run() {
     std::cout << "WorkerLoopGame: Hilo donde "
             "existe la partida arrancando" << std::endl;
 
-    std::string statusGame;
-
     std::list<GameAction *> actionsGame;
     std::map<int, Horde *>::iterator hordeIt;
 
@@ -82,12 +80,9 @@ void WorkerLoopGame::run() {
             }
         }
 
-        /* Obtengo el estado actual */
-        statusGame = getGameStatus();
-
         /* Notifico el estado del juego a todos los jugadores. */
         for (auto it = players.begin(); it != players.end(); ++it) {
-            it->second->sendData(statusGame);
+            it->second->sendData(getGameStatus());
         }
 
         /* Limpio la lista para no ejecutar request viejos. */
