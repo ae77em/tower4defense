@@ -24,8 +24,6 @@ Earth::Earth(int x, int y, SDL_Renderer *r, Texture &t)
     idleBox.w = SHOT_SPRITE_WIDTH;
     idleBox.h = SHOT_SPRITE_HEIGHT;
 
-    shiftColliders();
-
     isShooting = false;
 
     renderer = r;
@@ -38,8 +36,6 @@ Earth::~Earth(){}
 void Earth::setPosition(int x, int y) {
     idleBox.x = x;
     idleBox.y = y;
-
-    shiftColliders();
 }
 
 void Earth::setSprites() {
@@ -100,17 +96,6 @@ void Earth::renderShot(SDL_Rect &camera) {
     double isoy = screenPoint.y - camera.y - offset;
 
     texture.renderSprite(renderer, isox, isoy, &shotSprites[frameToDraw]);
-}
-
-void Earth::shiftColliders() {
-    // tanto el box de idle como el de disparo tienen las mismas dimensiones,
-    // así que es indistinto qué medida tomamos
-    collisionCircle.x = idleBox.x;
-    collisionCircle.y = idleBox.y;
-}
-
-Circle &Earth::getCollisionCircle() {
-    return collisionCircle;
 }
 
 Point Earth::getPoint() {

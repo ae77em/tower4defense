@@ -18,7 +18,7 @@ public:
     /*
      * Setea la posición de la torre en la pantalla.
      */
-    void setPosition(int x, int y);
+    virtual void setPosition(int x, int y);
 
     /*
      * Carga los sprites de la torre en un array.
@@ -46,10 +46,6 @@ public:
     const SDL_Rect &getIdleBox() const;
 
     Point getPoint();
-
-    void shiftColliders();
-
-    Circle &getCollisionCircle();
 
     void setIsShooting(bool isShooting);
 
@@ -89,7 +85,6 @@ protected:
     int shotStartY = 287;
 
     Point currentPoint;
-    Circle collisionCircle;
 
     bool isShooting;
 };

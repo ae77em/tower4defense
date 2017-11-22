@@ -45,6 +45,7 @@ void WorkerLoopGame::run() {
     std::map<int, Horde *>::iterator hordeIt;
 
     bool gameFinish = false;
+    bool areEnemiesAlive = false;
     std::string cause = "";
 
     while (!gameFinish) {
@@ -74,6 +75,22 @@ void WorkerLoopGame::run() {
         for (auto tower : towers) {
             for (hordeIt = hordes.begin(); hordeIt != hordes.end(); ++hordeIt) {
                 tower->attack(hordeIt->second);
+            }
+        }
+
+        /* Valido que haya bichos vivos. */
+        for (hordeIt = hordes.begin(); hordeIt != hordes.end(); ++hordeIt) {
+            std::vector<ActorEnemy *> enemies = hordeIt->second->getEnemies();
+
+            for (auto enemy : enemies) {
+                if (enemy->itIsAlive()){
+                    areEnemiesAlive = true;
+                    break;
+                }
+            }
+            if (!areEnemiesAlive){
+                gameFinish = true;
+                notifyMatchWin();
             }
         }
 
@@ -134,12 +151,12 @@ bool WorkerLoopGame::actionsSuccessfullAttended(std::list<GameAction *> &actions
 
 void WorkerLoopGame::buildGameContext() {
     /* HAY QUE LEVANTAR LAS HORDAS DEL ARCHIVO */
-    timeBetweenHordeCreation = 5000; //milisegundos
+    timeBetweenHordeCreation = 5; //milisegundos
     timeLastHordeCreation = 0;
 
     hordeType.push_back((int) ENEMY_ZOMBIE);
-    hordeType.push_back((int) ENEMY_GOATMAN);
-    hordeType.push_back((int) ENEMY_SPECTRE);
+    //hordeType.push_back((int) ENEMY_GOATMAN);
+    //hordeType.push_back((int) ENEMY_SPECTRE);
 
     paths = map.getPaths();
 
@@ -237,9 +254,18 @@ void WorkerLoopGame::putTower(GameActionPutTower *pAction) {
     }
 }
 
+void WorkerLoopGame::notifyMatchWin() {
+    std::string statusGame =
+            MessageFactory::getMatchEndedNotification(GAME_STATUS_WON);
+    for (auto it = players.begin(); it != players.end(); ++it) {
+        it->second->sendData(statusGame);
+    }
+}
+
+
 void WorkerLoopGame::notifyMatchLoose() {
     std::string statusGame =
-            MessageFactory::getMatchEndedNotification(GAME_STATUS_LOOSE);
+            MessageFactory::getMatchEndedNotification(GAME_STATUS_LOST);
     for (auto it = players.begin(); it != players.end(); ++it) {
         it->second->sendData(statusGame);
     }
@@ -259,3 +285,4 @@ void WorkerLoopGame::sendTowerInfo(GameActionGetTowerInfo *pInfo) {
 
     players.at(clientId)->sendData(data);
 }
+

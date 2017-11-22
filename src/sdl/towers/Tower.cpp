@@ -22,8 +22,6 @@ Tower::Tower(int x, int y, SDL_Renderer *r, Texture &t)
     idleBox.w = SHOT_SPRITE_WIDTH;
     idleBox.h = SHOT_SPRITE_HEIGHT;
 
-    shiftColliders();
-
     isShooting = false;
 
     renderer = r;
@@ -36,8 +34,6 @@ Tower::~Tower(){}
 void Tower::setPosition(int x, int y) {
     idleBox.x = x;
     idleBox.y = y;
-
-    shiftColliders();
 }
 
 void Tower::setSprites() {
@@ -98,17 +94,6 @@ void Tower::renderShot(SDL_Rect &camera) {
     double isoy = screenPoint.y - camera.y - offset;
 
     texture.renderSprite(renderer, isox, isoy, &shotSprites[frameToDraw]);
-}
-
-void Tower::shiftColliders() {
-    // tanto el box de idle como el de disparo tienen las mismas dimensiones,
-    // así que es indistinto qué medida tomamos
-    collisionCircle.x = idleBox.x;
-    collisionCircle.y = idleBox.y;
-}
-
-Circle &Tower::getCollisionCircle() {
-    return collisionCircle;
 }
 
 Point Tower::getPoint() {

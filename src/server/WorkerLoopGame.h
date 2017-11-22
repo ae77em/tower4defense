@@ -59,6 +59,8 @@ public:
     bool actionsSuccessfullAttended(std::list<GameAction *> &actionsGame);
 
     void sendTowerInfo(GameActionGetTowerInfo *pInfo);
+
+    void notifyMatchWin();
 };
 
 

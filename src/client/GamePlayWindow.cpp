@@ -291,8 +291,8 @@ bool GamePlayWindow::setTiles() {
                 tileType = tileIdTranslator.at(tileSaved);
             }
 
-            Point pt(i,j);
-            if (pointIsInPaths(pt, paths)){
+            Point pt(i, j);
+            if (pointIsInPaths(pt, paths)) {
                 tileType = TILE_WAY;
             }
 
@@ -545,12 +545,9 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
                         MessageFactory::getMovementNotifications(message);
 
                 for (Message &aMessage : messages) {
-
                     Request request(aMessage);
 
                     Point scenarioPoint = MessageFactory::getPoint(aMessage);
-                    // no dibujo cosas fuera del escenario...
-                    //if (scenarioPoint.isPositive()) {
                     int dir = MessageFactory::getDirection(aMessage);
                     int enemyId = request.getAsInt(ENEMY_ID_KEY);
                     int hordeId = request.getAsInt(HORDE_ID_KEY);
@@ -562,6 +559,9 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
                         DrawableHorde horde = hordes.at(hordeId);
                         Enemy *enemy = horde.getEnemieAt(enemyId);
                         enemy->setDirection(dir);
+                        /* El dato que me llega es la posición relativa al
+                         * escenario  de juego, no las coordenadas.
+                         * */
                         enemy->moveTo(scenarioPoint.x, scenarioPoint.y);
                         enemy->setIsVisible(isVisible);
                         enemy->setEnergyPercentaje(energyPercentaje);
@@ -571,7 +571,6 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
                         std::cerr << " de la horda "
                                   << std::to_string(hordeId);
                     }
-                    //}
                 }
                 break;
             }
@@ -589,9 +588,11 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
                 break;
             }
             case SERVER_NOTIFICATION_PUT_TOWER: {
-                std::cout << "llego poner torre" << std::endl;
                 int towerId = request.getAsInt("towerId");
                 int towerType = request.getAsInt("towerType");
+                /* El dato que me llega es la posición relativa al
+                 * escenario  de juego, no las coordenadas.
+                 * */
                 int x = request.getAsInt("xCoord") / CARTESIAN_TILE_WIDTH;
                 int y = request.getAsInt("yCoord") / CARTESIAN_TILE_HEIGHT;
 
@@ -768,7 +769,7 @@ void GamePlayWindow::run() {
             //While application is running
             while (!quit) {
                 gameEnded = gameStatus != GAME_STATUS_UNDECIDED;
-                if (gameEnded){
+                if (gameEnded) {
                     if (gameEndedTime == 0) {
                         gameEndedTime = SDL_GetTicks();
                     } else if (SDL_GetTicks() - gameEndedTime > 3000) {
@@ -806,13 +807,7 @@ void GamePlayWindow::run() {
                 dot.render(dotTexture, camera, gRenderer);
 
                 loadAnimables();
-
-                Animable *anPtr = nullptr;
-                while (!animables.empty()) {
-                    anPtr = animables.top();
-                    anPtr->animate(camera);
-                    animables.pop();
-                }
+                animateAnimables();
 
                 // Muestro los botones de las torres que puedo poner
                 towerButtonsTexture.render(gRenderer, 1, 1);
@@ -826,15 +821,24 @@ void GamePlayWindow::run() {
 
         //Free resources and close SDL
         close();
-    }
+    }/*
 
-    server->shutdown(); // TODO ver si esto corresponde hacerlo acá...
+    server->shutdown(); // TODO ver si esto corresponde hacerlo acá...*/
+}
+
+void GamePlayWindow::animateAnimables() {
+    Animable *anPtr = nullptr;
+    while (!animables.empty()) {
+        anPtr = animables.top();
+        anPtr->animate(camera);
+        animables.pop();
+    }
 }
 
 void GamePlayWindow::renderMessages() {
     if (gameStatus == GAME_STATUS_WON) {
         renderText(camera, "Partida ganada...");
-    } else if (gameStatus == GAME_STATUS_LOOSE) {
+    } else if (gameStatus == GAME_STATUS_LOST) {
         renderText(camera, "Partida perdida...");
     }
 
@@ -854,9 +858,11 @@ void GamePlayWindow::renderMessages() {
     * para volver a mostrarlos bien.
     */
 void GamePlayWindow::loadAnimables() {
+    // limpio la cola de prioridad...
     animables = std::priority_queue<Animable *, std::vector<Animable *>,
             lessThanByPoint>();
 
+    // la cargo con torres...
     Tower *tp = nullptr;
     std::map<int, Tower *>::const_iterator tIt;
     for (tIt = towers.begin(); tIt != towers.end(); ++tIt) {
@@ -864,8 +870,8 @@ void GamePlayWindow::loadAnimables() {
         animables.push(tp);
     }
 
+    // la cargo con enemigos...
     std::map<int, DrawableHorde>::const_iterator hIt;
-    //Enemy *en = nullptr;
     for (hIt = hordes.begin(); hIt != hordes.end(); ++hIt) {
         DrawableHorde horde = hIt->second;
 
@@ -897,8 +903,6 @@ void GamePlayWindow::renderLevel() {
 }
 
 void GamePlayWindow::putTower(int id, int type, int x, int y) {
-    Point point(x, y);
-
     Tower *toPut = nullptr;
     switch (type) {
         case TOWER_AIR: {
@@ -925,7 +929,13 @@ void GamePlayWindow::putTower(int id, int type, int x, int y) {
     toPut->setSprites();
     towers.insert(std::make_pair(id, toPut));
 
+    /* Para ubicarlo en el array de tiles, tengo que obtener las coordenadas
+     * como si fuera el escaque de un tablero de ajedrez, sin tener en cuenta
+     * las dimensiones.
+     * */
+    Point point(x, y);
     setToTowerTile(point, toPut);
+    toPut->setPosition(x * CARTESIAN_TILE_WIDTH, y * CARTESIAN_TILE_HEIGHT);
 }
 
 void GamePlayWindow::addNewHorde(int hordeId, int enemyType, int amount) {
@@ -973,11 +983,11 @@ void GamePlayWindow::addNewHorde(int hordeId, int enemyType, int amount) {
 bool GamePlayWindow::pointIsInPaths(Point point,
                                     std::vector<std::vector<Point>> &vector) {
     bool isInPaths = false;
-    for (unsigned i = 0; i < vector.size(); ++i){
+    for (unsigned i = 0; i < vector.size(); ++i) {
         std::vector<Point> innerVector = vector.at(i);
-        for (unsigned j = 0; j < innerVector.size(); ++j){
+        for (unsigned j = 0; j < innerVector.size(); ++j) {
             if (point.x == innerVector.at(j).x
-                    && point.y == innerVector.at(j).y){
+                && point.y == innerVector.at(j).y) {
                 isInPaths = true;
                 break;
             }

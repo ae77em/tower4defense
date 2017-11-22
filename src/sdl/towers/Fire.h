@@ -42,10 +42,6 @@ public:
 
     Point getPoint();
 
-    void shiftColliders();
-
-    Circle &getCollisionCircle();
-
     void setIsShooting(bool isShooting);
 
 protected:

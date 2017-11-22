@@ -90,7 +90,6 @@ protected:
     int shotStartY = 18;
 
     Point currentPoint;
-    Circle collisionCircle;
 
     bool isShooting;
 };

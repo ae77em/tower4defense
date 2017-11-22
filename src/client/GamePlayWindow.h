@@ -14,7 +14,7 @@ static const int TIME_FOR_ENABLE_ACTION = 20000;
 enum GameStatus {
     GAME_STATUS_UNDECIDED = 0,
     GAME_STATUS_WON = 1,
-    GAME_STATUS_LOOSE = 2
+    GAME_STATUS_LOST = 2
 };
 
 #include "../common/Socket.h"
@@ -259,6 +259,8 @@ private:
         std::make_pair('i', TILE_ICE),
         std::make_pair('l', TILE_LAVA)
     };
+
+    void animateAnimables();
 };
 
 #endif //TP4_TOWERDEFENSE_GAME_H

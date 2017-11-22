@@ -73,7 +73,7 @@ public:
 protected:
     int range;
     int reach;
-    int shotMsTimeGap;
+    int shotSecondsGap;
     bool isShooting;
     int lastShotTime;
     int shotDamage;

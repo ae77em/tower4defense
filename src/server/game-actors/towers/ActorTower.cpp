@@ -16,7 +16,7 @@ ActorTower::ActorTower(int id) {
 void ActorTower::initialize() {
     range = 2;
     reach = 1;
-    shotMsTimeGap = 3;
+    shotSecondsGap = 3;
     isShooting = false;
     lastShotTime = 0;
     shotDamage = 50;
@@ -117,18 +117,12 @@ void ActorTower::attack(Horde *horde) {
                 isShooting = false;
             }
         }
-    } else {
-        /*time_t now;
-        time(&now);
-        unsigned secs = (shotMsTimeGap - (now - lastShotTime));
-        std::cout << "puedo disparar en " << std::to_string(secs) << std::endl;*/
     }
 }
 
 void ActorTower::shootTo(ActorEnemy *pEnemy) {
     // si puedo disparar le disparo, esto es, le saco toda la vida que puedo
     if (pEnemy->itIsAlive()) {
-        std::cout << "disparé..." << std::endl;
         doShootTo(pEnemy);
     }
 }
@@ -136,7 +130,7 @@ void ActorTower::shootTo(ActorEnemy *pEnemy) {
 bool ActorTower::isReadyToShoot() const {
     time_t now;
     time(&now);
-    return now - lastShotTime >= shotMsTimeGap;
+    return now - lastShotTime >= shotSecondsGap;
 }
 
 void ActorTower::doShootTo(ActorEnemy *pEnemy) {

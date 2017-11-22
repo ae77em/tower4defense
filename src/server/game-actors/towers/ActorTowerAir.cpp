@@ -5,7 +5,7 @@ ActorTowerAir::ActorTowerAir(int id) : ActorTower(id) {
     range = 5;
     reach = 0;
     shotDamage = 2;
-    shotMsTimeGap = 5;
+    shotSecondsGap = 5;
     isShooting = false;
     lastShotTime = 0;
     slowDownPercentaje = 0.0;
