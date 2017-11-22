@@ -52,8 +52,9 @@ void WorkerLoopGame::run() {
     std::string cause = "";
 
     while (!gameFinish) {
-
-        if (isTimeToCreateHorde()) {
+        /* Instanciar horda */
+        if ((unsigned)hordeId != map.getHordes().size()
+                && isTimeToCreateHorde()) {
             createHordeAndNotify();
         }
 
