@@ -33,7 +33,11 @@ WorkerLoopGame::WorkerLoopGame(std::map<int, ServerPlayer *> &p,
         players(p),
         actions(a),
         mutexActions(m),
-        map(mp) {}
+        map(mp),
+        hordes(),
+        towers(),
+        timeLastHordeCreation(0),
+        hordeId(0) {}
 
 void WorkerLoopGame::run() {
     std::cout << "WorkerLoopGame: Hilo donde "
@@ -132,17 +136,6 @@ bool WorkerLoopGame::actionsSuccessfullAttended(std::list<GameAction *> &actions
     return actionSuccessful;
 }
 
-void WorkerLoopGame::buildGameContext() {
-    /* HAY QUE LEVANTAR LAS HORDAS DEL ARCHIVO */
-    timeLastHordeCreation = 0;
-
-    hordeType.push_back((int) ENEMY_ZOMBIE);
-    hordeType.push_back((int) ENEMY_GOATMAN);
-    hordeType.push_back((int) ENEMY_SPECTRE);
-
-    hordeId = 0;
-}
-
 std::string WorkerLoopGame::getGameStatus() {
     //despues ver como parsear todos los actores
     return GameNotification::getStatusMatchNotification(hordes, towers);
@@ -156,29 +149,19 @@ bool WorkerLoopGame::isTimeToCreateHorde() {
 }
 
 void WorkerLoopGame::createHordeAndNotify() {
-    /* HAY QUE LEVANTAR LAS HORDAS DEL ARCHIVO */
-
     time_t now;
     time(&now);
 
     /* Actualizar el momento de creacion de ultima horda */
     timeLastHordeCreation = now;
 
-    unsigned hordeIndex = now % hordeType.size();
-    int nextHordeType = hordeType.at(hordeIndex);
-
-    unsigned pathIndex = now % map.getPaths().size();
-    std::vector<Point> path = static_cast<std::vector<Point> &&>(
-            map.getPaths().at(pathIndex));
-
-    Horde *h = Horde::createHorde(nextHordeType, 3, path);
-
+    /* Agregar nueva horda al juego */
+    Horde *h = Horde::createHorde(0, 3, map.getPaths()[0]);
     hordes.insert(std::make_pair(hordeId, h));
 
-    std::string statusGame =
-            GameNotification::getNewHordeNotification(hordeId, nextHordeType,
-                                                      3);
-
+    /* Notificar a los clientes sobre la nueva horda */
+    std::string statusGame = GameNotification::getNewHordeNotification(
+            hordeId, 0, 3);
     for (auto it = players.begin(); it != players.end(); ++it) {
         it->second->sendData(statusGame);
     }

@@ -31,7 +31,6 @@ private:
     std::vector<ActorTower*> towers;
 
     int timeLastHordeCreation, hordeId;
-    std::vector<int> hordeType;
 
 public:
     WorkerLoopGame(std::map<int,ServerPlayer*>& p,
@@ -40,8 +39,6 @@ public:
                    model::Map map);
 
     void run();
-
-    void buildGameContext();
 
     std::string getGameStatus();
 

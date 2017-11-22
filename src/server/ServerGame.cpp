@@ -52,8 +52,6 @@ bool ServerGame::isFull(){
 void ServerGame::startGame() {
     changeStatusPlayesOnGame(PLAYING);
 
-    workerLoopGame.buildGameContext();
-
     workerLoopGame.start();
 }
 
