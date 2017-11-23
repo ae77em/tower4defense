@@ -1,24 +1,31 @@
 {
     "fondo" : "d",
     "height" : 15,
-    "horde_delay" : 10,
     "hordes" : 
     [
         {
-            "enemies" : [ "bloodhawk", "bloodhawk", "goatman", "goatman", "greendaemon" ],
+            "delay" : 2,
+            "enemy_type" : "bloodhawk",
+            "horde_size" : 2,
             "path_index" : 0
         },
         {
-            "enemies" : [ "zombie", "zombie", "zombie", "zombie", "zombie", "zombie" ],
+            "delay" : 2,
+            "enemy_type" : "bloodhawk",
+            "horde_size" : 2,
             "path_index" : 1
         },
         {
-            "enemies" : [ "zombie", "zombie" ],
-            "path_index" : 1
-        },
-        {
-            "enemies" : [ "bloodhawk", "bloodhawk" ],
+            "delay" : 2,
+            "enemy_type" : "abominable",
+            "horde_size" : 1,
             "path_index" : 0
+        },
+        {
+            "delay" : 2,
+            "enemy_type" : "goatman",
+            "horde_size" : 5,
+            "path_index" : 1
         }
     ],
     "paths" : 
