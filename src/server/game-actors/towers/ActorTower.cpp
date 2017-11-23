@@ -82,42 +82,41 @@ bool ActorTower::itIsShooting() {
 }
 
 void ActorTower::attack(Horde *horde) {
-    if (isReadyToShoot()) {
-        std::vector<ActorEnemy *> enemies = horde->getEnemies();
+    std::vector<ActorEnemy *> enemies = horde->getEnemies();
 
-        for (ActorEnemy *enemy : enemies) {
-            Circle &collisionCircleEnemy = enemy->getCollisionCircle();
+    for (ActorEnemy *enemy : enemies) {
+        Circle &collisionCircleEnemy = enemy->getCollisionCircle();
 #ifdef LOG
-            std::cout << "enemy "
-                      << enemy->getId()
-                      << " is (col circle) in ("
-                      << enemy->getCollisionCircle().x
-                      << ", "
-                      << enemy->getCollisionCircle().y
-                      << ") - radio: "
-                      << enemy->getCollisionCircle().r
-                      << std::endl;
-            std::cout << "tower "
-                      << std::to_string(id)
-                      << " is (col circle) in ("
-                      << std::to_string(collisionCircle.x)
-                      << ", "
-                      << std::to_string(collisionCircle.y)
-                      << ") - radio: "
-                      << std::to_string(collisionCircle.r)
-                    << " - radio calculated: "
-                    << std::to_string(getCollisionCircleRadio())
-                      << std::endl;
+        std::cout << "enemy "
+                  << enemy->getId()
+                  << " is (col circle) in ("
+                  << enemy->getCollisionCircle().x
+                  << ", "
+                  << enemy->getCollisionCircle().y
+                  << ") - radio: "
+                  << enemy->getCollisionCircle().r
+                  << std::endl;
+        std::cout << "tower "
+                  << std::to_string(id)
+                  << " is (col circle) in ("
+                  << std::to_string(collisionCircle.x)
+                  << ", "
+                  << std::to_string(collisionCircle.y)
+                  << ") - radio: "
+                  << std::to_string(collisionCircle.r)
+                << " - radio calculated: "
+                << std::to_string(getCollisionCircleRadio())
+                  << std::endl;
 #endif
-            if (collisionCircle.hasCollisionWith(collisionCircleEnemy)) {
-                std::cout << "hubo colision" << std::endl;
-                isShooting = true;
-                shootTo(enemy);
-            } else {
-                isShooting = false;
-            }
+        if (collisionCircle.hasCollisionWith(collisionCircleEnemy)) {
+            std::cout << "hubo colision" << std::endl;
+            isShooting = true;
+            shootTo(enemy);
+        } else {
+            isShooting = false;
         }
     }
+
 }
 
 void ActorTower::shootTo(ActorEnemy *pEnemy) {
@@ -135,7 +134,7 @@ bool ActorTower::isReadyToShoot() const {
 
 void ActorTower::doShootTo(ActorEnemy *pEnemy) {
     std::cout << "daño al enemigo con " << std::to_string(shotDamage) <<
-                                                                      std::endl;
+              std::endl;
     sumExperiencePoints(pEnemy->receiveDamage(shotDamage));
     updateLastShotTime();
 }

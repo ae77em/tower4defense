@@ -70,6 +70,8 @@ public:
 
     std::string getShotDamageInfo();
 
+    bool isReadyToShoot() const;
+
 protected:
     int range;
     int reach;
@@ -90,8 +92,6 @@ protected:
     //ActorRectT rect;
 
     int id;
-
-    bool isReadyToShoot() const;
 
     void updateLastShotTime();
 

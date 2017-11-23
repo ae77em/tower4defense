@@ -79,8 +79,11 @@ void WorkerLoopGame::run() {
 
         /* Hago actuar las torres. */
         for (auto tower : towers) {
-            for (hordeIt = hordes.begin(); hordeIt != hordes.end(); ++hordeIt) {
-                tower->attack(hordeIt->second);
+            if (tower->isReadyToShoot()) {
+                for (hordeIt = hordes.begin();
+                     hordeIt != hordes.end(); ++hordeIt) {
+                    tower->attack(hordeIt->second);
+                }
             }
         }
 
