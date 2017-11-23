@@ -196,10 +196,20 @@ void WorkerLoopGame::createHordeAndNotify() {
     int nextHordeType = hordeType.at(hordeIndex);
 
     unsigned pathIndex = now % map.getPaths().size();
-    std::vector<Point> path = static_cast<std::vector<Point> &&>(
-            map.getPaths().at(pathIndex));
+
+    std::vector<Point> path = map.getPaths().at(pathIndex);
 
     Horde *h = Horde::createHorde(nextHordeType, 3, path);
+
+    std::cout << "cantidad de paths disponibles: " << map.getPaths().size() <<
+                                                                    std::endl;
+    std::cout << "cree horda con el path " << pathIndex << std::endl;
+    std::cout << "path: ";
+    for (Point point : path){
+        std::cout << point.toString();
+        std::cout << " - ";
+    }
+    std::cout << std::endl;
 
     hordes.insert(std::make_pair(hordeId, h));
 
