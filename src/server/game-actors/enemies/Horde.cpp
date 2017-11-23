@@ -15,6 +15,7 @@ void Horde::addEnemy(ActorEnemy *enemy) {
     enemies.push_back(enemy);
 }
 
+//FIXME: enemyType es ignorado
 Horde *Horde::createHorde(int enemyType, int amount, std::vector<Point> path){
     Horde *toReturn = new Horde();
 

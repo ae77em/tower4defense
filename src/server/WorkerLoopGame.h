@@ -31,17 +31,8 @@ private:
     std::vector<ActorTower*> towers;
 
     int timeLastHordeCreation, hordeId;
-    std::vector<int> hordeType;
-
-public:
-    WorkerLoopGame(std::map<int,ServerPlayer*>& p,
-                   std::list<GameAction*>& a,
-                   std::mutex& m,
-                   model::Map map);
 
     void run();
-
-    void buildGameContext();
 
     std::string getGameStatus();
 
@@ -58,6 +49,12 @@ public:
     void sendTowerInfo(GameActionGetTowerInfo *pInfo);
 
     void notifyMatchWin();
+
+public:
+    WorkerLoopGame(std::map<int,ServerPlayer*>& p,
+                   std::list<GameAction*>& a,
+                   std::mutex& m,
+                   model::Map map);
 };
 
 

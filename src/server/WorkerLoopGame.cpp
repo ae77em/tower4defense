@@ -33,13 +33,15 @@ WorkerLoopGame::WorkerLoopGame(std::map<int, ServerPlayer *> &p,
         players(p),
         actions(a),
         mutexActions(m),
-        map(mp) {}
+        map(mp),
+        hordes(),
+        towers(),
+        timeLastHordeCreation(0),
+        hordeId(0) {}
 
 void WorkerLoopGame::run() {
     std::cout << "WorkerLoopGame: Hilo donde "
             "existe la partida arrancando" << std::endl;
-
-    std::string statusGame;
 
     std::list<GameAction *> actionsGame;
     std::map<int, Horde *>::iterator hordeIt;
@@ -49,8 +51,9 @@ void WorkerLoopGame::run() {
     std::string cause = "";
 
     while (!gameFinish) {
-
-        if (isTimeToCreateHorde()) {
+        /* Instanciar horda */
+        if ((unsigned)hordeId != map.getHordes().size()
+                && isTimeToCreateHorde()) {
             createHordeAndNotify();
         }
 
@@ -94,12 +97,9 @@ void WorkerLoopGame::run() {
             }
         }
 
-        /* Obtengo el estado actual */
-        statusGame = getGameStatus();
-
         /* Notifico el estado del juego a todos los jugadores. */
         for (auto it = players.begin(); it != players.end(); ++it) {
-            it->second->sendData(statusGame);
+            it->second->sendData(getGameStatus());
         }
 
         /* Limpio la lista para no ejecutar request viejos. */
@@ -149,17 +149,6 @@ bool WorkerLoopGame::actionsSuccessfullAttended(std::list<GameAction *> &actions
     return actionSuccessful;
 }
 
-void WorkerLoopGame::buildGameContext() {
-    /* HAY QUE LEVANTAR LAS HORDAS DEL ARCHIVO */
-    timeLastHordeCreation = 0;
-
-    hordeType.push_back((int) ENEMY_ZOMBIE);
-    //hordeType.push_back((int) ENEMY_GOATMAN);
-    //hordeType.push_back((int) ENEMY_SPECTRE);
-
-    hordeId = 0;
-}
-
 std::string WorkerLoopGame::getGameStatus() {
     //despues ver como parsear todos los actores
     return GameNotification::getStatusMatchNotification(hordes, towers);
@@ -173,29 +162,22 @@ bool WorkerLoopGame::isTimeToCreateHorde() {
 }
 
 void WorkerLoopGame::createHordeAndNotify() {
-    /* HAY QUE LEVANTAR LAS HORDAS DEL ARCHIVO */
-
     time_t now;
     time(&now);
 
     /* Actualizar el momento de creacion de ultima horda */
     timeLastHordeCreation = now;
 
-    unsigned hordeIndex = now % hordeType.size();
-    int nextHordeType = hordeType.at(hordeIndex);
-
-    unsigned pathIndex = now % map.getPaths().size();
-    std::vector<Point> path = static_cast<std::vector<Point> &&>(
-            map.getPaths().at(pathIndex));
-
-    Horde *h = Horde::createHorde(nextHordeType, 3, path);
-
+    /* Agregar nueva horda al juego */
+    //FIXME: siempre crea el mismo tipo de horda
+    int horde_size = map.getHordes()[hordeId].second.size();
+    Horde *h = Horde::createHorde(0, horde_size,
+            map.getPaths()[map.getHordes()[hordeId].first]);
     hordes.insert(std::make_pair(hordeId, h));
 
-    std::string statusGame =
-            GameNotification::getNewHordeNotification(hordeId, nextHordeType,
-                                                      3);
-
+    /* Notificar a los clientes sobre la nueva horda */
+    std::string statusGame = GameNotification::getNewHordeNotification(
+            hordeId, 0, horde_size);
     for (auto it = players.begin(); it != players.end(); ++it) {
         it->second->sendData(statusGame);
     }

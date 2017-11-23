@@ -555,6 +555,7 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
                     double energyPercentaje =
                             request.getAsDouble(ENERGY_PERCENTAJE_KEY);
 
+                    //FIXME: reducir el scope del try-catch
                     try {
                         DrawableHorde horde = hordes.at(hordeId);
                         Enemy *enemy = horde.getEnemieAt(enemyId);
