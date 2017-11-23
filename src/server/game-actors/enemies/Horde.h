@@ -22,6 +22,8 @@ private:
     std::vector<ActorEnemy*> enemies;
 
     int type;
+
+    static ActorEnemy *getEnemyByType(int type);
 };
 
 

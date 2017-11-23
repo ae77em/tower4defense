@@ -13,8 +13,8 @@ void GreenDaemon::initializeSpritesData() {
     walkingStartY = 3364;
     walkSpriteWidth = 130;
     walkSpriteHeight = 112;
-    numberOfEnemyWalkSprites = 10;// NUMBER_OF_ENEMY_WALK_SPRITES;
-    numberOfEnemyWalkDirections = 4; // NUMBER_OF_ENEMY_WALK_DIRECTIONS;
+    numberOfEnemyWalkSprites = 10;
+    numberOfEnemyWalkDirections = 4;
 
     walkBox.x = currentPoint.x;
     walkBox.y = currentPoint.y;
@@ -26,8 +26,8 @@ void GreenDaemon::initializeSpritesData() {
     deathStartY = 1357;
     deathSpriteWidth = 170;
     deathSpriteHeight = 119;
-    numberOfEnemyDeathSprites = 16;// NUMBER_OF_ENEMY_DEATH_SPRITES;
-    numberOfEnemyDeathDirections = 4; // NUMBER_OF_ENEMY_DEATH_DIRECTIONS;
+    numberOfEnemyDeathSprites = 16;
+    numberOfEnemyDeathDirections = 4;
 
     deathBox.x = currentPoint.x;
     deathBox.y = currentPoint.y;

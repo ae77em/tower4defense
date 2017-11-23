@@ -13,8 +13,8 @@ void Zombie::initializeSpritesData() {
     walkingStartY = 759;
     walkSpriteWidth = 101;
     walkSpriteHeight = 91;
-    numberOfEnemyWalkSprites = 6;// NUMBER_OF_ENEMY_WALK_SPRITES;
-    numberOfEnemyWalkDirections = 4; // NUMBER_OF_ENEMY_WALK_DIRECTIONS;
+    numberOfEnemyWalkSprites = 6;
+    numberOfEnemyWalkDirections = 4;
 
     walkBox.x = currentPoint.x;
     walkBox.y = currentPoint.y;
@@ -26,8 +26,8 @@ void Zombie::initializeSpritesData() {
     deathStartY = 1505;
     deathSpriteWidth = 101;
     deathSpriteHeight = 91;
-    numberOfEnemyDeathSprites = 15;// NUMBER_OF_ENEMY_DEATH_SPRITES;
-    numberOfEnemyDeathDirections = 4; // NUMBER_OF_ENEMY_DEATH_DIRECTIONS;
+    numberOfEnemyDeathSprites = 15;
+    numberOfEnemyDeathDirections = 4;
 
     deathBox.x = currentPoint.x;
     deathBox.y = currentPoint.y;

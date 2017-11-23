@@ -28,8 +28,8 @@ void Enemy::initializeSpritesData() {
     walkingStartY = 3537;
     walkSpriteWidth = 105;
     walkSpriteHeight = 119;
-    numberOfEnemyWalkSprites = 12;// NUMBER_OF_ENEMY_WALK_SPRITES;
-    numberOfEnemyWalkDirections = 4; // NUMBER_OF_ENEMY_WALK_DIRECTIONS;
+    numberOfEnemyWalkSprites = 12;
+    numberOfEnemyWalkDirections = 4;
 
     /* datos sprites para morir */
     deathSpriteWidth = 200;
@@ -44,8 +44,8 @@ void Enemy::initializeSpritesData() {
     deathStartY = 2273;
     deathSpriteWidth = 200;
     deathSpriteHeight = 155;
-    numberOfEnemyDeathSprites = 18;// NUMBER_OF_ENEMY_DEATH_SPRITES;
-    numberOfEnemyDeathDirections = 4; // NUMBER_OF_ENEMY_DEATH_DIRECTIONS;
+    numberOfEnemyDeathSprites = 18;
+    numberOfEnemyDeathDirections = 4;
 
     currentDirection = 0;
 }
@@ -131,7 +131,7 @@ void Enemy::renderDie(SDL_Rect &camera) {
 
     firstFrameOfDeathRendered = (firstFrameOfDeathRendered || frameToDraw == 0);
     lastFrameOfDeathRendered = (lastFrameOfDeathRendered
-                 || frameToDraw == NUMBER_OF_ENEMY_DEATH_SPRITES - 1);
+                 || frameToDraw == numberOfEnemyDeathSprites - 1);
 
     if (!(firstFrameOfDeathRendered and lastFrameOfDeathRendered)) {
         DecimalPoint screenPoint =

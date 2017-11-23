@@ -1,6 +1,12 @@
 #include "Horde.h"
 #include "../../../common/Protocol.h"
 #include "../../../sdl/Constants.h"
+#include "ActorEnemyAbmonible.h"
+#include "ActorEnemyBloodHawk.h"
+#include "ActorEnemyGoatman.h"
+#include "ActorEnemyGreenDaemon.h"
+#include "ActorEnemySpectre.h"
+#include "ActorEnemyZombie.h"
 #include <vector>
 
 void Horde::setEnemies(std::vector<ActorEnemy *> e){
@@ -31,7 +37,7 @@ Horde *Horde::createHorde(int enemyType, int amount, std::vector<Point> path){
     for (int i = 0; i < amount ; ++i){
         //hay que setear el desfasaje en los caminos, que cada bicho arranque
         // un poco mas atras qeu los demnas
-        ActorEnemy *enemy = new ActorEnemy();
+        ActorEnemy *enemy = getEnemyByType(enemyType);
 
         enemy->setPath(actualPath);
         enemy->setId(i);
@@ -48,4 +54,38 @@ Horde::Horde(int t) : type(t) { }
 Horde::Horde() { }
 
 Horde::~Horde() {}
+
+ActorEnemy *Horde::getEnemyByType(int type) {
+    ActorEnemy *enemy = nullptr;
+    switch (type){
+        case ENEMY_ABMONIBLE:{
+            enemy = new ActorEnemyAbmonible();
+            break;
+        }
+        case ENEMY_BLOOD_HAWK:{
+            enemy = new ActorEnemyBloodHawk();
+            break;
+        }
+        case ENEMY_GOATMAN:{
+            enemy = new ActorEnemyGoatman();
+            break;
+        }
+        case ENEMY_GREEN_DAEMON:{
+            enemy = new ActorEnemyGreenDaemon();
+            break;
+        }
+        case ENEMY_SPECTRE:{
+            enemy = new ActorEnemySpectre();
+            break;
+        }
+        case ENEMY_ZOMBIE:{
+            enemy = new ActorEnemyZombie();
+            break;
+        }
+        default:{
+            enemy = new ActorEnemy();
+        }
+    }
+    return enemy;
+}
 

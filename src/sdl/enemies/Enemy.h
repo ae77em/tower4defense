@@ -137,14 +137,14 @@ protected:
     int walkingStartY = 3537;
     int walkSpriteWidth = 105;
     int walkSpriteHeight = 119;
-    int numberOfEnemyWalkSprites = NUMBER_OF_ENEMY_WALK_SPRITES;
+    int numberOfEnemyWalkSprites = 12;
     int numberOfEnemyWalkDirections = NUMBER_OF_ENEMY_WALK_DIRECTIONS;
 
     int deathStartX = 1;
     int deathStartY = 2273;
     int deathSpriteWidth = 200;
     int deathSpriteHeight = 155;
-    int numberOfEnemyDeathSprites = NUMBER_OF_ENEMY_DEATH_SPRITES;
+    int numberOfEnemyDeathSprites = 18;
     int numberOfEnemyDeathDirections = NUMBER_OF_ENEMY_DEATH_DIRECTIONS;
 
     int currentDirection = 0;

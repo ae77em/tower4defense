@@ -13,8 +13,8 @@ void Spectre::initializeSpritesData() {
     walkingStartY = 1;
     walkSpriteWidth = 221;
     walkSpriteHeight = 221;
-    numberOfEnemyWalkSprites = 10;// NUMBER_OF_ENEMY_WALK_SPRITES;
-    numberOfEnemyWalkDirections = 4; // NUMBER_OF_ENEMY_WALK_DIRECTIONS;
+    numberOfEnemyWalkSprites = 10;
+    numberOfEnemyWalkDirections = 4;
 
     walkBox.x = currentPoint.x;
     walkBox.y = currentPoint.y;
@@ -26,8 +26,8 @@ void Spectre::initializeSpritesData() {
     deathStartY = 0;
     deathSpriteWidth = 221;
     deathSpriteHeight = 221;
-    numberOfEnemyDeathSprites = 10; // NUMBER_OF_ENEMY_DEATH_SPRITES;
-    numberOfEnemyDeathDirections = 4; // NUMBER_OF_ENEMY_DEATH_DIRECTIONS;
+    numberOfEnemyDeathSprites = 10;
+    numberOfEnemyDeathDirections = 4;
 
     deathBox.x = currentPoint.x;
     deathBox.y = currentPoint.y;

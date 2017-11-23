@@ -1,8 +1,8 @@
 #include "ActorEnemyBloodHawk.h"
 
 ActorEnemyBloodHawk::ActorEnemyBloodHawk() {
-    initialEnergy = energy = 200;
-    velocity = 1;
+    initialEnergy = energy = 100;
+    velocity = 4;
     isAir = false;
 }
 

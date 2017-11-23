@@ -16,8 +16,8 @@ void BloodHawk::initializeSpritesData() {
     walkingStartY = 1336;
     walkSpriteWidth = 99;
     walkSpriteHeight = 76;
-    numberOfEnemyWalkSprites = 8;// NUMBER_OF_ENEMY_WALK_SPRITES;
-    numberOfEnemyWalkDirections = 4; // NUMBER_OF_ENEMY_WALK_DIRECTIONS;
+    numberOfEnemyWalkSprites = 8;
+    numberOfEnemyWalkDirections = 4;
 
     walkBox.x = currentPoint.x;
     walkBox.y = currentPoint.y;
@@ -29,8 +29,8 @@ void BloodHawk::initializeSpritesData() {
     deathStartY = 13;
     deathSpriteWidth = 118;
     deathSpriteHeight = 96;
-    numberOfEnemyDeathSprites = 22;// NUMBER_OF_ENEMY_DEATH_SPRITES;
-    numberOfEnemyDeathDirections = 4; // NUMBER_OF_ENEMY_DEATH_DIRECTIONS;
+    numberOfEnemyDeathSprites = 22;
+    numberOfEnemyDeathDirections = 4;
 
     deathBox.x = currentPoint.x;
     deathBox.y = currentPoint.y;

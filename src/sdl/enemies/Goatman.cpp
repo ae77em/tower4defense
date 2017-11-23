@@ -15,8 +15,8 @@ void Goatman::initializeSpritesData() {
     walkingStartY = 1681;
     walkSpriteWidth = 82;
     walkSpriteHeight = 79;
-    numberOfEnemyWalkSprites = 8;// NUMBER_OF_ENEMY_WALK_SPRITES;
-    numberOfEnemyWalkDirections = 4; // NUMBER_OF_ENEMY_WALK_DIRECTIONS;
+    numberOfEnemyWalkSprites = 8;
+    numberOfEnemyWalkDirections = 4;
 
     walkBox.x = currentPoint.x;
     walkBox.y = currentPoint.y;
@@ -28,8 +28,8 @@ void Goatman::initializeSpritesData() {
     deathStartY = 2339;
     deathSpriteWidth = 160;
     deathSpriteHeight = 148;
-    numberOfEnemyDeathSprites = 19;// NUMBER_OF_ENEMY_DEATH_SPRITES;
-    numberOfEnemyDeathDirections = 4; // NUMBER_OF_ENEMY_DEATH_DIRECTIONS;
+    numberOfEnemyDeathSprites = 19;
+    numberOfEnemyDeathDirections = 4;
 
     deathBox.x = currentPoint.x;
     deathBox.y = currentPoint.y;

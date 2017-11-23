@@ -181,20 +181,28 @@ void WorkerLoopGame::createHordeAndNotify() {
     /* Actualizar el momento de creacion de ultima horda */
     timeLastHordeCreation = now;
 
+    int enemyType = ENEMY_ZOMBIE; // TODO: tomar el tipo del archivo
+
     /* Agregar nueva horda al juego */
     //FIXME: siempre crea el mismo tipo de horda
     int horde_size = map.getHordes()[hordeId].second.size();
-    Horde *h = Horde::createHorde(0, horde_size,
+    Horde *h = Horde::createHorde(enemyType, horde_size,
             map.getPaths()[map.getHordes()[hordeId].first]);
-    
+
     unsigned pathIndex = now % map.getPaths().size();
 
     std::vector<Point> path = map.getPaths().at(pathIndex);
 
-    std::cout << "cantidad de paths disponibles: " << map.getPaths().size() <<
-                                                                    std::endl;
-    std::cout << "cree horda con el path " << pathIndex << std::endl;
-    std::cout << "path: ";
+    std::cout
+            << "cantidad de paths disponibles: "
+            << map.getPaths().size()
+            << std::endl;
+    std::cout
+            << "cree horda con el path "
+            << pathIndex
+            << std::endl;
+    std::cout
+            << "path: ";
     for (Point point : path){
         std::cout << point.toString();
         std::cout << " - ";
@@ -205,7 +213,7 @@ void WorkerLoopGame::createHordeAndNotify() {
 
     /* Notificar a los clientes sobre la nueva horda */std::string statusGame =
             GameNotification::getNewHordeNotification(
-                                                      hordeId, 0, horde_size);
+                                                      hordeId, enemyType, horde_size);
     for (auto it = players.begin(); it != players.end(); ++it) {
         it->second->sendData(statusGame);
     }
