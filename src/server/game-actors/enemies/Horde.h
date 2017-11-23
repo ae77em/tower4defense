@@ -8,22 +8,40 @@ class Horde {
 public:
     Horde();
 
-    Horde(int t);
+    explicit Horde(int t);
 
     virtual ~Horde();
 
     void setEnemies(std::vector<ActorEnemy *> enemies);
+
     std::vector<ActorEnemy *> getEnemies();
+
     void addEnemy(ActorEnemy *enemy);
 
     static Horde *createHorde(int enemyType, int amount, std::vector<Point> path);
 
+    bool itIsAlive();
+
+    void setIsAlive(bool isAlive);
+
+    bool shouldSendMoreData();
+
 private:
     std::vector<ActorEnemy*> enemies;
 
-    int type;
+    int type = 0;
+
+    bool isAlive;
+
+    int timeOfDeath;
+
+    bool mustSendData;
 
     static ActorEnemy *getEnemyByType(int type);
+
+    void setTimeOfDeath();
+
+    void initialize();
 };
 
 

@@ -20,20 +20,23 @@ std::string GameNotification::getStatusMatchNotification(
     root["enemies"] = Json::arrayValue;
 
     for (auto it = hordes.begin(); it != hordes.end(); ++it) {
-        Horde* vectorActor = it->second;
+        Horde* horde = it->second;
 
-        for (auto g : vectorActor->getEnemies()) {
-            Json::Value aEnemy(Json::objectValue);
+        if (horde->shouldSendMoreData()){ // si la horda ya murió,
+            // no mando más data
+            for (auto g : horde->getEnemies()) {
+                Json::Value aEnemy(Json::objectValue);
 
-            aEnemy[HORDE_ID_KEY] = it->first;
-            aEnemy[ENEMY_ID_KEY] = g->getId();
-            aEnemy[XCOORD_KEY] = g->getXPosition();
-            aEnemy[YCOORD_KEY] = g->getYPosition();
-            aEnemy["direction"] = g->getDirection();
-            aEnemy[ENERGY_PERCENTAJE_KEY] = g->getRemainingEnergyPercentaje();
-            aEnemy[IS_ALIVE_KEY] = g->getIsAlive();
+                aEnemy[HORDE_ID_KEY] = it->first;
+                aEnemy[ENEMY_ID_KEY] = g->getId();
+                aEnemy[XCOORD_KEY] = g->getXPosition();
+                aEnemy[YCOORD_KEY] = g->getYPosition();
+                aEnemy["direction"] = g->getDirection();
+                aEnemy[ENERGY_PERCENTAJE_KEY] = g->getRemainingEnergyPercentaje();
+                aEnemy[IS_ALIVE_KEY] = g->getIsAlive();
 
-            root["enemies"].append(aEnemy);
+                root["enemies"].append(aEnemy);
+            }
         }
     }
 

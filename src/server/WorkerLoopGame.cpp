@@ -43,20 +43,23 @@ WorkerLoopGame::WorkerLoopGame(std::map<int, ServerPlayer *> &p,
         hordeId(0) {}
 
 void WorkerLoopGame::run() {
-    std::cout << "WorkerLoopGame: Hilo donde "
-            "existe la partida arrancando" << std::endl;
+    std::cout
+            << "WorkerLoopGame: Hilo donde existe la partida arrancando"
+            << std::endl;
 
     std::list<GameAction *> actionsGame;
+    std::vector<ActorEnemy *> enemies;
     std::map<int, Horde *>::iterator hordeIt;
 
     bool gameFinish = false;
     bool areEnemiesAlive;
+    bool hordeIsAlive;
     std::string cause = "";
+    Horde *aHorde = nullptr;
 
     while (!gameFinish) {
-
         /* Si debo crear una horda, la creo... */
-        if (!allHordesWereCreatedYet()){
+        if (!allHordesWereCreatedYet()) {
             if (isTimeToCreateHorde()) {
                 createHordeAndNotify();
             }
@@ -68,13 +71,18 @@ void WorkerLoopGame::run() {
 
         /* Muevo los enemigos. */
         for (hordeIt = hordes.begin(); hordeIt != hordes.end(); ++hordeIt) {
-            std::vector<ActorEnemy *> enemies = hordeIt->second->getEnemies();
+            aHorde = hordeIt->second;
+            if (aHorde->itIsAlive()) {
+                enemies = aHorde->getEnemies();
 
-            for (auto enemy : enemies) {
-                enemy->advance();
-                if (enemy->hasEndedThePath()) {
-                    gameFinish = true;
-                    notifyMatchLoose();
+                for (auto enemy : enemies) {
+                    if (enemy->getIsAlive()) { // los enemigos vivos, viven...
+                        enemy->advance();
+                        if (enemy->hasEndedThePath()) {
+                            gameFinish = true;
+                            notifyMatchLoose();
+                        }
+                    }
                 }
             }
         }
@@ -92,19 +100,24 @@ void WorkerLoopGame::run() {
         /* Valido que haya bichos vivos. */
         areEnemiesAlive = false;
         for (hordeIt = hordes.begin(); hordeIt != hordes.end(); ++hordeIt) {
-            std::vector<ActorEnemy *> enemies = hordeIt->second->getEnemies();
+            aHorde = hordeIt->second;
+            if (aHorde->itIsAlive()){
+                enemies = aHorde->getEnemies();
+                hordeIsAlive = false;
 
-            for (auto enemy : enemies) {
-                if (enemy->getIsAlive()){
-                    areEnemiesAlive = true;
-                    break;
+                for (auto enemy : enemies) {
+                    if (enemy->getIsAlive()) {
+                        areEnemiesAlive = true;
+                        hordeIsAlive = true;
+                        break;
+                    }
+                }
+                if (!hordeIsAlive) {
+                    aHorde->setIsAlive(false);
                 }
             }
-            if (areEnemiesAlive){
-                break;
-            }
         }
-        if (!areEnemiesAlive){
+        if (!areEnemiesAlive) {
             gameFinish = true;
             notifyMatchWin();
         }
@@ -125,7 +138,8 @@ void WorkerLoopGame::run() {
     }
 }
 
-bool WorkerLoopGame::actionsSuccessfullAttended(std::list<GameAction *> &actionsGame) {
+bool WorkerLoopGame::actionsSuccessfullAttended(
+        std::list<GameAction *> &actionsGame) {
     bool actionSuccessful = true;
     mutexActions.lock();
     //GRONCHADA PARA REFACTORIZAR
@@ -187,7 +201,7 @@ void WorkerLoopGame::createHordeAndNotify() {
     //FIXME: siempre crea el mismo tipo de horda
     int horde_size = map.getHordes()[hordeId].second.size();
     Horde *h = Horde::createHorde(enemyType, horde_size,
-            map.getPaths()[map.getHordes()[hordeId].first]);
+                                  map.getPaths()[map.getHordes()[hordeId].first]);
 
     unsigned pathIndex = now % map.getPaths().size();
 
@@ -203,7 +217,7 @@ void WorkerLoopGame::createHordeAndNotify() {
             << std::endl;
     std::cout
             << "path: ";
-    for (Point point : path){
+    for (Point point : path) {
         std::cout << point.toString();
         std::cout << " - ";
     }
@@ -213,7 +227,7 @@ void WorkerLoopGame::createHordeAndNotify() {
 
     /* Notificar a los clientes sobre la nueva horda */std::string statusGame =
             GameNotification::getNewHordeNotification(
-                                                      hordeId, enemyType, horde_size);
+                    hordeId, enemyType, horde_size);
     for (auto it = players.begin(); it != players.end(); ++it) {
         it->second->sendData(statusGame);
     }
@@ -287,10 +301,10 @@ void WorkerLoopGame::sendTowerInfo(GameActionGetTowerInfo *pInfo) {
     ActorTower tower = *towers.at(towerId);
 
     std::string data = MessageFactory::getTowerInfoNotification(towerId,
-                                             tower.getShotDamageInfo(),
-                                             tower.getRangeInfo(),
-                                             tower.getReachInfo(),
-                                             tower.getSlowDownPercentajeInfo());
+                                                                tower.getShotDamageInfo(),
+                                                                tower.getRangeInfo(),
+                                                                tower.getReachInfo(),
+                                                                tower.getSlowDownPercentajeInfo());
 
     players.at(clientId)->sendData(data);
 }

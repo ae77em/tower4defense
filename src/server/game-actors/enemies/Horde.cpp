@@ -9,6 +9,22 @@
 #include "ActorEnemyZombie.h"
 #include <vector>
 
+Horde::Horde(int t) : type(t) {
+    initialize();
+}
+
+Horde::Horde() {
+    initialize();
+}
+
+void Horde::initialize(){
+    isAlive = true;
+    timeOfDeath = 0;
+    mustSendData = true;
+}
+
+Horde::~Horde() = default;
+
 void Horde::setEnemies(std::vector<ActorEnemy *> e){
     enemies = e;
 }
@@ -49,12 +65,6 @@ Horde *Horde::createHorde(int enemyType, int amount, std::vector<Point> path){
     return toReturn;
 }
 
-Horde::Horde(int t) : type(t) { }
-
-Horde::Horde() { }
-
-Horde::~Horde() {}
-
 ActorEnemy *Horde::getEnemyByType(int type) {
     ActorEnemy *enemy = nullptr;
     switch (type){
@@ -89,3 +99,35 @@ ActorEnemy *Horde::getEnemyByType(int type) {
     return enemy;
 }
 
+void Horde::setIsAlive(bool isAlive) {
+    Horde::isAlive = isAlive;
+    setTimeOfDeath();
+}
+
+bool Horde::itIsAlive() {
+    return isAlive;
+}
+
+void Horde::setTimeOfDeath() {
+    time_t now;
+    time(&now);
+    timeOfDeath = now;
+}
+
+bool Horde::shouldSendMoreData(){
+    /* Si previamente me setearon, ya no tengo que mandar más info de mi
+     * estado. Si no, verifico que sí tenga que enviar. El mustSendData se
+     * setearía una sola vez.
+     * */
+    if (mustSendData && !isAlive){
+        if(timeOfDeath != 0){
+            time_t now;
+            time(&now);
+            if (now - timeOfDeath > 2){
+                mustSendData = false;
+            }
+        }
+    }
+
+    return mustSendData;
+}
