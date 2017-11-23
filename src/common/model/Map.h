@@ -5,8 +5,12 @@
 #include <vector>
 #include "../Point.h"
 #include "Enemy.h"
+#include <tuple>
 
 namespace model {
+
+/* entry = enemy_type, horde_size, path_index, delay_in_seconds */
+typedef std::tuple<std::string, int, int, int> entry;
 
 /* Representa el terrento del juego, independiente de su representacion
    visual o de las criaturas que se encuentren en el. */
@@ -14,12 +18,9 @@ class Map {
     unsigned extension_x, extension_y;
     std::vector<char> tiles;
     std::vector<std::vector<Point>> paths;
-    std::vector<
-        std::pair<int, std::vector<std::string>>
-    > hordas;
+    std::vector<entry> hordas;
     char background_style;
     std::string name;
-    int delay_hordes_seg; // El tiempo en segundos entre las hordas
 
 public:
     Map();
@@ -62,10 +63,9 @@ public:
     std::vector<std::vector<Point>>& getPaths();
     void addPaths(const std::vector<Point> &camino);
 
-    const std::vector<std::pair<int, std::vector<std::string>>>& getHordes();
-    void addHorde(int path, std::vector<std::string> enemies);
-    int getDelay() const;
-    void setDelay(int delay);
+    const std::vector<entry>& getHordes() const;
+    void addHorde(const std::string& enemy_type, int horde_size,
+            int path_index, int delay_seconds);
 
     std::string &getName();
     void setName(std::string aName);

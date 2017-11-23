@@ -11,8 +11,7 @@
 using namespace model;
 
 Map::Map(unsigned x, unsigned y) :extension_x(x), extension_y(y),
-        tiles(x * y, '.'), paths(), background_style('g'), name(""),
-        delay_hordes_seg(5) {}
+        tiles(x * y, '.'), paths(), background_style('g'), name("") {}
 
 char Map::tile(unsigned x, unsigned y) {
     if (x >= extension_x || y >= extension_y)
@@ -63,12 +62,12 @@ std::string Map::serialize() {
     }
 
     // Serializar las hordas
-    root["horde_delay"] = delay_hordes_seg;
-    for (const auto& pair : hordas) {
+    for (const auto& entry : hordas) {
         Json::Value horde;
-        horde["path_index"] = pair.first;
-        for (const auto& enemy_name : pair.second)
-            horde["enemies"].append(enemy_name);
+        horde["enemy_type"] = std::get<0>(entry);
+        horde["horde_size"] = std::get<1>(entry);
+        horde["path_index"] = std::get<2>(entry);
+        horde["delay"] = std::get<3>(entry);
         root["hordes"].append(horde);
     }
 
@@ -79,28 +78,26 @@ std::string Map::serialize() {
     return Json::writeString(builder, root);
 }
 
-const std::vector<std::pair<int, std::vector<std::string>>>& Map::getHordes() {
+const std::vector<entry>& Map::getHordes() const {
     return hordas;
 }
 
-void Map::addHorde(int camino, std::vector<std::string> enemigos) {
-    if ( (int)paths.size() <= camino )
-        throw std::runtime_error("tratando de agregar horda a camino "
-                "inexistente " + std::to_string(camino));
-    if (camino < 0)
+void Map::addHorde(const std::string& enemy_type, int horde_size,
+        int path_index, int delay_seconds) {
+    if (horde_size < 1)
         throw std::runtime_error("tratando de agregar horda con "
-                "indice negativo" + std::to_string(camino));
-    hordas.emplace_back(camino, enemigos);
-}
-
-int Map::getDelay() const {
-    return delay_hordes_seg;
-}
-
-void Map::setDelay(int delay) {
-    if (delay < 0) throw std::runtime_error("delay negativo "
-            + std::to_string(delay));
-    delay_hordes_seg = delay;
+                "menos de un enemigo");
+    if ((int)paths.size() <= path_index)
+        throw std::runtime_error("tratando de agregar horda a camino "
+                "inexistente " + std::to_string(path_index));
+    if (path_index < 0)
+        throw std::runtime_error("tratando de agregar horda con "
+                "indice negativo" + std::to_string(path_index));
+    if (delay_seconds < 0)
+        throw std::runtime_error("tratando de agregar horda con "
+                "delay negativo");
+    hordas.emplace_back(enemy_type, horde_size,
+            path_index, delay_seconds);
 }
 
 char Map::getBackgroundStyle() {
@@ -146,12 +143,13 @@ Map Map::loadFromString(std::string json) {
     }
 
     // Deserializar las hordas
-    map.delay_hordes_seg = root["horde_delay"].asInt();
-    for (const auto& pair : root["hordes"]) {
-        std::vector<std::string> enemigos;
-        for (const auto& name : pair["enemies"])
-            enemigos.push_back(name.asString());
-        map.hordas.emplace_back(pair["path_index"].asInt(), enemigos);
+    for (const auto& entry : root["hordes"]) {
+        map.hordas.emplace_back(
+                entry["enemy_type"].asString(),
+                entry["horde_size"].asInt(),
+                entry["path_index"].asInt(),
+                entry["delay"].asInt()
+        );
     }
 
     return map;

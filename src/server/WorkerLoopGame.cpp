@@ -185,7 +185,8 @@ bool WorkerLoopGame::isTimeToCreateHorde() {
     time_t now;
     time(&now);
 
-    return (now - timeLastHordeCreation) > map.getDelay();
+    //FIXME: has to read delay from map
+    return (now - timeLastHordeCreation) > 5;
 }
 
 void WorkerLoopGame::createHordeAndNotify() {
@@ -199,9 +200,12 @@ void WorkerLoopGame::createHordeAndNotify() {
 
     /* Agregar nueva horda al juego */
     //FIXME: siempre crea el mismo tipo de horda
-    int horde_size = map.getHordes()[hordeId].second.size();
+    const auto& horde = map.getHordes()[hordeId];
+    //const std::string& enemy_type = std::get<0>(horde);
+    int horde_size = std::get<1>(horde);
+    int path_index = std::get<2>(horde);
     Horde *h = Horde::createHorde(enemyType, horde_size,
-                                  map.getPaths()[map.getHordes()[hordeId].first]);
+            map.getPaths()[path_index]);
 
     unsigned pathIndex = now % map.getPaths().size();
 
@@ -225,8 +229,8 @@ void WorkerLoopGame::createHordeAndNotify() {
 
     hordes.insert(std::make_pair(hordeId, h));
 
-    /* Notificar a los clientes sobre la nueva horda */std::string statusGame =
-            GameNotification::getNewHordeNotification(
+    /* Notificar a los clientes sobre la nueva horda */
+    std::string statusGame = GameNotification::getNewHordeNotification(
                     hordeId, enemyType, horde_size);
     for (auto it = players.begin(); it != players.end(); ++it) {
         it->second->sendData(statusGame);

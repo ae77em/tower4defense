@@ -86,12 +86,12 @@ class StateHordeManagement : public State {
 /* Mostrar enemigos en la horda actual, y agregar nuevos enemigos */
 class StateHordeCreation : public State {
     int index;
-    std::vector<std::string> enemies;
+    std::string enemy;
 
     public:
     explicit StateHordeCreation(int path_index);
+    virtual void onTransition(Editor &context);
     virtual void handle(const SDL_Event &e, Editor &context);
-    virtual void preRender(Editor &context);
 };
 
 } //namespace Editor
