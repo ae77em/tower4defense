@@ -39,8 +39,7 @@ void StateHordeCreation::handle(const SDL_Event &e, Editor &context) {
         /* Handle special keys */
         } else if (e.type == SDL_KEYDOWN) {
             /* Backspace */
-            //FIXME: fails if user_input is empty
-            if (e.key.keysym.sym == SDLK_BACKSPACE) {
+            if (e.key.keysym.sym == SDLK_BACKSPACE && user_input.size() != 0) {
                 user_input.pop_back();
 
             /* Enter */
