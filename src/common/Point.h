@@ -17,6 +17,15 @@ struct Point {
         return x == p2.x && y == p2.y;
     }
 
+    std::string toString(){
+        std::string toReturn("(");
+        toReturn.append(std::to_string(x));
+        toReturn.append(", ");
+        toReturn.append(std::to_string(y));
+        toReturn.append(")");
+        return toReturn;
+    }
+
     int x;
     int y;
 };

@@ -148,12 +148,10 @@ void Enemy::renderDie(SDL_Rect &camera) {
 }
 
 void Enemy::animate(SDL_Rect &camera) {
-    if (isVisible){
-        if (itIsAlive()) {
-            renderWalk(camera);
-        } else {
-            renderDie(camera);
-        }
+    if (getIsAlive()) {
+        renderWalk(camera);
+    } else {
+        renderDie(camera);
     }
 }
 
@@ -189,7 +187,7 @@ const SDL_Rect &Enemy::getWalkBox() const {
     return walkBox;
 }
 
-bool Enemy::itIsAlive() const {
+bool Enemy::getIsAlive() const {
     return isAlive;
 }
 
@@ -246,6 +244,11 @@ bool Enemy::itIsVisible() {
 void Enemy::setIsVisible(bool isVisible) {
     Enemy::isVisible = isVisible;
 }
+
+void Enemy::setIsAlive(bool isAlive) {
+    Enemy::isAlive = isAlive;
+}
+
 
 void Enemy::setEnergyPercentaje(double ep) {
     energyPercentaje = ep;

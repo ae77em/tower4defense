@@ -50,6 +50,8 @@ private:
 
     void notifyMatchWin();
 
+    bool allHordesWereCreatedYet();
+
 public:
     WorkerLoopGame(std::map<int,ServerPlayer*>& p,
                    std::list<GameAction*>& a,

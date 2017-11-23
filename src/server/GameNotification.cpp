@@ -31,7 +31,7 @@ std::string GameNotification::getStatusMatchNotification(
             aEnemy[YCOORD_KEY] = g->getYPosition();
             aEnemy["direction"] = g->getDirection();
             aEnemy[ENERGY_PERCENTAJE_KEY] = g->getRemainingEnergyPercentaje();
-            aEnemy[IS_VISIBLE_KEY] = g->getEnergy();
+            aEnemy[IS_ALIVE_KEY] = g->getIsAlive();
 
             root["enemies"].append(aEnemy);
         }

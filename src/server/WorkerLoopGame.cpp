@@ -24,6 +24,9 @@
 #include <list>
 #include <vector>
 
+
+#define MAX_HORDES 3
+
 //HAY QUE AGREGAR MUTEX PLAYERD PARA QUE BLOQUEE LA LISTA DE SERVER PLAYERS
 //PUEDE SER QUE SE ESTE REMOVIENDO ALGUNO EN OTRO HILO Y LUEGO EXPLOTE
 WorkerLoopGame::WorkerLoopGame(std::map<int, ServerPlayer *> &p,
@@ -47,14 +50,16 @@ void WorkerLoopGame::run() {
     std::map<int, Horde *>::iterator hordeIt;
 
     bool gameFinish = false;
-    bool areEnemiesAlive = false;
+    bool areEnemiesAlive;
     std::string cause = "";
 
     while (!gameFinish) {
-        /* Instanciar horda */
-        if ((unsigned)hordeId != map.getHordes().size()
-                && isTimeToCreateHorde()) {
-            createHordeAndNotify();
+
+        /* Si debo crear una horda, la creo... */
+        if (!allHordesWereCreatedYet()){
+            if (isTimeToCreateHorde()) {
+                createHordeAndNotify();
+            }
         }
 
         if (!actionsSuccessfullAttended(actionsGame)) {
@@ -76,26 +81,34 @@ void WorkerLoopGame::run() {
 
         /* Hago actuar las torres. */
         for (auto tower : towers) {
-            for (hordeIt = hordes.begin(); hordeIt != hordes.end(); ++hordeIt) {
-                tower->attack(hordeIt->second);
+            if (tower->isReadyToShoot()) {
+                for (hordeIt = hordes.begin();
+                     hordeIt != hordes.end(); ++hordeIt) {
+                    tower->attack(hordeIt->second);
+                }
             }
         }
 
         /* Valido que haya bichos vivos. */
+        areEnemiesAlive = false;
         for (hordeIt = hordes.begin(); hordeIt != hordes.end(); ++hordeIt) {
             std::vector<ActorEnemy *> enemies = hordeIt->second->getEnemies();
 
             for (auto enemy : enemies) {
-                if (enemy->itIsAlive()){
+                if (enemy->getIsAlive()){
                     areEnemiesAlive = true;
                     break;
                 }
             }
-            if (!areEnemiesAlive){
-                gameFinish = true;
-                notifyMatchWin();
+            if (areEnemiesAlive){
+                break;
             }
         }
+        if (!areEnemiesAlive){
+            gameFinish = true;
+            notifyMatchWin();
+        }
+
 
         /* Notifico el estado del juego a todos los jugadores. */
         for (auto it = players.begin(); it != players.end(); ++it) {
@@ -108,7 +121,7 @@ void WorkerLoopGame::run() {
         /* Aproximadamente 30 fps. Lo dejamos así para darle tiempo a los
          * request de los usuarios a impactarse de forma relativamente
          * instantánea. */
-        std::this_thread::sleep_for(std::chrono::milliseconds(33));
+        std::this_thread::sleep_for(std::chrono::milliseconds(45));
     }
 }
 
@@ -173,11 +186,26 @@ void WorkerLoopGame::createHordeAndNotify() {
     int horde_size = map.getHordes()[hordeId].second.size();
     Horde *h = Horde::createHorde(0, horde_size,
             map.getPaths()[map.getHordes()[hordeId].first]);
+    
+    unsigned pathIndex = now % map.getPaths().size();
+
+    std::vector<Point> path = map.getPaths().at(pathIndex);
+
+    std::cout << "cantidad de paths disponibles: " << map.getPaths().size() <<
+                                                                    std::endl;
+    std::cout << "cree horda con el path " << pathIndex << std::endl;
+    std::cout << "path: ";
+    for (Point point : path){
+        std::cout << point.toString();
+        std::cout << " - ";
+    }
+    std::cout << std::endl;
+
     hordes.insert(std::make_pair(hordeId, h));
 
-    /* Notificar a los clientes sobre la nueva horda */
-    std::string statusGame = GameNotification::getNewHordeNotification(
-            hordeId, 0, horde_size);
+    /* Notificar a los clientes sobre la nueva horda */std::string statusGame =
+            GameNotification::getNewHordeNotification(
+                                                      hordeId, 0, horde_size);
     for (auto it = players.begin(); it != players.end(); ++it) {
         it->second->sendData(statusGame);
     }
@@ -257,5 +285,9 @@ void WorkerLoopGame::sendTowerInfo(GameActionGetTowerInfo *pInfo) {
                                              tower.getSlowDownPercentajeInfo());
 
     players.at(clientId)->sendData(data);
+}
+
+bool WorkerLoopGame::allHordesWereCreatedYet() {
+    return hordes.size() == MAX_HORDES;
 }
 
