@@ -87,6 +87,7 @@ class StateHordeManagement : public State {
 class StateHordeCreation : public State {
     int index;
     std::string enemy;
+    std::string user_input;
 
     public:
     explicit StateHordeCreation(int path_index);
