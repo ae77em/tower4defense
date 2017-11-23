@@ -95,6 +95,32 @@ class StateHordeCreation : public State {
     virtual void handle(const SDL_Event &e, Editor &context);
 };
 
+/* Solicitar datos al usuario y volver al estado anterior
+ *
+ * No transicionar a este estado normalmente. En su lugar utilizar una
+ * unsafe_transition. El editor volvera al estado previo al terminar.
+ *
+ * El texto obtenido del usuario es usado como argumento al callback
+ * proporcionado en el momento de la creacion del DataEntry. La forma
+ * recomendada de utilizar este comportamiento es pasar al constructor
+ * un lambda con referencias adecuadas a las variables internas del estado
+ * original.
+ */
+class DataEntry : public State {
+    State* previous_state;
+    void (*callback)(std::string&&);
+    const std::string& prompt;
+    std::string input;
+    bool updated;
+
+    public:
+    DataEntry(State* previous_state, void (*callback)(std::string&&),
+            const std::string& prompt = "input: ");
+    virtual void onTransition(Editor &context);
+    virtual void handle(const SDL_Event &e, Editor &context);
+    virtual void preRender(Editor &context);
+};
+
 } //namespace Editor
 
 #endif
