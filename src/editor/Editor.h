@@ -27,7 +27,10 @@ class Editor {
     Editor(State *state);
 
     void run();
+
     void transition(State *newstate);
+    void unsafe_transition(State *newstate);
+
     void load(std::string filename);
     void save(std::string filename);
     void new_map(unsigned side);
