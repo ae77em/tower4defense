@@ -18,8 +18,10 @@ ActorTowerAir::~ActorTowerAir() { }
 
 int ActorTowerAir::getShotDamage(ActorEnemy *enemy) {
     if (enemy->itIsAir()){
+        std::cout << "daño a enemigo de aire\n";
         return shotAirDamage;
     } else {
+        std::cout << "daño a enemigo de tierra\n";
         return shotDamage;
     }
 }

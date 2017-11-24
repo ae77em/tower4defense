@@ -12,6 +12,8 @@ public:
 
     std::string getShotDamageInfo() override;
 
+    void attack(Horde *horde) override;
+
     void initialize() override;
 
     bool upgradeDamage() override;
@@ -21,6 +23,11 @@ public:
     bool upgradeReach() override;
 private:
     int id;
+
+    void damageNearbyEnemies(std::vector<ActorEnemy *> &enemies,
+                             unsigned int currEnemyPos);
+
+    void doReachDamageTo(ActorEnemy *pEnemy);
 };
 
 

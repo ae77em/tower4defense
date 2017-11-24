@@ -3,7 +3,7 @@
 #include <string>
 #include <cmath>
 
-#define LOG
+//#define LOG
 
 ActorTower::ActorTower() {
     std::cout << "cree ActorTower" << std::endl;
@@ -122,7 +122,6 @@ void ActorTower::attack(Horde *horde) {
             isShooting = false;
         }
     }
-
 }
 
 void ActorTower::shootTo(ActorEnemy *pEnemy) {
@@ -132,12 +131,6 @@ void ActorTower::shootTo(ActorEnemy *pEnemy) {
     }
 }
 
-bool ActorTower::isReadyToShoot() const {
-    time_t now;
-    time(&now);
-    return now - lastShotTime >= shotSecondsGap;
-}
-
 void ActorTower::doShootTo(ActorEnemy *pEnemy) {
     std::cout << "daño al enemigo con " << std::to_string(shotDamage) <<
               std::endl;
@@ -145,6 +138,12 @@ void ActorTower::doShootTo(ActorEnemy *pEnemy) {
     int expPoints = pEnemy->receiveDamage(damageAmount);
     sumExperiencePoints(expPoints);
     updateLastShotTime();
+}
+
+bool ActorTower::isReadyToShoot() const {
+    time_t now;
+    time(&now);
+    return now - lastShotTime >= shotSecondsGap;
 }
 
 void ActorTower::setPosition(int x, int y) {

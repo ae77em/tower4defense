@@ -21,7 +21,7 @@ public:
 
     void live();
 
-    void attack(Horde *horde);
+    virtual void attack(Horde *horde);
 
     int getXPosition();
 
