@@ -3,12 +3,9 @@
 
 #include <SDL2/SDL_rect.h>
 #include "../common/Point.h"
-#include "../common/Circle.h"
-#include "Animable.h"
 
 class Utils {
 public:
-    static bool checkCollision(SDL_Rect a, SDL_Rect b);
 
     static Point mapToScreen(int i, int j, int h_offset = 0, int w_offset = 0);
 
@@ -40,12 +37,6 @@ public:
     static DecimalPoint cartesianToIso(double carX, double carY);
 
     static DecimalPoint screenToMapDecimal(int x, int y);
-
-    static bool hasCircleCollision(Circle &a, Circle &b);
-
-    static double distanceSquared(int x1, int y1, int x2, int y2);
-
-    static bool animablesPositionComparator(Animable *a, Animable *b);
 
     /* Devuelve un punto en l a distancia minimal de p
      *

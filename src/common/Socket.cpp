@@ -135,7 +135,7 @@ int Socket::receive(char* buffer, size_t length) {
         r = ::recv(this->socket,
                 &buffer[received],
                 length - received,
-                MSG_NOSIGNAL);
+                0);
         const int en = errno;
 
         if (r == 0) {

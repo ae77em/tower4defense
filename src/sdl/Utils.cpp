@@ -5,46 +5,6 @@
 #include <stdexcept>
 #include <cmath>
 
-bool Utils::checkCollision(SDL_Rect a, SDL_Rect b) {
-    //The sides of the rectangles
-    int leftA, leftB;
-    int rightA, rightB;
-    int topA, topB;
-    int bottomA, bottomB;
-
-    //Calculate the sides of rect A
-    leftA = a.x;
-    rightA = a.x + a.w;
-    topA = a.y;
-    bottomA = a.y + a.h;
-
-    //Calculate the sides of rect B
-    leftB = b.x;
-    rightB = b.x + b.w;
-    topB = b.y;
-    bottomB = b.y + b.h;
-
-    //If any of the sides from A are outside of B
-    if (bottomA <= topB) {
-        return false;
-    }
-
-    if (topA >= bottomB) {
-        return false;
-    }
-
-    if (rightA <= leftB) {
-        return false;
-    }
-
-    if (leftA >= rightB) {
-        return false;
-    }
-
-    //If none of the sides from A are outside B
-    return true;
-}
-
 Point Utils::mapToScreen(int i, int j, int h_offset, int w_offset) {
     int x = (i - j) * (ISO_TILE_WIDTH + w_offset) / 2;
     int y = (i + j) * (ISO_TILE_HEIGHT + h_offset) / 2;
@@ -151,52 +111,6 @@ SDL_Rect Utils::getBoxByTileType(int type) {
             toReturn.y = 0;
             toReturn.h = ISO_TILE_HEIGHT;
             toReturn.w = ISO_TILE_WIDTH;
-    }
-
-    return toReturn;
-}
-
-double Utils::distanceSquared(int x1, int y1, int x2, int y2) {
-    int deltaX = x2 - x1;
-    int deltaY = y2 - y1;
-    return deltaX * deltaX + deltaY * deltaY;
-}
-
-bool Utils::hasCircleCollision(Circle &a, Circle &b) {
-    //Calculate total radius squared
-    int totalRadiusSquared = a.r + b.r;
-    totalRadiusSquared = totalRadiusSquared * totalRadiusSquared;
-
-    //If the distance between the centers of the circles is less than
-    // the sum of their radii
-    return (distanceSquared(a.x, a.y, b.x, b.y) < (totalRadiusSquared));
-}
-
-bool Utils::animablesPositionComparator(Animable *a, Animable *b) {
-    bool toReturn;
-    Point A(0,0), B(0,0);
-    /* si por algún motivo falla... */
-    if (a){
-        A = a->getPoint();
-    } else {
-        return false;
-    }
-    if (b){
-        B = b->getPoint();
-    } else {
-        return true;
-    }
-
-    if (A.x < B.x){
-        toReturn = true;
-    } else if (A.x > B.x){
-        toReturn = false;
-    } else {
-        if (A.y <= B.y){
-            toReturn = true;
-        } else {
-            toReturn = false;
-        }
     }
 
     return toReturn;
