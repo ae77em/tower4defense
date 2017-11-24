@@ -128,7 +128,7 @@ void GameAccessWindow::on_cmbMatches_changed() {
     }
 }
 
-void GameAccessWindow::on_btnCrearPartida_clicked() {
+void GameAccessWindow::on_btnCreateMatch_clicked() {
     std::string mapName = cmbMapsText->get_active_text();
     std::string matchName = entryMatchName->get_text();
 
@@ -139,7 +139,7 @@ void GameAccessWindow::on_btnCrearPartida_clicked() {
     textMessage.sendTo(const_cast<Socket &>(*server));
 }
 
-void GameAccessWindow::on_btnJugar_clicked() {
+void GameAccessWindow::on_btnPlay_clicked() {
     std::string matchName = cmbMatchesText->get_active_text();
 
     std::string request = MessageFactory::getStartMatchRequest(clientId,
@@ -149,7 +149,7 @@ void GameAccessWindow::on_btnJugar_clicked() {
     textMessage.sendTo(const_cast<Socket &>(*server));
 }
 
-void GameAccessWindow::on_btnUnirse_clicked() {
+void GameAccessWindow::on_btnJoin_clicked() {
     std::string matchName = cmbMatchesText->get_active_text();
     std::vector<std::string> elements = getSelectedElements();
 
@@ -191,7 +191,7 @@ void GameAccessWindow::initButtonCreateMatch(
         pBtnCrearPartida->signal_clicked()
                 .connect(
                         sigc::mem_fun(*this,
-                                      &GameAccessWindow::on_btnCrearPartida_clicked));
+                                      &GameAccessWindow::on_btnCreateMatch_clicked));
     }
 }
 
@@ -202,7 +202,7 @@ void GameAccessWindow::initButtonPlay(Glib::RefPtr<Gtk::Builder> &refBuilder) {
         pbtnJugar->signal_clicked()
                 .connect(
                         sigc::mem_fun(*this,
-                                      &GameAccessWindow::on_btnJugar_clicked));
+                                      &GameAccessWindow::on_btnPlay_clicked));
     }
 }
 
@@ -213,7 +213,7 @@ void GameAccessWindow::initButtonJoin(Glib::RefPtr<Gtk::Builder> &refBuilder) {
         pbtnUnirse->signal_clicked()
                 .connect(
                         sigc::mem_fun(*this,
-                                      &GameAccessWindow::on_btnUnirse_clicked));
+                                      &GameAccessWindow::on_btnJoin_clicked));
     }
 }
 

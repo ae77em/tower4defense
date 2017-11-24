@@ -11,14 +11,12 @@ class Listener : public Thread {
 private:
     Socket *server;
     Notificable &notificable;
-    SharedBuffer &buffer;
-    //SharedBuffer &buffer2;
+    SharedBuffer &sharedBuffer;
 
 public:
     Listener(Socket *server,
              Notificable &b,
-             SharedBuffer &bfr/*,
-             SharedBuffer &other*/);
+             SharedBuffer &bfr);
 
     virtual ~Listener();
 

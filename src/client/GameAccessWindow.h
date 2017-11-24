@@ -118,9 +118,9 @@ public:
     void initEntryMatchName(Glib::RefPtr<Gtk::Builder> &refBuilder);
 
     /* Event handlers */
-    void on_btnJugar_clicked();
+    void on_btnPlay_clicked();
 
-    void on_btnCrearPartida_clicked();
+    void on_btnCreateMatch_clicked();
 
     void on_cmbMapas_changed();
 
@@ -146,7 +146,7 @@ private:
 
     bool mustCreateMatchBeEnabled();
 
-    void on_btnUnirse_clicked();
+    void on_btnJoin_clicked();
 
     void initButtonJoin(Glib::RefPtr<Gtk::Builder> &refBuilder);
 

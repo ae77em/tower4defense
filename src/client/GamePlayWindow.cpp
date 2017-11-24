@@ -172,14 +172,14 @@ bool GamePlayWindow::loadMedia() {
 
     //Load dot texture
     if (!dotTexture.loadFromFile("dot.bmp", gRenderer, 0x00, 0xFF, 0xFF)) {
-        std::cerr << "Failed to load dot texture!\n";
+        std::cerr << "Failed to load dot texture!" << std::endl;
         success = false;
     }
 
     //Load tile texture
     for (unsigned i = 0; i < TILES_IMAGES_PATHS.size(); ++i) {
         if (!gTileTextures[i].loadFromFile(TILES_IMAGES_PATHS[i], gRenderer)) {
-            std::cerr << "Failed to load tile set texture!\n";
+            std::cerr << "Failed to load tile set texture!" << std::endl;
             success = false;
         }
     }
@@ -198,7 +198,7 @@ bool GamePlayWindow::loadMedia() {
     if (!blookHawkTexture
             ->loadFromFile("images/sprites/enemy-blood-hawk.png",
                            gRenderer, 0xAA, 0xAA, 0xAA)){
-        std::cerr << "Failed to load BloodHawk texture!\n";
+        std::cerr << "Failed to load BloodHawk texture!" << std::endl;
         success = false;
     }
     goatmanTexture
@@ -233,7 +233,7 @@ bool GamePlayWindow::loadMedia() {
 
     //Load tile map
     if (!setTiles()) {
-        printf("Failed to load tile set!\n");
+        std::cerr << "Failed to load tile set!" << std::endl;
         success = false;
     }
 
@@ -306,7 +306,10 @@ bool GamePlayWindow::setTiles() {
             } else {
                 //If we don't recognize the tile type
                 //Stop loading map
-                printf("Error loading map: Invalid tile type at %d!\n", i);
+                std::cerr
+                        << "Error loading map: Invalid tile type at "
+                        << i
+                        << std::endl;
                 tilesLoaded = false;
                 break;
             }
@@ -766,11 +769,11 @@ void GamePlayWindow::run() {
 
     //Start up SDL and create window
     if (!init()) {
-        printf("Failed to initializde!\n");
+        std::cerr << "Failed to initializde!" << std::endl;
     } else {
         //Load media
         if (!loadMedia()) {
-            printf("Failed to load media!\n");
+            std::cerr << "Failed to load media!" << std::endl;
         } else {
             //Main loop flag
             bool quit = false;

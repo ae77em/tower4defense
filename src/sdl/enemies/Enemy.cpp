@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Enemy.h"
 #include "../Utils.h"
 
@@ -56,7 +57,7 @@ bool Enemy::loadMedia() {
     bool success = true;
     if (!texture->loadFromFile("images/sprites/enemy-abominable.png",
                                renderer, 0xFF, 0x00, 0x99)) {
-        printf("Failed to load dot texture!\n");
+        std::cerr << "Failed to load dot texture!" << std::endl;
         success = false;
     }
     return success;

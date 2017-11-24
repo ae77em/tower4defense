@@ -1,7 +1,6 @@
 #include "TextMessage.h"
 #include <stdexcept>
 
-// snprintf
 #ifndef _XOPEN_SOURCE
     #define _XOPEN_SOURCE 500
 #endif
@@ -16,13 +15,7 @@ void TextMessage::sendTo(Socket &sock) {
     snprintf(prefix, MESSAGE_PREFIX_LENGTH, "%010lu", message.size());
 
     prefix[MESSAGE_PREFIX_LENGTH-1] = '\0';
-
-    //std::cout << "mando length: " << prefix << std::endl;
-
     sock.send(prefix, MESSAGE_PREFIX_LENGTH);
-
-    //std::cout << "mando mensaje: " << message << std::endl;
-
     sock.send(message.c_str(), message.size());
 }
 

@@ -2,6 +2,7 @@
 #include <SDL2/SDL_ttf.h>
 #include "Texture.h"
 #include <string>
+#include <iostream>
 
 Texture::Texture() {
     mTexture = nullptr;
@@ -63,8 +64,12 @@ bool Texture::loadFromFile(const std::string &path,
     //Load image at specified path
     SDL_Surface *loadedSurface = IMG_Load(path.c_str());
     if (loadedSurface == nullptr) {
-        printf("Unable to load image %s! SDL_image Error: %s\n", path.c_str(),
-               IMG_GetError());
+        std::cerr
+                << "Unable to load image "
+                << path
+                << "! SDL_image Error: "
+                << IMG_GetError()
+                << std::endl;;
     } else {
         //Color key image
         SDL_SetColorKey(loadedSurface,
@@ -74,8 +79,12 @@ bool Texture::loadFromFile(const std::string &path,
         //Create texture from surface pixels
         newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
         if (newTexture == nullptr) {
-            printf("Unable to create texture from %s! SDL Error: %s\n",
-                   path.c_str(), SDL_GetError());
+            std::cerr
+                    << "Unable to create texture from "
+                    << path
+                    << "! SDL Error: "
+                    << SDL_GetError()
+                    << std::endl;
         } else {
             //Get image dimensions
             mWidth = loadedSurface->w;
