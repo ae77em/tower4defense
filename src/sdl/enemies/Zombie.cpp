@@ -5,6 +5,7 @@ Zombie::Zombie(int x, int y, SDL_Renderer *renderer, Texture *texture)
     : Enemy(x, y, renderer, texture) {
     currentDirection = 0;
     initializeSpritesData();
+    setSprites();
 }
 
 void Zombie::initializeSpritesData() {

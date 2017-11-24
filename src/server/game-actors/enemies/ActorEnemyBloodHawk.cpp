@@ -3,7 +3,7 @@
 ActorEnemyBloodHawk::ActorEnemyBloodHawk() {
     initialEnergy = energy = 100;
     velocity = 4;
-    isAir = false;
+    isAir = true;
 }
 
 ActorEnemyBloodHawk::~ActorEnemyBloodHawk() { }

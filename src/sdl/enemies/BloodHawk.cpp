@@ -1,14 +1,16 @@
+#include <iostream>
 #include "BloodHawk.h"
 #include "../Utils.h"
 
-BloodHawk::BloodHawk(int x,
-                     int y,
-                     SDL_Renderer *renderer,
-                     Texture *texture)
+BloodHawk::BloodHawk(int x, int y, SDL_Renderer *renderer, Texture *texture)
         : Enemy(x, y, renderer, texture) {
     currentDirection = 0;
     initializeSpritesData();
+    separationBetweenSprites = 0;
+    setSprites();
 }
+
+BloodHawk::~BloodHawk() { }
 
 void BloodHawk::initializeSpritesData() {
     /* datos sprites para caminar */
@@ -29,7 +31,7 @@ void BloodHawk::initializeSpritesData() {
     deathStartY = 13;
     deathSpriteWidth = 118;
     deathSpriteHeight = 96;
-    numberOfEnemyDeathSprites = 22;
+    numberOfEnemyDeathSprites = 10;
     numberOfEnemyDeathDirections = 4;
 
     deathBox.x = currentPoint.x;
@@ -40,4 +42,5 @@ void BloodHawk::initializeSpritesData() {
     currentDirection = 0;
     separationBetweenSprites = 0;
 }
+
 

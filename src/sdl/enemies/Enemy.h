@@ -1,10 +1,6 @@
 #ifndef TP4_TOWERDEFENSE_SDL_ENEMY_H
 #define TP4_TOWERDEFENSE_SDL_ENEMY_H
 
-static const int LIFE_BAR_WIDTH = 50;
-
-static const int LIFE_BAR_HEIGHT = 4;
-
 #include "../../common/model/Enemy.h"
 #include <vector>
 #include <array>
@@ -54,8 +50,6 @@ public:
      * camera: cuadrado que representa el lugar visible del mapa.
      * */
     void animate(SDL_Rect &camera);
-
-    void kill();
 
     /*
      * Mueve al enemigo a las coordenadas (x,y) del mapa. Las coordenadas tienen
@@ -161,7 +155,9 @@ protected:
     float energyPercentaje;
     bool isVisible;
 
-protected:
+    static const int LIFE_BAR_WIDTH = 50;
+    static const int LIFE_BAR_HEIGHT = 4;
+
     virtual void initializeSpritesData();
 
 };

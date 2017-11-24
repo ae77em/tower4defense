@@ -8,6 +8,7 @@ GreenDaemon::GreenDaemon(int x,
         : Enemy(x, y, renderer, texture) {
     currentDirection = 0;
     initializeSpritesData();
+    setSprites();
 }
 
 void GreenDaemon::initializeSpritesData() {

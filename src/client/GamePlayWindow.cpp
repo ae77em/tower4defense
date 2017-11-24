@@ -194,12 +194,9 @@ bool GamePlayWindow::loadMedia() {
     abmonibleTexture
             ->loadFromFile("images/sprites/enemy-abominable.png",
                            gRenderer, 0xFF, 0x00, 0x99);
-    if (!blookHawkTexture
+    blookHawkTexture
             ->loadFromFile("images/sprites/enemy-blood-hawk.png",
-                           gRenderer, 0xAA, 0xAA, 0xAA)){
-        std::cerr << "Failed to load BloodHawk texture!" << std::endl;
-        success = false;
-    }
+                           gRenderer, 0xAA, 0xAA, 0xAA);
     goatmanTexture
             ->loadFromFile("images/sprites/enemy-goatman.png",
                            gRenderer, 0xAA, 0xAA, 0xAA);
@@ -941,7 +938,7 @@ void GamePlayWindow::putTower(int id, int type, int x, int y) {
         }
     }
 
-    toPut->setSprites();
+    //toPut->setSprites();
     towers.insert(std::make_pair(id, toPut));
 
     /* Para ubicarlo en el array de tiles, tengo que obtener las coordenadas
@@ -987,7 +984,7 @@ void GamePlayWindow::addNewHorde(int hordeId, int enemyType, int amount) {
                 enemy = new Abmonible(-1, -1, gRenderer, abmonibleTexture);
             }
         }
-        enemy->setSprites();
+        //enemy->setSprites();
         enemy->setIsVisible(false);
         horde.addEnemy(enemy);
     }

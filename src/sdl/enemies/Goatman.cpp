@@ -7,7 +7,7 @@ Goatman::Goatman(int x, int y, SDL_Renderer *renderer, Texture *texture)
     initializeSpritesData();
 }
 
-Goatman::~Goatman() {}
+Goatman::~Goatman() { }
 
 void Goatman::initializeSpritesData() {
     /* datos sprites para caminar */

@@ -6,8 +6,6 @@ Enemy::Enemy(int x, int y, SDL_Renderer *r, Texture *t)
         : currentPoint(Utils::mapToScreen(x, y)) {
     initializeSpritesData();
 
-    collisionCircle.r = Enemy::getCollisionCircleRadio();
-    shiftColliders();
     texture = t;
     renderer = r;
     currentDirection = 0;
@@ -61,10 +59,6 @@ bool Enemy::loadMedia() {
         success = false;
     }
     return success;
-}
-
-void Enemy::kill() {
-    isAlive = false;
 }
 
 void Enemy::setSprites() {
@@ -159,7 +153,6 @@ void Enemy::animate(SDL_Rect &camera) {
 void Enemy::moveTo(int x, int y) {
     walkBox.x = x;
     walkBox.y = y;
-    shiftColliders();
 }
 
 void Enemy::setDirection(int d) {
@@ -192,16 +185,6 @@ bool Enemy::getIsAlive() const {
     return isAlive;
 }
 
-void Enemy::shiftColliders() {
-    //Align collider to center of dot
-    collisionCircle.x = walkBox.x;
-    collisionCircle.y = walkBox.y;
-}
-
-Circle &Enemy::getCollisionCircle() {
-    return collisionCircle;
-}
-
 void Enemy::renderLifeBar(int x, int y) {
     int w = LIFE_BAR_WIDTH;
     int h = LIFE_BAR_HEIGHT;
@@ -220,10 +203,6 @@ void Enemy::renderLifeBar(int x, int y) {
     SDL_Rect fgrect = {px, y, pw, h};
     SDL_RenderFillRect(renderer, &fgrect);
     SDL_SetRenderDrawColor(renderer, old.r, old.g, old.b, old.a);
-}
-
-int Enemy::getCollisionCircleRadio(){
-    return CARTESIAN_TILE_WIDTH / 2;
 }
 
 void Enemy::setTexture(Texture *t) {
