@@ -2,8 +2,9 @@
 
 using namespace Editor;
 
-DataEntry::DataEntry(State* previous_state, void (*callback)(std::string&&),
-        const std::string& prompt)
+DataEntry::DataEntry(State* previous_state,
+        std::function<void (const std::string&)> callback,
+        std::string prompt)
         : previous_state(previous_state), callback(callback),
         prompt(prompt), input(), updated(false) {}
 
@@ -24,7 +25,7 @@ void DataEntry::handle(const SDL_Event &e, Editor &context) {
         /* ENTER: transition to previous state and use callback */
         } else if ((e.key.keysym.sym == SDLK_RETURN)
                 || (e.key.keysym.sym == SDLK_KP_ENTER)) {
-            callback(std::move(input));
+            callback(input);
             context.transition(previous_state);
         }
 

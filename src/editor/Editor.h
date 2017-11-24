@@ -7,6 +7,7 @@
 #include <vector>
 #include <map>
 #include <memory>
+#include <functional>
 
 #ifndef EDITOR_H
 #define EDITOR_H
@@ -90,11 +91,11 @@ class StateHordeManagement : public State {
 class StateHordeCreation : public State {
     int index;
     std::string enemy;
-    std::string user_input;
+    int horde_size;
+    int delay_seconds;
 
     public:
     explicit StateHordeCreation(int path_index);
-    virtual void onTransition(Editor &context);
     virtual void handle(const SDL_Event &e, Editor &context);
 };
 
@@ -111,14 +112,15 @@ class StateHordeCreation : public State {
  */
 class DataEntry : public State {
     State* previous_state;
-    void (*callback)(std::string&&);
-    const std::string& prompt;
+    std::function<void (const std::string&)> callback;
+    std::string prompt;
     std::string input;
     bool updated;
 
     public:
-    DataEntry(State* previous_state, void (*callback)(std::string&&),
-            const std::string& prompt = "input: ");
+    DataEntry(State* previous_state,
+            std::function<void (const std::string&)> callback,
+            std::string prompt = "input: ");
     virtual void onTransition(Editor &context);
     virtual void handle(const SDL_Event &e, Editor &context);
     virtual void preRender(Editor &context);
