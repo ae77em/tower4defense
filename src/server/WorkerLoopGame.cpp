@@ -27,8 +27,7 @@
 
 #define MAX_HORDES 3
 
-//HAY QUE AGREGAR MUTEX PLAYERD PARA QUE BLOQUEE LA LISTA DE SERVER PLAYERS
-//PUEDE SER QUE SE ESTE REMOVIENDO ALGUNO EN OTRO HILO Y LUEGO EXPLOTE
+//FIXME: la lista de jugadores posiblemente requiera sincronizacion
 WorkerLoopGame::WorkerLoopGame(std::map<int, ServerPlayer *> &p,
                                std::list<GameAction *> &a,
                                std::mutex &m,
@@ -58,7 +57,6 @@ void WorkerLoopGame::run() {
     Horde *aHorde = nullptr;
 
     while (!gameFinish) {
-        /* Si debo crear una horda, la creo... */
         if (!allHordesWereCreatedYet()) {
             if (isTimeToCreateHorde()) {
                 createHordeAndNotify();
@@ -76,13 +74,14 @@ void WorkerLoopGame::run() {
                 enemies = aHorde->getEnemies();
 
                 for (auto enemy : enemies) {
-                    if (enemy->getIsAlive()) { // los enemigos vivos, viven...
+                    if (enemy->getIsAlive()) {
                         enemy->advance();
                         if (enemy->hasEndedThePath()) {
                             gameFinish = true;
                             notifyMatchLoose();
                         }
                     }
+                    //TODO: eliminar enemigos muertos
                 }
             }
         }
@@ -138,15 +137,12 @@ void WorkerLoopGame::run() {
     }
 }
 
+/* Atender los comandos enviados por los clientes */
 bool WorkerLoopGame::actionsSuccessfullAttended(
         std::list<GameAction *> &actionsGame) {
     bool actionSuccessful = true;
     mutexActions.lock();
-    //GRONCHADA PARA REFACTORIZAR
-    //IMPLEMENTAR CLASE QUE HAGA EL CIERRE DEL GAME LOOP
 
-    /* Estos son los requests enviados por el cliente, por ejemplo,
-     * poner torre... */
     std::string actionName;
     for (GameAction *action : actions) {
         std::cout << action->getName() << "  " << std::endl;
@@ -166,7 +162,6 @@ bool WorkerLoopGame::actionsSuccessfullAttended(
         } else if (actionName == STR_UPGRADE_TOWER) {
             upgradeTower(dynamic_cast<GameActionUpgradeTower*>(action));
         }
-        //actionsGame.push_back(action);
     }
 
     actions.clear();
@@ -177,7 +172,6 @@ bool WorkerLoopGame::actionsSuccessfullAttended(
 }
 
 std::string WorkerLoopGame::getGameStatus() {
-    //despues ver como parsear todos los actores
     return GameNotification::getStatusMatchNotification(hordes, towers);
 }
 

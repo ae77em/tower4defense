@@ -56,7 +56,6 @@ void Tile::renderSprite(SDL_Rect &camera,
 }
 
 void Tile::handleEvent(SDL_Event &e, std::string &desc) {
-    //If mouse event happened
     if (e.type == SDL_MOUSEBUTTONDOWN) {
         type = ((type == LTileSpriteMouseEvent::BUTTON_SPRITE_MOUSE_DOWN)
             ? LTileSpriteMouseEvent::BUTTON_SPRITE_DEFAULT
@@ -66,7 +65,6 @@ void Tile::handleEvent(SDL_Event &e, std::string &desc) {
 }
 
 void Tile::handleServerNotification(int opCode) {
-    //If mouse event happened
     switch (opCode){
         case SERVER_NOTIFICATION_PUT_TOWER: {
             type = TILE_FIRM_MARKED;

@@ -37,16 +37,14 @@ void ServerPlayer::setElements(std::list<std::string> els) {
     elements = els;
 }
 
-// si esta jugando no notifico disponibilidad de elementos libres,
-// o queda asi, nose
 void ServerPlayer::kill() {
     std::cout << "GameServer: Esperando que "
-            "termine el reciever del cliennte "<< id << std::endl;
+            "termine el receiver del cliente "<< id << std::endl;
 
     clientRequestHandler->join();
 
     std::cout << "GameServer: Termino el "
-            "reciever del cliennte "<< id << std::endl;
+            "receiver del cliente "<< id << std::endl;
 
     delete clientRequestHandler;
 }

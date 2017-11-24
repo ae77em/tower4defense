@@ -364,6 +364,10 @@ int GameAccessWindow::getClientId() {
 }
 
 bool GameAccessWindow::isNotValidClientId() {
+    /* clientId es el file descriptor del socket conectado al servidor
+     * En un cliente conectado, este es un entero pequeño no negativo.
+     * En un cliente recien construido, este es -1
+     */
     return clientId == -1;
 }
 
@@ -381,8 +385,6 @@ void GameAccessWindow::startMatch(std::string matchName, std::string map) {
 
     game->start();
     game->join();
-
-    //pWindow->show();
 }
 
 void GameAccessWindow::initDispatcher(Glib::RefPtr<Gtk::Builder> &refPtr) {
@@ -392,8 +394,7 @@ void GameAccessWindow::initDispatcher(Glib::RefPtr<Gtk::Builder> &refPtr) {
 void GameAccessWindow::notify(std::string &dtl) {
     uiMutex.lock();
     dataForUILoad.push(dtl);
-    dispatcher.emit(); // despacha y manda al método que que está a
-    // continuación, i.e.: updateUIData
+    dispatcher.emit();
     uiMutex.unlock();
 }
 

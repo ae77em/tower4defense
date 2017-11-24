@@ -44,7 +44,7 @@ void Tower::setSprites() {
         idleSprites[i].h = IDLE_SPRITE_HEIGHT;
     }
 
-    // seteo los sprites para disparo...
+    // seteo los sprites para disparo
     for (int i = 0; i < numberOfShotSprites; ++i) {
         shotSprites[i].x = shotStartX + (i * shotSpriteWidth);
         shotSprites[i].y = shotStartY;
@@ -69,8 +69,7 @@ void Tower::renderIdle(SDL_Rect &camera) {
     int frameToDraw = (SDL_GetTicks() / 100) % NUMBER_OF_IDLE_SPRITES;
     DecimalPoint screenPoint = Utils::cartesianToIso(idleBox.x, idleBox.y);
 
-    // set the shot box pos to assure that the shot start in the same
-    // tile in that the idle ended...
+    // Mostrar animacion de disparo y idle en el mismo lugar
     shotBox.x = idleBox.x;
     shotBox.y = idleBox.y;
 

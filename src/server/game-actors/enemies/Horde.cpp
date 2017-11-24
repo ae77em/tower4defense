@@ -37,7 +37,6 @@ void Horde::addEnemy(ActorEnemy *enemy) {
     enemies.push_back(enemy);
 }
 
-//FIXME: enemyType es ignorado
 Horde *Horde::createHorde(int enemyType, int amount, std::vector<Point> path){
     Horde *toReturn = new Horde();
 
@@ -51,12 +50,14 @@ Horde *Horde::createHorde(int enemyType, int amount, std::vector<Point> path){
     }
 
     for (int i = 0; i < amount ; ++i){
-        //hay que setear el desfasaje en los caminos, que cada bicho arranque
-        // un poco mas atras qeu los demnas
         ActorEnemy *enemy = getEnemyByType(enemyType);
 
         enemy->setPath(actualPath);
         enemy->setId(i);
+
+        /* Enemigo en posicion negativa simula delay de creacion
+         * (vease ActorEnemy.h)
+         */
         enemy->setCurrentPathPosition(-i * CARTESIAN_TILE_WIDTH / 2);
 
         toReturn->addEnemy(enemy);

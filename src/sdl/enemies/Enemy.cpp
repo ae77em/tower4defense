@@ -85,7 +85,7 @@ void Enemy::setSprites() {
         }
     }
 
-    // seteo los sprites para morir...
+    // seteo los sprites para morir
     spriteWidth = deathSpriteWidth + separationBetweenSprites;
     spriteHeight = deathSpriteHeight + separationBetweenSprites;
 
@@ -105,8 +105,7 @@ void Enemy::renderWalk(SDL_Rect &camera) {
     int frameToDraw = (SDL_GetTicks() / 100) % numberOfEnemyWalkSprites;
     DecimalPoint screenPoint = Utils::cartesianToIso(walkBox.x, walkBox.y);
 
-    // set the death box pos to assure that the death start in the same
-    // tile in that the walk ended...
+    // Mostrar animacion de movimiento y muerte en el mismo lugar
     deathBox.x = walkBox.x;
     deathBox.y = walkBox.y;
 
@@ -122,8 +121,9 @@ void Enemy::renderWalk(SDL_Rect &camera) {
     texture->renderSprite(renderer, isox, isoy,
                           &walkingSprites[currentDirection][frameToDraw]);
 
-    int isoxLifebar = isox + ((walkBox.w - LIFE_BAR_WIDTH) / 2); // lo centro...
-    
+    // Centrar la barra de vida
+    int isoxLifebar = isox + ((walkBox.w - LIFE_BAR_WIDTH) / 2);
+
     renderLifeBar(isoxLifebar, isoy);
 }
 
@@ -203,8 +203,8 @@ Circle &Enemy::getCollisionCircle() {
 }
 
 void Enemy::renderLifeBar(int x, int y) {
-    int w = LIFE_BAR_WIDTH; // porque sí
-    int h = LIFE_BAR_HEIGHT; // porque también (?)...
+    int w = LIFE_BAR_WIDTH;
+    int h = LIFE_BAR_HEIGHT;
     SDL_Color fcolor = {0x00, 0xFF, 0x00, 0xFF}; // green
     SDL_Color bcolor = {0xFF, 0x00, 0x00, 0xFF}; // red
 
