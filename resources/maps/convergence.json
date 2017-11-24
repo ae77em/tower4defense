@@ -4,27 +4,33 @@
     "hordes" : 
     [
         {
-            "delay" : 2,
-            "enemy_type" : "bloodhawk",
-            "horde_size" : 2,
+            "delay" : 10,
+            "enemy_type" : "greendaemon",
+            "horde_size" : 3,
             "path_index" : 0
         },
         {
-            "delay" : 2,
+            "delay" : 1,
             "enemy_type" : "bloodhawk",
             "horde_size" : 2,
             "path_index" : 1
         },
         {
-            "delay" : 2,
+            "delay" : 10,
+            "enemy_type" : "zombie",
+            "horde_size" : 6,
+            "path_index" : 0
+        },
+        {
+            "delay" : 0,
             "enemy_type" : "abominable",
             "horde_size" : 1,
             "path_index" : 0
         },
         {
-            "delay" : 2,
+            "delay" : 0,
             "enemy_type" : "goatman",
-            "horde_size" : 5,
+            "horde_size" : 2,
             "path_index" : 1
         }
     ],
