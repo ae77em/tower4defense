@@ -172,14 +172,14 @@ bool GamePlayWindow::loadMedia() {
 
     //Load dot texture
     if (!dotTexture.loadFromFile("dot.bmp", gRenderer, 0x00, 0xFF, 0xFF)) {
-        printf("Failed to load dot texture!\n");
+        std::cerr << "Failed to load dot texture!\n";
         success = false;
     }
 
     //Load tile texture
     for (unsigned i = 0; i < TILES_IMAGES_PATHS.size(); ++i) {
         if (!gTileTextures[i].loadFromFile(TILES_IMAGES_PATHS[i], gRenderer)) {
-            printf("Failed to load tile set texture!\n");
+            std::cerr << "Failed to load tile set texture!\n";
             success = false;
         }
     }
@@ -195,9 +195,12 @@ bool GamePlayWindow::loadMedia() {
     abmonibleTexture
             ->loadFromFile("images/sprites/enemy-abominable.png",
                            gRenderer, 0xFF, 0x00, 0x99);
-    blookHawkTexture
+    if (!blookHawkTexture
             ->loadFromFile("images/sprites/enemy-blood-hawk.png",
-                           gRenderer, 0xAA, 0xAA, 0xAA);
+                           gRenderer, 0xAA, 0xAA, 0xAA)){
+        std::cerr << "Failed to load BloodHawk texture!\n";
+        success = false;
+    }
     goatmanTexture
             ->loadFromFile("images/sprites/enemy-goatman.png",
                            gRenderer, 0xAA, 0xAA, 0xAA);
