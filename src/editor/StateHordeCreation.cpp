@@ -5,33 +5,48 @@
 using namespace Editor;
 
 StateHordeCreation::StateHordeCreation(int path_index)
-        : index(path_index), enemies() {}
+        : index(path_index), enemy(), horde_size(-1), delay_seconds(-1) {}
 
 void StateHordeCreation::handle(const SDL_Event &e, Editor &context) {
-    if (e.type != SDL_KEYDOWN) return;
-
-    if (e.key.keysym.sym == SDLK_1) enemies.push_back("abominable");
-    else if (e.key.keysym.sym == SDLK_2) enemies.push_back("bloodhawk");
-    else if (e.key.keysym.sym == SDLK_3) enemies.push_back("goatman");
-    else if (e.key.keysym.sym == SDLK_4) enemies.push_back("greendaemon");
-    else if (e.key.keysym.sym == SDLK_5) enemies.push_back("spectre");
-    else if (e.key.keysym.sym == SDLK_6) enemies.push_back("zombie");
-
-    else if (enemies.size() != 0
-            && (e.key.keysym.sym == SDLK_RETURN
-                || e.key.keysym.sym == SDLK_KP_ENTER)) {
-        context.getMap().addHorde(index, enemies);
+    /* Ask enemy type */
+    if (enemy == "") {
+        context.unsafe_transition(new DataEntry(this,
+                [&](const std::string& data) { enemy = data; },
+                "1:abominable  2:hawk  3:goatman  "
+                "4:daemon  5:spectre  6:zombie "
+        ));
+    /* Ask number of enemies */
+    } else if (horde_size <= 0) {
+        //TODO: this would be cleaner inside the lambda
+        if (enemy == "1") enemy = "abominable";
+        else if (enemy == "2") enemy = "bloodhawk";
+        else if (enemy == "3") enemy = "goatman";
+        else if (enemy == "4") enemy = "greendaemon";
+        else if (enemy == "5") enemy = "spectre";
+        else if (enemy == "6") enemy = "zombie";
+        else {
+            enemy = "";
+            return;
+        }
+        //FIXME: does not validate input
+        context.unsafe_transition(new DataEntry(this,
+                [&](const std::string& data) {
+                    horde_size = stol(data);
+                },
+                "How many enemies should this horde have? "
+        ));
+    /* Ask delay in seconds */
+    } else if (delay_seconds < 0) {
+        //FIXME: does not validate input
+        context.unsafe_transition(new DataEntry(this,
+                [&](const std::string& data) {
+                    delay_seconds = stol(data);
+                },
+                "Seconds to wait after this horde: "
+        ));
+    /* Add horde instance to map */
+    } else {
+        context.getMap().addHorde(enemy, horde_size, index, delay_seconds);
         context.transition(new StateHordeManagement());
     }
-
-    const auto& keys = context.getKeys();
-    if (e.key.keysym.sym == keys.cancel) {
-        context.transition(new StateHordeManagement());
-    }
-}
-
-void StateHordeCreation::preRender(Editor &context) {
-    context.getScreen().setDialog("1:abominable  2:hawk  3:goatman  "
-            "4:daemon  5:spectre  6:zombie  ENTER:finish  monsters: "
-            + std::to_string(enemies.size()));
 }

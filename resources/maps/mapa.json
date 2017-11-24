@@ -1,6 +1,15 @@
 {
     "fondo" : "i",
     "height" : 10,
+    "hordes" : 
+    [
+        {
+            "delay" : 0,
+            "enemy_type" : "abominable",
+            "horde_size" : 1,
+            "path_index" : 0
+        }
+    ],
     "paths" : 
     [
         [

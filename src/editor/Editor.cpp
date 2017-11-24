@@ -10,6 +10,12 @@ void Editor::Editor::transition(State *newstate) {
     state->onTransition(*this);
 }
 
+void Editor::Editor::unsafe_transition(State *newstate) {
+    state.release();
+    state = std::unique_ptr<State>(newstate);
+    state->onTransition(*this);
+}
+
 void Editor::Editor::run() {
     bool quit = false;
     while (!quit) {

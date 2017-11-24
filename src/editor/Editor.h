@@ -7,6 +7,7 @@
 #include <vector>
 #include <map>
 #include <memory>
+#include <functional>
 
 #ifndef EDITOR_H
 #define EDITOR_H
@@ -27,7 +28,10 @@ class Editor {
     Editor(State *state);
 
     void run();
+
     void transition(State *newstate);
+    void unsafe_transition(State *newstate);
+
     void load(std::string filename);
     void save(std::string filename);
     void new_map(unsigned side);
@@ -86,10 +90,38 @@ class StateHordeManagement : public State {
 /* Mostrar enemigos en la horda actual, y agregar nuevos enemigos */
 class StateHordeCreation : public State {
     int index;
-    std::vector<std::string> enemies;
+    std::string enemy;
+    int horde_size;
+    int delay_seconds;
 
     public:
     explicit StateHordeCreation(int path_index);
+    virtual void handle(const SDL_Event &e, Editor &context);
+};
+
+/* Solicitar datos al usuario y volver al estado anterior
+ *
+ * No transicionar a este estado normalmente. En su lugar utilizar una
+ * unsafe_transition. El editor volvera al estado previo al terminar.
+ *
+ * El texto obtenido del usuario es usado como argumento al callback
+ * proporcionado en el momento de la creacion del DataEntry. La forma
+ * recomendada de utilizar este comportamiento es pasar al constructor
+ * un lambda con referencias adecuadas a las variables internas del estado
+ * original.
+ */
+class DataEntry : public State {
+    State* previous_state;
+    std::function<void (const std::string&)> callback;
+    std::string prompt;
+    std::string input;
+    bool updated;
+
+    public:
+    DataEntry(State* previous_state,
+            std::function<void (const std::string&)> callback,
+            std::string prompt = "input: ");
+    virtual void onTransition(Editor &context);
     virtual void handle(const SDL_Event &e, Editor &context);
     virtual void preRender(Editor &context);
 };

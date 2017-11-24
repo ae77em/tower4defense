@@ -185,49 +185,44 @@ bool WorkerLoopGame::isTimeToCreateHorde() {
     time_t now;
     time(&now);
 
-    return (now - timeLastHordeCreation) > map.getDelay();
+    //FIXME: has to read delay from map
+    return (now - timeLastHordeCreation) > 5;
 }
 
 void WorkerLoopGame::createHordeAndNotify() {
-    time_t now;
-    time(&now);
+    /* Mapa estatico que asocia nombres de enemigos a enums
+     *
+     * Los enums vienen de Protocol.h. El mapa es estatico para evitar
+     * reconstruirlo cada vez que se llama a createHordeAndNotify.
+     */
+    static const  std::map<std::string, int> enemy_str_to_type = {
+        { "abominable", ENEMY_ABMONIBLE },
+        { "bloodhawk", ENEMY_BLOOD_HAWK },
+        { "goatman", ENEMY_GOATMAN },
+        { "greendaemon", ENEMY_GREEN_DAEMON },
+        { "spectre", ENEMY_SPECTRE },
+        { "zombie", ENEMY_ZOMBIE },
+    };
 
     /* Actualizar el momento de creacion de ultima horda */
+    time_t now;
+    time(&now);
     timeLastHordeCreation = now;
 
-    int enemyType = ENEMY_ZOMBIE; // TODO: tomar el tipo del archivo
+    /* Obtener los datos de la horda */
+    const auto& horde = map.getHordes()[hordeId];
+    const int horde_type = enemy_str_to_type.at(std::get<0>(horde));
+    const int horde_size = std::get<1>(horde);
+    const int path_index = std::get<2>(horde);
 
     /* Agregar nueva horda al juego */
-    //FIXME: siempre crea el mismo tipo de horda
-    int horde_size = map.getHordes()[hordeId].second.size();
-    Horde *h = Horde::createHorde(enemyType, horde_size,
-                                  map.getPaths()[map.getHordes()[hordeId].first]);
-
-    unsigned pathIndex = now % map.getPaths().size();
-
-    std::vector<Point> path = map.getPaths().at(pathIndex);
-
-    std::cout
-            << "cantidad de paths disponibles: "
-            << map.getPaths().size()
-            << std::endl;
-    std::cout
-            << "cree horda con el path "
-            << pathIndex
-            << std::endl;
-    std::cout
-            << "path: ";
-    for (Point point : path) {
-        std::cout << point.toString();
-        std::cout << " - ";
-    }
-    std::cout << std::endl;
-
+    Horde *h = Horde::createHorde(horde_type, horde_size,
+            map.getPaths()[path_index]);
     hordes.insert(std::make_pair(hordeId, h));
 
-    /* Notificar a los clientes sobre la nueva horda */std::string statusGame =
-            GameNotification::getNewHordeNotification(
-                    hordeId, enemyType, horde_size);
+    /* Notificar a los clientes sobre la nueva horda */
+    std::string statusGame = GameNotification::getNewHordeNotification(
+                    hordeId, horde_type, horde_size);
     for (auto it = players.begin(); it != players.end(); ++it) {
         it->second->sendData(statusGame);
     }
