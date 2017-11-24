@@ -190,21 +190,33 @@ bool WorkerLoopGame::isTimeToCreateHorde() {
 }
 
 void WorkerLoopGame::createHordeAndNotify() {
-    time_t now;
-    time(&now);
+    /* Mapa estatico que asocia nombres de enemigos a enums
+     *
+     * Los enums vienen de Protocol.h. El mapa es estatico para evitar
+     * reconstruirlo cada vez que se llama a createHordeAndNotify.
+     */
+    static const  std::map<std::string, int> enemy_str_to_type = {
+        { "abominable", ENEMY_ABMONIBLE },
+        { "bloodhawk", ENEMY_BLOOD_HAWK },
+        { "goatman", ENEMY_GOATMAN },
+        { "greendaemon", ENEMY_GREEN_DAEMON },
+        { "spectre", ENEMY_SPECTRE },
+        { "zombie", ENEMY_ZOMBIE },
+    };
 
     /* Actualizar el momento de creacion de ultima horda */
+    time_t now;
+    time(&now);
     timeLastHordeCreation = now;
 
-    int enemyType = ENEMY_ZOMBIE; // TODO: tomar el tipo del archivo
+    /* Obtener los datos de la horda */
+    const auto& horde = map.getHordes()[hordeId];
+    const int horde_type = enemy_str_to_type.at(std::get<0>(horde));
+    const int horde_size = std::get<1>(horde);
+    const int path_index = std::get<2>(horde);
 
     /* Agregar nueva horda al juego */
-    //FIXME: siempre crea el mismo tipo de horda
-    const auto& horde = map.getHordes()[hordeId];
-    //const std::string& enemy_type = std::get<0>(horde);
-    int horde_size = std::get<1>(horde);
-    int path_index = std::get<2>(horde);
-    Horde *h = Horde::createHorde(enemyType, horde_size,
+    Horde *h = Horde::createHorde(horde_type, horde_size,
             map.getPaths()[path_index]);
 
     unsigned pathIndex = now % map.getPaths().size();
@@ -231,7 +243,7 @@ void WorkerLoopGame::createHordeAndNotify() {
 
     /* Notificar a los clientes sobre la nueva horda */
     std::string statusGame = GameNotification::getNewHordeNotification(
-                    hordeId, enemyType, horde_size);
+                    hordeId, horde_type, horde_size);
     for (auto it = players.begin(); it != players.end(); ++it) {
         it->second->sendData(statusGame);
     }
