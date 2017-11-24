@@ -10,6 +10,7 @@
 #include <vector>
 #include <string>
 
+//TODO: wrapping window and renderer in RAII objects would clean this up
 Screen::Screen() {
     window = SDL_CreateWindow("Tower4Defense", SDL_WINDOWPOS_UNDEFINED,
             SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT,

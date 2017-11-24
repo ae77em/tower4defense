@@ -28,8 +28,6 @@ void Editor::Editor::run() {
                 quit = true;
             } else {
                 state->handle(e, *this);
-
-                /* Handle camera scrolling */
                 if (scrolling_enabled) screen.handleEvent(e);
             }
         }

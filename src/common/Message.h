@@ -15,48 +15,16 @@ public:
     Message();
     virtual ~Message();
 
-    /*
-     * Sets data contained in Json format in the object Json used.
-     * */
     void setData(Json::Value& data);
-
-    /*
-     * Gets data contained in Json format in the object Json used.
-     * */
     Json::Value& getData();
 
-    /*
-     * Get data contained in the Json objetct in string format.
-     * */
+    //TODO: document difference between these functions
     std::string getJsonString();
-
-    /*
-     * Serializes the data Json object into a string, and returns it.
-     * */
     std::string serialize();
-
-    /*
-     * Serializes/loads the data in the string passed by parameter
-     * into the data Json object.
-     * */
-    bool deserialize(std::string &messageData);
-
-    /*
-     * Serializes/loads the data in the cstring passed by parameter
-     * into the data Json object.
-     * */
-    //bool deserialize(char *messageData);
-
-    /*
-     * Returns the data into the Json object in string format.
-     * */
     std::string toString();
-
-
-    /*
-     * Print the data into the Json object in string format.
-     * */
     void print();
+
+    bool deserialize(std::string &messageData);
 
     /*
      * Empty the Json object of all data.

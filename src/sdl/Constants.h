@@ -4,15 +4,11 @@
 #include <vector>
 #include <string>
 
-//
-// Screen dimension constants
-//
+// Screen dimension
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
 
-//
-// Tile constants
-//
+// Tile sprite paths
 const std::vector<std::string> TILES_IMAGES_PATHS({
       "images/sprites/tile-grass.png",
       "images/sprites/tile-desert.png",
@@ -21,39 +17,36 @@ const std::vector<std::string> TILES_IMAGES_PATHS({
       "images/sprites/tile-way.png",
       "images/sprites/tile-firm.png",
       "images/sprites/tile-firm-marked.png",
-      "images/sprites/tile-firm.png" // CUANDO TENGO UNA TORRE,
-      // EL TILE NO CAMBIA, PERO IGUAL
-      // TENGO UN TIPO DE TILE DISTINTO
+      "images/sprites/tile-firm.png"
 });
 
-
+//TODO: explain difference between catesian, isometric, and square dimensions
 const int CARTESIAN_TILE_WIDTH = 80;
 const int CARTESIAN_TILE_HEIGHT = 80;
+
+// Tile dimensions without isometric perspective
+const int SQUARE_TILE_WIDTH = 80;
+const int SQUARE_TILE_HEIGHT = 80;
+
 const int ISO_TILE_WIDTH = 160;
 const int ISO_TILE_HEIGHT = 80;
 const int ISO_TILE_WIDTH_HALF = ISO_TILE_WIDTH / 2;
 const int ISO_TILE_HEIGHT_HALF = ISO_TILE_HEIGHT / 2;
-const int SQUARE_TILE_WIDTH = 80; // width of the tile without iso perspective
-const int SQUARE_TILE_HEIGHT = 80; // height of the tile without iso perspective
+
 const int TOTAL_TILE_SPRITES = 8;
 
-//
-// Constants of enemies sprites
-//
 const int NUMBER_OF_ENEMY_WALK_SPRITES = 12;
 const int NUMBER_OF_ENEMY_WALK_DIRECTIONS = 4;
-
 const int NUMBER_OF_ENEMY_DEATH_SPRITES = 18;
 const int NUMBER_OF_ENEMY_DEATH_DIRECTIONS = 4;
 
-/* Measures of sprites for default enemy */
+// Default measures for enemy sprites
 const int WALK_SPRITE_WIDTH_DEFAULT = 105;
 const int WALK_SPRITE_HEIGHT_DEFAULT = 119;
-
 const int DEATH_SPRITE_WIDTH_DEFAULT = 200;
 const int DEATH_SPRITE_HEIGHT_DEFAULT = 155;
 
-/* Measures of sprites for ABMONIBLE */
+// Sprite measures for Abmonible
 const int WALK_SPRITE_WIDTH_ABMONIBLE = 105;
 const int WALK_SPRITE_HEIGHT_ABMONIBLE = 119;
 
@@ -78,7 +71,6 @@ const int SPRITE_DIRECTIONS[4] = {
 };
 
 
-//The different tile sprites
 enum TileType {
     TILE_EMPTY = -1,
     TILE_GRASS = 0,

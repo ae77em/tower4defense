@@ -85,7 +85,6 @@ DecimalPoint Utils::screenToMapDecimal(int x, int y) {
     double i = (yByIsoTileHeightHalf + xByIsoTileWithHalf) / 2;
     double j = (yByIsoTileHeightHalf - xByIsoTileWithHalf) / 2;
 
-    //double i = d_i - 0.5;
     j += 0.5;
 
     return DecimalPoint(i, j);
@@ -156,6 +155,7 @@ SDL_Rect Utils::getBoxByTileType(int type) {
     return toReturn;
 }
 
+//FIXME: duplicate of Circle::distanceSquared
 double Utils::distanceSquared(int x1, int y1, int x2, int y2) {
     int deltaX = x2 - x1;
     int deltaY = y2 - y1;
@@ -163,13 +163,7 @@ double Utils::distanceSquared(int x1, int y1, int x2, int y2) {
 }
 
 bool Utils::hasCircleCollision(Circle &a, Circle &b) {
-    //Calculate total radius squared
-    int totalRadiusSquared = a.r + b.r;
-    totalRadiusSquared = totalRadiusSquared * totalRadiusSquared;
-
-    //If the distance between the centers of the circles is less than
-    // the sum of their radii
-    return (distanceSquared(a.x, a.y, b.x, b.y) < (totalRadiusSquared));
+    return a.hasCollisionWith(b);
 }
 
 bool Utils::animablesPositionComparator(Animable *a, Animable *b) {

@@ -7,11 +7,10 @@ Sender::Sender(Socket *s, SharedBuffer &b) : server(s), buffer(b) {}
 
 Sender::~Sender(){}
 
-void Sender::shutdown() {
-    //server.shutdown();
-}
+void Sender::shutdown() {}
 
 void Sender::run(){
+    //TODO: reducir el scope del try-catch
     try {
         std::string dataToSend;
 
@@ -21,9 +20,7 @@ void Sender::run(){
             TextMessage message(dataToSend);
             message.sendTo(*server);
         }
-    } catch (std::exception) {
-        /* Catcheo la excepción que se lanza cuando fuerzo la salida del accept
-         * que queda sin recibir ningún request. No hago nada...
-         */
-    }
+
+    /* Catcheo la excepción que se lanza cuando fuerzo la salida del accept */
+    } catch (std::exception) {}
 }

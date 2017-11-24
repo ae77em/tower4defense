@@ -68,6 +68,8 @@ class CompositeAnimation : public Animation {
     public:
     CompositeAnimation();
 
+    void renderFrame(int frame, int x, int y);
+
     /* Adds a member to the top of the composite
 
        The new member will be displayed last, at the given relative
@@ -90,8 +92,6 @@ class CompositeAnimation : public Animation {
 
        Similar considerations apply to the width.
      */
-    void renderFrame(int frame, int x, int y);
-
     int getHeight() const;
     int getWidth() const;
 };

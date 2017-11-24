@@ -61,7 +61,6 @@ GamePlayWindow::GamePlayWindow(Socket *s,
 }
 
 GamePlayWindow::~GamePlayWindow() {
-    /* enemies text */
     delete abmonibleTexture;
     delete blookHawkTexture;
     delete goatmanTexture;
@@ -280,17 +279,17 @@ bool GamePlayWindow::setTiles() {
         for (int j = 0; j < map.dimensions().y; ++j) {
             //Determines what kind of tile will be made
 
-            //Read tile from map file
+            /* Read tile from map file (see tile value reference in Map.h) */
             tileSaved = map.tile(i, j);
 
-            if (tileSaved == 'E' || tileSaved == 'S') { // es portal
+            if (tileSaved == 'E' || tileSaved == 'S') {
                 portals.push_back(new Portal());
                 tileType = tileIdTranslator.at(map.getBackgroundStyle());
-            } else if (tileSaved == '.') { // campo
+            } else if (tileSaved == '.') {
                 tileType = tileIdTranslator.at(map.getBackgroundStyle());
-            } else if (tileSaved == 'x') { // firme
+            } else if (tileSaved == 'x') {
                 tileType = tileIdTranslator.at(tileSaved);
-            } else if (tileSaved == '#') { // es la nada
+            } else if (tileSaved == '#') {
                 tileType = tileIdTranslator.at(tileSaved);
             }
 
@@ -298,7 +297,6 @@ bool GamePlayWindow::setTiles() {
             if (pointIsInPaths(pt, paths)) {
                 tileType = TILE_WAY;
             }
-
 
             //If the number is a valid tile number
             if (tileType >= TILE_EMPTY && tileType <= TILE_TOWER) {
@@ -323,7 +321,7 @@ bool GamePlayWindow::setTiles() {
             gTileClips[i].h = ISO_TILE_HEIGHT;
         }
 
-        /* button tower clips definition */
+        // Clips para los botones con torres
         for (unsigned i = 0; i < CANT_TOWERS_BUTTONS; ++i) {
             for (unsigned j = 0; j < CANT_TOWERS_BUTTONS_STATES; ++j) {
                 towerButtonsClips[i][j].x = i * 80;
@@ -372,7 +370,7 @@ void GamePlayWindow::loadPortalSprites() {
 void
 GamePlayWindow::renderText(SDL_Rect &camera, std::string text, int x, int y) {
     SDL_Color textColor = {0xFF, 0xFF, 0, 0xFF}; // letra amarilla
-    SDL_Color bgColor = {0, 0, 0, 0}; // fondo transparente (supuestamente)
+    SDL_Color bgColor = {0, 0, 0, 0}; // fondo transparente
 
     TTF_SetFontStyle(font, TTF_STYLE_BOLD);
 
@@ -391,7 +389,6 @@ GamePlayWindow::handleMouseEvents(SDL_Rect camera, SDL_Event e) {
          * (por ejemplo, marqué un lugar para poner una torre, o quiero
          * poner una torre) manejo dicho evento. */
         switch (e.button.button) {
-            //case GAME_EVENT_PUT_TOWER: {
             case SDL_BUTTON_LEFT: {
                 handleLeftButtonClick(point);
                 break;
@@ -802,7 +799,7 @@ void GamePlayWindow::run() {
                         quit = true;
                     }
 
-                    //Handle input for the dot
+                    // Change dot velocity
                     dot.handleEvent(e);
 
                     handleMouseEvents(camera, e);
@@ -810,26 +807,21 @@ void GamePlayWindow::run() {
 
                 handleServerNotifications(camera);
 
-                //Move the dot
+                // Move the camera
                 dot.move();
                 dot.setCamera(camera);
 
-                //Clear screen
+                // Clear screen
                 SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 0xFF);
                 SDL_RenderClear(gRenderer);
 
-                //Render level
                 renderLevel();
-
-                // Rendereo punto para mover pantalla
                 dot.render(dotTexture, camera, gRenderer);
 
                 loadAnimables();
                 animateAnimables();
 
-                // Muestro los botones de las torres que puedo poner
                 towerButtonsTexture.render(gRenderer, 1, 1);
-
                 renderMessages();
 
                 //Update screen
@@ -840,7 +832,6 @@ void GamePlayWindow::run() {
         //Free resources and close SDL
         close();
     }
-    /* server->shutdown(); // TODO ver si esto corresponde hacerlo acá...*/
 }
 
 void GamePlayWindow::animateAnimables() {
@@ -876,16 +867,16 @@ void GamePlayWindow::renderMessages() {
 }
 
 /* Remuevo los animables del vector (ojo, siguen existiendo,
-    * pero no están en el vector), ya que pueden ir cambiando de
-    * posición en cada iteración, y los vuelvo a cargar y ordenar,
-    * para volver a mostrarlos bien.
-    */
+ * pero no están en el vector), ya que pueden ir cambiando de
+ * posición en cada iteración, y los vuelvo a cargar y ordenar,
+ * para volver a mostrarlos bien.
+ */
 void GamePlayWindow::loadAnimables() {
-    // limpio la cola de prioridad...
+    // limpio la cola de prioridad
     animables = std::priority_queue<Animable *, std::vector<Animable *>,
             lessThanByPoint>();
 
-    // la cargo con torres...
+    // la cargo con torres
     Tower *tp = nullptr;
     std::map<int, Tower *>::const_iterator tIt;
     for (tIt = towers.begin(); tIt != towers.end(); ++tIt) {
@@ -893,7 +884,7 @@ void GamePlayWindow::loadAnimables() {
         animables.push(tp);
     }
 
-    // la cargo con enemigos...
+    // la cargo con enemigos
     std::map<int, DrawableHorde>::const_iterator hIt;
     for (hIt = hordes.begin(); hIt != hordes.end(); ++hIt) {
         DrawableHorde horde = hIt->second;
@@ -910,10 +901,8 @@ void GamePlayWindow::renderLevel() {
         if (tileSet.at(i).itIsMarked()) {
             tileSet.at(i).verifyIfMustContinueMarked();
 
-            if (!tileSet.at(i).itIsMarked()) {
-                tileSet.at(i).setType(
-                        TILE_FIRM); // todo refactor
-            }
+            if (!tileSet.at(i).itIsMarked())
+                tileSet.at(i).setType(TILE_FIRM);
         }
 
         if (tileSet.at(i).isDrawable()) {

@@ -5,9 +5,7 @@
 #include <string>
 #include <map>
 
-/* Códigos de de requests para acciones previas al juego,
-     * i.e. selección de juego, acceso a configuración, etc.
-     * */
+/* Códigos de requests para acciones previas al juego */
 enum ClientRequestsNonPlaying {
     CLIENT_REQUEST_END_GAME = 0,
     CLIENT_REQUEST_ACCESS_GAME_MENU = 1,
@@ -20,9 +18,7 @@ enum ClientRequestsNonPlaying {
     CLIENT_REQUEST_START_MATCH = 9
 };
 
-/* Códigos de de requests para acciones del juego propiamente dicho,
- * i.e. poner torre, marcar lugar...y no sé si hay otra.
- * */
+/* Códigos de de requests para acciones del juego propiamente dicho */
 enum ClientRequestsPlaying {
     CLIENT_REQUEST_PUT_TOWER = 100,
     CLIENT_REQUEST_MARK_TILE = 101,
@@ -46,19 +42,18 @@ enum ServerNonPlayingNotifications {
 };
 
 enum ServerPlayingNotifications {
-    /* Del 300 en adelante las notificaciones que
-     * corresponden a eventos disparados por el usuario. */
+    /* Del 300 para arriba, notificaciones que corresponden a eventos
+     * disparados por el usuario. */
     SERVER_NOTIFICATION_PUT_TOWER = 300,
     SERVER_NOTIFICATION_MARK_TILE = 301,
     SERVER_NOTIFICATION_CAST_SPELL = 302,
     SERVER_NOTIFICATION_TOWER_INFO = 303,
     SERVER_NOTIFICATION_APPLY_UPGRADE = 304,
     SERVER_NOTIFICATION_CREATE_HORDE = 305,
-    /* Del 399 para abajo (en forma descendente), las notificaciones que
-     * corresponden a eventos no disparados por el usuario. */
+
+    /* Del 399 para abajo, notificaciones que corresponden a otros eventos */
     SERVER_NOTIFICATION_MATCH_ENDED = 399,
     SERVER_NOTIFICATION_MOVE_ENEMY = 397
-    /* no creo que se alcancen, pero en tal caso habrá que pasar a otro rango */
 };
 
 enum EnemyType {

@@ -90,17 +90,11 @@ public:
      */
     int getClientId();
 
-    /*
-     * Retorna true si el clientId es igual a -1, que es el valor al construirse
-     * el objeto.
-     * Se supone que si se conecta a un server exitosamente, ese valor cambia
-     * por el del FD del cliente conectado en el server.
-     */
+    /* Especifica si el cliente esta conectado */
     bool isNotValidClientId();
 
     /* Habilita los checkboxes correspondientes a lo elementos disponibles, para
      * poder ser seleccionados.
-     * elements: listado de elementos disponibles.
      * */
     void setAvailableElements(const std::list<std::string> &unavailableElems);
 

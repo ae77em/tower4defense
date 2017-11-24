@@ -36,15 +36,13 @@ void ActorEnemy::setCurrentPathPosition(int currPos) {
 }
 
 void ActorEnemy::advance() {
-    // Iniciamos en un múltiplo de -40, salen en fila los bichos...vamos
-    // aumentando de a uno hasta que se hace cero, y ahí usamos la variable
-    // para avanzar en el índice del camino...solución medio fea, pero bueno.
+    /* Manejar enemigos fuera de pantalla */
     if (currentPathPosition < 0) {
         ++currentPathPosition;
         isVisible = false;
-    }
-    // El enemigo avanza en el camino hasta que muere o llega al final.
-    else if (currentPathPosition >= 0 &&
+
+    /* Manejar enemigos en pantalla */
+    } else if (currentPathPosition >= 0 &&
              currentPathPosition < (int) path.size()) {
         if (xPositionIntoTile > CARTESIAN_TILE_WIDTH ||
             yPositionIntoTile > CARTESIAN_TILE_HEIGHT) {
@@ -85,7 +83,9 @@ void ActorEnemy::advance() {
             collisionCircle.x = xPosition + int(CARTESIAN_TILE_WIDTH * 0.5);
             collisionCircle.y = yPosition + int(CARTESIAN_TILE_HEIGHT * 0.5);
             isVisible = true;
-        } else { // El enemigo llegó al final...perdimos la partida.
+
+        /* Final del camino, señalar final de juego */
+        } else {
             isVisible = false;
             endedThePath = true;
         }

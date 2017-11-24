@@ -82,7 +82,7 @@ protected:
     int numberOfIdleSprites;
     int numberOfShotSprites;
 
-    // seteo los sprites para espera...
+    // seteo los sprites para espera
     int idleStartX = 1;
     int idleStartY = 16;
     int shotStartX = 1;

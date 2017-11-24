@@ -17,12 +17,7 @@ void TextMessage::sendTo(Socket &sock) {
 
     prefix[MESSAGE_PREFIX_LENGTH-1] = '\0';
 
-    //std::cout << "mando length: " << prefix << std::endl;
-
     sock.send(prefix, MESSAGE_PREFIX_LENGTH);
-
-    //std::cout << "mando mensaje: " << message << std::endl;
-
     sock.send(message.c_str(), message.size());
 }
 
@@ -36,7 +31,7 @@ TextMessage TextMessage::receiveFrom(Socket &sock) {
     size_t len;
     sscanf(prefix, "%010lu", &len);
 
-    // Don't forget the all-important terminating null byte.
+    // +1 for the terminating null byte.
     char *message = new char[len+1];
     if (sock.receive(message, len) < (int)len) {
         delete message;

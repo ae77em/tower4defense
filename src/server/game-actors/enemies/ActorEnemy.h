@@ -77,7 +77,14 @@ protected:
 
     int xPositionIntoTile = 0;
     int currentDirection = 0;
+
+    /* Cuanto camino ha recorrido el enemigo
+     *
+     * Para valores negativos de esta variable, el enemigo no esta
+     * en pantalla y es invisible.
+     */
     int currentPathPosition = 0;
+
     int currentShift = 0;
     int yPositionIntoTile = 0;
     int xPosition = 0;

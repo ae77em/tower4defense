@@ -18,12 +18,8 @@ static const int LIFE_BAR_HEIGHT = 4;
 class Enemy : public Animable {
 public:
     Enemy(int x, int y, SDL_Renderer *renderer, Texture *texture);
-
     virtual ~Enemy();
 
-    /*
-     * Carga la imagen que contiene los sprites del monstruo.
-     */
     virtual bool loadMedia();
 
     /*
@@ -31,10 +27,6 @@ public:
      */
     virtual void setSprites();
 
-    /*
-     * Toma los datos de configuración del enemigo de un archivo y lo nutre
-     * con eso.
-     */
     void deserialize(std::string data);
 
     /*
@@ -47,12 +39,14 @@ public:
      * Renderea un sprite de la animación del enemigo caminando en la pantalla.
      * camera: cuadrado que representa el lugar visible del mapa.
      * */
+    //TODO: deberia ser privado?
     virtual void renderWalk(SDL_Rect &camera);
 
     /*
      * Renderea un sprite de la animación del enemigo muriendo en la pantalla.
      * camera: cuadrado que representa el lugar visible del mapa.
      * */
+    //TODO: deberia ser privado?
     void renderDie(SDL_Rect &camera);
 
     /*
@@ -67,7 +61,6 @@ public:
      * Mueve al enemigo a las coordenadas (x,y) del mapa. Las coordenadas tienen
      * que indicar la posición entera dentro del mapa isométrico, teniendo en
      * cuenta que el mapa tiene columnas cartesianas.
-     *
      * */
     void moveTo(int x, int y);
 
@@ -90,21 +83,12 @@ public:
      * */
     void setCamera(SDL_Rect &camera);
 
-    /*
-     * Setea el renderer, encargad de dibujar la textura del enemigo en el juego.
-     * camera: puntero al renderer utilizado.
-     * */
     void setRenderer(SDL_Renderer *renderer);
 
-    /*
-     * Setea la velocidad
-     * camera: puntero al renderer utilizado.
-     * */
     void setVelocity(int velocityX, int velocityY);
 
     /*
-     * Retirba el bonus que se entrega por matar a este enemigo.
-     * Corresponde al 50% de los puntos de vida del monstruo.
+     * Calcula la experiencia que se entrega por matar a este enemigo.
      * */
     int getBonus();
 
@@ -132,7 +116,6 @@ public:
     void setEnergyPercentaje(double energyPercentaje);
 
 protected:
-    /* Point for get the sprites */
     int walkingStartX = 1765;
     int walkingStartY = 3537;
     int walkSpriteWidth = 105;
@@ -150,7 +133,7 @@ protected:
     int currentDirection = 0;
     int separationBetweenSprites = 1;
 
-    /* ATRIBUTOS RELACIONADOS CON DIBUJO */
+    /* atributos relacionados con dibujo */
     SDL_Rect walkBox;
     std::array
             <std::array<SDL_Rect,NUMBER_OF_ENEMY_WALK_SPRITES>,
@@ -179,8 +162,6 @@ protected:
     bool isVisible;
 
 protected:
-
-    /* METHODS */
     virtual void initializeSpritesData();
 
 };
