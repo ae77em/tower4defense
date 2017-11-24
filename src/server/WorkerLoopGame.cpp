@@ -185,8 +185,9 @@ bool WorkerLoopGame::isTimeToCreateHorde() {
     time_t now;
     time(&now);
 
-    //FIXME: has to read delay from map
-    return (now - timeLastHordeCreation) > 5;
+    /* Get delay from previus horde, or hardcoded 5 for the first horde */
+    int delay = (hordeId == 0) ? 5 : std::get<3>(map.getHordes()[hordeId - 1]);
+    return (now - timeLastHordeCreation) > delay;
 }
 
 void WorkerLoopGame::createHordeAndNotify() {
