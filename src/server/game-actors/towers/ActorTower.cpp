@@ -6,6 +6,7 @@
 //#define LOG
 
 ActorTower::ActorTower() {
+    std::cout << "cree ActorTower" << std::endl;
     initialize();
 }
 
@@ -76,6 +77,10 @@ std::string ActorTower::getClass() {
 
 int ActorTower::getId() {
     return id;
+}
+
+void ActorTower::setId(int aId) {
+    id = aId;
 }
 
 bool ActorTower::itIsShooting() {
@@ -172,7 +177,7 @@ std::string ActorTower::getExperiencePointsInfo() {
 }
 
 std::string ActorTower::getRangeInfo() {
-    std::string toReturn = "Alcance: ";
+    std::string toReturn = "Rango: ";
     toReturn.append(std::to_string(range));
     toReturn.append(" (Nivel ");
     toReturn.append(std::to_string(rangeLevel));
@@ -202,6 +207,7 @@ std::string ActorTower::getSlowDownPercentajeInfo() {
 }
 
 std::string ActorTower::getShotDamageInfo() {
+    std::cout << "obtuve info daño BASE" << std::endl;
     std::string toReturn = "Daño: ";
     toReturn.append(std::to_string(shotDamage));
     toReturn.append(" (Nivel ");

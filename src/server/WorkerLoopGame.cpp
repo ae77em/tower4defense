@@ -240,11 +240,11 @@ void WorkerLoopGame::putTower(GameActionPutTower *pAction) {
 
     ActorTower *tower = nullptr;
 
-    int towerId = towers.size();
+    unsigned towerId = towers.size();
 
     switch (type) {
         case TOWER_FIRE: {
-            tower = new ActorTowerFire(towerId);
+            tower = new ActorTowerFire();
             break;
         }
         case TOWER_WATER: {
@@ -260,6 +260,8 @@ void WorkerLoopGame::putTower(GameActionPutTower *pAction) {
             break;
         }
     }
+
+    tower->setId(towerId);
 
     int actualX = pAction->getX() * CARTESIAN_TILE_WIDTH;
     int actualY = pAction->getY() * CARTESIAN_TILE_HEIGHT;
@@ -298,15 +300,15 @@ void WorkerLoopGame::sendTowerInfo(GameActionGetTowerInfo *pInfo) {
     int towerId = pInfo->getTowerId();
     int clientId = pInfo->getClientId();
 
-    ActorTower tower = *towers.at(towerId);
+    ActorTower *tower = towers.at(towerId);
 
     std::string data =
             GameNotification::getTowerInfoNotification(towerId,
-                                              tower.getExperiencePointsInfo(),
-                                              tower.getShotDamageInfo(),
-                                              tower.getRangeInfo(),
-                                              tower.getReachInfo(),
-                                              tower.getSlowDownPercentajeInfo());
+                                              tower->getExperiencePointsInfo(),
+                                              tower->getShotDamageInfo(),
+                                              tower->getRangeInfo(),
+                                              tower->getReachInfo(),
+                                              tower->getSlowDownPercentajeInfo());
 
     players.at(clientId)->sendData(data);
 }

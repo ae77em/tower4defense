@@ -40,3 +40,21 @@ bool ActorTowerAir::upgradeDamage(){
 
     return upgraded;
 }
+
+
+std::string ActorTowerAir::getShotDamageInfo() {
+    std::string toReturn = "Daño no aéreo: ";
+    toReturn.append(std::to_string(shotDamage));
+    toReturn.append(", Daño aéreo: ");
+    toReturn.append(std::to_string(shotAirDamage));
+    toReturn.append(" (Nivel ");
+    toReturn.append(std::to_string(shotDamageLevel));
+    toReturn.append(")");
+
+    return toReturn;
+}
+
+ActorTowerAir::ActorTowerAir() {
+    initialize();
+}
+

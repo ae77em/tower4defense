@@ -6,7 +6,8 @@
 
 class ActorTowerAir : public ActorTower {
 public:
-    explicit ActorTowerAir(int id);
+    ActorTowerAir();
+    ActorTowerAir(int id);
     ~ActorTowerAir();
 
     int getShotDamage(ActorEnemy enemy) override;
@@ -15,6 +16,10 @@ public:
 
 private:
     int shotAirDamage;
+
+    int id;
+
+    std::string getShotDamageInfo();
 };
 
 
