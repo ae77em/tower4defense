@@ -3,7 +3,6 @@
 #include "../sdl/Constants.h"
 #include "game-actors/enemies/ActorEnemy.h"
 #include "game-actors/enemies/Horde.h"
-#include "../common/MessageFactory.h"
 #include "GameNotification.h"
 #include "../common/model/Map.h"
 #include "../common/Protocol.h"
@@ -14,6 +13,7 @@
 #include "../client/GamePlayWindow.h"
 #include "game-actions/GameActionPutTower.h"
 #include "game-actions/GameActionGetTowerInfo.h"
+#include "game-actions/GameActionUpgradeTower.h"
 
 #include <iostream>
 #include <chrono>
@@ -164,9 +164,9 @@ bool WorkerLoopGame::actionsSuccessfullAttended(
         } else if (actionName == STR_GET_TOWER_INFO) {
             sendTowerInfo(dynamic_cast<GameActionGetTowerInfo *>(action));
         } else if (actionName == STR_UPGRADE_TOWER) {
-            // get upgrade tower
+            upgradeTower(dynamic_cast<GameActionUpgradeTower*>(action));
         }
-        actionsGame.push_back(action);
+        //actionsGame.push_back(action);
     }
 
     actions.clear();
@@ -195,13 +195,13 @@ void WorkerLoopGame::createHordeAndNotify() {
     /* Actualizar el momento de creacion de ultima horda */
     timeLastHordeCreation = now;
 
-    int enemyType = ENEMY_ZOMBIE; // TODO: tomar el tipo del archivo
+    int enemyType = ENEMY_ABMONIBLE; // TODO: tomar el tipo del archivo
 
     /* Agregar nueva horda al juego */
     //FIXME: siempre crea el mismo tipo de horda
     int horde_size = map.getHordes()[hordeId].second.size();
     Horde *h = Horde::createHorde(enemyType, horde_size,
-                                  map.getPaths()[map.getHordes()[hordeId].first]);
+                              map.getPaths()[map.getHordes()[hordeId].first]);
 
     unsigned pathIndex = now % map.getPaths().size();
 
@@ -279,7 +279,7 @@ void WorkerLoopGame::putTower(GameActionPutTower *pAction) {
 
 void WorkerLoopGame::notifyMatchWin() {
     std::string statusGame =
-            MessageFactory::getMatchEndedNotification(GAME_STATUS_WON);
+            GameNotification::getMatchEndedNotification(GAME_STATUS_WON);
     for (auto it = players.begin(); it != players.end(); ++it) {
         it->second->sendData(statusGame);
     }
@@ -288,7 +288,7 @@ void WorkerLoopGame::notifyMatchWin() {
 
 void WorkerLoopGame::notifyMatchLoose() {
     std::string statusGame =
-            MessageFactory::getMatchEndedNotification(GAME_STATUS_LOST);
+            GameNotification::getMatchEndedNotification(GAME_STATUS_LOST);
     for (auto it = players.begin(); it != players.end(); ++it) {
         it->second->sendData(statusGame);
     }
@@ -300,16 +300,67 @@ void WorkerLoopGame::sendTowerInfo(GameActionGetTowerInfo *pInfo) {
 
     ActorTower tower = *towers.at(towerId);
 
-    std::string data = MessageFactory::getTowerInfoNotification(towerId,
-                                                                tower.getShotDamageInfo(),
-                                                                tower.getRangeInfo(),
-                                                                tower.getReachInfo(),
-                                                                tower.getSlowDownPercentajeInfo());
+    std::string data =
+            GameNotification::getTowerInfoNotification(towerId,
+                                              tower.getExperiencePointsInfo(),
+                                              tower.getShotDamageInfo(),
+                                              tower.getRangeInfo(),
+                                              tower.getReachInfo(),
+                                              tower.getSlowDownPercentajeInfo());
 
     players.at(clientId)->sendData(data);
 }
 
 bool WorkerLoopGame::allHordesWereCreatedYet() {
     return hordes.size() == MAX_HORDES;
+}
+
+void WorkerLoopGame::upgradeTower(GameActionUpgradeTower *pInfo) {
+    int clientId = pInfo->getClientId();
+    int towerId = pInfo->getTowerId();
+    int upgradeType = pInfo->getUpgradeType();
+    bool upgradeSuccessful;
+    std::string info = "Upgrade exitoso.";
+
+    ActorTower *tower = towers.at(towerId);
+
+    /* Hago el upgrade correspondiente. */
+    switch (upgradeType){
+        case UPGRADE_DAMAGE:{
+            upgradeSuccessful = tower->upgradeDamage();
+            if (!upgradeSuccessful){
+                info = "La torre no tiene los puntos necesarios para el "
+                        "upgrade.";
+            }
+            break;
+        }
+        case UPGRADE_RANGE:{
+            //upgradeSuccessful = tower->upgradeRange();
+            upgradeSuccessful = false;
+            info = "No implementado.";
+            break;
+        }
+        case UPGRADE_SLOWDOWN:{
+            //upgradeSuccessful = tower->upgradeSlowdown();
+            upgradeSuccessful = false;
+            info = "No implementado.";
+            break;
+        }
+        case UPGRADE_REACH:{
+            //upgradeSuccessful = tower->upgradeReach();
+            upgradeSuccessful = false;
+            info = "No implementado.";
+            break;
+        }
+        default:{
+            upgradeSuccessful = false;
+            info = "Tipo de upgrade no reconocido.";
+        }
+    }
+
+    std::string data =
+            GameNotification::getUpgradeNotification(upgradeSuccessful, info);
+
+    players.at(clientId)->sendData(data);
 }
 

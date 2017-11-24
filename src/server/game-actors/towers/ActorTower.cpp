@@ -1,6 +1,7 @@
 #include "ActorTower.h"
 #include "../../../sdl/Constants.h"
 #include <string>
+#include <cmath>
 
 //#define LOG
 
@@ -23,10 +24,10 @@ void ActorTower::initialize() {
     slowDownPercentaje = 0.0;
     experiencePoints = 0;
 
-    levelRange = 1;
-    levelDamage = 1;
-    levelReach = 1;
-    levelSlowdown = 1;
+    rangeLevel = 1;
+    shotDamageLevel = 1;
+    reachLevel = 1;
+    slowdownLevel = 1;
 
     collisionCircle.r = getCollisionCircleRadio();
 
@@ -164,25 +165,59 @@ int ActorTower::getReach() {
     return 0;
 }
 
+std::string ActorTower::getExperiencePointsInfo() {
+    std::string toReturn = "Puntos ";
+    toReturn.append(std::to_string(experiencePoints));
+    return toReturn;
+}
+
 std::string ActorTower::getRangeInfo() {
-    return std::to_string(range);
+    std::string toReturn = "Alcance: ";
+    toReturn.append(std::to_string(range));
+    toReturn.append(" (Nivel ");
+    toReturn.append(std::to_string(rangeLevel));
+    toReturn.append(")");
+
+    return toReturn;
 }
 
 std::string ActorTower::getReachInfo() {
-    return std::to_string(reach);
+    std::string toReturn = "Alcance: ";
+    toReturn.append(std::to_string(reach));
+    toReturn.append(" (Nivel ");
+    toReturn.append(std::to_string(reachLevel));
+    toReturn.append(")");
+
+    return toReturn;
 }
 
 std::string ActorTower::getSlowDownPercentajeInfo() {
-    return std::to_string(slowDownPercentaje);
+    std::string toReturn = "Ralentización: ";
+    toReturn.append(std::to_string(slowDownPercentaje));
+    toReturn.append(" (Nivel ");
+    toReturn.append(std::to_string(slowdownLevel));
+    toReturn.append(")");
+
+    return toReturn;
 }
 
 std::string ActorTower::getShotDamageInfo() {
-    return std::to_string(shotDamage);
+    std::string toReturn = "Daño: ";
+    toReturn.append(std::to_string(shotDamage));
+    toReturn.append(" (Nivel ");
+    toReturn.append(std::to_string(shotDamageLevel));
+    toReturn.append(")");
+
+    return toReturn;
 }
 
 void ActorTower::updateLastShotTime() {
     time_t now;
     time(&now);
     lastShotTime = now;
+}
+
+bool ActorTower::upgradeDamage() {
+    return false;
 }
 

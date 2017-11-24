@@ -72,6 +72,10 @@ public:
 
     bool isReadyToShoot() const;
 
+    virtual bool upgradeDamage();
+
+    std::string getExperiencePointsInfo();
+
 protected:
     int range;
     int reach;
@@ -79,13 +83,14 @@ protected:
     bool isShooting;
     int lastShotTime;
     int shotDamage;
+    int reachDamage;
     double slowDownPercentaje;
     int experiencePoints;
 
-    int levelRange;
-    int levelDamage;
-    int levelReach;
-    int levelSlowdown;
+    int rangeLevel;
+    int shotDamageLevel;
+    int reachLevel;
+    int slowdownLevel;
 
     Circle collisionCircle;
     Point currentPoint = Point(0, 0);
@@ -98,6 +103,7 @@ protected:
     int getCollisionCircleRadio();
 
     void initialize();
+
 };
 
 

@@ -1,3 +1,4 @@
+#include <cmath>
 #include "ActorTowerFire.h"
 #include "../../../sdl/Constants.h"
 
@@ -13,3 +14,20 @@ ActorTowerFire::ActorTowerFire(int id) : ActorTower(id) {
 }
 
 ActorTowerFire::~ActorTowerFire() { }
+
+bool ActorTowerFire::upgradeDamage(){
+    bool upgraded = false;
+
+    // calculo puntos necesarios para el upgrade
+    double damageUpgradePoints = pow(1.5, shotDamageLevel) * 100;
+
+    // si tiene puntos suficientes
+    if (damageUpgradePoints <= experiencePoints){
+        // aplicar upgrade
+        shotDamage += 6;
+        reachDamage += 3;
+        upgraded = true;
+    }
+
+    return upgraded;
+}

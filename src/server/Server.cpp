@@ -238,10 +238,11 @@ void Server::run() {
                 }
                 case CLIENT_REQUEST_UPGRADE_TOWER: {
                     std::string matchName = request.getAsString(MATCH_NAME_KEY);
+                    int clientId = request.getAsInt("clientId");
                     int towerId = request.getAsInt("towerId");
                     int upgradeType = request.getAsInt("upgradeType");
 
-                    upgradeTower(matchName, towerId, upgradeType);
+                    upgradeTower(matchName, clientId, towerId, upgradeType);
                     break;
                 }
                 case SERVER_NOTIFICATION_END_CLIENT_CONNECTION: {
@@ -405,9 +406,12 @@ void Server::castSpell(std::string matchName, int x, int y) {
     serverGame->castSpell(x, y);
 }
 
-void Server::upgradeTower(std::string matchName, int towerId, int upgradeType) {
+void Server::upgradeTower(std::string matchName,
+                          int clientId,
+                          int towerId,
+                          int upgradeType) {
     ServerGame *serverGame = matches.at(matchName);
-    serverGame->upgradeTower(towerId, upgradeType);
+    serverGame->upgradeTower(clientId, towerId, upgradeType);
 }
 
 void Server::towerInfo(int clientId, std::string matchName, int towerId) {

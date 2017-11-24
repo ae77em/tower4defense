@@ -1,3 +1,4 @@
+#include <cmath>
 #include "ActorTowerWater.h"
 #include "../../../sdl/Constants.h"
 
@@ -13,3 +14,20 @@ ActorTowerWater::ActorTowerWater(int id) : ActorTower(id) {
 }
 
 ActorTowerWater::~ActorTowerWater() { }
+
+bool ActorTowerWater::upgradeDamage(){
+    bool upgraded = false;
+
+    // calculo puntos necesarios para el upgrade
+    double damageUpgradePoints = pow(1.5, shotDamageLevel) * 100;
+
+    // si tiene puntos suficientes
+    if (damageUpgradePoints <= experiencePoints){
+        // aplicar upgrade
+        shotDamage += 4;
+        upgraded = true;
+    }
+
+    return upgraded;
+}
+

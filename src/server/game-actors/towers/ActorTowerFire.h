@@ -8,6 +8,8 @@ class ActorTowerFire : public ActorTower {
 public:
     ActorTowerFire(int id);
     ~ActorTowerFire();
+
+    bool upgradeDamage() override;
 };
 
 

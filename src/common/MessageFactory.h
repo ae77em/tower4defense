@@ -249,7 +249,8 @@ public:
      * Retorna el pedido de upgrade de torre.
      */
     static std::string
-    getUpgradeRequest(std::string matchName, int towerId, int upgradeType);
+    getUpgradeRequest(int clientId, std::string matchName,
+                          int towerId, int upgradeType);
 
     /*
      * Retorna el pedido de upgrade de torre, sin distinguir a qué

@@ -61,14 +61,6 @@ enum ServerPlayingNotifications {
     /* no creo que se alcancen, pero en tal caso habrá que pasar a otro rango */
 };
 
-enum GameRequestsPlaying {
-    GAME_REQUEST_PUT_TOWER = 400,
-    GAME_REQUEST_MARK_TILE = 401,
-    GAME_REQUEST_CAST_SPELL = 402,
-    GAME_REQUEST_TOWER_INFO = 403,
-    GAME_REQUEST_UPGRADE_TOWER = 404
-};
-
 enum EnemyType {
     ENEMY_ABMONIBLE = 0,
     ENEMY_BLOOD_HAWK = 1,

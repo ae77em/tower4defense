@@ -9,8 +9,12 @@ public:
     explicit ActorTowerAir(int id);
     ~ActorTowerAir();
 
-    int getShotDamage(ActorEnemy enemy);
+    int getShotDamage(ActorEnemy enemy) override;
 
+    bool upgradeDamage() override;
+
+private:
+    int shotAirDamage;
 };
 
 

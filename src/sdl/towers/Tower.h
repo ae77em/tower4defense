@@ -49,6 +49,10 @@ public:
 
     void setIsShooting(bool isShooting);
 
+    virtual bool isAir();
+
+    virtual bool isFire();
+
 protected:
     static const int NUMBER_OF_IDLE_SPRITES = 8;
     static const int NUMBER_OF_SHOT_SPRITES = 8;

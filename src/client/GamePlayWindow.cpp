@@ -432,17 +432,30 @@ void GamePlayWindow::handleLeftButtonClick(Point &point) {
             }
         } else if (towerSelected != -1) {
             // quiero hacer upgrade
+            typeOfUpgradeToDo = -1;
             if (mousePosX <= 240) {
                 typeOfUpgradeToDo = UPGRADE_RANGE;
             } else if (mousePosX <= 280) {
                 typeOfUpgradeToDo = UPGRADE_DAMAGE;
             } else if (mousePosX <= 320) {
-                typeOfUpgradeToDo = UPGRADE_REACH;
+                if (towers.at(towerSelected)->isFire()) {
+                    typeOfUpgradeToDo = UPGRADE_REACH;
+                } else {
+                    towerUpgradeInfoMessage = "El alcance puede ser aumentado"
+                            " únicamente en torres de fuego.";
+                }
             } else {
-                typeOfUpgradeToDo = UPGRADE_SLOWDOWN;
+                if (towers.at(towerSelected)->isAir()){
+                    typeOfUpgradeToDo = UPGRADE_SLOWDOWN;
+                } else {
+                    towerUpgradeInfoMessage = "El ralentizado puede ser "
+                            "aumentado únicamente en torres de aire.";
+                }
             }
 
-            doUpgradeRequest();
+            if (typeOfUpgradeToDo != -1){
+                doUpgradeRequest();
+            }
         }
     } else if (isAValidPutTowerRequest(point)) {
         doPutTowerRequest(point);
@@ -455,11 +468,11 @@ void GamePlayWindow::handleLeftButtonClick(Point &point) {
             timeOfLastSpell = SDL_GetTicks();
         }
     } else if (isATowerPoint(point)) {
-        std::cout << "encontre una torre" << std::endl;
         doTowerInfoRequest();
     } else {
+        // limpio los buffers de los mensajes de info que muestro
         towerDamageDataMessage = "";
-        // no hago nada, por ahora
+        towerUpgradeInfoMessage = "";
     }
 }
 
@@ -472,14 +485,16 @@ bool GamePlayWindow::isAValidPutTowerRequest(Point &point) {
 
 void GamePlayWindow::doTowerInfoRequest() const {
     std::string request =
-            MessageFactory::getTowerInfoRequest(clientId, matchName,
+            MessageFactory::getTowerInfoRequest(clientId,
+                                                matchName,
                                                 towerSelected);
     sendToServer(request);
 }
 
 void GamePlayWindow::doUpgradeRequest() const {
     std::string request =
-            MessageFactory::getUpgradeRequest(matchName,
+            MessageFactory::getUpgradeRequest(clientId,
+                                              matchName,
                                               towerSelected,
                                               typeOfUpgradeToDo);
 
@@ -551,7 +566,6 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
                     int dir = MessageFactory::getDirection(aMessage);
                     int enemyId = request.getAsInt(ENEMY_ID_KEY);
                     int hordeId = request.getAsInt(HORDE_ID_KEY);
-                    //bool isVisible = request.getAsBool(IS_VISIBLE_KEY);
                     bool isAlive = request.getAsBool(IS_ALIVE_KEY);
                     double energyPercentaje =
                             request.getAsDouble(ENERGY_PERCENTAJE_KEY);
@@ -566,7 +580,6 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
                          * */
                         enemy->setIsAlive(isAlive);
                         enemy->moveTo(scenarioPoint.x, scenarioPoint.y);
-                        //enemy->setIsVisible(isVisible);
                         enemy->setEnergyPercentaje(energyPercentaje);
                     } catch (...) {
                         std::cerr << "No es posible mover el enemigo "
@@ -623,7 +636,8 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
                 break;
             }
             case SERVER_NOTIFICATION_APPLY_UPGRADE: {
-                // aplicar upgrade
+                Request request(message);
+                towerUpgradeInfoMessage = request.getAsString("info");
                 break;
             };
             default:
@@ -725,24 +739,22 @@ void GamePlayWindow::setToFirmTile(Point &point) {
 void GamePlayWindow::loadTowerInfo(Message message) {
     Request request(message);
 
-    std::string towerData("Tower data");
     std::string item;
 
-    towerDamageDataMessage.assign("Daño: ");
+    item = request.getAsString("experience");
+    towerExperiencePointsDataMessage.assign(item);
+
     item = request.getAsString("damage");
-    towerDamageDataMessage.append(item);
+    towerDamageDataMessage.assign(item);
 
-    towerRangeDataMessage.assign("Rango: ");
     item = request.getAsString("range");
-    towerRangeDataMessage.append(item);
+    towerRangeDataMessage.assign(item);
 
-    towerReachDataMessage.assign("Alcance: ");
     item = request.getAsString("reach");
-    towerReachDataMessage.append(item);
+    towerReachDataMessage.assign(item);
 
-    towerSlowdownDataMessage.assign("Ralentizado: ");
     item = request.getAsString("slowDown");
-    towerSlowdownDataMessage.append(item);
+    towerSlowdownDataMessage.assign(item);
 }
 
 void GamePlayWindow::run() {
@@ -824,9 +836,8 @@ void GamePlayWindow::run() {
 
         //Free resources and close SDL
         close();
-    }/*
-
-    server->shutdown(); // TODO ver si esto corresponde hacerlo acá...*/
+    }
+    /* server->shutdown(); // TODO ver si esto corresponde hacerlo acá...*/
 }
 
 void GamePlayWindow::animateAnimables() {
@@ -846,12 +857,18 @@ void GamePlayWindow::renderMessages() {
     }
 
     renderTimeMessages(camera);
+
     if (!towerDamageDataMessage.empty()) {
         renderText(camera, "Datos de la torre:", 1, 250);
-        renderText(camera, towerDamageDataMessage, 1, 266);
-        renderText(camera, towerRangeDataMessage, 1, 282);
-        renderText(camera, towerReachDataMessage, 1, 298);
-        renderText(camera, towerSlowdownDataMessage, 1, 314);
+        renderText(camera, towerExperiencePointsDataMessage, 1, 266);
+        renderText(camera, towerDamageDataMessage, 1, 282);
+        renderText(camera, towerRangeDataMessage, 1, 298);
+        renderText(camera, towerReachDataMessage, 1, 314);
+        renderText(camera, towerSlowdownDataMessage, 1, 330);
+    }
+
+    if (!towerUpgradeInfoMessage.empty()){
+        renderText(camera, towerUpgradeInfoMessage, 200);
     }
 }
 

@@ -103,3 +103,12 @@ Point Tower::getPoint() {
 const SDL_Rect & Tower::getIdleBox() const {
     return idleBox;
 }
+
+bool Tower::isAir() {
+    return false;
+}
+
+bool Tower::isFire() {
+    return false;
+}
+

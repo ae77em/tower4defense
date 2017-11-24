@@ -2,6 +2,7 @@
 #define TP4_TOWERDEFENSE_REQUEST_H
 
 #include "Message.h"
+#include "Point.h"
 #include <list>
 #include <string>
 
@@ -20,6 +21,8 @@ public:
     bool getAsBool(std::string key);
 
     double getAsDouble(std::string key);
+
+    Point getAsPoint(std::string xKey, std::string yKey);
 };
 
 
