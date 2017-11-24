@@ -61,7 +61,7 @@ void Server::addPlayerToGame(int clientId, std::string mName,
                     mName, clientId);
             serverGame->notifyAll(message);
 
-            //VEDR DESPUES COMO SINCRONIZAR PARA QUE NO ARRANQUE MUY ANTES
+            //TODO: retrasar el comienzo del juego
             serverGame->startGame();
         } else {
             //si no esta llena notifico a todos el ingreso del jugador
@@ -307,7 +307,7 @@ void Server::startMatch(int clientId, std::string matchName) {
                 matchName, serializedMap);
         serverGame->notifyAll(message);
 
-        //VEDR DESPUES COMO SINCRONIZAR PARA QUE NO ARRANQUE MUY ANTES
+        //TODO: retrasar el comienzo del juego
         serverGame->startGame();
     }
 }
@@ -364,7 +364,6 @@ void Server::removeClient(int id) {
                       << std::endl;
 
             sg->kill();
-            //delete sg;
             matches.erase(gameId);
         }
 
@@ -378,11 +377,7 @@ void Server::removeClient(int id) {
 
         std::cout << "se saco jugador que estaba unido con id: " << id
                   << std::endl;
-    } else {
-        // VER DESPUES SI HAY ALGO
-        // QUE HACER CUANDO EL STATUS DEL CLIENTE ES NOTPLAYING
     }
-
     sp->kill();
 
     delete sp;
@@ -458,5 +453,3 @@ std::vector<std::string> Server::getAllMapsNames() {
 
     return toReturn;
 }
-
-

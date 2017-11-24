@@ -3,6 +3,7 @@
 #include <string>
 #include <cmath>
 
+/* Descomentar la siguiente linea para activar salida de debug */
 //#define LOG
 
 ActorTower::ActorTower() {
@@ -125,7 +126,6 @@ void ActorTower::attack(Horde *horde) {
 }
 
 void ActorTower::shootTo(ActorEnemy *pEnemy) {
-    // si puedo disparar le disparo, esto es, le saco toda la vida que puedo
     if (pEnemy->getIsAlive()) {
         doShootTo(pEnemy);
     }

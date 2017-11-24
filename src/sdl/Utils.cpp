@@ -45,7 +45,6 @@ DecimalPoint Utils::screenToMapDecimal(int x, int y) {
     double i = (yByIsoTileHeightHalf + xByIsoTileWithHalf) / 2;
     double j = (yByIsoTileHeightHalf - xByIsoTileWithHalf) / 2;
 
-    //double i = d_i - 0.5;
     j += 0.5;
 
     return DecimalPoint(i, j);

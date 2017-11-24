@@ -11,7 +11,6 @@ Texture::Texture() {
 }
 
 Texture::~Texture() {
-    //Deallocate
     free();
 }
 
@@ -101,7 +100,6 @@ bool Texture::loadFromFile(const std::string &path,
 }
 
 void Texture::free() {
-    //Free texture if it exists
     if (mTexture != nullptr) {
         SDL_DestroyTexture(mTexture);
         mTexture = nullptr;
@@ -111,17 +109,14 @@ void Texture::free() {
 }
 
 void Texture::setColor(Uint8 red, Uint8 green, Uint8 blue) {
-    //Modulate texture rgb
     SDL_SetTextureColorMod(mTexture, red, green, blue);
 }
 
 void Texture::setBlendMode(SDL_BlendMode blending) {
-    //Set blending function
     SDL_SetTextureBlendMode(mTexture, blending);
 }
 
 void Texture::setAlpha(Uint8 alpha) {
-    //Modulate texture alpha
     SDL_SetTextureAlphaMod(mTexture, alpha);
 }
 
@@ -132,23 +127,14 @@ void Texture::render(SDL_Renderer *renderer,
                       double angle,
                       SDL_Point *center,
                       SDL_RendererFlip flip) {
-    //Set rendering space and render to screen
     SDL_Rect renderQuad = {x, y, mWidth, mHeight};
-
-    //Set clip rendering dimensions
     if (clip != nullptr) {
         renderQuad.w = clip->w;
         renderQuad.h = clip->h;
     }
 
-    //Render to screen
-    SDL_RenderCopyEx(renderer,
-                     mTexture,
-                     clip,
-                     &renderQuad,
-                     angle,
-                     center,
-                     flip);
+    SDL_RenderCopyEx(renderer, mTexture, clip, &renderQuad,
+            angle, center, flip);
 }
 
 
@@ -156,16 +142,12 @@ void Texture::renderSprite(SDL_Renderer *renderer,
                            int x,
                            int y,
                            SDL_Rect *clip) {
-    //Set rendering space and render to screen
     SDL_Rect renderQuad = {x, y, mWidth, mHeight};
-
-    //Set clip rendering dimensions
     if (clip != nullptr) {
         renderQuad.w = clip->w;
         renderQuad.h = clip->h;
     }
 
-    //Render to screen
     SDL_RenderCopy(renderer, mTexture, clip, &renderQuad);
 }
 

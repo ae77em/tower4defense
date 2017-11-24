@@ -74,7 +74,6 @@ void ClientRequestHandler::run() {
                     <<std::endl;
             break;
         }
-        //esta cola es la del server, no debe morir junto con le liente
         queueSharedMessage.push(message);
     }
 

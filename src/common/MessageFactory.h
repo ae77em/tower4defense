@@ -54,8 +54,7 @@ public:
 
     /*
      * Retorna el request de texto para marcar un lugar donde poner una torre,
-     * listo para
-     * ser enviado al server.
+     * listo para ser enviado al server.
      * clientId: id del cliente que se conecta.
      * x: coordenada x donde se quiere colocar la torre.
      * y: coordenada y donde se quiere colocar la torre.
@@ -63,14 +62,8 @@ public:
      */
     static std::string getMarkTileRequest(std::string matchName, int x, int y);
 
-    /*
-     * Retorna la operación asociada al request que se hace con el Json.
-     */
     static std::string getMarkTileNotification(int x, int y);
 
-    /*
-     * Retorna el pedido para obtener todos los mapas existentes para jugar.
-     */
     static std::string getExistingMapsRequest(int clientId);
 
     /*
@@ -148,12 +141,7 @@ public:
      */
     static Point getPoint(Message message);
 
-    /*
-     * Retorna la dirección que un enemigo puede seguir contenida en el
-     * mensaje.
-     */
     static int getDirection(Message message);
-
 
     /*
      * Retorna la notificación de inicio de partida.

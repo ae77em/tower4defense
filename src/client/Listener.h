@@ -11,7 +11,7 @@ class Listener : public Thread {
 private:
     Socket *server;
     Notificable &notificable;
-    SharedBuffer &sharedBuffer;
+    SharedBuffer &buffer;
 
 public:
     Listener(Socket *server,

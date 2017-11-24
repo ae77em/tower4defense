@@ -30,28 +30,21 @@ public:
      * */
     void handleServerNotification(int opCode);
 
-    //Get the tile type
     int getType();
-
-    //Set the tile type
     void setType(int tileType);
 
     //Get the collision box
     SDL_Rect getBox();
 
 
+    // Methods controlling marked (highlighted) status
     void verifyIfMustContinueMarked();
-
     int getTileMarkedTime() const;
-
     void setMarkedTime(int tileMarkedTime);
-
     bool itIsMarked() const;
-
     void setIsMarked(bool isMarked);
 
     void setTower(Tower *tower);
-
     Tower *getTower();
 
     bool isDrawable();
@@ -60,14 +53,12 @@ private:
     //The attributes of the tile
     SDL_Rect containerBoxAttributes;
 
-    //The tile type
     int type;
 
     //GamePlayWindow-event dispatched from the tile
     int gameEvent;
 
     int tileMarkedTime;
-
     bool isMarked;
 
     Tower *tower = nullptr;

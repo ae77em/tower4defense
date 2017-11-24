@@ -1,6 +1,7 @@
 #include "TextMessage.h"
 #include <stdexcept>
 
+// snprintf
 #ifndef _XOPEN_SOURCE
     #define _XOPEN_SOURCE 500
 #endif
@@ -15,6 +16,7 @@ void TextMessage::sendTo(Socket &sock) {
     snprintf(prefix, MESSAGE_PREFIX_LENGTH, "%010lu", message.size());
 
     prefix[MESSAGE_PREFIX_LENGTH-1] = '\0';
+
     sock.send(prefix, MESSAGE_PREFIX_LENGTH);
     sock.send(message.c_str(), message.size());
 }
@@ -29,7 +31,7 @@ TextMessage TextMessage::receiveFrom(Socket &sock) {
     size_t len;
     sscanf(prefix, "%010lu", &len);
 
-    // Don't forget the all-important terminating null byte.
+    // +1 for the terminating null byte.
     char *message = new char[len+1];
     if (sock.receive(message, len) < (int)len) {
         delete message;

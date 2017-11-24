@@ -5,7 +5,7 @@ void Editor::StatePath::handle(const SDL_Event &e, Editor &context) {
     auto& map = context.getMap();
     auto& screen = context.getScreen();
 
-    // Simple, unshifted click adds points to path
+    // Clicking the map adds points to path
     if (e.type == SDL_MOUSEBUTTONDOWN
             && !( KMOD_SHIFT & SDL_GetModState() )) {
         // The first point is taken from current mouse position

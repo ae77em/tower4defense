@@ -10,12 +10,8 @@
 #include "../common/Protocol.h"
 #include "Notificable.h"
 
-Listener::Listener(Socket *s,
-                   Notificable &ga,
-                   SharedBuffer &bfr)
-        : server(s),
-          notificable(ga),
-          sharedBuffer(bfr) { }
+Listener::Listener(Socket *s, Notificable &ga, SharedBuffer &bfr)
+        : server(s), notificable(ga), buffer(bfr) {}
 
 Listener::~Listener() {}
 
@@ -27,10 +23,8 @@ void Listener::run(){
         try {
             dataFromServer = textMessage.receiveFrom(*server).getMessage();
         } catch (std::exception) {
-            std::cout
-                    << "se cierra el listener del cliente del juego"
-                    << std::endl;
-            break;
+            std::cout << "se cierra el listener del cliente del juego" << std::endl;
+            return;
         }
 
         Message message;
@@ -41,9 +35,7 @@ void Listener::run(){
         int op = MessageFactory::getOperation(message);
 
         switch (op){
-            /*
-             * Operaciones sobre ventana de acceso:
-             * Operaciones que modifican la interfaz, y requieren que se
+            /* Operaciones que modifican la interfaz, y requieren que se
              * use el Glib::dispatcher
              */
             case SERVER_NOTIFICATION_START_MATCH:
@@ -56,11 +48,11 @@ void Listener::run(){
                 notificable.notify(dataFromServer);
                 break;
             }
-            /*
-             * Operaciones de juego.
+            /* Las operaciones que no son de login son acciones de juego,
+             * y las agregamos al buffer compartido del mismo.
              */
             default:
-                sharedBuffer.addData(dataFromServer);
+                buffer.addData(dataFromServer);
         }
 
         std::cout << response << "dataFromServer: "
