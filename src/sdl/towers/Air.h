@@ -54,6 +54,8 @@ public:
 
     void setIsShooting(bool isShooting);
 
+    bool isAir();
+
 protected:
     static const int NUMBER_OF_IDLE_SPRITES = 17;
     static const int NUMBER_OF_SHOT_SPRITES = 17;

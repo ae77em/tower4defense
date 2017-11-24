@@ -9,6 +9,8 @@ class ActorTowerEarth : public ActorTower {
 public:
     explicit ActorTowerEarth(int id);
     ~ActorTowerEarth();
+
+    bool upgradeDamage() override;
 };
 
 

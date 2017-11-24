@@ -105,3 +105,7 @@ Point Air::getPoint() {
 const SDL_Rect & Air::getIdleBox() const {
     return idleBox;
 }
+
+bool Air::isAir() {
+    return true;
+}

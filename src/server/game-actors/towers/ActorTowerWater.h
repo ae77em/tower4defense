@@ -8,6 +8,8 @@ class ActorTowerWater : public ActorTower {
 public:
     explicit ActorTowerWater(int id);
     ~ActorTowerWater();
+
+    bool upgradeDamage();
 };
 
 

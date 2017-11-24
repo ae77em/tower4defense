@@ -6,8 +6,17 @@
 
 class ActorTowerFire : public ActorTower {
 public:
-    ActorTowerFire(int id);
+    ActorTowerFire();
+    explicit ActorTowerFire(int id);
     ~ActorTowerFire();
+
+    bool upgradeDamage() override;
+
+    std::string getShotDamageInfo() override;
+
+    void initialize() override;
+private:
+    int id;
 };
 
 

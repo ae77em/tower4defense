@@ -4,6 +4,7 @@
 #include "../common/MessageFactory.h"
 #include "../common/model/Map.h"
 #include "game-actions/GameActionPutTower.h"
+#include "game-actions/GameActionUpgradeTower.h"
 
 #include <algorithm>
 #include <utility>
@@ -149,36 +150,20 @@ void ServerGame::putTower(int typeOfTower, int x, int y) {
 }
 
 void ServerGame::castSpell(int x, int y) {
-    std::string req = MessageFactory::getCastSpellGameRequest(x, y);
-    Message message;
-    message.deserialize(req);
-
-    mutexActionsGame.lock();
-    actions.push_back(new GameAction("castSpell"));
-    mutexActionsGame.unlock();
-
-    /** HASTA TENER DEFINIDO EL ACCESO A EL LOOP DE JUEGO CON LA INFO ***/
-    req = MessageFactory::getCastSpellNotification(x, y);
+    std::string req = MessageFactory::getCastSpellNotification(x, y);
     mutexPlayers.lock();
     notifyAll(req);
     mutexPlayers.unlock();
-    /*****/
 }
 
-void ServerGame::upgradeTower(int towerId, int upgradeType) {
-    std::string req = MessageFactory::getUpgradeTowerGameRequest(towerId, upgradeType);
-    Message message;
-    message.deserialize(req);
-
+void ServerGame::upgradeTower(int clientId, int towerId, int upgradeType) {
     mutexActionsGame.lock();
-    actions.push_back(new GameAction("upgradeTower"));
+    actions.push_back(
+            new GameActionUpgradeTower(STR_UPGRADE_TOWER,
+                                       clientId,
+                                       towerId,
+                                       upgradeType));
     mutexActionsGame.unlock();
-
-    /** HASTA TENER DEFINIDO EL ACCESO A EL LOOP DE JUEGO CON LA INFO ***/
-    mutexPlayers.lock();
-    notifyAll(message.serialize());
-    mutexPlayers.unlock();
-    /*****/
 }
 
 void ServerGame::towerInfo(int clientId, int towerId) {
@@ -193,6 +178,5 @@ std::string &ServerGame::getMapName() {
     return map.getName();
 }
 
-void ServerGame::setMapName(const std::string &mapName) {
-}
+void ServerGame::setMapName(const std::string &mapName) { }
 

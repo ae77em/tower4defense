@@ -89,7 +89,8 @@ private:
 
     void castSpell(std::string matchName, int x, int y);
 
-    void upgradeTower(std::string matchName, int towerId, int upgradeType);
+    void upgradeTower(std::string matchName, int clientId, int towerId,
+                          int upgradeType);
 
     void towerInfo(int clientId, std::string matchName, int towerId);
 

@@ -20,6 +20,14 @@ public:
                                                int towerType,
                                                int x,
                                                int y);
+
+    static std::string getUpgradeNotification(bool success, std::string message);
+
+    static std::string getTowerInfoNotification(int towerId, std::string experiencePointsInfo,
+                                                    std::string damageInfo, std::string rangeInfo,
+                                                    std::string reachInfo, std::string slowDownInfo);
+
+    static std::string getMatchEndedNotification(int matchStatus);
 };
 
 

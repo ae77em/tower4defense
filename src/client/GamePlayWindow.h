@@ -227,10 +227,13 @@ private:
     bool isCastingSpells;
     int timeOfLastSpell;
     int timeOfLastTowerPutted;
+    std::string towerExperiencePointsDataMessage;
     std::string towerDamageDataMessage;
     std::string towerRangeDataMessage;
     std::string towerReachDataMessage;
     std::string towerSlowdownDataMessage;
+
+    std::string towerUpgradeInfoMessage;
 
     int TILES_ROWS;
     int TILES_COLUMNS;

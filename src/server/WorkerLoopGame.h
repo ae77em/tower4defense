@@ -11,6 +11,7 @@
 #include "../common/model/Map.h"
 #include "game-actions/GameActionPutTower.h"
 #include "game-actions/GameActionGetTowerInfo.h"
+#include "game-actions/GameActionUpgradeTower.h"
 #include <map>
 #include <string>
 #include <list>
@@ -57,6 +58,8 @@ public:
                    std::list<GameAction*>& a,
                    std::mutex& m,
                    model::Map map);
+
+    void upgradeTower(GameActionUpgradeTower *pInfo);
 };
 
 

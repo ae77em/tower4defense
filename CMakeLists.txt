@@ -32,7 +32,7 @@ file(GLOB TEST_SOURCES
         "src/sdl/*.cpp")
 
 add_executable(game.exe ${CLIENT_SOURCES})
-add_executable(server.exe ${SERVER_SOURCES} src/server/game-actions/GameActionGetTowerInfo.cpp src/server/game-actions/GameActionGetTowerInfo.h)
+add_executable(server.exe ${SERVER_SOURCES} src/server/game-actions/GameActionGetTowerInfo.cpp src/server/game-actions/GameActionGetTowerInfo.h src/server/game-actions/GameActionUpgradeTower.cpp src/server/game-actions/GameActionUpgradeTower.h)
 add_executable(editor.exe ${EDITOR_SOURCES})
 add_executable(unit.exe ${TEST_SOURCES})
 

@@ -39,3 +39,14 @@ std::list<std::string> Request::getAsStringVector(std::string key){
 
     return elements;
 }
+
+Point Request::getAsPoint(std::string xKey, std::string yKey) {
+    Json::Value &root = requestMessage.getData();
+
+    int x = root[xKey].asInt();
+    int y = root[yKey].asInt();
+
+    Point point(x, y);
+
+    return point;
+}

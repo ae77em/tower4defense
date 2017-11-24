@@ -62,15 +62,21 @@ public:
     int getReach();
 
     /* Para retornar info al juego de la torre */
-    std::string getRangeInfo();
+    virtual std::string getRangeInfo();
 
-    std::string getReachInfo();
+    virtual std::string getReachInfo();
 
-    std::string getSlowDownPercentajeInfo();
+    virtual std::string getSlowDownPercentajeInfo();
 
-    std::string getShotDamageInfo();
+    virtual std::string getShotDamageInfo();
 
     bool isReadyToShoot() const;
+
+    virtual bool upgradeDamage();
+
+    std::string getExperiencePointsInfo();
+
+    void setId(int aId);
 
 protected:
     int range;
@@ -79,17 +85,17 @@ protected:
     bool isShooting;
     int lastShotTime;
     int shotDamage;
+    int reachDamage;
     double slowDownPercentaje;
     int experiencePoints;
 
-    int levelRange;
-    int levelDamage;
-    int levelReach;
-    int levelSlowdown;
+    int rangeLevel;
+    int shotDamageLevel;
+    int reachLevel;
+    int slowdownLevel;
 
     Circle collisionCircle;
     Point currentPoint = Point(0, 0);
-    //ActorRectT rect;
 
     int id;
 
@@ -97,7 +103,8 @@ protected:
 
     int getCollisionCircleRadio();
 
-    void initialize();
+    virtual void initialize();
+
 };
 
 

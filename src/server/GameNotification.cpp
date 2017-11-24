@@ -93,3 +93,59 @@ GameNotification::getPutTowerNotification(int id, int towerType, int x, int y) {
 
     return toReturn;
 }
+
+std::string
+GameNotification::getUpgradeNotification(bool success, std::string info) {
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = SERVER_NOTIFICATION_APPLY_UPGRADE;
+    root["success"] = success;
+    root["info"] = info;
+
+    message.setData(root);
+
+    toReturn = message.serialize();
+
+    return toReturn;
+}
+
+std::string
+GameNotification::getTowerInfoNotification(int towerId,
+                                           std::string experiencePointsInfo,
+                                           std::string damageInfo,
+                                           std::string rangeInfo,
+                                           std::string reachInfo,
+                                           std::string slowDownInfo) {
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = SERVER_NOTIFICATION_TOWER_INFO;
+    root[TOWER_ID_KEY] = towerId;
+    root["experience"] = experiencePointsInfo;
+    root["damage"] = damageInfo;
+    root["range"] = rangeInfo;
+    root["reach"] = reachInfo;
+    root["slowDown"] = slowDownInfo;
+
+    message.setData(root);
+
+    toReturn = message.serialize();
+
+    return toReturn;
+}
+
+std::string GameNotification::getMatchEndedNotification(int matchStatus) {
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = SERVER_NOTIFICATION_MATCH_ENDED;
+    root[MATCH_STATUS_KEY] = matchStatus;
+
+    message.setData(root);
+
+    return message.serialize();
+}

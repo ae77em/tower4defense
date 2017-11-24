@@ -105,3 +105,7 @@ Point Fire::getPoint() {
 const SDL_Rect & Fire::getIdleBox() const {
     return idleBox;
 }
+
+bool Fire::isFire(){
+    return true;
+}
