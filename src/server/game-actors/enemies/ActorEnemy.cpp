@@ -40,7 +40,7 @@ void ActorEnemy::advance() {
     // aumentando de a uno hasta que se hace cero, y ahí usamos la variable
     // para avanzar en el índice del camino...solución medio fea, pero bueno.
     if (currentPathPosition < 0) {
-        ++currentPathPosition;
+        currentPathPosition += (velocity * (1.0 - slowdown) * VEL_REGULATOR);
         isVisible = false;
     }
     // El enemigo avanza en el camino hasta que muere o llega al final.
@@ -51,6 +51,8 @@ void ActorEnemy::advance() {
             ++currentPathPosition;
             xPositionIntoTile = 0;
             yPositionIntoTile = 0;
+            xPositionIntoTileFraction = 0.0;
+            yPositionIntoTileFraction = 0.0;
         }
 
         currentPoint = path.at(currentPathPosition);
@@ -76,8 +78,13 @@ void ActorEnemy::advance() {
                             Utils::getNextMapDisplacement(x, xFinalIntoTile),
                             Utils::getNextMapDisplacement(y, yFinalIntoTile));
 
-            xPositionIntoTile += xMovement;
-            yPositionIntoTile += yMovement;
+            xPositionIntoTileFraction +=
+                    xMovement * velocity * (1.0 - slowdown) * VEL_REGULATOR;
+            yPositionIntoTileFraction +=
+                    yMovement * velocity * (1.0 - slowdown) * VEL_REGULATOR;
+
+            xPositionIntoTile = (int)xPositionIntoTileFraction;
+            yPositionIntoTile = (int)yPositionIntoTileFraction;
 
             xPosition = path.at(currentPathPosition).x + xPositionIntoTile;
             yPosition = path.at(currentPathPosition).y + yPositionIntoTile;
