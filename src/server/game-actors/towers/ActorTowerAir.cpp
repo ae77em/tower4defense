@@ -16,8 +16,8 @@ ActorTowerAir::ActorTowerAir(int id) : ActorTower(id) {
 
 ActorTowerAir::~ActorTowerAir() { }
 
-int ActorTowerAir::getShotDamage(ActorEnemy enemy) {
-    if (enemy.itIsAir()){
+int ActorTowerAir::getShotDamage(ActorEnemy *enemy) {
+    if (enemy->itIsAir()){
         return shotAirDamage;
     } else {
         return shotDamage;

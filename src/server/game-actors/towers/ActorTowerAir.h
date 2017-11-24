@@ -10,7 +10,7 @@ public:
     ActorTowerAir(int id);
     ~ActorTowerAir();
 
-    int getShotDamage(ActorEnemy enemy) override;
+    int getShotDamage(ActorEnemy *enemy) override;
 
     bool upgradeDamage() override;
 

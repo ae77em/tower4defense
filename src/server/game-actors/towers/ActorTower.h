@@ -37,7 +37,7 @@ public:
 
     Circle &getCollisionCircle();
 
-    virtual int getShotDamage(ActorEnemy enemy);
+    virtual int getShotDamage(ActorEnemy *enemy);
 
     void setIsShooting(bool isShooting);
 

@@ -3,7 +3,7 @@
 #include <string>
 #include <cmath>
 
-//#define LOG
+#define LOG
 
 ActorTower::ActorTower() {
     std::cout << "cree ActorTower" << std::endl;
@@ -56,7 +56,7 @@ Circle &ActorTower::getCollisionCircle() {
     return collisionCircle;
 }
 
-int ActorTower::getShotDamage(ActorEnemy enemy) {
+int ActorTower::getShotDamage(ActorEnemy *enemy) {
     return shotDamage;
 }
 
@@ -116,7 +116,6 @@ void ActorTower::attack(Horde *horde) {
                   << std::endl;
 #endif
         if (collisionCircle.hasCollisionWith(collisionCircleEnemy)) {
-            std::cout << "hubo colision" << std::endl;
             isShooting = true;
             shootTo(enemy);
         } else {
@@ -142,7 +141,9 @@ bool ActorTower::isReadyToShoot() const {
 void ActorTower::doShootTo(ActorEnemy *pEnemy) {
     std::cout << "daño al enemigo con " << std::to_string(shotDamage) <<
               std::endl;
-    sumExperiencePoints(pEnemy->receiveDamage(shotDamage));
+    int damageAmount = getShotDamage(pEnemy);
+    int expPoints = pEnemy->receiveDamage(damageAmount);
+    sumExperiencePoints(expPoints);
     updateLastShotTime();
 }
 
