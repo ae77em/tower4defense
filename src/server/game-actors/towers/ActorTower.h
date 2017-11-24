@@ -74,6 +74,12 @@ public:
 
     virtual bool upgradeDamage();
 
+    virtual bool upgradeRange();
+
+    virtual bool upgradeSlowdown();
+
+    virtual bool upgradeReach();
+
     std::string getExperiencePointsInfo();
 
     void setId(int aId);
@@ -86,7 +92,8 @@ protected:
     int lastShotTime;
     int shotDamage;
     int reachDamage;
-    double slowDownPercentaje;
+    float slowdownPercentaje;
+    int slowdownDuration;
     int experiencePoints;
 
     int rangeLevel;

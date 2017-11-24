@@ -10,7 +10,7 @@ ActorTowerAir::ActorTowerAir(int id) : ActorTower(id) {
     shotSecondsGap = 5;
     isShooting = false;
     lastShotTime = 0;
-    slowDownPercentaje = 0.0;
+    slowdownPercentaje = 0.0;
     experiencePoints = 0;
 }
 
@@ -23,24 +23,6 @@ int ActorTowerAir::getShotDamage(ActorEnemy enemy) {
         return shotDamage;
     }
 }
-
-bool ActorTowerAir::upgradeDamage(){
-    bool upgraded = false;
-
-    // calculo puntos necesarios para el upgrade
-    double damageUpgradePoints = pow(1.5, shotDamageLevel) * 100;
-
-    // si tiene puntos suficientes
-    if (damageUpgradePoints <= experiencePoints){
-        // aplicar upgrade
-        shotDamage += 2;
-        shotAirDamage += 10;
-        upgraded = true;
-    }
-
-    return upgraded;
-}
-
 
 std::string ActorTowerAir::getShotDamageInfo() {
     std::string toReturn = "Daño no aéreo: ";
@@ -56,5 +38,40 @@ std::string ActorTowerAir::getShotDamageInfo() {
 
 ActorTowerAir::ActorTowerAir() {
     initialize();
+}
+
+bool ActorTowerAir::upgradeDamage(){
+    bool upgraded = false;
+
+    // calculo puntos necesarios para el upgrade
+    double damageUpgradePoints = pow(1.5, shotDamageLevel) * 100;
+
+    // si tiene puntos suficientes
+    if (damageUpgradePoints <= experiencePoints){
+        // aplicar upgrade
+        shotDamage += 2;
+        shotAirDamage += 10;
+        ++shotDamageLevel;
+        upgraded = true;
+    }
+
+    return upgraded;
+}
+
+bool ActorTowerAir::upgradeRange() {
+    bool upgraded = false;
+
+    // calculo puntos necesarios para el upgrade
+    double rangeUpgradePoints = pow(2, rangeLevel) * 100;
+
+    // si tiene puntos suficientes
+    if (rangeUpgradePoints <= experiencePoints){
+        // aplicar upgrade
+        ++range;
+        ++rangeLevel;
+        upgraded = true;
+    }
+
+    return upgraded;
 }
 

@@ -11,6 +11,8 @@ public:
     ~ActorTowerEarth();
 
     bool upgradeDamage() override;
+
+    bool upgradeRange() override;
 };
 
 

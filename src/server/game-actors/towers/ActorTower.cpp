@@ -22,7 +22,8 @@ void ActorTower::initialize() {
     isShooting = false;
     lastShotTime = 0;
     shotDamage = 50;
-    slowDownPercentaje = 0.0;
+    slowdownPercentaje = 0.0;
+    slowdownDuration = 0;
     experiencePoints = 0;
 
     rangeLevel = 1;
@@ -155,11 +156,11 @@ void ActorTower::setPosition(int x, int y) {
 ActorTower::~ActorTower() {}
 
 int ActorTower::getSlowDownPercentaje() {
-    return slowDownPercentaje;
+    return slowdownPercentaje;
 }
 
 void ActorTower::setSlowDownPercentaje(double perc) {
-    slowDownPercentaje = perc;
+    slowdownPercentaje = perc;
 }
 
 int ActorTower::getRange() {
@@ -198,7 +199,7 @@ std::string ActorTower::getReachInfo() {
 
 std::string ActorTower::getSlowDownPercentajeInfo() {
     std::string toReturn = "Ralentización: ";
-    toReturn.append(std::to_string(slowDownPercentaje));
+    toReturn.append(std::to_string(slowdownPercentaje));
     toReturn.append(" (Nivel ");
     toReturn.append(std::to_string(slowdownLevel));
     toReturn.append(")");
@@ -224,6 +225,18 @@ void ActorTower::updateLastShotTime() {
 }
 
 bool ActorTower::upgradeDamage() {
+    return false;
+}
+
+bool ActorTower::upgradeRange() {
+    return false;
+}
+
+bool ActorTower::upgradeReach() {
+    return false;
+}
+
+bool ActorTower::upgradeSlowdown() {
     return false;
 }
 

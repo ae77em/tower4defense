@@ -9,7 +9,7 @@ ActorTowerEarth::ActorTowerEarth(int id) : ActorTower(id) {
     shotSecondsGap = 1;
     isShooting = false;
     lastShotTime = 0;
-    slowDownPercentaje = 0.0;
+    slowdownPercentaje = 0.0;
     experiencePoints = 0;
 }
 
@@ -27,6 +27,23 @@ bool ActorTowerEarth::upgradeDamage(){
     // aplicar upgrade
         shotDamage += 10;
         ++shotDamageLevel;
+        upgraded = true;
+    }
+
+    return upgraded;
+}
+
+bool ActorTowerEarth::upgradeRange() {
+    bool upgraded = false;
+
+    // calculo puntos necesarios para el upgrade
+    double rangeUpgradePoints = pow(2, rangeLevel) * 500;
+
+    // si tiene puntos suficientes
+    if (rangeUpgradePoints <= experiencePoints){
+        // aplicar upgrade
+        ++range;
+        ++rangeLevel;
         upgraded = true;
     }
 

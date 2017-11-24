@@ -9,7 +9,11 @@ public:
     explicit ActorTowerWater(int id);
     ~ActorTowerWater();
 
-    bool upgradeDamage();
+    bool upgradeDamage() override;
+
+    bool upgradeRange() override;
+
+    bool upgradeSlowdown();
 };
 
 

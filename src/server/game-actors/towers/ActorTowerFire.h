@@ -10,11 +10,15 @@ public:
     explicit ActorTowerFire(int id);
     ~ActorTowerFire();
 
-    bool upgradeDamage() override;
-
     std::string getShotDamageInfo() override;
 
     void initialize() override;
+
+    bool upgradeDamage() override;
+
+    bool upgradeRange() override;
+
+    bool upgradeReach() override;
 private:
     int id;
 };

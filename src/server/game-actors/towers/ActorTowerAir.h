@@ -14,6 +14,8 @@ public:
 
     bool upgradeDamage() override;
 
+    bool upgradeRange() override;
+
 private:
     int shotAirDamage;
 

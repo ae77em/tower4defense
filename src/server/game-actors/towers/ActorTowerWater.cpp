@@ -9,7 +9,7 @@ ActorTowerWater::ActorTowerWater(int id) : ActorTower(id) {
     shotSecondsGap = 3;
     isShooting = false;
     lastShotTime = 0;
-    slowDownPercentaje = 0.25;
+    slowdownPercentaje = 0.25;
     experiencePoints = 0;
 }
 
@@ -25,6 +25,47 @@ bool ActorTowerWater::upgradeDamage(){
     if (damageUpgradePoints <= experiencePoints){
         // aplicar upgrade
         shotDamage += 4;
+        ++shotDamageLevel;
+        upgraded = true;
+    }
+
+    return upgraded;
+}
+
+bool ActorTowerWater::upgradeRange() {
+    bool upgraded = false;
+
+    // calculo puntos necesarios para el upgrade
+    double rangeUpgradePoints = pow(2, rangeLevel) * 100;
+
+    // si tiene puntos suficientes
+    if (rangeUpgradePoints <= experiencePoints){
+        // aplicar upgrade
+        ++range;
+        ++rangeLevel;
+        upgraded = true;
+    }
+
+    return upgraded;
+}
+
+bool ActorTowerWater::upgradeSlowdown() {
+    bool upgraded = false;
+
+    // calculo puntos necesarios para el upgrade
+    double slowdownUpgradePoints = pow(2, rangeLevel) * 100;
+
+    // si tiene puntos suficientes
+    if (slowdownUpgradePoints <= experiencePoints){
+        // aplicar upgrade
+        if (slowdownPercentaje < 1.0){
+            slowdownPercentaje += 0.25; // sumo porcentaje...
+        }
+        if (slowdownPercentaje > 1.0){
+            slowdownPercentaje = 1.0; // si por errores de redondeo me pase
+        }
+        ++slowdownDuration;
+        ++slowdownLevel;
         upgraded = true;
     }
 

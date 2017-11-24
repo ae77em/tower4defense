@@ -196,7 +196,7 @@ void WorkerLoopGame::createHordeAndNotify() {
      * Los enums vienen de Protocol.h. El mapa es estatico para evitar
      * reconstruirlo cada vez que se llama a createHordeAndNotify.
      */
-    static const  std::map<std::string, int> enemy_str_to_type = {
+    static const std::map<std::string, int> enemy_str_to_type = {
         { "abominable", ENEMY_ABMONIBLE },
         { "bloodhawk", ENEMY_BLOOD_HAWK },
         { "goatman", ENEMY_GOATMAN },
@@ -334,21 +334,28 @@ void WorkerLoopGame::upgradeTower(GameActionUpgradeTower *pInfo) {
             break;
         }
         case UPGRADE_RANGE:{
-            //upgradeSuccessful = tower->upgradeRange();
-            upgradeSuccessful = false;
-            info = "No implementado.";
+            upgradeSuccessful = tower->upgradeRange();
+            if (!upgradeSuccessful){
+                info = "La torre no tiene los puntos necesarios para el "
+                        "upgrade.";
+            }
+
             break;
         }
         case UPGRADE_SLOWDOWN:{
-            //upgradeSuccessful = tower->upgradeSlowdown();
-            upgradeSuccessful = false;
-            info = "No implementado.";
+            upgradeSuccessful = tower->upgradeSlowdown();
+            if (!upgradeSuccessful){
+                info = "La torre no tiene los puntos necesarios para el "
+                        "upgrade.";
+            }
             break;
         }
         case UPGRADE_REACH:{
-            //upgradeSuccessful = tower->upgradeReach();
-            upgradeSuccessful = false;
-            info = "No implementado.";
+            upgradeSuccessful = tower->upgradeReach();
+            if (!upgradeSuccessful){
+                info = "La torre no tiene los puntos necesarios para el "
+                        "upgrade.";
+            }
             break;
         }
         default:{
