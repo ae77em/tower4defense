@@ -16,8 +16,17 @@ ClientRequestHandler::ClientRequestHandler(Socket* c,
                         :client(c), queueSharedMessage(th) {}
 
 void ClientRequestHandler::sendData(std::string data){
-    TextMessage d(data);
-    d.sendTo(*client);
+    try {
+        TextMessage d(data);
+        d.sendTo(*client);
+    } catch (...){
+        std::cerr
+                << "Ocurrió una excepción al enviar información al cliente "
+                << client->getId()
+                << ". Es posible que el cliente se haya desconectado."
+                << std::endl;
+
+    }
 }
 
 void ClientRequestHandler::sendClientId() {
