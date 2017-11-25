@@ -19,7 +19,7 @@ class TextMessage {
 public:
     explicit TextMessage(std::string message);
     void sendTo(Socket &sock);
-    TextMessage receiveFrom(Socket &sock);
+    static TextMessage receiveFrom(Socket &sock);
 
     const std::string& getMessage();
 };
