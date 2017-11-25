@@ -35,8 +35,8 @@ void ActorEnemy::advance() {
             isVisible = true;
         }
 
-        if (xPositionIntoTile > CARTESIAN_TILE_WIDTH ||
-            yPositionIntoTile > CARTESIAN_TILE_HEIGHT) {
+        if (std::abs(xPositionIntoTile) > CARTESIAN_TILE_WIDTH ||
+                std::abs(yPositionIntoTile) > CARTESIAN_TILE_HEIGHT) {
             ++currentPathPosition;
             xPositionIntoTile = 0;
             yPositionIntoTile = 0;
@@ -58,7 +58,7 @@ void ActorEnemy::advance() {
                                                       yFinalIntoTile);
 
         // El enemigo tiene movimiento para algún lugar, lo muevo.
-        if (xMovement > 0 || yMovement > 0) {
+        if (xMovement != 0 || yMovement != 0) {
             int x = path.at(currentPathPosition).x + xMovement;
             int y = path.at(currentPathPosition).y + yMovement;
 
