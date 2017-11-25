@@ -6,7 +6,7 @@
 #include <sstream>
 
 /* Descomentar la siguiente linea para activar salida de debug */
-#define LOG
+//#define LOG
 
 ActorTower::ActorTower() {
     std::cout << "cree ActorTower" << std::endl;

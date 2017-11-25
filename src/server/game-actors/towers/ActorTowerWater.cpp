@@ -2,7 +2,7 @@
 #include "ActorTowerWater.h"
 #include "../../../sdl/Constants.h"
 
-#define LOG
+//#define LOG
 
 ActorTowerWater::ActorTowerWater(int id) : ActorTower(id) {
     range = 3;

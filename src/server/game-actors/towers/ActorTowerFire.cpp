@@ -2,7 +2,7 @@
 #include "ActorTowerFire.h"
 #include "../../../sdl/Constants.h"
 
-#define LOG
+//#define LOG
 
 ActorTowerFire::ActorTowerFire() : ActorTower() {
     initialize();

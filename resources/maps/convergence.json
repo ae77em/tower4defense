@@ -10,6 +10,12 @@
             "path_index" : 1
         },
         {
+            "delay" : 0,
+            "enemy_type" : "goatman",
+            "horde_size" : 2,
+            "path_index" : 1
+        },
+        {
             "delay" : 10,
             "enemy_type" : "greendaemon",
             "horde_size" : 3,
@@ -20,12 +26,6 @@
             "enemy_type" : "spectre",
             "horde_size" : 6,
             "path_index" : 0
-        },
-        {
-            "delay" : 0,
-            "enemy_type" : "goatman",
-            "horde_size" : 2,
-            "path_index" : 1
         },
         {
             "delay" : 10,
