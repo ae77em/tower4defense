@@ -11,24 +11,12 @@ ActorEnemy::ActorEnemy() {
 
 ActorEnemy::~ActorEnemy() {}
 
-const std::vector<Point> &ActorEnemy::getPath() const {
-    return path;
-}
-
 void ActorEnemy::setPath(const std::vector<Point> &path) {
     ActorEnemy::path = path;
 }
 
 int ActorEnemy::getDirection() {
     return currentDirection;
-}
-
-void ActorEnemy::setDirection(int currDir) {
-    currentDirection = currDir;
-}
-
-int ActorEnemy::getCurrentPathPosition() const {
-    return currentPathPosition;
 }
 
 void ActorEnemy::setCurrentPathPosition(int currPos) {
@@ -117,35 +105,32 @@ bool ActorEnemy::isOnStage() const {
     return currentPathPosition >= 0 && currentPathPosition < (int)path.size();
 }
 
-double ActorEnemy::getCalculatedVelocity() const {
+double ActorEnemy::getCalculatedVelocity() {
+    time_t now;
+    time(&now);
+
+    if (now - timeOfLastSlowdown > timeOfSlowdown){
+        slowdown = 0.0;
+    }
+
+    std::cout << "now : " << now << std::endl
+            << "timeOfLastSlowdown : " << timeOfLastSlowdown << std::endl
+            << "timeOfSlowdown : " << timeOfSlowdown << std::endl
+            << "now - timeOfLastSlowdown : " << (now - timeOfLastSlowdown)
+            << std::endl;
+
     return velocity * (1.0 - slowdown) * VEL_REGULATOR;
 }
 
-void ActorEnemy::setIsWalking(bool iw) {
-    if (!isWalking) {
-        isWalking = iw;
-        currentPathPosition = 0;
-        currentPoint = path.at(currentPathPosition);
-        xPositionIntoTile = currentPoint.x;
-        yPositionIntoTile = currentPoint.y;
+void ActorEnemy::setSlowdown(double slowdown, int aTimeOfSlowdown){
+    time_t now;
+    time(&now);
+
+    if (now - timeOfLastSlowdown > timeOfSlowdown){
+        ActorEnemy::slowdown = slowdown;
+        timeOfLastSlowdown = now;
+        timeOfSlowdown = aTimeOfSlowdown;
     }
-}
-
-const Point &ActorEnemy::getCurrentPoint() const {
-    return currentPoint;
-}
-
-void ActorEnemy::setCurrentPoint(const Point &currentPoint) {
-    ActorEnemy::currentPoint = currentPoint;
-}
-
-
-int ActorEnemy::getXPositionIntoTile() {
-    return xPositionIntoTile;
-}
-
-int ActorEnemy::getYPositionIntoTile() {
-    return yPositionIntoTile;
 }
 
 int ActorEnemy::getXPosition() {
@@ -186,13 +171,6 @@ Circle &ActorEnemy::getCollisionCircle() {
 
 bool ActorEnemy::getIsAlive() {
     return isAlive;
-}
-
-int ActorEnemy::getShoot(int damage) {
-    int actualDamage = std::min(damage, energy);
-    energy -= actualDamage;
-
-    return actualDamage;
 }
 
 int ActorEnemy::receiveDamage(int damage) {

@@ -14,7 +14,11 @@ public:
 
     bool upgradeRange() override;
 
-    void attack(Horde *horde);
+    void doAttack(Horde *horde);
+
+    std::string getClass() {
+        return "Tierra";
+    }
 };
 
 

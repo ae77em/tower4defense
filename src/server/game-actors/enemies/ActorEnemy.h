@@ -28,31 +28,15 @@ public:
 
     int getId() override;
 
-    ActorRectT getRect() override;
-
-    const Point &getCurrentPoint() const;
-
-    void setCurrentPoint(const Point &currentPoint);
-
-    int getCurrentPathPosition() const;
+    ActorRectT getRect();
 
     void setCurrentPathPosition(int currentPosition);
 
-    const std::vector<Point> &getPath() const;
-
     void setPath(const std::vector<Point> &path);
-
-    void setDirection(int currentDirection);
 
     void advance();
 
-    void setIsWalking(bool isWalking);
-
     void setId(int id);
-
-    int getXPositionIntoTile();
-
-    int getYPositionIntoTile();
 
     Circle &getCollisionCircle();
 
@@ -60,56 +44,54 @@ public:
 
     bool itIsAir();
 
-    int getShoot(int i);
-
     int receiveDamage(int i);
 
     bool hasEndedThePath();
 
     double getRemainingEnergyPercentaje();
 
+    void setSlowdown(double slowdown, int timeOfSlowdown);
+
 protected:
+    int velocity = 1;
+    int initialEnergy = 200;
+    int energy = 200;
+    bool isAir = false;
+
+    int id;
     std::vector<Point> path;
     Point currentPoint = Point(-1, -1);
     Circle collisionCircle;
 
-    const double VEL_REGULATOR = 0.5;
+    const double VEL_REGULATOR = 0.1; // para que los bichos no vayan
+    // demasiado rápido o lento...
 
-    double slowdown = 0.0; // varía entre 0 y 1
+    double positionIntoTileFraction = 0.0;
     double xPositionIntoTileFraction = 0.0;
     double yPositionIntoTileFraction = 0.0;
     int xPositionIntoTile = 0;
     int yPositionIntoTile = 0;
     int currentDirection = 0;
-
     /* Cuanto camino ha recorrido el enemigo
-     *
      * Para valores negativos de esta variable, el enemigo no esta
      * en pantalla y es invisible.
      */
     int currentPathPosition = 0;
-
-    int currentShift = 0;
     int xPosition = 0;
     int yPosition = 0;
-    bool isWalking = false;
     bool isVisible = false;
     int xFinalIntoTile = -1;
     int yFinalIntoTile = -1;
-
-    int velocity = 1;
-    int initialEnergy = 200;
-    int energy = 200;
-    int remainingLifePoints = 200;
-    bool isAir = false;
     bool isAlive = true;
     bool endedThePath = false;
+    double slowdown = 0.0; // varía entre 0 y 1
+    time_t timeOfLastSlowdown = 0;
+    time_t timeOfSlowdown = 0;
 
-    int id;
-
-    double getCalculatedVelocity() const;
+    double getCalculatedVelocity();
 
     bool isOnStage() const;
+
 };
 
 #endif //TP4_TOWERDEFENSE_SERVER_ENEMY_H

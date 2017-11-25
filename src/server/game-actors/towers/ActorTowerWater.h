@@ -13,7 +13,15 @@ public:
 
     bool upgradeRange() override;
 
-    bool upgradeSlowdown();
+    bool upgradeSlowdown() override;
+
+    void doAttack(Horde *horde);
+
+    std::string getClass() {
+        return "Agua";
+    }
+
+    void applySlowdownTo(ActorEnemy *pEnemy);
 };
 
 

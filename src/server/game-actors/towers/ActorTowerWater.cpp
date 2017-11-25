@@ -10,6 +10,7 @@ ActorTowerWater::ActorTowerWater(int id) : ActorTower(id) {
     isShooting = false;
     lastShotTime = 0;
     slowdownPercentaje = 0.25;
+    slowdownDuration = 2;
     experiencePoints = 0;
 }
 
@@ -72,3 +73,45 @@ bool ActorTowerWater::upgradeSlowdown() {
     return upgraded;
 }
 
+void ActorTowerWater::doAttack(Horde *horde) {
+    std::vector<ActorEnemy *> enemies = horde->getEnemies();
+
+    for (unsigned i = 0; i < enemies.size(); ++i) {
+        ActorEnemy *enemy = enemies[i];
+
+        Circle &collisionCircleEnemy = enemy->getCollisionCircle();
+#ifdef LOG
+        std::cout << "enemy "
+              << enemy->getId()
+              << " is (col circle) in ("
+              << enemy->getCollisionCircle().x
+              << ", "
+              << enemy->getCollisionCircle().y
+              << ") - radio: "
+              << enemy->getCollisionCircle().r
+              << std::endl;
+    std::cout << "tower "
+              << std::to_string(id)
+              << " is (col circle) in ("
+              << std::to_string(collisionCircle.x)
+              << ", "
+              << std::to_string(collisionCircle.y)
+              << ") - radio: "
+              << std::to_string(collisionCircle.r)
+            << " - radio calculated: "
+            << std::to_string(getCollisionCircleRadio())
+              << std::endl;
+#endif
+        if (collisionCircle.hasCollisionWith(collisionCircleEnemy)) {
+            isShooting = true;
+            shootTo(enemy);
+            applySlowdownTo(enemy);
+        } else {
+            isShooting = false;
+        }
+    }
+}
+
+void ActorTowerWater::applySlowdownTo(ActorEnemy *pEnemy) {
+    pEnemy->setSlowdown(slowdownPercentaje, slowdownDuration);
+}

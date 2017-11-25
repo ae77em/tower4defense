@@ -12,7 +12,7 @@ public:
 
     std::string getShotDamageInfo() override;
 
-    void attack(Horde *horde) override;
+    void doAttack(Horde *horde) override;
 
     void initialize() override;
 
@@ -21,6 +21,10 @@ public:
     bool upgradeRange() override;
 
     bool upgradeReach() override;
+
+    std::string getClass() {
+        return "Fuego";
+    }
 private:
     int id;
 

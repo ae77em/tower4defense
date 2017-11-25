@@ -17,21 +17,13 @@ public:
 
     virtual ~ActorTower();
 
-    std::string getClass();
+    virtual std::string getClass();
 
     void live();
 
-    virtual void attack(Horde *horde);
-
-    int getXPosition();
-
-    int getYPosition();
-
-    int getEnergy();
+    void attack(Horde *horde);
 
     int getId();
-
-    ActorRectT getRect();
 
     void shiftColliders();
 
@@ -43,12 +35,6 @@ public:
 
     void sumExperiencePoints(int points);
 
-    int getExperiencePoints();
-
-    int getSlowDownPercentaje();
-
-    void setSlowDownPercentaje(double perc);
-
     bool itIsShooting();
 
     void setPosition(int x, int y);
@@ -56,10 +42,6 @@ public:
     void shootTo(ActorEnemy *pEnemy);
 
     void doShootTo(ActorEnemy *pEnemy);
-
-    int getRange();
-
-    int getReach();
 
     /* Para retornar info al juego de la torre */
     virtual std::string getRangeInfo();
@@ -112,7 +94,7 @@ protected:
 
     virtual void initialize();
 
-    void doAttack(Horde *horde);
+    virtual void doAttack(Horde *horde);
 };
 
 

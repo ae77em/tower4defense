@@ -50,8 +50,8 @@ bool ActorTowerEarth::upgradeRange() {
     return upgraded;
 }
 
-void ActorTowerEarth::attack(Horde *horde) {
-    if (!horde->itIsAir()){
-        doAttack(horde);
+void ActorTowerEarth::doAttack(Horde *horde) {
+    if (!horde->itIsAir()) {
+        ActorTower::doAttack(horde);
     }
 }

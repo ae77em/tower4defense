@@ -16,6 +16,10 @@ public:
 
     bool upgradeRange() override;
 
+    std::string getClass() {
+        return "Aire";
+    }
+
 private:
     int shotAirDamage;
 

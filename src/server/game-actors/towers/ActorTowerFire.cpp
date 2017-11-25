@@ -93,7 +93,7 @@ bool ActorTowerFire::upgradeReach() {
     return upgraded;
 }
 
-void ActorTowerFire::attack(Horde *horde) {
+void ActorTowerFire::doAttack(Horde *horde) {
     std::vector<ActorEnemy *> enemies = horde->getEnemies();
 
     for (unsigned i = 0; i < enemies.size(); ++i) {

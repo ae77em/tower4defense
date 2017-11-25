@@ -25,7 +25,6 @@ public:
     virtual int getEnergy() = 0;
     virtual int getDirection() = 0;
     virtual int getId() = 0;
-    virtual ActorRectT getRect() = 0;
 };
 
 

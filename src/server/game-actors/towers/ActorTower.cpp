@@ -2,6 +2,8 @@
 #include "../../../sdl/Constants.h"
 #include <string>
 #include <cmath>
+#include <iomanip>
+#include <sstream>
 
 /* Descomentar la siguiente linea para activar salida de debug */
 //#define LOG
@@ -69,12 +71,8 @@ void ActorTower::sumExperiencePoints(int points) {
     experiencePoints += points;
 }
 
-int ActorTower::getExperiencePoints() {
-    return experiencePoints;
-}
-
 std::string ActorTower::getClass() {
-    return "ActorTower";
+    return "Tower";
 }
 
 int ActorTower::getId() {
@@ -159,22 +157,6 @@ void ActorTower::setPosition(int x, int y) {
 
 ActorTower::~ActorTower() {}
 
-int ActorTower::getSlowDownPercentaje() {
-    return slowdownPercentaje;
-}
-
-void ActorTower::setSlowDownPercentaje(double perc) {
-    slowdownPercentaje = perc;
-}
-
-int ActorTower::getRange() {
-    return range;
-}
-
-int ActorTower::getReach() {
-    return 0;
-}
-
 std::string ActorTower::getExperiencePointsInfo() {
     std::string toReturn = "Puntos ";
     toReturn.append(std::to_string(experiencePoints));
@@ -202,8 +184,11 @@ std::string ActorTower::getReachInfo() {
 }
 
 std::string ActorTower::getSlowDownPercentajeInfo() {
+    std::stringstream stream;
+    stream << std::fixed << std::setprecision(2) << slowdownPercentaje;
+    std::string slowdownStr = stream.str();
     std::string toReturn = "Ralentización: ";
-    toReturn.append(std::to_string(slowdownPercentaje));
+    toReturn.append(slowdownStr);
     toReturn.append(" (Nivel ");
     toReturn.append(std::to_string(slowdownLevel));
     toReturn.append(")");
