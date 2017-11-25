@@ -7,7 +7,6 @@
 
 /* Códigos de requests para acciones previas al juego */
 enum ClientRequestsNonPlaying {
-    CLIENT_REQUEST_END_GAME = 0,
     CLIENT_REQUEST_ACCESS_GAME_MENU = 1,
     CLIENT_REQUEST_ACCESS_CONFIGURATION_MENU = 2,
     CLIENT_REQUEST_NEW_MATCH = 3,

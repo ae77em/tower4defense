@@ -60,15 +60,6 @@ void ClientRequestHandler::run() {
                       << " Recibio y despacho Mensaje: "
                       << message.toString()
                       << std::endl;
-
-            if (operationKey == CLIENT_REQUEST_END_GAME) {
-                std::cout
-                        << "CRH: cliente: "
-                        << client->getId()
-                        << " requirio finalizar su comuc. "
-                        << std::endl;
-                break;
-            }
         }catch (std::runtime_error){
             Message message;
             int clientId = client->getId();
