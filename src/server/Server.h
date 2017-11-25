@@ -13,7 +13,7 @@
 #include "../common/Message.h"
 
 #include "ServerPlayer.h"
-#include "ServerGame.h"
+#include "ServerMatch.h"
 #include "../common/model/Map.h"
 #include <map>
 #include <string>
@@ -28,7 +28,7 @@ private:
 
     ThreadedQueue<Message>& queueMessagesClient;
     std::map<unsigned int,ServerPlayer*> players;
-    std::map<std::string, ServerGame*> matches;
+    std::map<std::string, ServerMatch*> matches;
     std::map<std::string, model::Map> maps;
 
 public:
@@ -36,15 +36,11 @@ public:
 
     void run();
 
-    std::string getGamesList();
-
     void createGame(int clientId, std::string matchName, std::string string);
     bool createMatch(std::string basicString, std::string string);
-    void notifyAllCreationGame(int gameId,int clientIdWhoCreatedGame);
 
     void addPlayerToMatch(std::string nameMatch, ServerPlayer *sp);
 
-    void setQueueRequestClient(ThreadedQueue<Message> &queue);
     void createAndRunPlayer(Socket* s);
 
     unsigned int getAmountGames();

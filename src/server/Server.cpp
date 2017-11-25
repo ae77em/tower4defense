@@ -43,7 +43,7 @@ void Server::addPlayerToGame(int clientId, std::string mName,
                              std::list<std::string> elements) {
     mutexPlayers.lock();
 
-    ServerGame *serverGame = matches.at(mName);
+    ServerMatch *serverGame = matches.at(mName);
     ServerPlayer *serverPlayer = players.at(clientId);
 
     //chequeo si no se lleno antes
@@ -101,28 +101,24 @@ bool Server::createMatch(std::string nameMatch, std::string mapName) {
     // Si ya existe un juego con el mismo nombre
     if (matches.find(nameMatch) != matches.end()) return false;
 
-    matches.insert(std::pair<std::string, ServerGame*>(
+    matches.insert(std::pair<std::string, ServerMatch*>(
             nameMatch,
-            new ServerGame(mutexPlayers, aMap)));
+            new ServerMatch(mutexPlayers, aMap)));
     return true;
 }
 
 void Server::createAndRunPlayer(Socket *s) {
     ClientRequestHandler *crh = new ClientRequestHandler(s,
                                                          queueMessagesClient);
-    ServerPlayer *serverPlayer = new ServerPlayer(crh, s->getSocket());
+    ServerPlayer *serverPlayer = new ServerPlayer(crh, s->getId());
 
     mutexPlayers.lock();
 
-    unsigned int key = s->getSocket();
+    int key = s->getId();
     players.insert(std::pair<unsigned int, ServerPlayer *>(key, serverPlayer));
     serverPlayer->launchRequesHandler();
 
     mutexPlayers.unlock();
-}
-
-std::string Server::getGamesList() {
-    return "games";
 }
 
 void Server::notifyTo(int clientId, std::string &message) {
@@ -285,14 +281,14 @@ void Server::run() {
 
 
 void Server::startMatch(int clientId, std::string matchName) {
-    ServerGame *serverGame = matches.at(matchName);
+    ServerMatch *serverGame = matches.at(matchName);
 
     if (serverGame->isPlaying()) {
         //reboto pedido
         ServerPlayer *serverPlayer = players.at(clientId);
 
-        std::string message = MessageFactory::getMatchStartedNotification(
-                "El match ya inicio");
+        std::string message =
+              MessageFactory::getMatchStartedNotification("El match ya inicio");
         serverPlayer->sendData(message);
     } else {
         serverGame->setPlaying(true);
@@ -307,7 +303,6 @@ void Server::startMatch(int clientId, std::string matchName) {
                 matchName, serializedMap);
         serverGame->notifyAll(message);
 
-        //TODO: retrasar el comienzo del juego
         serverGame->startGame();
     }
 }
@@ -326,7 +321,7 @@ void Server::sendUnavailableElementsToClient(int clientId,
 std::vector<std::string> Server::getMatchesNames() {
     std::vector<std::string> matchesNames;
 
-    for (std::map<std::string, ServerGame *>::iterator it = matches.begin();
+    for (std::map<std::string, ServerMatch *>::iterator it = matches.begin();
          it != matches.end(); ++it) {
         matchesNames.push_back(it->first);
     }
@@ -353,7 +348,7 @@ void Server::removeClient(int id) {
     if (sp->getStatus() == PLAYING) {
         std::string gameId = sp->getGameId();
 
-        ServerGame *sg = matches.at(gameId);
+        ServerMatch *sg = matches.at(gameId);
 
         sg->removePlayer(id);
 
@@ -370,7 +365,7 @@ void Server::removeClient(int id) {
     } else if (sp->getStatus() == JOINED) {
         std::string gameId = sp->getGameId();
 
-        ServerGame *sg = matches.at(gameId);
+        ServerMatch *sg = matches.at(gameId);
 
         sg->enableElements(id);
         sg->removePlayer(id);
@@ -387,17 +382,17 @@ void Server::removeClient(int id) {
 }
 
 void Server::markTile(std::string matchName, int x, int y) {
-    ServerGame *serverGame = matches.at(matchName);
+    ServerMatch *serverGame = matches.at(matchName);
     serverGame->markTile(x, y);
 }
 
 void Server::putTower(std::string matchName, int typeOfTower, int x, int y){
-    ServerGame *serverGame = matches.at(matchName);
+    ServerMatch *serverGame = matches.at(matchName);
     serverGame->putTower(typeOfTower, x, y);
 }
 
 void Server::castSpell(std::string matchName, int x, int y) {
-    ServerGame *serverGame = matches.at(matchName);
+    ServerMatch *serverGame = matches.at(matchName);
     serverGame->castSpell(x, y);
 }
 
@@ -405,12 +400,12 @@ void Server::upgradeTower(std::string matchName,
                           int clientId,
                           int towerId,
                           int upgradeType) {
-    ServerGame *serverGame = matches.at(matchName);
+    ServerMatch *serverGame = matches.at(matchName);
     serverGame->upgradeTower(clientId, towerId, upgradeType);
 }
 
 void Server::towerInfo(int clientId, std::string matchName, int towerId) {
-    ServerGame *serverGame = matches.at(matchName);
+    ServerMatch *serverGame = matches.at(matchName);
     serverGame->towerInfo(clientId, towerId);
 }
 

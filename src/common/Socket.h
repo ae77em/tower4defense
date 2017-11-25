@@ -88,13 +88,9 @@ public:
     void shutdownSend();
 
     /*
-     * Se retorna el fd del socket.
+     * Se retorna el id del socket.
      */
-    int getSocket();
+    int getId();
 
-    /*
-     * Se modifica y retorna el fd del socket.
-     */
-    int setSocket(int s);
 };
 #endif

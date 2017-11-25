@@ -22,7 +22,7 @@ void ClientRequestHandler::sendData(std::string data){
 
 void ClientRequestHandler::sendClientId() {
     std::string message =
-            MessageFactory::getClientIdNotification(client->getSocket() );
+            MessageFactory::getClientIdNotification(client->getId() );
     sendData(message);
 }
 
@@ -35,7 +35,7 @@ void ClientRequestHandler::run() {
         try {
             std::cout
                     << "CRH: cliente: "
-                    << client->getSocket()
+                    << client->getId()
                     << " Esperando Mensaje" << std::endl;
 
             TextMessage textMessage("");
@@ -47,7 +47,7 @@ void ClientRequestHandler::run() {
             int operationKey = MessageFactory::getOperation(message);
 
             std::cout << "CRH: cliente: "
-                      << client->getSocket()
+                      << client->getId()
                       << " Recibio y despacho Mensaje: "
                       << message.toString()
                       << std::endl;
@@ -55,21 +55,21 @@ void ClientRequestHandler::run() {
             if (operationKey == CLIENT_REQUEST_END_GAME) {
                 std::cout
                         << "CRH: cliente: "
-                        << client->getSocket()
+                        << client->getId()
                         << " requirio finalizar su comuc. "
                         << std::endl;
                 break;
             }
         }catch (std::runtime_error){
             Message message;
-            int clientId = client->getSocket();
+            int clientId = client->getId();
             std::string notif
                 = MessageFactory::getClientEndConectionNotification(clientId);
             message.deserialize(notif);
             queueSharedMessage.push(message);
             std::cout
                     << "CRH: cliente: "
-                    << client->getSocket()
+                    << client->getId()
                     <<" TERMINO CONEXION"
                     <<std::endl;
             break;
@@ -78,6 +78,6 @@ void ClientRequestHandler::run() {
     }
 
     std::cout << "CRH: cliente: "
-              << client->getSocket() <<" termino su CTH thread"<<std::endl;
+              << client->getId() <<" termino su CTH thread"<<std::endl;
 }
 

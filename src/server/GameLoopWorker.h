@@ -21,7 +21,7 @@ static const std::string STR_PUT_TOWER = "put-tower";
 static const std::string STR_GET_TOWER_INFO = "get-tower-info";
 static const std::string STR_UPGRADE_TOWER = "upgrade-tower";
 
-class WorkerLoopGame : public Thread{
+class GameLoopWorker : public Thread{
 private:
     std::map<int,ServerPlayer*>& players;
     std::list<GameAction*>& actions;
@@ -32,8 +32,6 @@ private:
     std::vector<ActorTower*> towers;
 
     int timeLastHordeCreation, hordeId;
-
-    void run();
 
     std::string getGameStatus();
 
@@ -53,13 +51,15 @@ private:
 
     bool allHordesWereCreatedYet();
 
+    void upgradeTower(GameActionUpgradeTower *pInfo);
+
 public:
-    WorkerLoopGame(std::map<int,ServerPlayer*>& p,
+    GameLoopWorker(std::map<int,ServerPlayer*>& p,
                    std::list<GameAction*>& a,
                    std::mutex& m,
                    model::Map map);
 
-    void upgradeTower(GameActionUpgradeTower *pInfo);
+    void run();
 };
 
 

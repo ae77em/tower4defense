@@ -6,7 +6,7 @@
 #include <list>
 #include "ClientRequestHandler.h"
 
-enum MatchStatus {
+enum PlayerMatchStatus {
     PLAYING = 1,
     NOT_PLAYING = 2,
     JOINED = 3

@@ -385,6 +385,11 @@ void GameAccessWindow::startMatch(std::string matchName, std::string map) {
 
     game->start();
     game->join();
+
+    server->shutdown(); // apago el server porque me voy
+    /*// Acá debiera levantarse nuevamente la ventana de acceso.
+     * pWindow->show_all();
+    pWindow->show_now();*/
 }
 
 void GameAccessWindow::initDispatcher(Glib::RefPtr<Gtk::Builder> &refPtr) {

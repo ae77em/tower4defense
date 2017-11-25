@@ -1,4 +1,4 @@
-#include "WorkerLoopGame.h"
+#include "GameLoopWorker.h"
 #include "../common/Point.h"
 #include "../sdl/Constants.h"
 #include "game-actors/enemies/ActorEnemy.h"
@@ -28,7 +28,7 @@
 #define MAX_HORDES 3
 
 //FIXME: la lista de jugadores posiblemente requiera sincronizacion
-WorkerLoopGame::WorkerLoopGame(std::map<int, ServerPlayer *> &p,
+GameLoopWorker::GameLoopWorker(std::map<int, ServerPlayer *> &p,
                                std::list<GameAction *> &a,
                                std::mutex &m,
                                model::Map mp) :
@@ -41,9 +41,9 @@ WorkerLoopGame::WorkerLoopGame(std::map<int, ServerPlayer *> &p,
         timeLastHordeCreation(0),
         hordeId(0) {}
 
-void WorkerLoopGame::run() {
+void GameLoopWorker::run() {
     std::cout
-            << "WorkerLoopGame: Hilo donde existe la partida arrancando"
+            << "GameLoopWorker: Hilo donde existe la partida arrancando"
             << std::endl;
 
     std::list<GameAction *> actionsGame;
@@ -138,7 +138,7 @@ void WorkerLoopGame::run() {
 }
 
 /* Atender los comandos enviados por los clientes */
-bool WorkerLoopGame::actionsSuccessfullAttended(
+bool GameLoopWorker::actionsSuccessfullAttended(
         std::list<GameAction *> &actionsGame) {
     bool actionSuccessful = true;
     mutexActions.lock();
@@ -151,7 +151,7 @@ bool WorkerLoopGame::actionsSuccessfullAttended(
 
         if (actionName == "game-explotion") {
             std::cout
-                    << "WorkerLoopGame: salgo porque explote "
+                    << "GameLoopWorker: salgo porque explote "
                     << std::endl;
             actionSuccessful = false;
             break;
@@ -171,11 +171,11 @@ bool WorkerLoopGame::actionsSuccessfullAttended(
     return actionSuccessful;
 }
 
-std::string WorkerLoopGame::getGameStatus() {
+std::string GameLoopWorker::getGameStatus() {
     return GameNotification::getStatusMatchNotification(hordes, towers);
 }
 
-bool WorkerLoopGame::isTimeToCreateHorde() {
+bool GameLoopWorker::isTimeToCreateHorde() {
     time_t now;
     time(&now);
 
@@ -184,7 +184,7 @@ bool WorkerLoopGame::isTimeToCreateHorde() {
     return (now - timeLastHordeCreation) > delay;
 }
 
-void WorkerLoopGame::createHordeAndNotify() {
+void GameLoopWorker::createHordeAndNotify() {
     /* Mapa estatico que asocia nombres de enemigos a enums
      *
      * Los enums vienen de Protocol.h. El mapa es estatico para evitar
@@ -226,7 +226,7 @@ void WorkerLoopGame::createHordeAndNotify() {
     ++hordeId;
 }
 
-void WorkerLoopGame::putTower(GameActionPutTower *pAction) {
+void GameLoopWorker::putTower(GameActionPutTower *pAction) {
     int type = pAction->getTypeOfTower();
 
     ActorTower *tower = nullptr;
@@ -270,7 +270,7 @@ void WorkerLoopGame::putTower(GameActionPutTower *pAction) {
     }
 }
 
-void WorkerLoopGame::notifyMatchWin() {
+void GameLoopWorker::notifyMatchWin() {
     std::string statusGame =
             GameNotification::getMatchEndedNotification(GAME_STATUS_WON);
     for (auto it = players.begin(); it != players.end(); ++it) {
@@ -279,7 +279,7 @@ void WorkerLoopGame::notifyMatchWin() {
 }
 
 
-void WorkerLoopGame::notifyMatchLoose() {
+void GameLoopWorker::notifyMatchLoose() {
     std::string statusGame =
             GameNotification::getMatchEndedNotification(GAME_STATUS_LOST);
     for (auto it = players.begin(); it != players.end(); ++it) {
@@ -287,7 +287,7 @@ void WorkerLoopGame::notifyMatchLoose() {
     }
 }
 
-void WorkerLoopGame::sendTowerInfo(GameActionGetTowerInfo *pInfo) {
+void GameLoopWorker::sendTowerInfo(GameActionGetTowerInfo *pInfo) {
     int towerId = pInfo->getTowerId();
     int clientId = pInfo->getClientId();
 
@@ -304,11 +304,11 @@ void WorkerLoopGame::sendTowerInfo(GameActionGetTowerInfo *pInfo) {
     players.at(clientId)->sendData(data);
 }
 
-bool WorkerLoopGame::allHordesWereCreatedYet() {
+bool GameLoopWorker::allHordesWereCreatedYet() {
     return hordes.size() == MAX_HORDES;
 }
 
-void WorkerLoopGame::upgradeTower(GameActionUpgradeTower *pInfo) {
+void GameLoopWorker::upgradeTower(GameActionUpgradeTower *pInfo) {
     int clientId = pInfo->getClientId();
     int towerId = pInfo->getTowerId();
     int upgradeType = pInfo->getUpgradeType();

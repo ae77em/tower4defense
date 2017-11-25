@@ -1,4 +1,4 @@
-#include "ServerGame.h"
+#include "ServerMatch.h"
 #include "../sdl/Constants.h"
 #include "../common/Protocol.h"
 #include "../common/MessageFactory.h"
@@ -11,7 +11,7 @@
 #include <list>
 #include <string>
 
-ServerGame::ServerGame(std::mutex &m, model::Map aMap):
+ServerMatch::ServerMatch(std::mutex &m, model::Map aMap):
                                       mutexPlayers(m),
                                       map(std::move(aMap)),
                                       endSignal(false),
@@ -26,12 +26,12 @@ ServerGame::ServerGame(std::mutex &m, model::Map aMap):
     elements.push_back(STR_EARTH);
 }
 
-void ServerGame::addPlayer(ServerPlayer* sp){
+void ServerMatch::addPlayer(ServerPlayer* sp){
     players.insert(
             std::pair<int, ServerPlayer *>(sp->getId(),sp));
 }
 
-bool ServerGame::elementsAreAvailables(std::list<std::string> elements) {
+bool ServerMatch::elementsAreAvailables(std::list<std::string> elements) {
     std::list<std::string> othersElements;
     for (auto it=players.begin(); it!=players.end(); ++it){
         othersElements = it->second->getElements();
@@ -46,53 +46,53 @@ bool ServerGame::elementsAreAvailables(std::list<std::string> elements) {
     return true;
 }
 
-bool ServerGame::isFull(){
+bool ServerMatch::isFull(){
     return players.size() == MAX_PLAYERS;
 }
 
-void ServerGame::startGame() {
+void ServerMatch::startGame() {
     changeStatusPlayesOnGame(PLAYING);
 
     workerLoopGame.start();
 }
 
-void ServerGame::changeStatusPlayesOnGame(int status) {
+void ServerMatch::changeStatusPlayesOnGame(int status) {
     for (auto it=players.begin(); it!=players.end(); ++it){
         it->second->setStatus(status);
     }
 }
 
-void ServerGame::addEventMessage(Message m){
+void ServerMatch::addEventMessage(Message m){
 }
 
-void ServerGame::notifyAll(std::string message) {
+void ServerMatch::notifyAll(std::string message) {
     for (auto it=players.begin(); it!=players.end(); ++it){
         it->second->sendData(message);
     }
 }
 
-void ServerGame::notifyTo(int clientId, std::string message) {
+void ServerMatch::notifyTo(int clientId, std::string message) {
     ServerPlayer *player = players.at(clientId);
     player->sendData(message);
 }
 
-bool ServerGame::isPlaying() const {
+bool ServerMatch::isPlaying() const {
     return playing;
 }
 
-void ServerGame::setPlaying(bool playing) {
-    ServerGame::playing = playing;
+void ServerMatch::setPlaying(bool playing) {
+    ServerMatch::playing = playing;
 }
 
-void ServerGame::removeElement(std::string elementName) {
+void ServerMatch::removeElement(std::string elementName) {
     elements.remove(elementName);
 }
 
-std::list<std::string> ServerGame::getElements() {
+std::list<std::string> ServerMatch::getElements() {
     return elements;
 }
 
-std::list<std::string> ServerGame::getUnavailableElements() {
+std::list<std::string> ServerMatch::getUnavailableElements() {
     std::list<std::string> toReturn;
     std::list<std::string> playerElements;
 
@@ -105,7 +105,7 @@ std::list<std::string> ServerGame::getUnavailableElements() {
     return toReturn;
 }
 
-void ServerGame::enableElements(int idPlayer) {
+void ServerMatch::enableElements(int idPlayer) {
     ServerPlayer* sp = players.at(idPlayer);
 
     std::list<std::string>& elementsRecovered = sp->getElements();
@@ -113,16 +113,16 @@ void ServerGame::enableElements(int idPlayer) {
     this->elements.merge(elementsRecovered);
 }
 
-void ServerGame::removePlayer(int i) {
+void ServerMatch::removePlayer(int i) {
     players.erase(i);
 }
 
 
-int ServerGame::getAmountPlayers() {
+int ServerMatch::getAmountPlayers() {
     return players.size();
 }
 
-void ServerGame::kill() {
+void ServerMatch::kill() {
     mutexActionsGame.lock();
     actions.push_back(new GameAction("game-explotion"));
     mutexActionsGame.unlock();
@@ -132,7 +132,7 @@ void ServerGame::kill() {
     workerLoopGame.join();
 }
 
-void ServerGame::markTile(int x, int y){
+void ServerMatch::markTile(int x, int y){
     std::string markTileStr = MessageFactory::getMarkTileNotification(x, y);
     Message message;
 
@@ -143,20 +143,20 @@ void ServerGame::markTile(int x, int y){
     mutexPlayers.unlock();
 }
 
-void ServerGame::putTower(int typeOfTower, int x, int y) {
+void ServerMatch::putTower(int typeOfTower, int x, int y) {
     mutexActionsGame.lock();
     actions.push_back(new GameActionPutTower(STR_PUT_TOWER, typeOfTower, x, y));
     mutexActionsGame.unlock();
 }
 
-void ServerGame::castSpell(int x, int y) {
+void ServerMatch::castSpell(int x, int y) {
     std::string req = MessageFactory::getCastSpellNotification(x, y);
     mutexPlayers.lock();
     notifyAll(req);
     mutexPlayers.unlock();
 }
 
-void ServerGame::upgradeTower(int clientId, int towerId, int upgradeType) {
+void ServerMatch::upgradeTower(int clientId, int towerId, int upgradeType) {
     mutexActionsGame.lock();
     actions.push_back(
             new GameActionUpgradeTower(STR_UPGRADE_TOWER,
@@ -166,7 +166,7 @@ void ServerGame::upgradeTower(int clientId, int towerId, int upgradeType) {
     mutexActionsGame.unlock();
 }
 
-void ServerGame::towerInfo(int clientId, int towerId) {
+void ServerMatch::towerInfo(int clientId, int towerId) {
     mutexActionsGame.lock();
     actions.push_back(new GameActionGetTowerInfo(STR_GET_TOWER_INFO,
                                                  towerId,
@@ -174,9 +174,9 @@ void ServerGame::towerInfo(int clientId, int towerId) {
     mutexActionsGame.unlock();
 }
 
-std::string &ServerGame::getMapName() {
+std::string &ServerMatch::getMapName() {
     return map.getName();
 }
 
-void ServerGame::setMapName(const std::string &mapName) { }
+void ServerMatch::setMapName(const std::string &mapName) { }
 
