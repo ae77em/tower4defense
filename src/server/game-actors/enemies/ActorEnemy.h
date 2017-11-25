@@ -67,7 +67,7 @@ protected:
     Point currentPoint = Point(-1, -1);
     Circle collisionCircle;
 
-    const double VEL_REGULATOR = 0.25; // para que los bichos no vayan
+    const double VEL_REGULATOR = 0.5; // para que los bichos no vayan
     // demasiado rápido o lento...
 
     double positionIntoTileFraction = 0.0;

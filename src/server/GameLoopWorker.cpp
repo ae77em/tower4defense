@@ -301,7 +301,7 @@ void GameLoopWorker::sendTowerInfo(GameActionGetTowerInfo *pInfo) {
 }
 
 bool GameLoopWorker::allHordesWereCreatedYet() {
-    return hordes.size() == 1;//map.getHordes().size();
+    return hordes.size() == map.getHordes().size();
 }
 
 void GameLoopWorker::upgradeTower(GameActionUpgradeTower *pInfo) {
