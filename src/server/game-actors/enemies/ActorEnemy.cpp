@@ -7,6 +7,8 @@
 
 ActorEnemy::ActorEnemy() {
     collisionCircle.r = CARTESIAN_TILE_HEIGHT * 0.5;
+    collisionCircle.x = 0;
+    collisionCircle.y = 0;
 }
 
 ActorEnemy::~ActorEnemy() {}
@@ -163,7 +165,7 @@ Circle &ActorEnemy::getCollisionCircle() {
     return collisionCircle;
 }
 
-bool ActorEnemy::getIsAlive() {
+bool ActorEnemy::itIsAlive() {
     return isAlive;
 }
 
@@ -189,5 +191,9 @@ bool ActorEnemy::itIsAir() {
 
 bool ActorEnemy::hasEndedThePath() {
     return endedThePath;
+}
+
+bool ActorEnemy::itIsVisible() {
+    return isVisible;
 }
 

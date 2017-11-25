@@ -70,7 +70,7 @@ void GameLoopWorker::run() {
                 enemies = aHorde->getEnemies();
 
                 for (auto enemy : enemies) {
-                    if (enemy->getIsAlive()) {
+                    if (enemy->itIsAlive()) {
                         enemy->advance();
                         if (enemy->hasEndedThePath()) {
                             gameFinish = true;
@@ -101,7 +101,7 @@ void GameLoopWorker::run() {
                 hordeIsAlive = false;
 
                 for (auto enemy : enemies) {
-                    if (enemy->getIsAlive()) {
+                    if (enemy->itIsAlive()) {
                         areEnemiesAlive = true;
                         hordeIsAlive = true;
                         break;

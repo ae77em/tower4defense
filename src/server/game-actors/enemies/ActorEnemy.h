@@ -38,9 +38,11 @@ public:
 
     Circle &getCollisionCircle();
 
-    bool getIsAlive();
+    bool itIsAlive();
 
     bool itIsAir();
+
+    bool itIsVisible();
 
     int receiveDamage(int i);
 

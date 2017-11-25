@@ -2,10 +2,9 @@
 #include "ActorTowerFire.h"
 #include "../../../sdl/Constants.h"
 
-//#define LOG
+#define LOG
 
 ActorTowerFire::ActorTowerFire() : ActorTower() {
-    std::cout << "cree fuegoooo" << std::endl;
     initialize();
 }
 
@@ -14,7 +13,6 @@ ActorTowerFire::ActorTowerFire(int aid) : ActorTower(aid) {
 }
 
 void ActorTowerFire::initialize() {
-    std::cout << "inicialicé fuegoooo" << std::endl;
     range = 3;
     reach = 1;
     shotDamage = 6;
@@ -94,39 +92,39 @@ bool ActorTowerFire::upgradeReach() {
 
 void ActorTowerFire::doAttack(Horde *horde) {
     std::vector<ActorEnemy *> enemies = horde->getEnemies();
-
+    isShooting = false;
     for (unsigned i = 0; i < enemies.size(); ++i) {
         ActorEnemy *enemy = enemies[i];
 
-        Circle &collisionCircleEnemy = enemy->getCollisionCircle();
+        if (enemy->itIsVisible()) {
+            Circle &collisionCircleEnemy = enemy->getCollisionCircle();
 #ifdef LOG
-        std::cout << "enemy "
-              << enemy->getId()
-              << " is (col circle) in ("
-              << enemy->getCollisionCircle().x
-              << ", "
-              << enemy->getCollisionCircle().y
-              << ") - radio: "
-              << enemy->getCollisionCircle().r
-              << std::endl;
-    std::cout << "tower "
-              << std::to_string(id)
-              << " is (col circle) in ("
-              << std::to_string(collisionCircle.x)
-              << ", "
-              << std::to_string(collisionCircle.y)
-              << ") - radio: "
-              << std::to_string(collisionCircle.r)
-            << " - radio calculated: "
-            << std::to_string(getCollisionCircleRadio())
-              << std::endl;
+            std::cout << "enemy "
+                      << enemy->getId()
+                      << " is (col circle) in ("
+                      << enemy->getCollisionCircle().x
+                      << ", "
+                      << enemy->getCollisionCircle().y
+                      << ") - radio: "
+                      << enemy->getCollisionCircle().r
+                      << std::endl;
+            std::cout << "tower "
+                      << std::to_string(id)
+                      << " is (col circle) in ("
+                      << std::to_string(collisionCircle.x)
+                      << ", "
+                      << std::to_string(collisionCircle.y)
+                      << ") - radio: "
+                      << std::to_string(collisionCircle.r)
+                      << " - radio calculated: "
+                      << std::to_string(getCollisionCircleRadio())
+                      << std::endl;
 #endif
-        if (collisionCircle.hasCollisionWith(collisionCircleEnemy)) {
-            isShooting = true;
-            shootTo(enemy);
-            damageNearbyEnemies(enemies, i);
-        } else {
-            isShooting = false;
+            if (collisionCircle.hasCollisionWith(collisionCircleEnemy)) {
+                isShooting = true;
+                shootTo(enemy);
+                damageNearbyEnemies(enemies, i);
+            }
         }
     }
 }
@@ -136,13 +134,13 @@ void ActorTowerFire::damageNearbyEnemies(std::vector<ActorEnemy *> &enemies,
     // si puedo disparar le disparo, esto es, le saco toda la vida que puedo
     ActorEnemy *pEnemy = nullptr;
     int posEnemyToReach = -1;
-    for (int i = -reach; i <= reach; ++i){
-        if (i != 0){ // el enemigo que sufrió el disparo no recibe daño extra
+    for (int i = -reach; i <= reach; ++i) {
+        if (i != 0) { // el enemigo que sufrió el disparo no recibe daño extra
             // verifico no querer dañar un enemigo fuera del array !!!
             posEnemyToReach = currEnemyPos + i;
-            if (currEnemyPos + i >= 0 && currEnemyPos + i < enemies.size()){
+            if (currEnemyPos + i >= 0 && currEnemyPos + i < enemies.size()) {
                 pEnemy = enemies[posEnemyToReach];
-                if (pEnemy->getIsAlive()){
+                if (pEnemy->itIsAlive()) {
                     std::cout
                             << "daño a enemigo cercano "
                             << i
