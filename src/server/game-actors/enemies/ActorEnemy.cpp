@@ -36,19 +36,22 @@ void ActorEnemy::setCurrentPathPosition(int currPos) {
 }
 
 void ActorEnemy::advance() {
-    /* Manejar enemigos fuera de pantalla */
     if (currentPathPosition < 0) {
-        ++currentPathPosition;
+        currentPathPosition += getCalculatedVelocity();
         isVisible = false;
+    } else if (isOnStage()) {
+        if (!isVisible){ // recién entro al escenario...
+            currentPathPosition = 0;
+            isVisible = true;
+        }
 
-    /* Manejar enemigos en pantalla */
-    } else if (currentPathPosition >= 0 &&
-             currentPathPosition < (int) path.size()) {
         if (xPositionIntoTile > CARTESIAN_TILE_WIDTH ||
             yPositionIntoTile > CARTESIAN_TILE_HEIGHT) {
             ++currentPathPosition;
             xPositionIntoTile = 0;
             yPositionIntoTile = 0;
+            xPositionIntoTileFraction = 0.0;
+            yPositionIntoTileFraction = 0.0;
         }
 
         currentPoint = path.at(currentPathPosition);
@@ -74,16 +77,34 @@ void ActorEnemy::advance() {
                             Utils::getNextMapDisplacement(x, xFinalIntoTile),
                             Utils::getNextMapDisplacement(y, yFinalIntoTile));
 
-            xPositionIntoTile += xMovement;
-            yPositionIntoTile += yMovement;
+            /* Calculo siguiente posición con la velocidad. Uso valores
+             * flotantes justamente para no perder los avances medios, por
+             * ejemplo, si avanzo de a 1,5 pixeles, voy a dibujar un avance
+             * de 1 pixel, pero el próximo avance será la posición 3. Para
+             * salvar esos valores intermedios necesito un valor de punto
+             * flotante.
+             * */
+            xPositionIntoTileFraction +=
+                    xMovement * getCalculatedVelocity();
+            yPositionIntoTileFraction +=
+                    yMovement * getCalculatedVelocity();
 
+            /* La posición dentro del que le voy a pasar al cliente para que
+             * dibuje debe ser entera, así que tomo la parte entera del
+             * fraccionario anterior.
+             * */
+            xPositionIntoTile = (int)xPositionIntoTileFraction;
+            yPositionIntoTile = (int)yPositionIntoTileFraction;
+
+            /* Calculo la posición dentro del mapa.
+             * */
             xPosition = path.at(currentPathPosition).x + xPositionIntoTile;
             yPosition = path.at(currentPathPosition).y + yPositionIntoTile;
 
+            /* Calculo el círculo de colisión.
+             * */
             collisionCircle.x = xPosition + int(CARTESIAN_TILE_WIDTH * 0.5);
             collisionCircle.y = yPosition + int(CARTESIAN_TILE_HEIGHT * 0.5);
-            isVisible = true;
-
         /* Final del camino, señalar final de juego */
         } else {
             isVisible = false;
@@ -92,8 +113,12 @@ void ActorEnemy::advance() {
     }
 }
 
-void ActorEnemy::gotoNextPathPosition() {
-    ++currentPathPosition;
+bool ActorEnemy::isOnStage() const {
+    return currentPathPosition >= 0 && currentPathPosition < (int)path.size();
+}
+
+double ActorEnemy::getCalculatedVelocity() const {
+    return velocity * (1.0 - slowdown) * VEL_REGULATOR;
 }
 
 void ActorEnemy::setIsWalking(bool iw) {

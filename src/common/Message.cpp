@@ -42,9 +42,13 @@ std::string Message::serialize() {
     jsonString = writer.write(getData());
     messageLenght = jsonString.length();
 
+    // Ya que en todo momento estoy controlando el buffer (copio y pego info)
+    // y la operación que se lleva a cabo es totalmente atómica (sé que esto
+    // anda), no agregamos el 0 al final para marcar el eo string. Además,
+    // esto se agregará al crear el mensaje serializado.
     char *buffer = new char[messageLenght];
 
-    // load the message
+    // cargo buffer con mensaje
     memcpy(buffer, jsonString.c_str(), messageLenght);
 
     serializedMessage.assign(buffer, messageLenght);

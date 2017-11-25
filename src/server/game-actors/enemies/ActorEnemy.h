@@ -46,8 +46,6 @@ public:
 
     void advance();
 
-    void gotoNextPathPosition();
-
     void setIsWalking(bool isWalking);
 
     void setId(int id);
@@ -75,7 +73,13 @@ protected:
     Point currentPoint = Point(-1, -1);
     Circle collisionCircle;
 
+    const double VEL_REGULATOR = 0.5;
+
+    double slowdown = 0.0; // varía entre 0 y 1
+    double xPositionIntoTileFraction = 0.0;
+    double yPositionIntoTileFraction = 0.0;
     int xPositionIntoTile = 0;
+    int yPositionIntoTile = 0;
     int currentDirection = 0;
 
     /* Cuanto camino ha recorrido el enemigo
@@ -86,7 +90,6 @@ protected:
     int currentPathPosition = 0;
 
     int currentShift = 0;
-    int yPositionIntoTile = 0;
     int xPosition = 0;
     int yPosition = 0;
     bool isWalking = false;
@@ -102,9 +105,11 @@ protected:
     bool isAlive = true;
     bool endedThePath = false;
 
-
     int id;
 
+    double getCalculatedVelocity() const;
+
+    bool isOnStage() const;
 };
 
 #endif //TP4_TOWERDEFENSE_SERVER_ENEMY_H

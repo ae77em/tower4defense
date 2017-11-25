@@ -130,7 +130,7 @@ void GameLoopWorker::run() {
         /* Limpio la lista para no ejecutar request viejos. */
         actionsGame.clear();
 
-        /* Aproximadamente 30 fps. Lo dejamos así para darle tiempo a los
+        /* Aproximadamente 22 fps. Lo dejamos así para darle tiempo a los
          * request de los usuarios a impactarse de forma relativamente
          * instantánea. */
         std::this_thread::sleep_for(std::chrono::milliseconds(45));

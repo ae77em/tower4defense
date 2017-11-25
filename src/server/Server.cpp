@@ -169,7 +169,8 @@ void Server::run() {
                 case CLIENT_REQUEST_GET_ALL_MAPS: {
                     int clientId = MessageFactory::getClientId(messageRequest);
                     std::vector<std::string> mapsNames = getAllMapsNames();
-                    response = MessageFactory::getExistingMapsNotification(mapsNames);
+                    response =
+                        MessageFactory::getExistingMapsNotification(mapsNames);
                     notifyTo(clientId, response);
                     break;
                 }
@@ -422,7 +423,8 @@ void Server::loadMaps() {
             model::Map aMap = model::Map::loadFromFile(mapFilename);
             aMap.setName(dp->d_name);
 
-            std::pair<std::string, model::Map> mapPair(aMap.getName(),std::move(aMap));
+            std::pair<std::string, model::Map>
+                    mapPair(aMap.getName(),std::move(aMap));
             maps.insert(mapPair);
         }
     }

@@ -832,6 +832,8 @@ void GamePlayWindow::run() {
         //Free resources and close SDL
         close();
     }
+
+    server->shutdown(); // TODO ver si esto corresponde hacerlo acá...*/
 }
 
 void GamePlayWindow::animateAnimables() {
