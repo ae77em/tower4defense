@@ -143,10 +143,12 @@ void Enemy::renderDie(SDL_Rect &camera) {
 }
 
 void Enemy::animate(SDL_Rect &camera) {
-    if (getIsAlive()) {
-        renderWalk(camera);
-    } else {
-        renderDie(camera);
+    if (isVisible){
+        if (getIsAlive()) {
+            renderWalk(camera);
+        } else {
+            renderDie(camera);
+        }
     }
 }
 
