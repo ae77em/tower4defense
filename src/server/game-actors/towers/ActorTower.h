@@ -112,6 +112,7 @@ protected:
 
     virtual void initialize();
 
+    void doAttack(Horde *horde);
 };
 
 

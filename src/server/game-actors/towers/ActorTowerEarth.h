@@ -13,6 +13,8 @@ public:
     bool upgradeDamage() override;
 
     bool upgradeRange() override;
+
+    void attack(Horde *horde);
 };
 
 

@@ -211,7 +211,6 @@ void GameLoopWorker::createHordeAndNotify() {
     const int path_index = std::get<2>(horde);
 
     /* Agregar nueva horda al juego */
-
     Horde *h = Horde::createHorde(horde_type, horde_size,
                                   map.getPaths()[path_index]);
     hordes.insert(std::make_pair(hordeId, h));

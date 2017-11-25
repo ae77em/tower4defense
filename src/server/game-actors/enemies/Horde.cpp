@@ -33,6 +33,14 @@ std::vector<ActorEnemy *> Horde::getEnemies(){
     return enemies;
 }
 
+bool Horde::itIsAir(){
+    bool isAir = false;
+    if (enemies.size() > 0) {
+        isAir = enemies.at(0)->itIsAir();
+    }
+    return isAir;
+}
+
 void Horde::addEnemy(ActorEnemy *enemy) {
     enemies.push_back(enemy);
 }

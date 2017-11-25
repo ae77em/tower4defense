@@ -24,6 +24,8 @@ public:
 
     void setIsAlive(bool isAlive);
 
+    bool itIsAir();
+
     bool shouldSendMoreData();
 
 private:

@@ -90,6 +90,10 @@ bool ActorTower::itIsShooting() {
 }
 
 void ActorTower::attack(Horde *horde) {
+    doAttack(horde);
+}
+
+void ActorTower::doAttack(Horde *horde) {
     std::vector<ActorEnemy *> enemies = horde->getEnemies();
 
     for (ActorEnemy *enemy : enemies) {
