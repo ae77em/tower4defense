@@ -53,8 +53,6 @@ void ClientRequestHandler::run() {
 
             message.deserialize(requestSerialized);
 
-            int operationKey = MessageFactory::getOperation(message);
-
             std::cout << "CRH: cliente: "
                       << client->getId()
                       << " Recibio y despacho Mensaje: "
