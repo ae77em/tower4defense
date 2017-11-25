@@ -157,6 +157,12 @@ void ActorTower::setPosition(int x, int y) {
 
 ActorTower::~ActorTower() {}
 
+std::string ActorTower::getClassInfo() {
+    std::string toReturn = "Clase: ";
+    toReturn.append(getClass());
+    return toReturn;
+}
+
 std::string ActorTower::getExperiencePointsInfo() {
     std::string toReturn = "Puntos ";
     toReturn.append(std::to_string(experiencePoints));

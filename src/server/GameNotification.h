@@ -9,8 +9,9 @@
 
 class GameNotification {
 public:
-    static std::string getStatusMatchNotification(std::map<int, Horde *> hordes,
-                                              std::vector<ActorTower *> towers);
+    static std::string getStatusMatchNotification(
+            std::map<int, Horde *> &hordes,
+            std::vector<ActorTower *> &towers);
 
     static std::string getNewHordeNotification(int id,
                                                int hordeType,
@@ -23,9 +24,13 @@ public:
 
     static std::string getUpgradeNotification(bool success, std::string message);
 
-    static std::string getTowerInfoNotification(int towerId, std::string experiencePointsInfo,
-                                                    std::string damageInfo, std::string rangeInfo,
-                                                    std::string reachInfo, std::string slowDownInfo);
+    static std::string getTowerInfoNotification(int towerId,
+                                                std::string classInfo,
+                                                std::string experiencePointsInfo,
+                                                std::string damageInfo,
+                                                std::string rangeInfo,
+                                                std::string reachInfo,
+                                                std::string slowDownInfo);
 
     static std::string getMatchEndedNotification(int matchStatus);
 };

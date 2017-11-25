@@ -66,6 +66,8 @@ public:
 
     void setId(int aId);
 
+    std::string getClassInfo();
+
 protected:
     int range;
     int reach;

@@ -189,10 +189,6 @@ int ActorEnemy::receiveDamage(int damage) {
     return damagePoints;
 }
 
-ActorRectT ActorEnemy::getRect() {
-    return ActorRectT();
-}
-
 bool ActorEnemy::itIsAir() {
     return isAir;
 }

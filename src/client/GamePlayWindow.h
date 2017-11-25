@@ -10,6 +10,7 @@ static const int TOWER_BUTTONS_WIDTH = 360;
 static const int TOWBER_BUTTONS_HEIGHT = 40;
 
 static const int TIME_FOR_ENABLE_ACTION = 20000;
+static const int TIME_FOR_SHOW_TEMPORARY_MESSAGE = 5000;
 
 enum GameStatus {
     GAME_STATUS_UNDECIDED = 0,
@@ -223,10 +224,11 @@ private:
     int typeOfTowerToPut;
     int typeOfUpgradeToDo;
     int towerSelected;
-    int towerIdThatRequiresInfo;
     bool isCastingSpells;
     int timeOfLastSpell;
     int timeOfLastTowerPutted;
+    int timeOfLastUpgradeMessage;
+    std::string towerClassDataMessage;
     std::string towerExperiencePointsDataMessage;
     std::string towerDamageDataMessage;
     std::string towerRangeDataMessage;

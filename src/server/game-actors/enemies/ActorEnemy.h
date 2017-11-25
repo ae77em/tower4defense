@@ -28,8 +28,6 @@ public:
 
     int getId() override;
 
-    ActorRectT getRect();
-
     void setCurrentPathPosition(int currentPosition);
 
     void setPath(const std::vector<Point> &path);
@@ -53,17 +51,21 @@ public:
     void setSlowdown(double slowdown, int timeOfSlowdown);
 
 protected:
+    /* Datos básicos de los enemigos.
+     * Podrían ser tomados de un archivo de configuración.
+     * */
     int velocity = 1;
     int initialEnergy = 200;
     int energy = 200;
     bool isAir = false;
+    /********************/
 
     int id;
     std::vector<Point> path;
     Point currentPoint = Point(-1, -1);
     Circle collisionCircle;
 
-    const double VEL_REGULATOR = 0.1; // para que los bichos no vayan
+    const double VEL_REGULATOR = 0.25; // para que los bichos no vayan
     // demasiado rápido o lento...
 
     double positionIntoTileFraction = 0.0;

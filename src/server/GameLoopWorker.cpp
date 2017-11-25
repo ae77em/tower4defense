@@ -294,11 +294,12 @@ void GameLoopWorker::sendTowerInfo(GameActionGetTowerInfo *pInfo) {
 
     std::string data =
             GameNotification::getTowerInfoNotification(towerId,
-                                              tower->getExperiencePointsInfo(),
-                                              tower->getShotDamageInfo(),
-                                              tower->getRangeInfo(),
-                                              tower->getReachInfo(),
-                                              tower->getSlowDownPercentajeInfo());
+                                       tower->getClassInfo(),
+                                       tower->getExperiencePointsInfo(),
+                                       tower->getShotDamageInfo(),
+                                       tower->getRangeInfo(),
+                                       tower->getReachInfo(),
+                                       tower->getSlowDownPercentajeInfo());
 
     players.at(clientId)->sendData(data);
 }

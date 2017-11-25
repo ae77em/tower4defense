@@ -8,8 +8,8 @@
 #include <vector>
 
 std::string GameNotification::getStatusMatchNotification(
-        std::map<int, Horde *> hordes,
-        std::vector<ActorTower *> towers) {
+        std::map<int, Horde *>& hordes,
+        std::vector<ActorTower *>& towers) {
     Json::Value aTower(Json::objectValue);
 
     std::string toReturn;
@@ -113,6 +113,7 @@ GameNotification::getUpgradeNotification(bool success, std::string info) {
 
 std::string
 GameNotification::getTowerInfoNotification(int towerId,
+                                           std::string classInfo,
                                            std::string experiencePointsInfo,
                                            std::string damageInfo,
                                            std::string rangeInfo,
@@ -124,6 +125,7 @@ GameNotification::getTowerInfoNotification(int towerId,
 
     root[OPERATION_KEY] = SERVER_NOTIFICATION_TOWER_INFO;
     root[TOWER_ID_KEY] = towerId;
+    root["class"] = classInfo;
     root["experience"] = experiencePointsInfo;
     root["damage"] = damageInfo;
     root["range"] = rangeInfo;

@@ -49,7 +49,7 @@ public:
 
     void setIsShooting(bool isShooting);
 
-    virtual bool isAir();
+    virtual bool isWater();
 
     virtual bool isFire();
 

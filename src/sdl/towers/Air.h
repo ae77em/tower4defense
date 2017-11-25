@@ -48,13 +48,7 @@ public:
 
     Point getPoint();
 
-    void shiftColliders();
-
-    Circle &getCollisionCircle();
-
     void setIsShooting(bool isShooting);
-
-    bool isAir();
 
 protected:
     static const int NUMBER_OF_IDLE_SPRITES = 17;

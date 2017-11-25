@@ -29,7 +29,6 @@ void ActorTowerFire::initialize() {
 ActorTowerFire::~ActorTowerFire() {}
 
 std::string ActorTowerFire::getShotDamageInfo() {
-    std::cout << "obtuve info daño fuegoooo" << std::endl;
     std::string toReturn = "Daño objetivo: ";
     toReturn.append(std::to_string(shotDamage));
     toReturn.append(", Daño alcance: ");

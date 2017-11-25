@@ -105,3 +105,7 @@ Point Water::getPoint() {
 const SDL_Rect & Water::getIdleBox() const {
     return idleBox;
 }
+
+bool Water::isWater() {
+    return true;
+}

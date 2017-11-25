@@ -43,6 +43,8 @@ public:
 
     void setIsShooting(bool isShooting);
 
+    bool isWater();
+
 protected:
     static const int NUMBER_OF_IDLE_SPRITES = 13;
     static const int NUMBER_OF_SHOT_SPRITES = 13;

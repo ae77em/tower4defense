@@ -103,7 +103,7 @@ const SDL_Rect & Tower::getIdleBox() const {
     return idleBox;
 }
 
-bool Tower::isAir() {
+bool Tower::isWater() {
     return false;
 }
 

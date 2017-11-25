@@ -48,10 +48,10 @@ GamePlayWindow::GamePlayWindow(Socket *s,
     zombieTexture = new Texture();
 
     typeOfTowerToPut = -1;
-    towerIdThatRequiresInfo = -1;
     isCastingSpells = false;
     timeOfLastSpell = -TIME_FOR_ENABLE_ACTION;
     timeOfLastTowerPutted = -TIME_FOR_ENABLE_ACTION;
+    timeOfLastUpgradeMessage = -TIME_FOR_SHOW_TEMPORARY_MESSAGE;
 
     map = model::Map::loadFromString(mp);
 
@@ -99,6 +99,13 @@ void GamePlayWindow::renderTimeMessages(SDL_Rect &camera) {
         message.append(std::to_string(t));
         message.append(" seg");
         renderText(camera, message, 1, 150);
+    }
+
+    if ((SDL_GetTicks() - timeOfLastUpgradeMessage) <
+            TIME_FOR_SHOW_TEMPORARY_MESSAGE) {
+        if (!towerUpgradeInfoMessage.empty()) {
+            renderText(camera, towerUpgradeInfoMessage, 200);
+        }
     }
 }
 
@@ -441,15 +448,17 @@ void GamePlayWindow::handleLeftButtonClick(Point &point) {
                 if (towers.at(towerSelected)->isFire()) {
                     typeOfUpgradeToDo = UPGRADE_REACH;
                 } else {
+                    timeOfLastUpgradeMessage = SDL_GetTicks();
                     towerUpgradeInfoMessage = "El alcance puede ser aumentado"
                             " únicamente en torres de fuego.";
                 }
             } else {
-                if (towers.at(towerSelected)->isAir()){
+                if (towers.at(towerSelected)->isWater()){
                     typeOfUpgradeToDo = UPGRADE_SLOWDOWN;
                 } else {
+                    timeOfLastUpgradeMessage = SDL_GetTicks();
                     towerUpgradeInfoMessage = "El ralentizado puede ser "
-                            "aumentado únicamente en torres de aire.";
+                            "aumentado únicamente en torres de agua.";
                 }
             }
 
@@ -637,6 +646,7 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
             }
             case SERVER_NOTIFICATION_APPLY_UPGRADE: {
                 Request request(message);
+                timeOfLastUpgradeMessage = SDL_GetTicks();
                 towerUpgradeInfoMessage = request.getAsString("info");
                 break;
             };
@@ -740,6 +750,9 @@ void GamePlayWindow::loadTowerInfo(Message message) {
     Request request(message);
 
     std::string item;
+
+    item = request.getAsString("class");
+    towerClassDataMessage.assign(item);
 
     item = request.getAsString("experience");
     towerExperiencePointsDataMessage.assign(item);
@@ -856,15 +869,12 @@ void GamePlayWindow::renderMessages() {
 
     if (!towerDamageDataMessage.empty()) {
         renderText(camera, "Datos de la torre:", 1, 250);
-        renderText(camera, towerExperiencePointsDataMessage, 1, 266);
-        renderText(camera, towerDamageDataMessage, 1, 282);
-        renderText(camera, towerRangeDataMessage, 1, 298);
-        renderText(camera, towerReachDataMessage, 1, 314);
-        renderText(camera, towerSlowdownDataMessage, 1, 330);
-    }
-
-    if (!towerUpgradeInfoMessage.empty()){
-        renderText(camera, towerUpgradeInfoMessage, 200);
+        renderText(camera, towerClassDataMessage, 1, 266);
+        renderText(camera, towerExperiencePointsDataMessage, 1, 282);
+        renderText(camera, towerDamageDataMessage, 1, 298);
+        renderText(camera, towerRangeDataMessage, 1, 314);
+        renderText(camera, towerReachDataMessage, 1, 330);
+        renderText(camera, towerSlowdownDataMessage, 1, 346);
     }
 }
 
