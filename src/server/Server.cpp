@@ -128,56 +128,44 @@ void Server::notifyTo(int clientId, std::string &message) {
 }
 
 void Server::run() {
-    std::cout
-            << "GameServer: Corriendo, esperando la conexion del algun cliente"
-            << std::endl;
+    // La cola se cierra desde el thread aceptador (Listener)
+    // cuando el servidor se apaga
+    while (!queueMessagesClient.isAtEnd()) {
+        Message msg = queueMessagesClient.pop();
+        Request request(msg);
+        int op = request.getAsInt(OPERATION_KEY);
+        switch (op) {
+            // Los bloques case estan encerrados en llaves para limitar
+            // el scope de las declaraciones
 
-    try {
-        while (!queueMessagesClient.isAtEnd()) {
-            std::cout << "GameServer: Esperando que algun cliente mande algo"
-                      << std::endl;
+            /* non-gaming requests: */
+            case CLIENT_REQUEST_NEW_MATCH: {
+                int clientId = request.getAsInt("clientId");
+                std::string nameMatch = request.getAsString("matchName");
+                std::string mapName = request.getAsString("mapName");
 
-            Message messageRequest = queueMessagesClient.pop();
-            Request request(messageRequest);
-
-            int op = request.getAsInt(OPERATION_KEY);
-
-            std::cout << "GameServer: un cliente envio este mensaje: " +
-                         messageRequest.toString() << std::endl;
-            std::string response;
-
-            switch (op) {
-                /* non-gaming requests: */
-                case CLIENT_REQUEST_NEW_MATCH: {
-                    int clientId = request.getAsInt("clientId");
-                    std::string nameMatch = request.getAsString("matchName");
-                    std::string mapName = request.getAsString("mapName");
-
-                    createGame(clientId, nameMatch, mapName);
-                    break;
-                }
-                /* this responses are individual */
-                case CLIENT_REQUEST_ENTER_MATCH: {
-                    int clientId = request.getAsInt("clientId");
-                    std::string nameMatch = request.getAsString("matchName");
-                    std::list<std::string> elements =
-                            request.getAsStringVector("elements");
+                createGame(clientId, nameMatch, mapName);
+                break;
+            } case CLIENT_REQUEST_ENTER_MATCH: {
+                int clientId = request.getAsInt("clientId");
+                std::string nameMatch = request.getAsString("matchName");
+                std::list<std::string> elements =
+                        request.getAsStringVector("elements");
 
                     addPlayerToGame(clientId, nameMatch, elements);
                     break;
                 }
                 case CLIENT_REQUEST_GET_ALL_MAPS: {
-                    int clientId = MessageFactory::getClientId(messageRequest);
+                    int clientId = request.getAsInt("clientId");
                     std::vector<std::string> mapsNames = getAllMapsNames();
-                    response =
-                        MessageFactory::getExistingMapsNotification(mapsNames);
+                   std::string response = MessageFactory::getExistingMapsNotification(mapsNames);
                     notifyTo(clientId, response);
                     break;
                 }
                 case CLIENT_REQUEST_GET_ALL_MATCHES: {
                     int clientId = request.getAsInt("clientId");
                     std::vector<std::string> matchNames = getMatchesNames();
-                    response = MessageFactory::getExistingMatchesNotification(
+                   std::string response = MessageFactory::getExistingMatchesNotification(
                             matchNames);
                     notifyTo(clientId, response);
                     break;
@@ -187,97 +175,63 @@ void Server::run() {
                     std::string nameMatch = request.getAsString("matchName");
                     sendUnavailableElementsToClient(clientId, nameMatch);
                     break;
-                }
-                case CLIENT_REQUEST_START_MATCH: {
+
+               } case CLIENT_REQUEST_START_MATCH: {
                     int clientId = request.getAsInt("clientId");
                     std::string matchName = request.getAsString("matchName");
 
-                    startMatch(clientId, matchName);
-                    break;
-                }
-                    /* gaming requests: */
-                case CLIENT_REQUEST_PUT_TOWER: {
-                    std::string matchName = request.getAsString("matchName");
-                    int towerType = request.getAsInt("towerType");
-                    int x = request.getAsInt(XCOORD_KEY);
-                    int y = request.getAsInt(YCOORD_KEY);
+                startMatch(clientId, matchName);
+                break;
 
-                    std::cout << "put tower: "
-                              << messageRequest.getJsonString()
-                              << std::endl;
+            /* gaming requests: */
+            } case CLIENT_REQUEST_PUT_TOWER: {
+                std::string matchName = request.getAsString("matchName");
+                int towerType = request.getAsInt("towerType");
+                int x = request.getAsInt(XCOORD_KEY);
+                int y = request.getAsInt(YCOORD_KEY);
 
-                    putTower(matchName, towerType, x, y);
-                    break;
-                }
-                case CLIENT_REQUEST_MARK_TILE: {
-                    std::string matchName = request.getAsString(MATCH_NAME_KEY);
-                    int x = request.getAsInt(XCOORD_KEY);
-                    int y = request.getAsInt(YCOORD_KEY);
+                putTower(matchName, towerType, x, y);
+                break;
+            } case CLIENT_REQUEST_MARK_TILE: {
+                std::string matchName = request.getAsString(MATCH_NAME_KEY);
+                int x = request.getAsInt(XCOORD_KEY);
+                int y = request.getAsInt(YCOORD_KEY);
 
-                    markTile(matchName, x, y);
-                    break;
-                }
-                case CLIENT_REQUEST_CAST_SPELL: {
-                    std::string matchName = request.getAsString(MATCH_NAME_KEY);
-                    int x = request.getAsInt(XCOORD_KEY);
-                    int y = request.getAsInt(YCOORD_KEY);
+                markTile(matchName, x, y);
+                break;
+            } case CLIENT_REQUEST_CAST_SPELL: {
+                std::string matchName = request.getAsString(MATCH_NAME_KEY);
+                int x = request.getAsInt(XCOORD_KEY);
+                int y = request.getAsInt(YCOORD_KEY);
 
-                    castSpell(matchName, x, y);
-                    break;
-                }
-                case CLIENT_REQUEST_TOWER_INFO: {
-                    int clientId = request.getAsInt(CLIENT_ID_KEY);
-                    std::string matchName = request.getAsString(MATCH_NAME_KEY);
-                    int towerId = request.getAsInt("towerId");
+                castSpell(matchName, x, y);
+                break;
+            } case CLIENT_REQUEST_TOWER_INFO: {
+                int clientId = request.getAsInt(CLIENT_ID_KEY);
+                std::string matchName = request.getAsString(MATCH_NAME_KEY);
+                int towerId = request.getAsInt("towerId");
 
-                    towerInfo(clientId, matchName, towerId);
-                    break;
-                }
-                case CLIENT_REQUEST_UPGRADE_TOWER: {
-                    std::string matchName = request.getAsString(MATCH_NAME_KEY);
-                    int clientId = request.getAsInt("clientId");
-                    int towerId = request.getAsInt("towerId");
-                    int upgradeType = request.getAsInt("upgradeType");
+                towerInfo(clientId, matchName, towerId);
+                break;
+            } case CLIENT_REQUEST_UPGRADE_TOWER: {
+                std::string matchName = request.getAsString(MATCH_NAME_KEY);
+                int clientId = request.getAsInt("clientId");
+                int towerId = request.getAsInt("towerId");
+                int upgradeType = request.getAsInt("upgradeType");
 
-                    upgradeTower(matchName, clientId, towerId, upgradeType);
-                    break;
-                }
-                case SERVER_NOTIFICATION_END_CLIENT_CONNECTION: {
-                    std::cout
-                            << "el cliente "
-                            << std::to_string(
-                                    MessageFactory::getClientId(messageRequest))
-                            << " se desconectó."
-                            << std::endl;
+                upgradeTower(matchName, clientId, towerId, upgradeType);
+                break;
+            } case SERVER_NOTIFICATION_END_CLIENT_CONNECTION: {
+                removeClient(request.getAsInt("clientId"));
+                break;
 
-                    int id = 0;
-                    id = MessageFactory::getClientId(messageRequest);
-
-                    removeClient(id);
-
-                    std::cout << "GameServer: se termino de matar al cliennte "
-                              << id << std::endl;
-                    std::cout << "Ahora hay " << players.size() << " clientes"
-                              << std::endl;
-
-                    break;
-                }
-                default: {
-                    int clientId = MessageFactory::getClientId(messageRequest);
-                    response = "No se reconoce codigo de operación ";
-                    response.append(std::to_string(op));
-                    response.append("\n");
-                    response.append(messageRequest.getJsonString());
-                    notifyTo(clientId, response);
-                }
+            } default: {
+                std::string response = "No se reconoce codigo de operación "
+                    + std::to_string(op);
+                notifyTo(request.getAsInt("clientId"), response);
             }
         }
-    } catch (std::exception) {
-        std::cout << "GameServer: se rompi cola compartida" << std::endl;
     }
-
-    std::cout << "GameServer: Se murio, se tendria que haber apagado todo"
-              << std::endl;
 }
 
 

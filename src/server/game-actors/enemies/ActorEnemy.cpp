@@ -113,12 +113,6 @@ double ActorEnemy::getCalculatedVelocity() {
         slowdown = 0.0;
     }
 
-    std::cout << "now : " << now << std::endl
-            << "timeOfLastSlowdown : " << timeOfLastSlowdown << std::endl
-            << "timeOfSlowdown : " << timeOfSlowdown << std::endl
-            << "now - timeOfLastSlowdown : " << (now - timeOfLastSlowdown)
-            << std::endl;
-
     return velocity * (1.0 - slowdown) * VEL_REGULATOR;
 }
 

@@ -24,10 +24,6 @@
 #include <list>
 #include <vector>
 
-
-#define MAX_HORDES 3
-
-//FIXME: la lista de jugadores posiblemente requiera sincronizacion
 GameLoopWorker::GameLoopWorker(std::map<int, ServerPlayer *> &p,
                                std::list<GameAction *> &a,
                                std::mutex &m,
@@ -305,7 +301,7 @@ void GameLoopWorker::sendTowerInfo(GameActionGetTowerInfo *pInfo) {
 }
 
 bool GameLoopWorker::allHordesWereCreatedYet() {
-    return hordes.size() == MAX_HORDES;
+    return hordes.size() == map.getHordes().size();
 }
 
 void GameLoopWorker::upgradeTower(GameActionUpgradeTower *pInfo) {

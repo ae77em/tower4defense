@@ -40,42 +40,25 @@ void ClientRequestHandler::run() {
     std::string data;
 
     while (true) {
-        Message message;
+        std::string incoming_string;
         try {
-            std::cout
-                    << "CRH: cliente: "
-                    << client->getId()
-                    << " Esperando Mensaje" << std::endl;
+            TextMessage incoming = TextMessage::receiveFrom(*client);
+            incoming_string = incoming.getMessage();
 
-            TextMessage textMessage("");
-            std::string requestSerialized
-                    = textMessage.receiveFrom(*client).getMessage();
+        // Si el cliente cierra el socket, receiveFrom lanza una excepcion
+        } catch (std::runtime_error) { break; }
 
-            message.deserialize(requestSerialized);
-
-            std::cout << "CRH: cliente: "
-                      << client->getId()
-                      << " Recibio y despacho Mensaje: "
-                      << message.toString()
-                      << std::endl;
-        }catch (std::runtime_error){
-            Message message;
-            int clientId = client->getId();
-            std::string notif
-                = MessageFactory::getClientEndConectionNotification(clientId);
-            message.deserialize(notif);
-            queueSharedMessage.push(message);
-            std::cout
-                    << "CRH: cliente: "
-                    << client->getId()
-                    <<" TERMINO CONEXION"
-                    <<std::endl;
-            break;
-        }
-        queueSharedMessage.push(message);
+        Message request;
+        request.deserialize(incoming_string);
+        queueSharedMessage.push(request);
     }
 
-    std::cout << "CRH: cliente: "
-              << client->getId() <<" termino su CTH thread"<<std::endl;
+    // Notificar al servidor que el cliente se desconecto
+    std::string notif =
+        MessageFactory::getClientEndConectionNotification(
+                client->getId());
+    Message desconectado;
+    desconectado.deserialize(notif);
+    queueSharedMessage.push(desconectado);
 }
 
