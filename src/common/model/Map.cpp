@@ -174,7 +174,11 @@ Map Map::loadFromFile(std::string filename){
 Map::Map() { }
 
 void Map::checkValid() {
-    //TODO: al menos un portal de entrada
+    // Al menos un portal de entrada
+    // Se supone una relacion uno a uno entre portales y caminos,
+    // esta suposicion es correcta si cada camino comienza en un portal
+    // y cada portal es el comienzo de un camino.
+    if (paths.size() == 0) throw std::runtime_error("no paths");
 
     //TODO: un unico camino sale de cada portal de entrada
 
