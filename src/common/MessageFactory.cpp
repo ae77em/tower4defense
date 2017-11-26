@@ -212,7 +212,7 @@ std::string MessageFactory::getNewMatchRequest(int clientId,
     std::string completeMatchName;
 
     completeMatchName.assign(mapName);
-    completeMatchName.append(" - ");
+    completeMatchName.append("-");
     completeMatchName.append(matchName);
 
     root[OPERATION_KEY] = CLIENT_REQUEST_NEW_MATCH;
