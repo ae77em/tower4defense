@@ -20,6 +20,12 @@ static std::string open(Editor::Editor &context, const std::string& command) {
 }
 
 static std::string save(Editor::Editor &context, const std::string& command) {
+    try {
+        context.getMap().checkValid();
+    } catch (std::runtime_error e) {
+        return "invalid map. did you miss any features?";
+    }
+
     context.save("resources/maps/" + command);
     return "saved " + command;
 }
