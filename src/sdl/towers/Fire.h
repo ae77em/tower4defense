@@ -1,7 +1,6 @@
 #ifndef TP4_TOWERDEFENSE_FIRE_H
 #define TP4_TOWERDEFENSE_FIRE_H
 
-
 #include "Tower.h"
 
 class Fire : public Tower {

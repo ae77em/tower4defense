@@ -7,7 +7,7 @@
 #include "ServerPlayer.h"
 #include "GameLoopWorker.h"
 #include "GameAction.h"
-#include "../common/model/Map.h"
+#include "Map.h"
 #include <map>
 #include <string>
 #include <list>

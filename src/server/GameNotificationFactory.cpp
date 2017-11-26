@@ -1,13 +1,13 @@
-#include "GameNotification.h"
-#include "../common/Message.h"
-#include "../common/Protocol.h"
-#include "../common/MessageFactory.h"
+#include "GameNotificationFactory.h"
+#include "Message.h"
+#include "Protocol.h"
+#include "MessageFactory.h"
 
 #include <string>
 #include <map>
 #include <vector>
 
-std::string GameNotification::getStatusMatchNotification(
+std::string GameNotificationFactory::getStatusMatchNotification(
         std::map<int, Horde *>& hordes,
         std::vector<ActorTower *>& towers) {
     Json::Value aTower(Json::objectValue);
@@ -60,7 +60,7 @@ std::string GameNotification::getStatusMatchNotification(
 }
 
 std::string
-GameNotification::getNewHordeNotification(int id,
+GameNotificationFactory::getNewHordeNotification(int id,
                                         int hordeType,
                                         int amount) {
     std::string toReturn;
@@ -78,7 +78,7 @@ GameNotification::getNewHordeNotification(int id,
 }
 
 std::string
-GameNotification::getPutTowerNotification(int id, int towerType, int x, int y) {
+GameNotificationFactory::getPutTowerNotification(int id, int towerType, int x, int y) {
     std::string toReturn;
     Json::Value root(Json::objectValue);
     Message message;
@@ -96,7 +96,7 @@ GameNotification::getPutTowerNotification(int id, int towerType, int x, int y) {
 }
 
 std::string
-GameNotification::getUpgradeNotification(bool success, std::string info) {
+GameNotificationFactory::getUpgradeNotification(bool success, std::string info) {
     std::string toReturn;
     Json::Value root(Json::objectValue);
     Message message;
@@ -113,7 +113,7 @@ GameNotification::getUpgradeNotification(bool success, std::string info) {
 }
 
 std::string
-GameNotification::getTowerInfoNotification(int towerId,
+GameNotificationFactory::getTowerInfoNotification(int towerId,
                                            std::string classInfo,
                                            std::string experiencePointsInfo,
                                            std::string damageInfo,
@@ -140,7 +140,7 @@ GameNotification::getTowerInfoNotification(int towerId,
     return toReturn;
 }
 
-std::string GameNotification::getMatchEndedNotification(int matchStatus) {
+std::string GameNotificationFactory::getMatchEndedNotification(int matchStatus) {
     std::string toReturn;
     Json::Value root(Json::objectValue);
     Message message;

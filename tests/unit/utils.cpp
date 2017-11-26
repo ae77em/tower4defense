@@ -1,5 +1,5 @@
 #include "catch.h"
-#include "../../src/sdl/Utils.h"
+#include "../../src/sdl/SdlUtils.h"
 #include "../../src/common/Point.h"
 #include <vector>
 
@@ -8,14 +8,14 @@ TEST_CASE("findClosest", "[utils-closest]") {
         Point p = {0, 0};
         std::vector<Point> l;
 
-        REQUIRE_THROWS(Utils::findClosest(p, l));
+        REQUIRE_THROWS(SdlUtils::findClosest(p, l));
     }
 
     SECTION("prueba 1") {
         Point p = {0, 0};
         std::vector<Point> l = {{1,3}, {0,0}, {-1,2}};
 
-        auto x = Utils::findClosest(p, l);
+        auto x = SdlUtils::findClosest(p, l);
         REQUIRE(x.x == 0);
         REQUIRE(x.y == 0);
     }
@@ -24,7 +24,7 @@ TEST_CASE("findClosest", "[utils-closest]") {
         Point p = {1, 2};
         std::vector<Point> l = {{1,3}, {0,0}, {-1,2}};
 
-        auto x = Utils::findClosest(p, l);
+        auto x = SdlUtils::findClosest(p, l);
         REQUIRE(x.x == 1);
         REQUIRE(x.y == 3);
     }

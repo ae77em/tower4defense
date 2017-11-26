@@ -2,7 +2,7 @@
 #define TP4_TOWERDEFENSE_GAMEACTIONUPGRADETOWER_H
 
 #include <string>
-#include "../GameAction.h"
+#include "GameAction.h"
 
 class GameActionUpgradeTower : public GameAction {
 public:

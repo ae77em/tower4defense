@@ -1,7 +1,7 @@
 #include "GameAccessWindow.h"
-#include "../common/MessageFactory.h"
-#include "../common/TextMessage.h"
-#include "../common/Protocol.h"
+#include "MessageFactory.h"
+#include "TextMessage.h"
+#include "Protocol.h"
 #include <string>
 #include <list>
 #include <vector>

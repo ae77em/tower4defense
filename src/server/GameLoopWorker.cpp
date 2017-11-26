@@ -1,19 +1,18 @@
 #include "GameLoopWorker.h"
-#include "../common/Point.h"
+#include "Point.h"
+#include "ActorEnemy.h"
+#include "Horde.h"
+#include "GameNotificationFactory.h"
+#include "Map.h"
+#include "Protocol.h"
+#include "ActorTowerFire.h"
+#include "ActorTowerWater.h"
+#include "ActorTowerAir.h"
+#include "ActorTowerEarth.h"
+#include "GameActionPutTower.h"
+#include "GameActionGetTowerInfo.h"
+#include "GameActionUpgradeTower.h"
 #include "../sdl/Constants.h"
-#include "game-actors/enemies/ActorEnemy.h"
-#include "game-actors/enemies/Horde.h"
-#include "GameNotification.h"
-#include "../common/model/Map.h"
-#include "../common/Protocol.h"
-#include "game-actors/towers/ActorTowerFire.h"
-#include "game-actors/towers/ActorTowerWater.h"
-#include "game-actors/towers/ActorTowerAir.h"
-#include "game-actors/towers/ActorTowerEarth.h"
-#include "../client/GamePlayWindow.h"
-#include "game-actions/GameActionPutTower.h"
-#include "game-actions/GameActionGetTowerInfo.h"
-#include "game-actions/GameActionUpgradeTower.h"
 
 #include <iostream>
 #include <chrono>
@@ -168,7 +167,7 @@ bool GameLoopWorker::actionsSuccessfullAttended(
 }
 
 std::string GameLoopWorker::getGameStatus() {
-    return GameNotification::getStatusMatchNotification(hordes, towers);
+    return GameNotificationFactory::getStatusMatchNotification(hordes, towers);
 }
 
 bool GameLoopWorker::isTimeToCreateHorde() {
@@ -212,7 +211,7 @@ void GameLoopWorker::createHordeAndNotify() {
     hordes.insert(std::make_pair(hordeId, h));
 
     /* Notificar a los clientes sobre la nueva horda */
-    std::string statusGame = GameNotification::getNewHordeNotification(
+    std::string statusGame = GameNotificationFactory::getNewHordeNotification(
                     hordeId, horde_type, horde_size);
     for (auto it = players.begin(); it != players.end(); ++it) {
         it->second->sendData(statusGame);
@@ -255,7 +254,7 @@ void GameLoopWorker::putTower(GameActionPutTower *pAction) {
     towers.push_back(tower);
 
     std::string statusGame =
-            GameNotification::getPutTowerNotification(towerId,
+            GameNotificationFactory::getPutTowerNotification(towerId,
                                                       type,
                                                       actualX,
                                                       actualY);
@@ -267,7 +266,7 @@ void GameLoopWorker::putTower(GameActionPutTower *pAction) {
 
 void GameLoopWorker::notifyMatchWin() {
     std::string statusGame =
-            GameNotification::getMatchEndedNotification(GAME_STATUS_WON);
+            GameNotificationFactory::getMatchEndedNotification(GAME_STATUS_WON);
     for (auto it = players.begin(); it != players.end(); ++it) {
         it->second->sendData(statusGame);
     }
@@ -276,7 +275,7 @@ void GameLoopWorker::notifyMatchWin() {
 
 void GameLoopWorker::notifyMatchLoose() {
     std::string statusGame =
-            GameNotification::getMatchEndedNotification(GAME_STATUS_LOST);
+            GameNotificationFactory::getMatchEndedNotification(GAME_STATUS_LOST);
     for (auto it = players.begin(); it != players.end(); ++it) {
         it->second->sendData(statusGame);
     }
@@ -289,7 +288,7 @@ void GameLoopWorker::sendTowerInfo(GameActionGetTowerInfo *pInfo) {
     ActorTower *tower = towers.at(towerId);
 
     std::string data =
-            GameNotification::getTowerInfoNotification(towerId,
+            GameNotificationFactory::getTowerInfoNotification(towerId,
                                        tower->getClassInfo(),
                                        tower->getExperiencePointsInfo(),
                                        tower->getShotDamageInfo(),
@@ -355,7 +354,7 @@ void GameLoopWorker::upgradeTower(GameActionUpgradeTower *pInfo) {
     }
 
     std::string data =
-            GameNotification::getUpgradeNotification(upgradeSuccessful, info);
+            GameNotificationFactory::getUpgradeNotification(upgradeSuccessful, info);
 
     players.at(clientId)->sendData(data);
 }

@@ -2,7 +2,7 @@
 #include "Texture.h"
 #include "Animation.h"
 #include "Constants.h"
-#include "Utils.h"
+#include "SdlUtils.h"
 #include "../common/model/Map.h"
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_ttf.h>
@@ -73,7 +73,7 @@ void Screen::draw() {
 }
 
 void Screen::put(unsigned x, unsigned y, Texture &texture) {
-    Point pos = Utils::mapToScreen(x, y);
+    Point pos = SdlUtils::mapToScreen(x, y);
 
     // Correccion por camara
     pos.x -= camera.x;
@@ -90,7 +90,7 @@ void Screen::put(unsigned x, unsigned y, Texture &texture) {
 
 void Screen::put(unsigned x, unsigned y,
         std::unique_ptr<Animation> &animation) {
-    Point pos = Utils::mapToScreen(x, y);
+    Point pos = SdlUtils::mapToScreen(x, y);
 
     // Correccion por camara
     pos.x -= camera.x;
@@ -153,7 +153,7 @@ void Screen::put(model::Map &map) {
 }
 
 Point Screen::mouseCurrentTile() const {
-    return Utils::getMouseRelativePoint(camera);
+    return SdlUtils::getMouseRelativePoint(camera);
 }
 
 void Screen::setDialog(const std::string &text) {
@@ -168,7 +168,7 @@ void Screen::trace(const std::vector<Point> &path) {
     std::vector<SDL_Point> visual_path;
     visual_path.reserve(path.size());
     for (const auto& point : path) {
-        auto screen_point = Utils::mapToScreen(point.x, point.y);
+        auto screen_point = SdlUtils::mapToScreen(point.x, point.y);
         screen_point.x -= camera.x;
         screen_point.y -= camera.y;
         screen_point.x += tile_desert.getWidth() / 2;

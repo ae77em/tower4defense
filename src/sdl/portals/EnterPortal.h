@@ -1,11 +1,10 @@
-#ifndef TP4_TOWERDEFENSE_PORTAL_H
-#define TP4_TOWERDEFENSE_PORTAL_H
-
+#ifndef TP4_TOWERDEFENSE_ENTERPORTAL_H
+#define TP4_TOWERDEFENSE_ENTERPORTAL_H
 
 #include <SDL2/SDL_render.h>
-#include "../Animable.h"
-#include "../Texture.h"
-#include "../../common/Circle.h"
+#include "Animable.h"
+#include "Texture.h"
+#include "Circle.h"
 
 class EnterPortal : public Animable {
 public:

@@ -1,7 +1,7 @@
 #ifndef TP4_TOWERDEFENSE_COMMON_UTILS_H
 #define TP4_TOWERDEFENSE_COMMON_UTILS_H
 
-class Utils {
+class CommonUtils {
 public:
     static void printAsciiGameHeader();
 

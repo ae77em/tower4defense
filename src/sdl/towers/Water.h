@@ -1,7 +1,6 @@
 #ifndef TP4_TOWERDEFENSE_WATER_H
 #define TP4_TOWERDEFENSE_WATER_H
 
-
 #include "Tower.h"
 class Water : public Tower {
 public:

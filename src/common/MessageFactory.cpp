@@ -473,19 +473,6 @@ std::vector<Message> MessageFactory::getMovementNotifications(Message message) {
     return messagesToReturn;
 }
 
-std::string MessageFactory::getMatchEndedNotification(int matchStatus) {
-    std::string toReturn;
-    Json::Value root(Json::objectValue);
-    Message message;
-
-    root[OPERATION_KEY] = SERVER_NOTIFICATION_MATCH_ENDED;
-    root[MATCH_STATUS_KEY] = matchStatus;
-
-    message.setData(root);
-
-    return message.serialize();
-}
-
 std::string
 MessageFactory::getCastSpellRequest(std::string matchName, int x, int y) {
     std::string toReturn;
@@ -537,30 +524,6 @@ std::string MessageFactory::getUpgradeRequest(int clientId,
     root[MATCH_NAME_KEY] = matchName;
     root[TOWER_ID_KEY] = towerId;
     root["upgradeType"] = upgradeType;
-
-    message.setData(root);
-
-    toReturn = message.serialize();
-
-    return toReturn;
-}
-
-std::string
-MessageFactory::getTowerInfoNotification(int towerId,
-                                         std::string damageInfo,
-                                         std::string rangeInfo,
-                                         std::string reachInfo,
-                                         std::string slowDownInfo) {
-    std::string toReturn;
-    Json::Value root(Json::objectValue);
-    Message message;
-
-    root[OPERATION_KEY] = SERVER_NOTIFICATION_TOWER_INFO;
-    root[TOWER_ID_KEY] = towerId;
-    root["damage"] = damageInfo;
-    root["range"] = rangeInfo;
-    root["reach"] = reachInfo;
-    root["slowDown"] = slowDownInfo;
 
     message.setData(root);
 

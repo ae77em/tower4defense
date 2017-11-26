@@ -4,12 +4,6 @@
 #include "Enemy.h"
 
 class Zombie : public Enemy {
-private:
-    const int WALK_SPRITE_WIDTH = 105;
-    const int WALK_SPRITE_HEIGHT = 119;
-
-    const int DEATH_SPRITE_WIDTH = 200;
-    const int DEATH_SPRITE_HEIGHT = 155;
 public:
     Zombie(int x, int y, SDL_Renderer *renderer, Texture *texture);
 

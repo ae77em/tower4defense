@@ -1,8 +1,9 @@
+#include <Protocol.h>
 #include "Tower.h"
-#include "../Utils.h"
+#include "SdlUtils.h"
 
 Tower::Tower(int x, int y, SDL_Renderer *r, Texture &t)
-        : texture(t), currentPoint(Utils::mapToScreen(x, y)) {
+        : texture(t), currentPoint(SdlUtils::mapToScreen(x, y)) {
 
     idleSpriteWidth = IDLE_SPRITE_WIDTH + separationBetweenSprites;
     idleSpriteHeight = IDLE_SPRITE_HEIGHT + separationBetweenSprites;
@@ -67,7 +68,7 @@ void Tower::setIsShooting(bool isShooting) {
 
 void Tower::renderIdle(SDL_Rect &camera) {
     int frameToDraw = (SDL_GetTicks() / 100) % NUMBER_OF_IDLE_SPRITES;
-    DecimalPoint screenPoint = Utils::cartesianToIso(idleBox.x, idleBox.y);
+    DecimalPoint screenPoint = SdlUtils::cartesianToIso(idleBox.x, idleBox.y);
 
     // Mostrar animacion de disparo y idle en el mismo lugar
     shotBox.x = idleBox.x;
@@ -85,7 +86,7 @@ void Tower::renderIdle(SDL_Rect &camera) {
 void Tower::renderShot(SDL_Rect &camera) {
     int frameToDraw = (SDL_GetTicks() / 100) % NUMBER_OF_SHOT_SPRITES;
 
-    DecimalPoint screenPoint = Utils::cartesianToIso(shotBox.x, shotBox.y);
+    DecimalPoint screenPoint = SdlUtils::cartesianToIso(shotBox.x, shotBox.y);
 
     int offset = idleBox.h - ISO_TILE_HEIGHT;
 

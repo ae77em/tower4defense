@@ -207,11 +207,6 @@ public:
     static int getHordeId(Message message);
 
     /*
-     * Retorna notificación de fin de partida.
-     */
-    static std::string getMatchEndedNotification(int matchStatus);
-
-    /*
      * Retorna el pedido de info de una torre.
      */
     static std::string
@@ -223,43 +218,11 @@ public:
     static std::string getCastSpellRequest(std::string matchName, int x, int y);
 
     /*
-     * Retorna el pedido de poner torre.
-     */
-    static std::string getPutTowerGameRequest(int towType, int x, int y);
-
-    /*
-     * Retorna el pedido de lanzamiento de hechizo, sin distinguir a qué
-     * juego pertenece.
-     */
-    static std::string getCastSpellGameRequest(int x, int y);
-
-    /*
      * Retorna el pedido de upgrade de torre.
      */
     static std::string
     getUpgradeRequest(int clientId, std::string matchName,
                           int towerId, int upgradeType);
-
-    /*
-     * Retorna el pedido de upgrade de torre, sin distinguir a qué
-     * juego pertenece.
-     */
-    static std::string getUpgradeTowerGameRequest(int towerId, int upgradeType);
-
-    /*
-     * Retorna el pedido de info de torre.
-     */
-    static std::string getTowerInfoGameRequest(int towerId);
-
-    /*
-     * Retorna la notificación con la info de la torre.
-     */
-    static std::string
-    getTowerInfoNotification(int towerId,
-                             std::string damageInfo,
-                             std::string rangeInfo,
-                             std::string reachInfo = 0,
-                             std::string slowDownInfo = 0);
 
     /*
      * Retorna la notificación de lanzamiento de hechizo.

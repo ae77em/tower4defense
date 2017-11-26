@@ -1,5 +1,5 @@
 #include "Editor.h"
-#include "../sdl/Utils.h"
+#include "SdlUtils.h"
 
 void Editor::StatePath::handle(const SDL_Event &e, Editor &context) {
     auto& map = context.getMap();
@@ -70,7 +70,7 @@ void Editor::StatePath::preRender(Editor &context) {
         {p.x - 1, p.y    },                 {p.x + 1, p.y    },
         {p.x - 1, p.y + 1}, {p.x, p.y + 1}, {p.x + 1, p.y + 1}
     };
-    tentative_point = Utils::findClosest(c, surroundings);
+    tentative_point = SdlUtils::findClosest(c, surroundings);
 
     /* Show the new tentative segment */
     screen.trace({p, tentative_point});

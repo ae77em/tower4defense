@@ -1,7 +1,7 @@
-#include "../sdl/Screen.h"
-#include "../sdl/Keybinding.h"
-#include "../common/model/Map.h"
-#include "../common/Point.h"
+#include "Screen.h"
+#include "Keybinding.h"
+#include "Map.h"
+#include "Point.h"
 #include <SDL2/SDL.h>
 #include <string>
 #include <vector>

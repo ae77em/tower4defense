@@ -1,10 +1,10 @@
 #ifndef TP4_ACCESS_TOWERDEFENSE_LISTENER_H
 #define TP4_ACCESS_TOWERDEFENSE_LISTENER_H
 
-#include "../common/Thread.h"
-#include "../common/Socket.h"
+#include "Thread.h"
+#include "Socket.h"
 #include "GameAccessWindow.h"
-#include "../common/SharedBuffer.h"
+#include "SharedBuffer.h"
 #include "Notificable.h"
 
 class Listener : public Thread {

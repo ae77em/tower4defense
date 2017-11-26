@@ -20,19 +20,6 @@ const std::vector<std::string> TILES_IMAGES_PATHS({
       "images/sprites/tile-firm.png"
 });
 
-//TODO: explain difference between catesian, isometric, and square dimensions
-const int CARTESIAN_TILE_WIDTH = 80;
-const int CARTESIAN_TILE_HEIGHT = 80;
-
-// Tile dimensions without isometric perspective
-const int SQUARE_TILE_WIDTH = 80;
-const int SQUARE_TILE_HEIGHT = 80;
-
-const int ISO_TILE_WIDTH = 160;
-const int ISO_TILE_HEIGHT = 80;
-const int ISO_TILE_WIDTH_HALF = ISO_TILE_WIDTH / 2;
-const int ISO_TILE_HEIGHT_HALF = ISO_TILE_HEIGHT / 2;
-
 const int TOTAL_TILE_SPRITES = 8;
 
 const int NUMBER_OF_ENEMY_WALK_SPRITES = 12;

@@ -4,10 +4,10 @@
 #include <cstring>
 #include <iostream>
 
-#include "../common/TextMessage.h"
-#include "../common/MessageFactory.h"
-#include "../common/Message.h"
-#include "../common/Protocol.h"
+#include "TextMessage.h"
+#include "MessageFactory.h"
+#include "Message.h"
+#include "Protocol.h"
 
 #include "ClientRequestHandler.h"
 

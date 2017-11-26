@@ -2,9 +2,9 @@
 #define TP4_TOWERDEFENSE_GAMEACCESS_H
 
 #include <gtkmm.h>
-#include "../common/Thread.h"
-#include "../common/Socket.h"
-#include "../common/SharedBuffer.h"
+#include "Thread.h"
+#include "Socket.h"
+#include "SharedBuffer.h"
 #include "GamePlayWindow.h"
 #include "Notificable.h"
 #include <string>

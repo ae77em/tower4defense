@@ -1,9 +1,9 @@
 #include "ActorTower.h"
-#include "../../../sdl/Constants.h"
 #include <string>
 #include <cmath>
 #include <iomanip>
 #include <sstream>
+#include <Protocol.h>
 
 /* Descomentar la siguiente linea para activar salida de debug */
 //#define LOG

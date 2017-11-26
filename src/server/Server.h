@@ -6,15 +6,15 @@
 #include <jsoncpp/json/json.h>
 #include <unordered_map>
 #include <set>
-#include "../common/Socket.h"
-#include "../common/ThreadedQueue.h"
-#include "../common/Thread.h"
-#include "../common/TextMessage.h"
-#include "../common/Message.h"
+#include "Socket.h"
+#include "ThreadedQueue.h"
+#include "Thread.h"
+#include "TextMessage.h"
+#include "Message.h"
 
 #include "ServerPlayer.h"
 #include "ServerMatch.h"
-#include "../common/model/Map.h"
+#include "Map.h"
 #include <map>
 #include <string>
 #include <list>

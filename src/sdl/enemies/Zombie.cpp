@@ -1,5 +1,5 @@
 #include "Zombie.h"
-#include "../Utils.h"
+#include "SdlUtils.h"
 
 Zombie::Zombie(int x, int y, SDL_Renderer *renderer, Texture *texture)
     : Enemy(x, y, renderer, texture) {

@@ -4,13 +4,6 @@
 #include <iostream>
 #include <string>
 
-struct ActorRectT {
-    int x;
-    int y;
-    int w;
-    int h;
-};
-
 class GameActor {
 public:
     GameActor();

@@ -1,9 +1,10 @@
 #include <iostream>
+#include <Protocol.h>
 #include "Enemy.h"
-#include "../Utils.h"
+#include "SdlUtils.h"
 
 Enemy::Enemy(int x, int y, SDL_Renderer *r, Texture *t)
-        : currentPoint(Utils::mapToScreen(x, y)) {
+        : currentPoint(SdlUtils::mapToScreen(x, y)) {
     initializeSpritesData();
 
     texture = t;
@@ -97,7 +98,7 @@ void Enemy::setSprites() {
 
 void Enemy::renderWalk(SDL_Rect &camera) {
     int frameToDraw = (SDL_GetTicks() / 100) % numberOfEnemyWalkSprites;
-    DecimalPoint screenPoint = Utils::cartesianToIso(walkBox.x, walkBox.y);
+    DecimalPoint screenPoint = SdlUtils::cartesianToIso(walkBox.x, walkBox.y);
 
     // Mostrar animacion de movimiento y muerte en el mismo lugar
     deathBox.x = walkBox.x;
@@ -130,7 +131,7 @@ void Enemy::renderDie(SDL_Rect &camera) {
 
     if (!(firstFrameOfDeathRendered and lastFrameOfDeathRendered)) {
         DecimalPoint screenPoint =
-                Utils::cartesianToIso(deathBox.x, deathBox.y);
+                SdlUtils::cartesianToIso(deathBox.x, deathBox.y);
 
         int offset = walkBox.h - ISO_TILE_HEIGHT;
 

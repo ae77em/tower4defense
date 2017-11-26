@@ -1,7 +1,8 @@
 #ifndef TP4_TOWERDEFENSE_GAMEACTIONGETTOWERINFO_H
 #define TP4_TOWERDEFENSE_GAMEACTIONGETTOWERINFO_H
 
-#include "../GameAction.h"
+#include <string>
+#include "GameAction.h"
 
 class GameActionGetTowerInfo : public GameAction {
 public:

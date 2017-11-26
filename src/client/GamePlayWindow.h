@@ -10,32 +10,26 @@ static const int TOWBER_BUTTONS_HEIGHT = 40;
 static const int TIME_FOR_ENABLE_ACTION = 20000;
 static const int TIME_FOR_SHOW_TEMPORARY_MESSAGE = 5000;
 
-enum GameStatus {
-    GAME_STATUS_UNDECIDED = 0,
-    GAME_STATUS_WON = 1,
-    GAME_STATUS_LOST = 2
-};
-
-#include "../common/Socket.h"
+#include "Socket.h"
 #include <string>
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_video.h>
 #include <SDL2/SDL_system.h>
 #include <map>
-#include "../sdl/Constants.h"
-#include "../sdl/Texture.h"
-#include "../sdl/Tile.h"
-#include "../common/Point.h"
-#include "../common/SharedBuffer.h"
-#include "../common/Thread.h"
-#include "../sdl/enemies/Enemy.h"
-#include "../sdl/enemies/Abmonible.h"
-#include "../sdl/towers/Tower.h"
-#include "../sdl/enemies/DrawableHorde.h"
-#include "../common/Message.h"
-#include "../common/model/Map.h"
-#include "../sdl/portals/EnterPortal.h"
+#include "Constants.h"
+#include "Texture.h"
+#include "Tile.h"
+#include "Point.h"
+#include "SharedBuffer.h"
+#include "Thread.h"
+#include "Abmonible.h"
+#include "Tower.h"
+#include "DrawableHorde.h"
+#include "Message.h"
+#include "model/Map.h"
+#include "EnterPortal.h"
 #include <vector>
+#include <Protocol.h>
 
 
 struct lessThanByPoint {

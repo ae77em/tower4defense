@@ -1,10 +1,9 @@
 #include "ServerMatch.h"
-#include "../sdl/Constants.h"
-#include "../common/Protocol.h"
-#include "../common/MessageFactory.h"
-#include "../common/model/Map.h"
-#include "game-actions/GameActionPutTower.h"
-#include "game-actions/GameActionUpgradeTower.h"
+#include "Protocol.h"
+#include "MessageFactory.h"
+#include "Map.h"
+#include "GameActionPutTower.h"
+#include "GameActionUpgradeTower.h"
 
 #include <algorithm>
 #include <utility>

@@ -4,10 +4,11 @@
 #include <SDL2/SDL_rect.h>
 #include "../common/Point.h"
 
-class Utils {
+class SdlUtils {
 public:
 
-    static Point mapToScreen(int i, int j, int h_offset = 0, int w_offset = 0);
+    static Point
+    mapToScreen(int i, int j, int h_offset = 0, int w_offset = 0);
 
     /*
      * Verifica a qué coordenada (x,y) del mapa pertenece un punto de la
@@ -42,8 +43,7 @@ public:
      *
      * Pasar un l vacio resulta en error en tiempo de ejecucion.
      */
-    static Point findClosest(const Point& p, const std::vector<Point>& l);
+    static Point findClosest(const Point &p, const std::vector<Point> &l);
 };
-
 
 #endif //TP4_TOWERDEFENSE_UTILS_H

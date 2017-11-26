@@ -14,24 +14,27 @@ file(GLOB CLIENT_SOURCES
         "src/sdl/*.cpp"
         "src/sdl/*/*.h"
         "src/sdl/*/*.cpp")
+
 file(GLOB SERVER_SOURCES
         "src/server/*.cpp"
         "src/server/*/*.cpp"
         "src/server/*/*/*.cpp"
         "src/common/*.cpp"
         "src/common/*/*.cpp")
+
 file(GLOB EDITOR_SOURCES
         "src/editor/*.cpp"
         "src/common/*.cpp"
         "src/common/**/*.cpp"
         "src/sdl/*.cpp")
+
 file(GLOB TEST_SOURCES
         "tests/unit/*.cpp"
         "src/common/*.cpp"
         "src/common/**/*.cpp"
         "src/sdl/*.cpp")
 
-add_executable(game.exe ${CLIENT_SOURCES} src/sdl/portals/ExitPortal.cpp src/sdl/portals/ExitPortal.h)
+add_executable(game.exe ${CLIENT_SOURCES})
 add_executable(server.exe ${SERVER_SOURCES})
 add_executable(editor.exe ${EDITOR_SOURCES})
 add_executable(unit.exe ${TEST_SOURCES})
@@ -68,7 +71,34 @@ TARGET_LINK_LIBRARIES(editor.exe ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES}
 TARGET_LINK_LIBRARIES(unit.exe ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES}
         ${SDL2TTF_LIBRARIES})
 
-SET(GCC_COVERAGE_COMPILE_FLAGS "-I -Wall -Werror -pedantic -pedantic-errors -O0
+target_include_directories(game.exe PUBLIC
+        src/client
+        src/common
+        src/common/model
+        src/sdl
+        src/sdl/enemies
+        src/sdl/towers
+        src/sdl/portals)
+
+target_include_directories(server.exe PUBLIC
+        src/server
+        src/server/game-actions
+        src/server/game-actors
+        src/server/game-actors/enemies
+        src/server/game-actors/towers
+        src/common
+        src/common/model)
+
+target_include_directories(editor.exe PUBLIC
+        src/editor
+        src/common
+        src/common/model
+        src/sdl
+        src/sdl/enemies
+        src/sdl/towers
+        src/sdl/portals)
+
+SET(GCC_COVERAGE_COMPILE_FLAGS "-Wall -Werror -pedantic -pedantic-errors -O0
 -ggdb -DDEBUG -fno-inline -std=c++11")
 add_definitions(${GCC_COVERAGE_COMPILE_FLAGS})
 

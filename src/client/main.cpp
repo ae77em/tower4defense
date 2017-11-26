@@ -1,9 +1,9 @@
-#include "../common/SharedBuffer.h"
-#include "../common/Socket.h"
+#include "SharedBuffer.h"
+#include "Socket.h"
 #include "Listener.h"
-#include "../common/MessageFactory.h"
-#include "../common/Utils.h"
-#include "../common/TextMessage.h"
+#include "MessageFactory.h"
+#include "CommonUtils.h"
+#include "TextMessage.h"
 #include "Sender.h"
 #include <gtkmm.h>
 #include <iostream>
@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
         return 0;
     }
 
-    Utils::printAsciiGameHeader();
+    CommonUtils::printAsciiGameHeader();
 
     /* me conecto al server, y le pido mi id de jugador */
     std::string host = std::string(argv[1]);

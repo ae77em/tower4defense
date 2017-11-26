@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include "Sender.h"
-#include "../common/TextMessage.h"
+#include "TextMessage.h"
 
 Sender::Sender(Socket *s, SharedBuffer &b) : server(s), buffer(b) {}
 

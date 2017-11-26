@@ -1,7 +1,6 @@
 #ifndef TP4_TOWERDEFENSE_GREENDAEMON_H
 #define TP4_TOWERDEFENSE_GREENDAEMON_H
 
-
 #include "Enemy.h"
 
 class GreenDaemon : public Enemy{

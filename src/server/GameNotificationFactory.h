@@ -2,12 +2,12 @@
 #define TP4_TOWERDEFENSE_GAMENOTIFICATION_H
 
 #include <string>
-#include "game-actors/enemies/Horde.h"
-#include "game-actors/towers/ActorTower.h"
+#include "Horde.h"
+#include "ActorTower.h"
 #include <map>
 #include <vector>
 
-class GameNotification {
+class GameNotificationFactory {
 public:
     static std::string getStatusMatchNotification(
             std::map<int, Horde *> &hordes,

@@ -2,9 +2,9 @@
 #define TP4_TOWERDEFENSE_EXITPORTAL_H
 
 #include <SDL2/SDL_render.h>
-#include "../Animable.h"
-#include "../Texture.h"
-#include "../../common/Circle.h"
+#include "Animable.h"
+#include "Texture.h"
+#include "Circle.h"
 
 class ExitPortal : public Animable {
 public:

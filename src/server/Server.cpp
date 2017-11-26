@@ -1,8 +1,8 @@
 #include "Server.h"
-#include "../common/MessageFactory.h"
-#include "../common/Protocol.h"
-#include "../common/Request.h"
-#include "../common/model/Map.h"
+#include "MessageFactory.h"
+#include "Protocol.h"
+#include "Request.h"
+#include "model/Map.h"
 #include <utility>
 #include <map>
 #include <vector>

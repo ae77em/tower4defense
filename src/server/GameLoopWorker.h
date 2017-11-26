@@ -1,17 +1,17 @@
 #ifndef TP4_TOWERDEFENSE_LOOPGAME_H
 #define TP4_TOWERDEFENSE_LOOPGAME_H
 
-#include "../common/Thread.h"
+#include "Thread.h"
 #include "ServerPlayer.h"
 #include "GameActor.h"
 #include "GameAction.h"
-#include "game-actors/enemies/ActorEnemy.h"
-#include "game-actors/enemies/Horde.h"
-#include "game-actors/towers/ActorTower.h"
-#include "../common/model/Map.h"
-#include "game-actions/GameActionPutTower.h"
-#include "game-actions/GameActionGetTowerInfo.h"
-#include "game-actions/GameActionUpgradeTower.h"
+#include "ActorEnemy.h"
+#include "Horde.h"
+#include "ActorTower.h"
+#include "Map.h"
+#include "GameActionPutTower.h"
+#include "GameActionGetTowerInfo.h"
+#include "GameActionUpgradeTower.h"
 #include <map>
 #include <string>
 #include <list>

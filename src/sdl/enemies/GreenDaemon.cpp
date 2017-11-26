@@ -1,5 +1,5 @@
 #include "GreenDaemon.h"
-#include "../Utils.h"
+#include "SdlUtils.h"
 
 GreenDaemon::GreenDaemon(int x,
                          int y,

@@ -3,11 +3,11 @@
 #include <list>
 #include <vector>
 #include "Listener.h"
-#include "../common/TextMessage.h"
-#include "../common/SharedBuffer.h"
-#include "../common/MessageFactory.h"
-#include "../common/Message.h"
-#include "../common/Protocol.h"
+#include "TextMessage.h"
+#include "SharedBuffer.h"
+#include "MessageFactory.h"
+#include "Message.h"
+#include "Protocol.h"
 #include "Notificable.h"
 
 Listener::Listener(Socket *s, Notificable &ga, SharedBuffer &bfr)

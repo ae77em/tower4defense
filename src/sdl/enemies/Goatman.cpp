@@ -1,5 +1,5 @@
 #include "Goatman.h"
-#include "../Utils.h"
+#include "SdlUtils.h"
 
 Goatman::Goatman(int x, int y, SDL_Renderer *renderer, Texture *texture)
         : Enemy(x, y, renderer, texture) {

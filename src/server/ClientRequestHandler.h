@@ -1,10 +1,10 @@
 #ifndef SERVER_CLIENT_REQUEST_HANDLER_H
 #define SERVER_CLIENT_REQUEST_HANDLER_H
 
-#include "../common/Thread.h"
-#include "../common/Socket.h"
-#include "../common/Message.h"
-#include "../common/ThreadedQueue.h"
+#include "Thread.h"
+#include "Socket.h"
+#include "Message.h"
+#include "ThreadedQueue.h"
 #include <string>
 
 class ClientRequestHandler : public Thread {

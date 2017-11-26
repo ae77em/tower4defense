@@ -20,7 +20,6 @@ public:
                       int g = 0,
                       int b = 0xFF);
 
-    //TODO: should this method be private?
     //Deallocates texture
     void free();
 
@@ -28,7 +27,6 @@ public:
     void setBlendMode(SDL_BlendMode blending);
     void setAlpha(Uint8 alpha);
 
-    //TODO: document differences between this two methods
     void render(SDL_Renderer *renderer,
                 int x,
                 int y,

@@ -71,6 +71,21 @@ enum TowerType {
     TOWER_EARTH = 3
 };
 
+enum GameStatus {
+    GAME_STATUS_UNDECIDED = 0,
+    GAME_STATUS_WON = 1,
+    GAME_STATUS_LOST = 2
+};
+
+const int CARTESIAN_TILE_WIDTH = 80;
+const int CARTESIAN_TILE_HEIGHT = 80;
+
+// Tile dimensions without isometric perspective
+const int ISO_TILE_WIDTH = 160;
+const int ISO_TILE_HEIGHT = 80;
+const int ISO_TILE_WIDTH_HALF = ISO_TILE_WIDTH / 2;
+const int ISO_TILE_HEIGHT_HALF = ISO_TILE_HEIGHT / 2;
+
 const std::string STR_WATER = "Agua";
 const std::string STR_AIR = "Aire";
 const std::string STR_FIRE = "Fuego";

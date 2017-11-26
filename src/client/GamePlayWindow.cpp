@@ -1,21 +1,21 @@
 #include "GamePlayWindow.h"
 
-#include "../sdl/Dot.h"
-#include "../sdl/Utils.h"
-#include "../common/MessageFactory.h"
-#include "../common/Protocol.h"
-#include "../sdl/enemies/GreenDaemon.h"
-#include "../sdl/enemies/Zombie.h"
-#include "../common/TextMessage.h"
-#include "../common/Request.h"
-#include "../sdl/enemies/BloodHawk.h"
-#include "../sdl/enemies/Goatman.h"
-#include "../sdl/enemies/Spectre.h"
-#include "../sdl/towers/Air.h"
-#include "../sdl/towers/Fire.h"
-#include "../sdl/towers/Earth.h"
-#include "../sdl/towers/Water.h"
-#include "../sdl/portals/ExitPortal.h"
+#include "Dot.h"
+#include "SdlUtils.h"
+#include "MessageFactory.h"
+#include "Protocol.h"
+#include "GreenDaemon.h"
+#include "Zombie.h"
+#include "TextMessage.h"
+#include "Request.h"
+#include "BloodHawk.h"
+#include "Goatman.h"
+#include "Spectre.h"
+#include "Air.h"
+#include "Fire.h"
+#include "Earth.h"
+#include "Water.h"
+#include "ExitPortal.h"
 
 #include <iostream>
 #include <fstream>
@@ -25,7 +25,6 @@
 #include <string>
 #include <map>
 #include <vector>
-
 
 GamePlayWindow::GamePlayWindow(Socket *s,
                                SharedBuffer *in,
@@ -358,7 +357,7 @@ GamePlayWindow::renderText(SDL_Rect &camera, std::string text, int x, int y) {
 void
 GamePlayWindow::handleMouseEvents(SDL_Rect camera, SDL_Event e) {
     if (e.type == SDL_MOUSEBUTTONDOWN) {
-        Point point = Utils::getMouseRelativePoint(camera);
+        Point point = SdlUtils::getMouseRelativePoint(camera);
 
         /* Si hice click y tengo algún evento marcado para disparar
          * (por ejemplo, marqué un lugar para poner una torre, o quiero

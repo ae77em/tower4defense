@@ -1,9 +1,9 @@
 #ifndef TP4_CLIENT_TOWERDEFENSE_SENDER_H
 #define TP4_CLIENT_TOWERDEFENSE_SENDER_H
 
-#include "../common/SharedBuffer.h"
-#include "../common/Socket.h"
-#include "../common/Thread.h"
+#include "SharedBuffer.h"
+#include "Socket.h"
+#include "Thread.h"
 
 class Sender : public Thread {
 private:

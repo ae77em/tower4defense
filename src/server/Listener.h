@@ -1,8 +1,8 @@
 #ifndef LISTENER_H
 #define LISTENER_H
 
-#include "../common/Socket.h"
-#include "../common/Thread.h"
+#include "Socket.h"
+#include "Thread.h"
 #include "ClientRequestHandler.h"
 
 #include <vector>

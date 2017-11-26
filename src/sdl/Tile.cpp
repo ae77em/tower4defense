@@ -1,6 +1,6 @@
 #include "Tile.h"
 #include "Constants.h"
-#include "Utils.h"
+#include "SdlUtils.h"
 #include "../common/Protocol.h"
 #include <iostream>
 #include <string>
@@ -25,10 +25,10 @@ void Tile::render(SDL_Rect &camera,
                            SDL_Rect *gTileClips,
                            SDL_Renderer *renderer,
                            Texture *gTileTextures) {
-    Point screenPoint = Utils::mapToScreen(containerBoxAttributes.x,
+    Point screenPoint = SdlUtils::mapToScreen(containerBoxAttributes.x,
                                            containerBoxAttributes.y);
 
-    SDL_Rect aux = Utils::getBoxByTileType(type);
+    SDL_Rect aux = SdlUtils::getBoxByTileType(type);
 
     int offset = aux.h - ISO_TILE_HEIGHT;
 
@@ -46,7 +46,7 @@ void Tile::renderSprite(SDL_Rect &camera,
                         SDL_Rect *tileClips,
                         SDL_Renderer *renderer,
                         Texture *tileTextures) {
-    Point screenPoint = Utils::mapToScreen(containerBoxAttributes.x,
+    Point screenPoint = SdlUtils::mapToScreen(containerBoxAttributes.x,
                                            containerBoxAttributes.y);
 
         int isox = screenPoint.x - camera.x;

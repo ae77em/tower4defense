@@ -1,25 +1,26 @@
 #include <SDL2/SDL_mouse.h>
-#include "Utils.h"
+#include "SdlUtils.h"
 #include "../sdl/Constants.h"
 #include "Animable.h"
+#include "../common/Protocol.h"
 #include <stdexcept>
 #include <cmath>
 
-Point Utils::mapToScreen(int i, int j, int h_offset, int w_offset) {
+Point SdlUtils::mapToScreen(int i, int j, int h_offset, int w_offset) {
     int x = (i - j) * (ISO_TILE_WIDTH + w_offset) / 2;
     int y = (i + j) * (ISO_TILE_HEIGHT + h_offset) / 2;
 
     return Point(x, y);
 }
 
-DecimalPoint Utils::mapToScreenDecimal(double i, double j) {
+DecimalPoint SdlUtils::mapToScreenDecimal(double i, double j) {
     double x = (i - j) * (double(ISO_TILE_WIDTH)) / double(2);
     double y = (i + j) * (double(ISO_TILE_HEIGHT)) / double(2);
 
     return DecimalPoint(x, y);
 }
 
-Point Utils::screenToMap(int x, int y) {
+Point SdlUtils::screenToMap(int x, int y) {
     double x_d = static_cast<double>  (x);
     double y_d = static_cast<double>  (y);
 
@@ -35,7 +36,7 @@ Point Utils::screenToMap(int x, int y) {
     return Point(i, j);
 }
 
-DecimalPoint Utils::screenToMapDecimal(int x, int y) {
+DecimalPoint SdlUtils::screenToMapDecimal(int x, int y) {
     double x_d = static_cast<double>  (x);
     double y_d = static_cast<double>  (y);
 
@@ -51,7 +52,7 @@ DecimalPoint Utils::screenToMapDecimal(int x, int y) {
 }
 
 
-DecimalPoint Utils::twoDimToIso(double x, double y) {
+DecimalPoint SdlUtils::twoDimToIso(double x, double y) {
     double yByIsoTileHeightHalf = y / ISO_TILE_HEIGHT_HALF;
     double xByIsoTileWithHalf = x / ISO_TILE_WIDTH_HALF;
 
@@ -61,21 +62,21 @@ DecimalPoint Utils::twoDimToIso(double x, double y) {
     return DecimalPoint(i, j);
 }
 
-DecimalPoint Utils::isoToCartesian(double isoX, double isoY) {
+DecimalPoint SdlUtils::isoToCartesian(double isoX, double isoY) {
     double carX = (isoX - isoY) / 1.5;
     double carY = isoX / 3.0 + isoY / 1.5;
 
     return DecimalPoint(carX, carY);
 }
 
-DecimalPoint Utils::cartesianToIso(double carX, double carY) {
+DecimalPoint SdlUtils::cartesianToIso(double carX, double carY) {
     double isoX = carX - carY;
     double isoY = (carY + carX) / 2.0;
 
     return DecimalPoint(isoX, isoY);
 }
 
-Point Utils::getMouseRelativePoint(const SDL_Rect &camera) {
+Point SdlUtils::getMouseRelativePoint(const SDL_Rect &camera) {
     int mousePosX, mousePosY;
 
     SDL_GetMouseState(&mousePosX, &mousePosY);
@@ -83,12 +84,12 @@ Point Utils::getMouseRelativePoint(const SDL_Rect &camera) {
     mousePosX += camera.x;
     mousePosY += camera.y;
 
-    Point point = Utils::screenToMap(mousePosX, mousePosY);
+    Point point = SdlUtils::screenToMap(mousePosX, mousePosY);
 
     return point;
 }
 
-SDL_Rect Utils::getBoxByTileType(int type) {
+SDL_Rect SdlUtils::getBoxByTileType(int type) {
     SDL_Rect toReturn;
 
     switch (type) {
@@ -115,7 +116,7 @@ SDL_Rect Utils::getBoxByTileType(int type) {
     return toReturn;
 }
 
-Point Utils::findClosest(const Point& p, const std::vector<Point>& l) {
+Point SdlUtils::findClosest(const Point& p, const std::vector<Point>& l) {
     if (l.size() == 0)
         throw std::runtime_error("passed 0 sized vector to findClosest");
 

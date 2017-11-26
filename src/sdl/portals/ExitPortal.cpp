@@ -1,12 +1,13 @@
+#include <Protocol.h>
 #include "ExitPortal.h"
-#include "../Constants.h"
-#include "../Utils.h"
+#include "Constants.h"
+#include "SdlUtils.h"
 
 ExitPortal::ExitPortal(int x,
                          int y,
                          SDL_Renderer *renderer,
                          Texture *texture) :
-        currentPoint(Utils::mapToScreen(x, y)) {
+        currentPoint(SdlUtils::mapToScreen(x, y)) {
     this->renderer = renderer;
     this->texture = texture;
     drawBox.x = x;
@@ -31,7 +32,7 @@ void ExitPortal::setSprites() {
 
 void ExitPortal::render(SDL_Rect &camera) {
     int frameToDraw = (SDL_GetTicks() / 100) % numberOfPortalSprites;
-    DecimalPoint screenPoint = Utils::cartesianToIso(drawBox.x, drawBox.y);
+    DecimalPoint screenPoint = SdlUtils::cartesianToIso(drawBox.x, drawBox.y);
 
     int offset = drawBox.h - ISO_TILE_HEIGHT;
 

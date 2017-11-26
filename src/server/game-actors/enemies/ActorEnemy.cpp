@@ -1,9 +1,9 @@
 #include "ActorEnemy.h"
-#include "../../../common/Utils.h"
-#include "../../../sdl/Constants.h"
-#include "../../../common/Circle.h"
+#include "CommonUtils.h"
+#include "Circle.h"
 #include <string>
 #include <vector>
+#include <Protocol.h>
 
 ActorEnemy::ActorEnemy() {
     collisionCircle.r = CARTESIAN_TILE_HEIGHT * 0.5;
@@ -52,9 +52,9 @@ void ActorEnemy::advance() {
             yFinalIntoTile = point.y;
         }
 
-        int xMovement = Utils::getNextMapDisplacement(currentPoint.x,
+        int xMovement = CommonUtils::getNextMapDisplacement(currentPoint.x,
                                                       xFinalIntoTile);
-        int yMovement = Utils::getNextMapDisplacement(currentPoint.y,
+        int yMovement = CommonUtils::getNextMapDisplacement(currentPoint.y,
                                                       yFinalIntoTile);
 
         // El enemigo tiene movimiento para algún lugar, lo muevo.
@@ -63,9 +63,9 @@ void ActorEnemy::advance() {
             int y = path.at(currentPathPosition).y + yMovement;
 
             currentDirection =
-                    Utils::getMovementDirection(
-                            Utils::getNextMapDisplacement(x, xFinalIntoTile),
-                            Utils::getNextMapDisplacement(y, yFinalIntoTile));
+                    CommonUtils::getMovementDirection(
+                            CommonUtils::getNextMapDisplacement(x, xFinalIntoTile),
+                            CommonUtils::getNextMapDisplacement(y, yFinalIntoTile));
 
             /* Calculo siguiente posición con la velocidad. Uso valores
              * flotantes justamente para no perder los avances medios, por

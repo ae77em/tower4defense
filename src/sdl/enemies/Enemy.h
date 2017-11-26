@@ -1,14 +1,13 @@
 #ifndef TP4_TOWERDEFENSE_SDL_ENEMY_H
 #define TP4_TOWERDEFENSE_SDL_ENEMY_H
 
-#include "../../common/model/Enemy.h"
 #include <vector>
 #include <array>
-#include "../Texture.h"
-#include "../../common/Point.h"
-#include "../Constants.h"
-#include "../../common/Circle.h"
-#include "../Animable.h"
+#include "Texture.h"
+#include "Point.h"
+#include "Constants.h"
+#include "Circle.h"
+#include "Animable.h"
 #include <string>
 
 class Enemy : public Animable {

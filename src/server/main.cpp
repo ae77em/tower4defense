@@ -6,7 +6,7 @@
 #include <exception>
 
 #include "Listener.h"
-#include "../common/Utils.h"
+#include "CommonUtils.h"
 
 int main(int argc, char *argv[]){
     if (argc != 2) {
@@ -14,7 +14,7 @@ int main(int argc, char *argv[]){
         return 0;
     }
 
-    Utils::printAsciiGameHeader();
+    CommonUtils::printAsciiGameHeader();
 
     uint16_t port = atoi(argv[1]);
 

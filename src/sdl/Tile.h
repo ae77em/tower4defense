@@ -5,8 +5,8 @@
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_system.h>
 #include <SDL2/SDL_events.h>
-#include "Texture.h"
 #include "towers/Tower.h"
+#include "Texture.h"
 
 class Tile {
 public:

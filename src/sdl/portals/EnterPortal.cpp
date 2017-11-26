@@ -1,12 +1,14 @@
+#include <Protocol.h>
 #include "EnterPortal.h"
-#include "../Constants.h"
-#include "../Utils.h"
+#include "Constants.h"
+#include "CommonUtils.h"
+#include "SdlUtils.h"
 
 EnterPortal::EnterPortal(int x,
                          int y,
                          SDL_Renderer *renderer,
                          Texture *texture) :
-        currentPoint(Utils::mapToScreen(x, y)) {
+        currentPoint(SdlUtils::mapToScreen(x, y)) {
     this->renderer = renderer;
     this->texture = texture;
     drawBox.x = x;
@@ -28,7 +30,7 @@ void EnterPortal::setSprites() {
 
 void EnterPortal::render(SDL_Rect &camera) {
     int frameToDraw = (SDL_GetTicks() / 100) % numberOfPortalSprites;
-    DecimalPoint screenPoint = Utils::cartesianToIso(drawBox.x, drawBox.y);
+    DecimalPoint screenPoint = SdlUtils::cartesianToIso(drawBox.x, drawBox.y);
 
     int offset = drawBox.h - ISO_TILE_HEIGHT;
 

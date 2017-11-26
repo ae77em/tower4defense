@@ -1,6 +1,6 @@
 #include <iostream>
 #include "BloodHawk.h"
-#include "../Utils.h"
+#include "SdlUtils.h"
 
 BloodHawk::BloodHawk(int x, int y, SDL_Renderer *renderer, Texture *texture)
         : Enemy(x, y, renderer, texture) {

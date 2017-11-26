@@ -1,8 +1,8 @@
 #include <iostream>
-#include "Utils.h"
+#include "CommonUtils.h"
 #include "../sdl/Constants.h"
 
-void Utils::printAsciiGameHeader() {
+void CommonUtils::printAsciiGameHeader() {
     std::cout <<
 "       _                           ___     _       __                    \n"
 "      | |                         /   |   | |     / _|                   \n"
@@ -17,7 +17,7 @@ void Utils::printAsciiGameHeader() {
         << std::endl;
 }
 
-int Utils::getNextMapDisplacement(int currentAxisPoint, int finalAxisPoint) {
+int CommonUtils::getNextMapDisplacement(int currentAxisPoint, int finalAxisPoint) {
     int toReturn;
 
     if (currentAxisPoint != finalAxisPoint) {
@@ -33,7 +33,7 @@ int Utils::getNextMapDisplacement(int currentAxisPoint, int finalAxisPoint) {
     return toReturn;
 }
 
-int Utils::getMovementDirection(int xDirection, int yDirection) {
+int CommonUtils::getMovementDirection(int xDirection, int yDirection) {
     int toReturn;
     if (xDirection == 1) {
         toReturn = X_POSITIVE;

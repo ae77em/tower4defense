@@ -1,10 +1,11 @@
+#include <Protocol.h>
 #include "Fire.h"
-#include "../Utils.h"
+#include "SdlUtils.h"
 
 Fire::Fire(int x, int y, SDL_Renderer *r, Texture &t)
         : Tower(x, y, renderer, texture),
           texture(t),
-          currentPoint(Utils::mapToScreen(x, y)) {
+          currentPoint(SdlUtils::mapToScreen(x, y)) {
 
     idleSpriteWidth = IDLE_SPRITE_WIDTH + separationBetweenSprites;
     idleSpriteHeight = IDLE_SPRITE_HEIGHT + separationBetweenSprites;
@@ -69,7 +70,7 @@ void Fire::setIsShooting(bool isShooting) {
 
 void Fire::renderIdle(SDL_Rect &camera) {
     int frameToDraw = (SDL_GetTicks() / 100) % NUMBER_OF_IDLE_SPRITES;
-    DecimalPoint screenPoint = Utils::cartesianToIso(idleBox.x, idleBox.y);
+    DecimalPoint screenPoint = SdlUtils::cartesianToIso(idleBox.x, idleBox.y);
 
     // set the shot box pos to assure that the shot start in the same
     // tile in that the idle ended...
@@ -88,7 +89,7 @@ void Fire::renderIdle(SDL_Rect &camera) {
 void Fire::renderShot(SDL_Rect &camera) {
     int frameToDraw = (SDL_GetTicks() / 100) % NUMBER_OF_SHOT_SPRITES;
 
-    DecimalPoint screenPoint = Utils::cartesianToIso(shotBox.x, shotBox.y);
+    DecimalPoint screenPoint = SdlUtils::cartesianToIso(shotBox.x, shotBox.y);
 
     int offset = idleBox.h - ISO_TILE_HEIGHT;
 

@@ -1,7 +1,8 @@
 #ifndef TP4_TOWERDEFENSE_GAMEACTIONPUTTOWER_H
 #define TP4_TOWERDEFENSE_GAMEACTIONPUTTOWER_H
 
-#include "../GameAction.h"
+#include <string>
+#include "GameAction.h"
 
 class GameActionPutTower : public GameAction {
 public:
