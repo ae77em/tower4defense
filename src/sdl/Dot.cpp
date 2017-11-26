@@ -32,44 +32,14 @@ void Dot::handleEvent(SDL_Event &e) {
 }
 
 void Dot::move() {
-    //Move the dot left or right
     mBox.x += mVelX;
-
-    // Keep dot in horizontal bounds
-    //TODO: remove this limit
-    int width = 100000;
-    if ((mBox.x < -width) || (mBox.x + DOT_WIDTH > width))
-        mBox.x -= mVelX;
-
-    //Move the dot up or down
     mBox.y += mVelY;
-
-    // Keep dot in vertical bounds
-    //TODO: remove this limit
-    int height = 100000;
-    if ((mBox.y < -height) || (mBox.y + DOT_HEIGHT > height))
-        mBox.y -= mVelY;
 }
 
+// Center the camera over the dot
 void Dot::setCamera(SDL_Rect &camera) {
-    //Center the camera over the dot
     camera.x = (mBox.x + DOT_WIDTH / 2) - SCREEN_WIDTH / 2;
     camera.y = (mBox.y + DOT_HEIGHT / 2) - SCREEN_HEIGHT / 2;
-
-    //Keep the camera in bounds
-    //FIXME: possible duplicate with limits in Dot::move
-    if (camera.x < -100000) {
-        camera.x = -100000;
-    }
-    if (camera.y < -CARTESIAN_TILE_HEIGHT) {
-        camera.y = -CARTESIAN_TILE_HEIGHT;
-    }
-    if (camera.x > 100000){
-        camera.x = 100000;
-    }
-    if (camera.y > 100000) {
-        camera.y = 100000;
-    }
 }
 
 void
