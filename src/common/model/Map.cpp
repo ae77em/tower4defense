@@ -172,3 +172,15 @@ Map Map::loadFromFile(std::string filename){
 }
 
 Map::Map() { }
+
+void Map::checkValid() {
+    //TODO: al menos un portal de entrada
+
+    //TODO: un unico camino sale de cada portal de entrada
+
+    //TODO: cada camino comienza en un portal de entrada
+
+    //TODO: cada camino termina en un portal de salida
+
+    //TODO: cada portal (de entrada o salida) es comienzo/final de un camino
+}
