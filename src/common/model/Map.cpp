@@ -180,13 +180,11 @@ void Map::checkValid() {
     // y cada portal es el comienzo de un camino.
     if (paths.size() == 0) throw std::runtime_error("no paths");
 
-    //TODO: Al menos un camino termina en cada portal de entrada
-    // Un, y solo un, camino sale de cada portal de entrada
     auto d = dimensions();
-    // Por cada casilla del mapa
     for (int i = 0; i < d.x; ++i)
         for (int j = 0; j < d.y; ++j)
-            // Si es portal de entrada
+
+            // Un, y solo un, camino sale de cada portal de entrada
             if (tile(i, j) == 'E') {
                 // Contar los caminos que empiezan en (i, j)
                 int n = 0;
@@ -197,6 +195,16 @@ void Map::checkValid() {
                 if (n != 1)
                     throw std::runtime_error("portal has " + std::to_string(n)
                             + " paths starting from it");
+
+            // Al menos un camino termina en cada portal de entrada
+            } else if (tile(i, j) == 'S') {
+                // Contar los caminos que terminan en (i, j)
+                int n = 0;
+                for (const auto& path : paths) {
+                    const auto& end = path.back();
+                    if (end.x == i && end.y == j) ++n;
+                }
+                if (n == 0) throw std::runtime_error("dangling exit portal");
             }
 
     // Cada camino comienza en un portal de entrada
