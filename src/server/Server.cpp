@@ -367,6 +367,8 @@ void Server::towerInfo(int clientId, std::string matchName, int towerId) {
 void Server::loadMaps() {
     DIR* dirp = opendir("resources/maps/");
     std::string mapFilename;
+    std::string mapName;
+    unsigned long nameLenght = 10;
     struct dirent *dp;
 
     while ((dp = readdir(dirp)) != NULL) {
@@ -375,7 +377,10 @@ void Server::loadMaps() {
             mapFilename.append(dp->d_name);
 
             model::Map aMap = model::Map::loadFromFile(mapFilename);
-            aMap.setName(dp->d_name);
+            mapName = std::string(dp->d_name);
+            nameLenght = mapName.find('.');
+            mapName = mapName.substr(0, nameLenght);
+            aMap.setName(mapName);
 
             std::pair<std::string, model::Map>
                     mapPair(aMap.getName(),std::move(aMap));
@@ -384,14 +389,6 @@ void Server::loadMaps() {
     }
 
     closedir(dirp);
-}
-
-std::string Server::splitFilename(std::string str) {
-    std::size_t found = str.find_last_of("/\\");
-
-    std::cout << " file: " << str.substr(found+1) << '\n';
-
-    return str.substr(found+1);
 }
 
 std::vector<std::string> Server::getAllMapsNames() {

@@ -225,6 +225,7 @@ void GameAccessWindow::initComboMaps(Glib::RefPtr<Gtk::Builder> &refBuilder) {
             .connect(
                     sigc::mem_fun(*this,
                                   &GameAccessWindow::on_cmbMapas_changed));
+    cmbMapsText->set_border_width(10);
 }
 
 void
@@ -234,6 +235,7 @@ GameAccessWindow::initEntryMatchName(Glib::RefPtr<Gtk::Builder> &refBuilder) {
             .connect(
                     sigc::mem_fun(*this,
                                   &GameAccessWindow::on_entryMatchName_changed));
+    entryMatchName->set_max_length(10);
 }
 
 void
@@ -244,6 +246,7 @@ GameAccessWindow::initComboMatches(Glib::RefPtr<Gtk::Builder> &refBuilder) {
             .connect(
                     sigc::mem_fun(*this,
                                   &GameAccessWindow::on_cmbMatches_changed));
+    cmbMatchesText->set_border_width(8);
 }
 
 void
