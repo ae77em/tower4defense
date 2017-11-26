@@ -172,3 +172,50 @@ Map Map::loadFromFile(std::string filename){
 }
 
 Map::Map() { }
+
+void Map::checkValid() {
+    // Al menos un portal de entrada
+    // Se supone una relacion uno a uno entre portales y caminos,
+    // esta suposicion es correcta si cada camino comienza en un portal
+    // y cada portal es el comienzo de un camino.
+    if (paths.size() == 0) throw std::runtime_error("no paths");
+
+    auto d = dimensions();
+    for (int i = 0; i < d.x; ++i)
+        for (int j = 0; j < d.y; ++j)
+
+            // Un, y solo un, camino sale de cada portal de entrada
+            if (tile(i, j) == 'E') {
+                // Contar los caminos que empiezan en (i, j)
+                int n = 0;
+                for (const auto& path : paths) {
+                    const auto& start = path.front();
+                    if (start.x == i && start.y == j) ++n;
+                }
+                if (n != 1)
+                    throw std::runtime_error("portal has " + std::to_string(n)
+                            + " paths starting from it");
+
+            // Al menos un camino termina en cada portal de entrada
+            } else if (tile(i, j) == 'S') {
+                // Contar los caminos que terminan en (i, j)
+                int n = 0;
+                for (const auto& path : paths) {
+                    const auto& end = path.back();
+                    if (end.x == i && end.y == j) ++n;
+                }
+                if (n == 0) throw std::runtime_error("dangling exit portal");
+            }
+
+    // Cada camino comienza en un portal de entrada
+    // Cada camino termina en un portal de salida
+    for (const auto& path : paths) {
+        auto start = path.front();
+        if (tile(start.x, start.y) != 'E')
+            throw std::runtime_error("path does not begin with portal");
+
+        auto end = path.back();
+        if (tile(end.x, end.y) != 'S')
+            throw std::runtime_error("path does not end with portal");
+    }
+}

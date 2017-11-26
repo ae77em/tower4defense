@@ -72,6 +72,8 @@ public:
 
     static Map loadFromString(std::string json);
     static Map loadFromFile(std::string filename);
+
+    void checkValid();
 };
 
 } // namespace model
