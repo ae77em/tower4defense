@@ -218,4 +218,17 @@ void Map::checkValid() {
         if (tile(end.x, end.y) != 'S')
             throw std::runtime_error("path does not end with portal");
     }
+
+    // Hay al menos una horda
+    if (getHordes().size() == 0)
+        throw std::runtime_error("no hordes on the map");
+
+    // Hay al menos un enemigo por horda
+    for (const auto& entry : getHordes()) {
+        const auto& horde_size = std::get<1>(entry);
+        const auto& enemy_type = std::get<0>(entry);
+        if (horde_size < 1)
+            throw std::runtime_error("horde of " + enemy_type
+                    + " with " + std::to_string(horde_size) + " enemies");
+    }
 }
