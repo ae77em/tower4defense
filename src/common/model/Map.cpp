@@ -178,9 +178,17 @@ void Map::checkValid() {
 
     //TODO: un unico camino sale de cada portal de entrada
 
-    //TODO: cada camino comienza en un portal de entrada
+    // Cada camino comienza en un portal de entrada
+    // Cada camino termina en un portal de salida
+    for (const auto& path : paths) {
+        auto start = path.front();
+        if (tile(start.x, start.y) != 'E')
+            throw std::runtime_error("path does not begin with portal");
 
-    //TODO: cada camino termina en un portal de salida
+        auto end = path.back();
+        if (tile(end.x, end.y) != 'S')
+            throw std::runtime_error("path does not end with portal");
+    }
 
     //TODO: cada portal (de entrada o salida) es comienzo/final de un camino
 }
