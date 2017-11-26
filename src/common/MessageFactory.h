@@ -10,10 +10,6 @@ static const char *const MAP_NAME_KEY = "mapName";
 #include <vector>
 #include "Message.h"
 #include "Point.h"
-#include "../server/GameActor.h"
-#include "../server/game-actors/enemies/ActorEnemy.h"
-#include "../server/game-actors/enemies/Horde.h"
-#include "../server/game-actors/towers/ActorTower.h"
 
 class MessageFactory {
 public:

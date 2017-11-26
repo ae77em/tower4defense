@@ -1,8 +1,8 @@
 #include <SDL2/SDL_mouse.h>
 #include "SdlUtils.h"
-#include "../sdl/Constants.h"
+#include "Constants.h"
 #include "Animable.h"
-#include "../common/Protocol.h"
+#include "Protocol.h"
 #include <stdexcept>
 #include <cmath>
 

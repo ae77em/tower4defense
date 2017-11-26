@@ -1,7 +1,7 @@
 #include "Tile.h"
 #include "Constants.h"
 #include "SdlUtils.h"
-#include "../common/Protocol.h"
+#include "Protocol.h"
 #include <iostream>
 #include <string>
 

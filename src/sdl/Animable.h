@@ -2,7 +2,7 @@
 #define TP4_TOWERDEFENSE_ANIMABLES_H
 
 #include <SDL2/SDL_rect.h>
-#include "../common/Point.h"
+#include "Point.h"
 
 class Animable {
 public:

@@ -4,13 +4,13 @@
 #include "ActorEnemy.h"
 #include <vector>
 
-class Horde {
+class ActorHorde {
 public:
-    Horde();
+    ActorHorde();
 
-    explicit Horde(int t);
+    explicit ActorHorde(int t);
 
-    virtual ~Horde();
+    virtual ~ActorHorde();
 
     void setEnemies(std::vector<ActorEnemy *> enemies);
 
@@ -18,7 +18,7 @@ public:
 
     void addEnemy(ActorEnemy *enemy);
 
-    static Horde *createHorde(int enemyType, int amount, std::vector<Point> path);
+    static ActorHorde *createHorde(int enemyType, int amount, std::vector<Point> path);
 
     bool itIsAlive();
 

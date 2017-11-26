@@ -12,7 +12,7 @@ public:
 
     std::string getShotDamageInfo() override;
 
-    void doAttack(Horde *horde) override;
+    void doAttack(ActorHorde *horde) override;
 
     void initialize() override;
 

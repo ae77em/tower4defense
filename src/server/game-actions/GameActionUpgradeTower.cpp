@@ -1,7 +1,7 @@
 #include "GameActionUpgradeTower.h"
 
 #include <utility>
-#include "../GameAction.h"
+#include "GameAction.h"
 
 GameActionUpgradeTower::GameActionUpgradeTower(const std::string name,
                                                int cId,

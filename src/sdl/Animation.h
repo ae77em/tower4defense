@@ -1,6 +1,6 @@
 #include <SDL2/SDL.h>
 #include "Texture.h"
-#include "../common/Point.h"
+#include "Point.h"
 #include <utility>
 #include <memory>
 #include <vector>

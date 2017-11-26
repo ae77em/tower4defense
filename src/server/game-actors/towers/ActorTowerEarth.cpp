@@ -1,6 +1,6 @@
 #include <cmath>
 #include "ActorTowerEarth.h"
-#include "../../../sdl/Constants.h"
+#include "Constants.h"
 
 ActorTowerEarth::ActorTowerEarth(int id) : ActorTower(id) {
     range = 2;
@@ -50,7 +50,7 @@ bool ActorTowerEarth::upgradeRange() {
     return upgraded;
 }
 
-void ActorTowerEarth::doAttack(Horde *horde) {
+void ActorTowerEarth::doAttack(ActorHorde *horde) {
     if (!horde->itIsAir()) {
         ActorTower::doAttack(horde);
     }

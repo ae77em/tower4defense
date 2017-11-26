@@ -87,11 +87,11 @@ bool ActorTower::itIsShooting() {
     return isShooting;
 }
 
-void ActorTower::attack(Horde *horde) {
+void ActorTower::attack(ActorHorde *horde) {
     doAttack(horde);
 }
 
-void ActorTower::doAttack(Horde *horde) {
+void ActorTower::doAttack(ActorHorde *horde) {
     std::vector<ActorEnemy *> enemies = horde->getEnemies();
 
     isShooting = false;

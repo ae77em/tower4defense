@@ -8,8 +8,8 @@
 #include "Animation.h"
 #include "Dot.h"
 #include "Constants.h"
-#include "../common/model/Map.h"
-#include "../common/Point.h"
+#include "Map.h"
+#include "Point.h"
 #include <memory>
 
 class Screen {

@@ -1,6 +1,6 @@
 #include "Map.h"
-#include "../Point.h"
-#include "../Message.h"
+#include "Point.h"
+#include "Message.h"
 #include <string>
 #include <vector>
 #include <stdexcept>

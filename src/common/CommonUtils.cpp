@@ -1,6 +1,6 @@
 #include <iostream>
 #include "CommonUtils.h"
-#include "../sdl/Constants.h"
+#include "Constants.h"
 
 void CommonUtils::printAsciiGameHeader() {
     std::cout <<

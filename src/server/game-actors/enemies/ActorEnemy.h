@@ -4,9 +4,9 @@
 #include <vector>
 #include <string>
 #include <bits/basic_string.h>
-#include "../../../common/Point.h"
-#include "../../../common/Circle.h"
-#include "../../GameActor.h"
+#include "Point.h"
+#include "Circle.h"
+#include "GameActor.h"
 
 class ActorEnemy : public GameActor {
 public:

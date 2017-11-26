@@ -3,7 +3,7 @@
 #include "Animation.h"
 #include "Constants.h"
 #include "SdlUtils.h"
-#include "../common/model/Map.h"
+#include "Map.h"
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_ttf.h>
 #include <stdexcept>
@@ -12,7 +12,7 @@
 
 //TODO: wrapping window and renderer in RAII objects would clean this up
 Screen::Screen() {
-    window = SDL_CreateWindow("Tower4Defense", SDL_WINDOWPOS_UNDEFINED,
+    window = SDL_CreateWindow("tower4defense", SDL_WINDOWPOS_UNDEFINED,
             SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT,
             SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     if (!window) throw std::runtime_error("Could not create window"

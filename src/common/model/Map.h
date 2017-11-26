@@ -3,7 +3,7 @@
 
 #include <string>
 #include <vector>
-#include "../Point.h"
+#include "Point.h"
 #include "Enemy.h"
 #include <tuple>
 

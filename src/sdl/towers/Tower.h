@@ -2,11 +2,11 @@
 #define TP4_TOWERDEFENSE_TOWER_H
 
 #include <vector>
-#include "../Texture.h"
-#include "../../common/Point.h"
-#include "../Constants.h"
-#include "../../common/Circle.h"
-#include "../Animable.h"
+#include "Texture.h"
+#include "Point.h"
+#include "Constants.h"
+#include "Circle.h"
+#include "Animable.h"
 #include <string>
 
 class Tower : public Animable {

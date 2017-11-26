@@ -1,6 +1,6 @@
 #include <cmath>
 #include "ActorTowerFire.h"
-#include "../../../sdl/Constants.h"
+#include "Constants.h"
 
 //#define LOG
 
@@ -90,7 +90,7 @@ bool ActorTowerFire::upgradeReach() {
     return upgraded;
 }
 
-void ActorTowerFire::doAttack(Horde *horde) {
+void ActorTowerFire::doAttack(ActorHorde *horde) {
     std::vector<ActorEnemy *> enemies = horde->getEnemies();
     isShooting = false;
     for (unsigned i = 0; i < enemies.size(); ++i) {

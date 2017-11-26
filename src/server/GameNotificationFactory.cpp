@@ -8,7 +8,7 @@
 #include <vector>
 
 std::string GameNotificationFactory::getStatusMatchNotification(
-        std::map<int, Horde *>& hordes,
+        std::map<int, ActorHorde *>& hordes,
         std::vector<ActorTower *>& towers) {
     Json::Value aTower(Json::objectValue);
 
@@ -20,7 +20,7 @@ std::string GameNotificationFactory::getStatusMatchNotification(
     root["enemies"] = Json::arrayValue;
 
     for (auto it = hordes.begin(); it != hordes.end(); ++it) {
-        Horde* horde = it->second;
+        ActorHorde* horde = it->second;
 
         if (horde->shouldSendMoreData()){ // si la horda ya murió,
             // no mando más data

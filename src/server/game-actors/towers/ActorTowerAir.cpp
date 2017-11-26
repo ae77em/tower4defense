@@ -1,6 +1,6 @@
 #include <cmath>
 #include "ActorTowerAir.h"
-#include "../../../sdl/Constants.h"
+#include "Constants.h"
 
 ActorTowerAir::ActorTowerAir(int id) : ActorTower(id) {
     range = 5;

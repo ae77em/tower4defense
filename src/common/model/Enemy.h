@@ -1,7 +1,7 @@
 #ifndef ENEMIES_H
 #define ENEMIES_H
 
-#include "../Point.h"
+#include "Point.h"
 #include <string>
 #include <vector>
 #include <functional>

@@ -14,7 +14,7 @@ public:
 
     bool upgradeRange() override;
 
-    void doAttack(Horde *horde);
+    void doAttack(ActorHorde *horde);
 
     std::string getClass() {
         return "Tierra";

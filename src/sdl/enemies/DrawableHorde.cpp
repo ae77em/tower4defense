@@ -1,6 +1,6 @@
 #include "DrawableHorde.h"
 #include "Abmonible.h"
-#include "../../common/Protocol.h"
+#include "Protocol.h"
 #include <vector>
 
 DrawableHorde::DrawableHorde() {}

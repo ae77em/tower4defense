@@ -1,7 +1,7 @@
 #include "GameLoopWorker.h"
 #include "Point.h"
 #include "ActorEnemy.h"
-#include "Horde.h"
+#include "ActorHorde.h"
 #include "GameNotificationFactory.h"
 #include "Map.h"
 #include "Protocol.h"
@@ -12,7 +12,7 @@
 #include "GameActionPutTower.h"
 #include "GameActionGetTowerInfo.h"
 #include "GameActionUpgradeTower.h"
-#include "../sdl/Constants.h"
+#include "Constants.h"
 
 #include <iostream>
 #include <chrono>
@@ -43,13 +43,13 @@ void GameLoopWorker::run() {
 
     std::list<GameAction *> actionsGame;
     std::vector<ActorEnemy *> enemies;
-    std::map<int, Horde *>::iterator hordeIt;
+    std::map<int, ActorHorde *>::iterator hordeIt;
 
     bool gameFinish = false;
     bool areEnemiesAlive;
     bool hordeIsAlive;
     std::string cause = "";
-    Horde *aHorde = nullptr;
+    ActorHorde *aHorde = nullptr;
 
     while (!gameFinish) {
         if (!allHordesWereCreatedYet()) {
@@ -206,7 +206,7 @@ void GameLoopWorker::createHordeAndNotify() {
     const int path_index = std::get<2>(horde);
 
     /* Agregar nueva horda al juego */
-    Horde *h = Horde::createHorde(horde_type, horde_size,
+    ActorHorde *h = ActorHorde::createHorde(horde_type, horde_size,
                                   map.getPaths()[path_index]);
     hordes.insert(std::make_pair(hordeId, h));
 

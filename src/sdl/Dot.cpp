@@ -1,7 +1,7 @@
 #include <sys/param.h>
 #include "Dot.h"
 #include "Constants.h"
-#include "../common/Protocol.h"
+#include "Protocol.h"
 
 Dot::Dot(const Keybinding &keys) : mBox{0, 0, DOT_WIDTH, DOT_HEIGHT},
                                    mVelX(0), mVelY(0), keys(keys) {}

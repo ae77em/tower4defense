@@ -71,32 +71,24 @@ TARGET_LINK_LIBRARIES(editor.exe ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES}
 TARGET_LINK_LIBRARIES(unit.exe ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES}
         ${SDL2TTF_LIBRARIES})
 
-target_include_directories(game.exe PUBLIC
-        src/client
+include_directories(
         src/common
         src/common/model
         src/sdl
         src/sdl/enemies
         src/sdl/towers
         src/sdl/portals)
+
+target_include_directories(game.exe PUBLIC src/client)
 
 target_include_directories(server.exe PUBLIC
         src/server
         src/server/game-actions
         src/server/game-actors
         src/server/game-actors/enemies
-        src/server/game-actors/towers
-        src/common
-        src/common/model)
+        src/server/game-actors/towers)
 
-target_include_directories(editor.exe PUBLIC
-        src/editor
-        src/common
-        src/common/model
-        src/sdl
-        src/sdl/enemies
-        src/sdl/towers
-        src/sdl/portals)
+target_include_directories(editor.exe PUBLIC src/editor)
 
 SET(GCC_COVERAGE_COMPILE_FLAGS "-Wall -Werror -pedantic -pedantic-errors -O0
 -ggdb -DDEBUG -fno-inline -std=c++11")

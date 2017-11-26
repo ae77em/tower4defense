@@ -1,6 +1,6 @@
 #include <cmath>
 #include "ActorTowerWater.h"
-#include "../../../sdl/Constants.h"
+#include "Constants.h"
 
 //#define LOG
 
@@ -75,7 +75,7 @@ bool ActorTowerWater::upgradeSlowdown() {
     return upgraded;
 }
 
-void ActorTowerWater::doAttack(Horde *horde) {
+void ActorTowerWater::doAttack(ActorHorde *horde) {
     std::vector<ActorEnemy *> enemies = horde->getEnemies();
 
     isShooting = false;

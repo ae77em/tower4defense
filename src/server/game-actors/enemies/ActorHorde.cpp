@@ -1,6 +1,6 @@
-#include "Horde.h"
-#include "../../../common/Protocol.h"
-#include "../../../sdl/Constants.h"
+#include "ActorHorde.h"
+#include "Protocol.h"
+#include "Constants.h"
 #include "ActorEnemyAbmonible.h"
 #include "ActorEnemyBloodHawk.h"
 #include "ActorEnemyGoatman.h"
@@ -9,31 +9,31 @@
 #include "ActorEnemyZombie.h"
 #include <vector>
 
-Horde::Horde(int t) : type(t) {
+ActorHorde::ActorHorde(int t) : type(t) {
     initialize();
 }
 
-Horde::Horde() {
+ActorHorde::ActorHorde() {
     initialize();
 }
 
-void Horde::initialize(){
+void ActorHorde::initialize(){
     isAlive = true;
     timeOfDeath = 0;
     mustSendData = true;
 }
 
-Horde::~Horde() = default;
+ActorHorde::~ActorHorde() = default;
 
-void Horde::setEnemies(std::vector<ActorEnemy *> e){
+void ActorHorde::setEnemies(std::vector<ActorEnemy *> e){
     enemies = e;
 }
 
-std::vector<ActorEnemy *> Horde::getEnemies(){
+std::vector<ActorEnemy *> ActorHorde::getEnemies(){
     return enemies;
 }
 
-bool Horde::itIsAir(){
+bool ActorHorde::itIsAir(){
     bool isAir = false;
     if (enemies.size() > 0) {
         isAir = enemies.at(0)->itIsAir();
@@ -41,12 +41,12 @@ bool Horde::itIsAir(){
     return isAir;
 }
 
-void Horde::addEnemy(ActorEnemy *enemy) {
+void ActorHorde::addEnemy(ActorEnemy *enemy) {
     enemies.push_back(enemy);
 }
 
-Horde *Horde::createHorde(int enemyType, int amount, std::vector<Point> path){
-    Horde *toReturn = new Horde();
+ActorHorde *ActorHorde::createHorde(int enemyType, int amount, std::vector<Point> path){
+    ActorHorde *toReturn = new ActorHorde();
 
     std::vector<Point> actualPath;
     int x, y;
@@ -74,7 +74,7 @@ Horde *Horde::createHorde(int enemyType, int amount, std::vector<Point> path){
     return toReturn;
 }
 
-ActorEnemy *Horde::getEnemyByType(int type) {
+ActorEnemy *ActorHorde::getEnemyByType(int type) {
     ActorEnemy *enemy = nullptr;
     switch (type){
         case ENEMY_ABMONIBLE:{
@@ -108,22 +108,22 @@ ActorEnemy *Horde::getEnemyByType(int type) {
     return enemy;
 }
 
-void Horde::setIsAlive(bool isAlive) {
-    Horde::isAlive = isAlive;
+void ActorHorde::setIsAlive(bool isAlive) {
+    ActorHorde::isAlive = isAlive;
     setTimeOfDeath();
 }
 
-bool Horde::itIsAlive() {
+bool ActorHorde::itIsAlive() {
     return isAlive;
 }
 
-void Horde::setTimeOfDeath() {
+void ActorHorde::setTimeOfDeath() {
     time_t now;
     time(&now);
     timeOfDeath = now;
 }
 
-bool Horde::shouldSendMoreData(){
+bool ActorHorde::shouldSendMoreData(){
     /* Si previamente me setearon, ya no tengo que mandar más info de mi
      * estado. Si no, verifico que sí tenga que enviar. El mustSendData se
      * setearía una sola vez.

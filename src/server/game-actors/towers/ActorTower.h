@@ -1,11 +1,11 @@
 #ifndef TP4_TOWERDEFENSE_ACTORTOWER_H
 #define TP4_TOWERDEFENSE_ACTORTOWER_H
 
-#include "../../../common/Circle.h"
-#include "../../../common/Point.h"
-#include "../../GameActor.h"
-#include "../enemies/Horde.h"
-#include "../enemies/ActorEnemy.h"
+#include "Circle.h"
+#include "Point.h"
+#include "GameActor.h"
+#include "ActorHorde.h"
+#include "ActorEnemy.h"
 
 #include <string>
 
@@ -21,7 +21,7 @@ public:
 
     void live();
 
-    void attack(Horde *horde);
+    void attack(ActorHorde *horde);
 
     int getId();
 
@@ -96,7 +96,7 @@ protected:
 
     virtual void initialize();
 
-    virtual void doAttack(Horde *horde);
+    virtual void doAttack(ActorHorde *horde);
 };
 
 

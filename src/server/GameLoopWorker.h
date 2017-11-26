@@ -6,7 +6,7 @@
 #include "GameActor.h"
 #include "GameAction.h"
 #include "ActorEnemy.h"
-#include "Horde.h"
+#include "ActorHorde.h"
 #include "ActorTower.h"
 #include "Map.h"
 #include "GameActionPutTower.h"
@@ -28,7 +28,7 @@ private:
     std::mutex& mutexActions;
     model::Map map;
 
-    std::map<int, Horde*> hordes;
+    std::map<int, ActorHorde*> hordes;
     std::vector<ActorTower*> towers;
 
     int timeLastHordeCreation, hordeId;

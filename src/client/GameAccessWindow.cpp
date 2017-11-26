@@ -5,6 +5,7 @@
 #include <string>
 #include <list>
 #include <vector>
+#include <iostream>
 
 GameAccessWindow::GameAccessWindow(Socket *c,
                                    SharedBuffer &tsnd,
