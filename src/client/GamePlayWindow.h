@@ -2,8 +2,6 @@
 #define TP4_TOWERDEFENSE_GAME_H
 
 static const int MAX_SERVER_NOTIFICATIONS_PER_FRAME = 1;
-static const int CANT_TOWERS_BUTTONS = 4;
-static const int CANT_TOWERS_BUTTONS_STATES = 4;
 static const int TOWER_BUTTONS_X_POS = 1;
 static const int TOWER_BUTTONS_Y_POS = 1;
 static const int TOWER_BUTTONS_WIDTH = 360;
@@ -36,7 +34,7 @@ enum GameStatus {
 #include "../sdl/enemies/DrawableHorde.h"
 #include "../common/Message.h"
 #include "../common/model/Map.h"
-#include "../sdl/portals/Portal.h"
+#include "../sdl/portals/EnterPortal.h"
 #include <vector>
 
 
@@ -98,8 +96,6 @@ private:
     void handleMouseEvents(SDL_Rect camera, SDL_Event e);
 
     void handleServerNotifications(SDL_Rect rect);
-
-    void loadPortalSprites();
 
     void renderText(SDL_Rect &camera, std::string text, int x = 50, int y = 50);
 
@@ -173,18 +169,13 @@ private:
 
     SDL_Rect gTileClips[TOTAL_TILE_SPRITES];
 
-    SDL_Rect gSpriteClipsPortalBlue[30];
+    SDL_Rect spriteClipsPortalBlue[30];
     Texture bluePortalTexture;
 
-    SDL_Rect gSpriteClipsPortalRed[30];
+    SDL_Rect spriteClipsPortalRed[30];
     Texture redPortalTexture;
 
-    Texture gSpriteSheetTextureTower;
-
-    SDL_Rect towerButtonsClips[4][4];
     Texture towerButtonsTexture;
-    int towerButtonType;
-    int towerButtonState;
 
     //Scene textures
     Texture gTileTextures[TOTAL_TILE_SPRITES];
@@ -212,7 +203,7 @@ private:
 
     std::map<int, DrawableHorde> hordes;
     std::map<int, Tower *> towers;
-    std::vector<Portal *> portals;
+    std::vector<Animable *> portals;
     std::vector<std::string> playerElements;
     std::string matchName;
     model::Map map;

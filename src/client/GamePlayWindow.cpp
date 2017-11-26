@@ -15,6 +15,7 @@
 #include "../sdl/towers/Fire.h"
 #include "../sdl/towers/Earth.h"
 #include "../sdl/towers/Water.h"
+#include "../sdl/portals/ExitPortal.h"
 
 #include <iostream>
 #include <fstream>
@@ -194,6 +195,7 @@ bool GamePlayWindow::loadMedia() {
             .loadFromFile("images/sprites/portal-blue2.png", gRenderer);
     redPortalTexture
             .loadFromFile("images/sprites/portal-red.png", gRenderer);
+
     towerButtonsTexture
             .loadFromFile("images/sprites/towers-buttons.png", gRenderer);
 
@@ -286,14 +288,21 @@ bool GamePlayWindow::setTiles() {
             /* Read tile from map file (see tile value reference in Map.h) */
             tileSaved = map.tile(i, j);
 
-            if (tileSaved == 'E' || tileSaved == 'S') {
-                portals.push_back(new Portal());
+            if (tileSaved == '.' || tileSaved == 'E' || tileSaved == 'S') {
                 tileType = tileIdTranslator.at(map.getBackgroundStyle());
-            } else if (tileSaved == '.') {
-                tileType = tileIdTranslator.at(map.getBackgroundStyle());
-            } else if (tileSaved == 'x') {
-                tileType = tileIdTranslator.at(tileSaved);
-            } else if (tileSaved == '#') {
+
+                if (tileSaved == 'E'){
+                    portals.push_back(new EnterPortal(i * CARTESIAN_TILE_WIDTH,
+                                                      j * CARTESIAN_TILE_HEIGHT,
+                                                      gRenderer,
+                                                      &bluePortalTexture));
+                } else if (tileSaved == 'S'){
+                    portals.push_back(new ExitPortal(i * CARTESIAN_TILE_WIDTH,
+                                                     j * CARTESIAN_TILE_HEIGHT,
+                                                     gRenderer,
+                                                      &redPortalTexture));
+                }
+            } else {
                 tileType = tileIdTranslator.at(tileSaved);
             }
 
@@ -303,7 +312,7 @@ bool GamePlayWindow::setTiles() {
             }
 
             //If the number is a valid tile number
-            if (tileType >= TILE_EMPTY && tileType <= TILE_TOWER) {
+            if (tileType >= TILE_EMPTY && tileType <= TILE_EXIT_PORTAL) {
                 tileSet.push_back(std::move(Tile(i, j, tileType)));
             } else {
                 //If we don't recognize the tile type
@@ -327,51 +336,10 @@ bool GamePlayWindow::setTiles() {
             gTileClips[i].w = ISO_TILE_WIDTH;
             gTileClips[i].h = ISO_TILE_HEIGHT;
         }
-
-        // Clips para los botones con torres
-        for (unsigned i = 0; i < CANT_TOWERS_BUTTONS; ++i) {
-            for (unsigned j = 0; j < CANT_TOWERS_BUTTONS_STATES; ++j) {
-                towerButtonsClips[i][j].x = i * 80;
-                towerButtonsClips[i][j].y = j * 80 + 1;
-                towerButtonsClips[i][j].w = 80;
-                towerButtonsClips[i][j].h = 80;
-            }
-        }
     }
-
-    loadPortalSprites();
 
     //If the map was loaded fine
     return tilesLoaded;
-}
-
-void GamePlayWindow::loadPortalSprites() {
-    unsigned int x_i = 0;
-    unsigned int y_i = 0;
-
-    for (int i = 0; i < 30; ++i) {
-        gSpriteClipsPortalBlue[i].x = i * 136;
-        gSpriteClipsPortalBlue[i].y = 0;
-        gSpriteClipsPortalBlue[i].w = 136;
-        gSpriteClipsPortalBlue[i].h = 181;
-
-        gSpriteClipsPortalRed[i].x = x_i * 136;
-        gSpriteClipsPortalRed[i].y = y_i * 185;
-        gSpriteClipsPortalRed[i].w = 136;
-        gSpriteClipsPortalRed[i].h = 185;
-
-        if (x_i < 10) {
-            ++x_i;
-        } else if (x_i == 10) {
-            x_i = 0;
-        }
-
-        if (i == 9) {
-            y_i = 1;
-        } else if (i == 19) {
-            y_i = 2;
-        }
-    }
 }
 
 void
@@ -906,6 +874,11 @@ void GamePlayWindow::loadAnimables() {
         for (Enemy *enemy : horde.getEnemies()) {
             animables.push(enemy);
         }
+    }
+
+    for (unsigned i = 0; i < portals.size(); ++i){
+        Animable *portal = portals[i];
+        animables.push(portal);
     }
 
 }

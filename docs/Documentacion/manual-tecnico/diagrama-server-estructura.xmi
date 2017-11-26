@@ -419,7 +419,7 @@
         <UML:Attribute visibility="private" name="dotTexture" type="4BvShK5apYAI" xmi.id="PzrAS0If0L8O" isSpecification="false"/>
         <UML:Attribute visibility="private" name="gPromptTextTexture" type="4BvShK5apYAI" xmi.id="WmEK1hE5r8VY" isSpecification="false"/>
         <UML:Attribute visibility="private" name="gTileClips" type="c5jLskcsZygv" xmi.id="Sa7G6FYTFNef" isSpecification="false"/>
-        <UML:Attribute visibility="private" name="gSpriteClipsPortalBlue" type="c5jLskcsZygv" xmi.id="MuKKDRjkBv2A" isSpecification="false"/>
+        <UML:Attribute visibility="private" name="spriteClipsPortalBlue" type="c5jLskcsZygv" xmi.id="MuKKDRjkBv2A" isSpecification="false"/>
         <UML:Attribute visibility="private" name="bluePortalTexture" type="4BvShK5apYAI" xmi.id="aEFRMj0pH53O" isSpecification="false"/>
         <UML:Attribute visibility="private" name="gSpriteClipsPortalRed" type="c5jLskcsZygv" xmi.id="KbpXwRDGJVbX" isSpecification="false"/>
         <UML:Attribute visibility="private" name="redPortalTexture" type="4BvShK5apYAI" xmi.id="uKF6FHGpVUFs" isSpecification="false"/>

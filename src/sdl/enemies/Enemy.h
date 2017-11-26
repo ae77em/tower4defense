@@ -32,20 +32,6 @@ public:
     void move(int maxx, int maxy);
 
     /*
-     * Renderea un sprite de la animación del enemigo caminando en la pantalla.
-     * camera: cuadrado que representa el lugar visible del mapa.
-     * */
-    //TODO: deberia ser privado?
-    virtual void renderWalk(SDL_Rect &camera);
-
-    /*
-     * Renderea un sprite de la animación del enemigo muriendo en la pantalla.
-     * camera: cuadrado que representa el lugar visible del mapa.
-     * */
-    //TODO: deberia ser privado?
-    void renderDie(SDL_Rect &camera);
-
-    /*
      * Renderea la animación actual seteada para el enemigo.
      * camera: cuadrado que representa el lugar visible del mapa.
      * */
@@ -79,25 +65,7 @@ public:
 
     void setRenderer(SDL_Renderer *renderer);
 
-    void setVelocity(int velocityX, int velocityY);
-
-    /*
-     * Calcula la experiencia que se entrega por matar a este enemigo.
-     * */
-    int getBonus();
-
     const SDL_Rect &getWalkBox() const;
-
-    Circle &getCollisionCircle();
-
-
-    static int getCollisionCircleRadio();
-
-    const std::vector<Point> &getPath() const;
-
-    void setPath(const std::vector<Point> &path);
-
-    void shiftColliders();
 
     Point getPoint();
 
@@ -108,6 +76,21 @@ public:
     void setIsVisible(bool isVisible);
 
     void setEnergyPercentaje(double energyPercentaje);
+
+private:
+    /*
+     * Renderea un sprite de la animación del enemigo caminando en la pantalla.
+     * camera: cuadrado que representa el lugar visible del mapa.
+     * */
+    virtual void renderWalk(SDL_Rect &camera);
+
+    /*
+     * Renderea un sprite de la animación del enemigo muriendo en la pantalla.
+     * camera: cuadrado que representa el lugar visible del mapa.
+     * */
+    void renderDie(SDL_Rect &camera);
+
+
 
 protected:
     int walkingStartX = 1765;

@@ -80,7 +80,9 @@ enum TileType {
     TILE_WAY = 4,
     TILE_FIRM = 5,
     TILE_FIRM_MARKED = 6,
-    TILE_TOWER = 7
+    TILE_TOWER = 7,
+    TILE_ENTER_PORTAL = 8,
+    TILE_EXIT_PORTAL = 9
 };
 
 enum UpgradeTypes {
