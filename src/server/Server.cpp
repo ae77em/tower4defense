@@ -61,7 +61,6 @@ void Server::addPlayerToGame(int clientId, std::string mName,
                     mName, clientId);
             serverGame->notifyAll(message);
 
-            //TODO: retrasar el comienzo del juego
             serverGame->startGame();
         } else {
             //si no esta llena notifico a todos el ingreso del jugador

@@ -22,6 +22,7 @@ private:
     Gtk::Button *pBtnCrearPartida = nullptr;
     Gtk::Button *pbtnJugar = nullptr;
     Gtk::Button *pbtnUnirse = nullptr;
+    Gtk::Button *pbtnSalir = nullptr;
     Gtk::ComboBoxText *cmbMapsText = nullptr;
     Gtk::Entry *entryMatchName = nullptr;
     Gtk::ComboBoxText *cmbMatchesText = nullptr;
@@ -161,6 +162,9 @@ private:
     void listen();
 
 
+    void initButtonLeave(Glib::RefPtr<Gtk::Builder> &refBuilder);
+
+    void on_btnLeave_clicked();
 };
 
 #endif //TP4_TOWERDEFENSE_GAMEACCESS_H

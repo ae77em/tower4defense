@@ -28,7 +28,7 @@
           </object>
           <packing>
             <property name="x">376</property>
-            <property name="y">215</property>
+            <property name="y">250</property>
           </packing>
         </child>
         <child>
@@ -225,6 +225,21 @@
           <packing>
             <property name="x">199</property>
             <property name="y">265</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="btnSalir">
+            <property name="label" translatable="yes">Salir</property>
+            <property name="width_request">109</property>
+            <property name="height_request">36</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="relief">half</property>
+          </object>
+          <packing>
+            <property name="x">377</property>
+            <property name="y">212</property>
           </packing>
         </child>
       </object>

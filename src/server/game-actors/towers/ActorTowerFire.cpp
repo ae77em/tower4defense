@@ -2,8 +2,6 @@
 #include "ActorTowerFire.h"
 #include "Constants.h"
 
-//#define LOG
-
 ActorTowerFire::ActorTowerFire() : ActorTower() {
     initialize();
 }
@@ -161,6 +159,3 @@ void ActorTowerFire::doReachDamageTo(ActorEnemy *pEnemy) {
     int expPoints = pEnemy->receiveDamage(damageAmount);
     sumExperiencePoints(expPoints);
 }
-
-
-
