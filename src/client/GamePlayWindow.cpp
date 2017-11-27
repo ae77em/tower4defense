@@ -347,9 +347,11 @@ bool GamePlayWindow::setTiles() {
 }
 
 void
-GamePlayWindow::renderText(SDL_Rect &camera, std::string &text, int x, int y,
+GamePlayWindow::renderText(SDL_Rect &camera,
+                           std::string text,
+                           int x, int y,
                            Uint8 r, Uint8 g, Uint8 b) {
-    SDL_Color textColor = {r, g, b, 0xFF}; // letra amarilla
+    SDL_Color textColor = {r, g, b, 0xFF};
     SDL_Color bgColor = {0, 0, 0, 0}; // fondo transparente
 
     TTF_SetFontStyle(font, TTF_STYLE_BOLD);
@@ -754,20 +756,12 @@ void GamePlayWindow::run() {
     } else {
         //Level camera
         camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+        renderSplashScreen();
 
-        SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 0xFF);
-        SDL_RenderClear(gRenderer);
-        renderText(camera, (std::string &) "CARGANDO...", 0, 0,
-                   static_cast<Uint8>((SCREEN_WIDTH / 2) - 20),
-                   static_cast<Uint8>((SCREEN_HEIGHT / 2) - 20), 0);
         //Load media
         if (!loadMedia()) {
             std::cerr << "Failed to load media!" << std::endl;
-            SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 0xFF);
-            SDL_RenderClear(gRenderer);
-            renderText(camera, (std::string &) "NO SE PUDO CARGAR EL JUEGO...",
-                       0, 0, static_cast<Uint8>((SCREEN_WIDTH / 2) - 20),
-                       static_cast<Uint8>((SCREEN_HEIGHT / 2) - 20), 0);
+            renderMessageInCenterOfScreen("NO SE PUDO CARGAR EL JUEGO...");
         } else {
             //Main loop flag
             bool quit = false;
@@ -828,6 +822,41 @@ void GamePlayWindow::run() {
     }
 
     server->shutdown(); // TODO ver si esto corresponde hacerlo acá...*/
+}
+
+void GamePlayWindow::renderMessageInCenterOfScreen(std::string message) {
+    SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 0xFF);
+    SDL_RenderClear(gRenderer);
+    renderText(camera, message,
+                   (SCREEN_WIDTH / 2) - message.size() / 2,
+                   (SCREEN_HEIGHT / 2) - 8,
+               0xFF, 0x00, 0x00);
+    SDL_RenderPresent(gRenderer);
+}
+
+void GamePlayWindow::renderSplashScreen(){
+    std::string line1, line2, line3, line4, line5, line6, line7, line8;
+    SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 0xFF);
+    SDL_RenderClear(gRenderer);
+    int center = (SCREEN_WIDTH / 2) - 40 * 8;
+    int middle = (SCREEN_HEIGHT / 2) - 8;
+    line1 = R"(       _                           ___     _       __                    )";
+    line2 = R"(      | |                         /   |   | |     / _|                   )";
+    line3 = R"(      | |_ _____      _____ _ __ / /| | __| | ___| |_ ___ _ __  ___  ___ )";
+    line4 = R"(      | __/ _ \ \ /\ / / _ \ '__/ /_| |/ _` |/ _ \  _/ _ \ '_ \/ __|/ _ \)";
+    line5 = R"(      | || (_) \ V  V /  __/ |  \___  | (_| |  __/ ||  __/ | | \__ \  __/)";
+    line6 = R"(       \__\___/ \_/\_/ \___|_|      |_/\__,_|\___|_| \___|_| |_|___/\___|)";
+    line7 = "                                 ";
+    line8 = "                                 CARGANDO...";
+    renderText(camera, line1, center, middle - 18*3, 0xFF, 0x00, 0x00);
+    renderText(camera, line2, center, middle - 18*2, 0xFF, 0x00, 0x00);
+    renderText(camera, line3, center, middle - 18*1, 0xFF, 0x00, 0x00);
+    renderText(camera, line4, center, middle + 18*0, 0xFF, 0x00, 0x00);
+    renderText(camera, line5, center, middle + 18*1, 0xFF, 0x00, 0x00);
+    renderText(camera, line6, center, middle + 18*2, 0xFF, 0x00, 0x00);
+    renderText(camera, line7, center, middle + 18*3, 0xFF, 0x00, 0x00);
+    renderText(camera, line8, center, middle + 18*4, 0xFF, 0x00, 0x00);
+    SDL_RenderPresent(gRenderer);
 }
 
 void GamePlayWindow::animateAnimables() {

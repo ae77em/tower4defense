@@ -92,8 +92,10 @@ private:
     void handleServerNotifications(SDL_Rect rect);
 
     void
-    renderText(SDL_Rect &camera, std::string &text, int x, int y,
-                   Uint8 r = 0xFF, Uint8 g = 0xFF, Uint8 b = 0x00);
+    renderText(SDL_Rect &camera,
+               std::string text,
+               int x, int y,
+               Uint8 r = 0xFF, Uint8 g = 0xFF, Uint8 b = 0x00);
 
     void handleLeftButtonClick(Point &point);
 
@@ -255,6 +257,10 @@ private:
     void animateAnimables();
 
     void renderProhibited();
+
+    void renderMessageInCenterOfScreen(std::string message);
+
+    void renderSplashScreen();
 };
 
 #endif //TP4_TOWERDEFENSE_GAME_H
