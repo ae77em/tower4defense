@@ -158,8 +158,8 @@ void ActorTowerFire::damageNearbyEnemies(std::vector<ActorEnemy *> &enemies,
 
 void ActorTowerFire::doReachDamageTo(ActorEnemy *pEnemy) {
     int damageAmount = pEnemy->receiveDamage(reachDamage);
-    int expPoints = pEnemy->receiveDamage(damageAmount);
-    sumExperiencePoints(expPoints);
+    //int expPoints = pEnemy->receiveDamage(damageAmount);
+    sumExperiencePoints(damageAmount);
 }
 
 

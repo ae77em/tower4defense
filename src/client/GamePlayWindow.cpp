@@ -658,7 +658,7 @@ bool GamePlayWindow::isATowerPoint(Point &point) {
 
     if (point.isPositive()) {
         int tilePos = point.x * TILES_COLUMNS + point.y;
-        if (tilePos < (int)tileSet.size()) {
+        if (tilePos < (int) tileSet.size()) {
             if (tileSet.at(tilePos).getType() == TILE_TOWER) {
                 for (unsigned i = 0; i < towers.size(); ++i) {
                     if (tileSet.at(tilePos).getTower() == towers[i]) {
@@ -747,9 +747,6 @@ void GamePlayWindow::loadTowerInfo(Message message) {
 }
 
 void GamePlayWindow::run() {
-    unsigned int gameEndedTime = 0;
-    bool gameEnded = false;
-
     //Start up SDL and create window
     if (!init()) {
         std::cerr << "Failed to initializde!" << std::endl;
@@ -772,50 +769,46 @@ void GamePlayWindow::run() {
 
             //While application is running
             while (!quit) {
-                gameEnded = gameStatus != GAME_STATUS_UNDECIDED;
-                if (gameEnded) {
-                    if (gameEndedTime == 0) {
-                        gameEndedTime = SDL_GetTicks();
-                    } else if (SDL_GetTicks() - gameEndedTime > 3000) {
-                        quit = true;
-                    }
-                }
+                try {
+                    //Handle events on queue
+                    while (SDL_PollEvent(&e) != 0) {
+                        //User requests quit
+                        if (e.type == SDL_QUIT) {
+                            quit = true;
+                        }
 
-                //Handle events on queue
-                while (SDL_PollEvent(&e) != 0) {
-                    //User requests quit
-                    if (e.type == SDL_QUIT) {
-                        quit = true;
+                        // Change dot velocity
+                        dot.handleEvent(e);
+
+                        handleMouseEvents(camera, e);
                     }
 
-                    // Change dot velocity
-                    dot.handleEvent(e);
+                    handleServerNotifications(camera);
 
-                    handleMouseEvents(camera, e);
+                    // Move the camera
+                    dot.move();
+                    dot.setCamera(camera);
+
+                    // Clear screen
+                    SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 0xFF);
+                    SDL_RenderClear(gRenderer);
+
+                    renderLevel();
+                    dot.render(dotTexture, camera, gRenderer);
+
+                    loadAnimables();
+                    animateAnimables();
+
+                    towerButtonsTexture.render(gRenderer, 1, 1);
+                    renderProhibited();
+                    renderMessages();
+
+                    //Update screen
+                    SDL_RenderPresent(gRenderer);
+                } catch (...) {
+                    std::cerr << "Excepción en el loop de juego." << std::endl;
+                    std::cerr << "Se sigue con la ejecución." << std::endl;
                 }
-
-                handleServerNotifications(camera);
-
-                // Move the camera
-                dot.move();
-                dot.setCamera(camera);
-
-                // Clear screen
-                SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 0xFF);
-                SDL_RenderClear(gRenderer);
-
-                renderLevel();
-                dot.render(dotTexture, camera, gRenderer);
-
-                loadAnimables();
-                animateAnimables();
-
-                towerButtonsTexture.render(gRenderer, 1, 1);
-                renderProhibited();
-                renderMessages();
-
-                //Update screen
-                SDL_RenderPresent(gRenderer);
             }
         }
 
