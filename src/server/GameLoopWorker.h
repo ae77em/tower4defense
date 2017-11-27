@@ -59,6 +59,8 @@ public:
                    std::mutex& m,
                    model::Map map);
 
+    ~GameLoopWorker();
+
     void run();
 };
 

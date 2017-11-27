@@ -54,8 +54,5 @@ void Listener::run(){
             default:
                 buffer.addData(dataFromServer);
         }
-
-        std::cout << response << "dataFromServer: "
-                  << dataFromServer << std::endl;
     }
 }

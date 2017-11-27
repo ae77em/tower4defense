@@ -532,9 +532,6 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
 
         int op = request.getAsInt(OPERATION_KEY);
 
-        std::cout << "llego op: " << std::to_string(op)
-                  << " al listener del juego..." << std::endl;
-
         switch (op) {
             case SERVER_NOTIFICATION_SCENARIO_STATUS: {
                 std::vector<Message> messages =
@@ -627,8 +624,6 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
             default:
                 response = "no reconocida";
         }
-
-        std::cout << "notification: " << notification << std::endl;
     }
 }
 
@@ -778,7 +773,7 @@ void GamePlayWindow::run() {
                         }
 
                         // Change dot velocity
-                        dot.handleEvent(e);
+                        dot.handleEvent(e, gWindow);
 
                         handleMouseEvents(camera, e);
                     }

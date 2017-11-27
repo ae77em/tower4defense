@@ -282,7 +282,7 @@ void GameLoopWorker::notifyMatchWin() {
 
 void GameLoopWorker::notifyMatchLoose() {
     std::string statusGame =
-            GameNotificationFactory::getMatchEndedNotification(GAME_STATUS_LOST);
+        GameNotificationFactory::getMatchEndedNotification(GAME_STATUS_LOST);
     for (auto it = players.begin(); it != players.end(); ++it) {
         it->second->sendData(statusGame);
     }
@@ -361,8 +361,12 @@ void GameLoopWorker::upgradeTower(GameActionUpgradeTower *pInfo) {
     }
 
     std::string data =
-            GameNotificationFactory::getUpgradeNotification(upgradeSuccessful, info);
+       GameNotificationFactory::getUpgradeNotification(upgradeSuccessful, info);
 
     players.at(clientId)->sendData(data);
+}
+
+GameLoopWorker::~GameLoopWorker() {
+    // limpiar
 }
 
