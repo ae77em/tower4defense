@@ -234,6 +234,10 @@ public:
      * Retorna el mapa serializado.
      */
     static std::string getSerializedMap(Message message);
+
+    static std::string getLeaveMatchRequest(int clientId, std::string matchName);
+
+    static std::string getLeaveMatchNotification();
 };
 
 #endif //TP4_TOWERDEFENSE_MESSAGEFACTORY_H

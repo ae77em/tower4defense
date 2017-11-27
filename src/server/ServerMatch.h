@@ -1,7 +1,7 @@
 #ifndef TP4_TOWERDEFENSE_SERVERGAME_H
 #define TP4_TOWERDEFENSE_SERVERGAME_H
 
-#define MAX_PLAYERS 4
+#define MAX_ELEMENTS 4
 
 #include <iostream>
 #include "ServerPlayer.h"
@@ -45,7 +45,7 @@ public:
 
     void setPlaying(bool playing);
 
-    bool isFull();
+    bool isElementsAvailables();
 
     void startGame();
 

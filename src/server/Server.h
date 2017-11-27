@@ -91,6 +91,8 @@ private:
     void towerInfo(int clientId, std::string matchName, int towerId);
 
     std::vector<std::string> getAllMapsNames();
+
+    void removePlayerFromMatch(int id);
 };
 
 #endif //TP4_TOWERDEFENSE_SERVER_H

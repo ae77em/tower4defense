@@ -14,7 +14,8 @@ enum ClientRequestsNonPlaying {
     CLIENT_REQUEST_GET_ALL_MAPS = 5,
     CLIENT_REQUEST_GET_ALL_MATCHES = 6,
     CLIENT_REQUEST_GET_UNAVAILABLE_ELEMENTS = 7,
-    CLIENT_REQUEST_START_MATCH = 9
+    CLIENT_REQUEST_START_MATCH = 8,
+    CLIENT_REQUEST_LEAVE_MATCH = 9
 };
 
 /* Códigos de de requests para acciones del juego propiamente dicho */
@@ -27,6 +28,7 @@ enum ClientRequestsPlaying {
 };
 
 enum ServerNonPlayingNotifications {
+    SERVER_NOTIFICATION_LEAVE_MATCH = 201,
     SERVER_NOTIFICATION_NEW_MATCH = 202,
     SERVER_NOTIFICATION_ENTER_EXISTING_MATCH = 203,
     SERVER_NOTIFICATION_GET_ALL_MAPS = 204,

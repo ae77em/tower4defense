@@ -22,13 +22,15 @@ private:
     Gtk::Button *pBtnCrearPartida = nullptr;
     Gtk::Button *pbtnJugar = nullptr;
     Gtk::Button *pbtnUnirse = nullptr;
+    Gtk::Button *pbtnSalir = nullptr;
     Gtk::ComboBoxText *cmbMapsText = nullptr;
-    Gtk::Entry *entryMatchName = nullptr;
     Gtk::ComboBoxText *cmbMatchesText = nullptr;
     Gtk::CheckButton *pchkAire = nullptr;
     Gtk::CheckButton *pchkAgua = nullptr;
     Gtk::CheckButton *pchkFuego = nullptr;
     Gtk::CheckButton *pchkTierra = nullptr;
+    Gtk::Entry *entryMatchName = nullptr;
+    Gtk::Label *plblServidorDesconectado = nullptr;
 
     /* External modifications */
     Glib::Dispatcher dispatcher;
@@ -156,6 +158,16 @@ private:
     bool hasValidValue(const std::string &match) const;
 
     void initDispatcher(Glib::RefPtr<Gtk::Builder> &refPtr);
+
+    void initButtonLeave(Glib::RefPtr<Gtk::Builder> &refBuilder);
+
+    void on_btnLeave_clicked();
+
+    bool sendRequest(std::string& request);
+
+    void disableAllInputs();
+
+    void initLabelServerDisconnected(Glib::RefPtr<Gtk::Builder> &refBuilder);
 };
 
 #endif //TP4_TOWERDEFENSE_GAMEACCESS_H

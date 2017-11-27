@@ -50,11 +50,13 @@ void GameAccessWindow::run() {
         initButtonCreateMatch(refBuilder);
         initButtonPlay(refBuilder);
         initButtonJoin(refBuilder);
+        initButtonLeave(refBuilder);
         initComboMaps(refBuilder);
         initEntryMatchName(refBuilder);
         initComboMatches(refBuilder);
         initCheckboxElements(refBuilder);
         initDispatcher(refBuilder);
+        initLabelServerDisconnected(refBuilder);
 
         uiMutex.unlock();
         app->run(*pWindow);
@@ -77,8 +79,6 @@ void GameAccessWindow::on_cmbMapas_changed() {
 void GameAccessWindow::on_entryMatchName_changed() {
     setCreateMatchButtonEnableStatus();
     std::string match = cmbMatchesText->get_active_text();
-
-    if (hasValidValue(match)) {}
 }
 
 bool GameAccessWindow::hasValidValue(const std::string &match) const {
@@ -102,10 +102,8 @@ void GameAccessWindow::on_chkElement_clicked() {
 
 void GameAccessWindow::handlePlayButtonsAvailability() {
     if (isSomeElementCheckActiveAndChecked()) {
-        pbtnJugar->set_sensitive(true);
         pbtnUnirse->set_sensitive(true);
     } else {
-        pbtnJugar->set_sensitive(false);
         pbtnUnirse->set_sensitive(false);
     }
 }
@@ -124,8 +122,7 @@ void GameAccessWindow::on_cmbMatches_changed() {
         std::string request = MessageFactory::getUnavailableElementsRequest(
                 clientId, matchName);
 
-        TextMessage textMessage(request);
-        textMessage.sendTo(const_cast<Socket &>(*server));
+        sendRequest(request);
     }
 }
 
@@ -136,8 +133,7 @@ void GameAccessWindow::on_btnCreateMatch_clicked() {
     std::string request = MessageFactory::getNewMatchRequest(clientId, mapName,
                                                              matchName);
 
-    TextMessage textMessage(request);
-    textMessage.sendTo(const_cast<Socket &>(*server));
+    sendRequest(request);
 }
 
 void GameAccessWindow::on_btnPlay_clicked() {
@@ -146,22 +142,31 @@ void GameAccessWindow::on_btnPlay_clicked() {
     std::string request = MessageFactory::getStartMatchRequest(clientId,
                                                                matchName);
 
-    TextMessage textMessage(request);
-    textMessage.sendTo(const_cast<Socket &>(*server));
+    sendRequest(request);
 }
 
 void GameAccessWindow::on_btnJoin_clicked() {
     std::string matchName = cmbMatchesText->get_active_text();
     std::vector<std::string> elements = getSelectedElements();
 
-
     std::string request = MessageFactory::getEnterMatchRequest(clientId,
                                                                matchName,
                                                                elements);
-
-    TextMessage textMessage(request);
-    textMessage.sendTo(const_cast<Socket &>(*server));
+    sendRequest(request);
 }
+
+
+void GameAccessWindow::on_btnLeave_clicked() {
+    std::string request = MessageFactory::getLeaveMatchRequest(clientId,
+                                                               matchName);
+
+    if (sendRequest(request)){
+        pbtnJugar->set_sensitive(false);
+        pbtnSalir->set_sensitive(false);
+        pbtnUnirse->set_sensitive(true);
+    }
+}
+
 
 std::vector<std::string> GameAccessWindow::getSelectedElements() {
     std::vector<std::string> toReturn;
@@ -215,6 +220,18 @@ void GameAccessWindow::initButtonJoin(Glib::RefPtr<Gtk::Builder> &refBuilder) {
                 .connect(
                         sigc::mem_fun(*this,
                                       &GameAccessWindow::on_btnJoin_clicked));
+    }
+}
+
+void GameAccessWindow::initButtonLeave(Glib::RefPtr<Gtk::Builder>
+                                        &refBuilder) {
+    refBuilder->get_widget("btnSalir", pbtnSalir);
+    if (pbtnSalir) {
+        pbtnSalir->set_sensitive(false);
+        pbtnSalir->signal_clicked()
+                .connect(
+                        sigc::mem_fun(*this,
+                                      &GameAccessWindow::on_btnLeave_clicked));
     }
 }
 
@@ -288,6 +305,12 @@ GameAccessWindow::initCheckboxElements(Glib::RefPtr<Gtk::Builder> &refBuilder) {
     }
 }
 
+void
+GameAccessWindow::initLabelServerDisconnected(Glib::RefPtr<Gtk::Builder>
+                                        &refBuilder) {
+    refBuilder->get_widget("lblServidorDesconectado", plblServidorDesconectado);
+}
+
 
 void GameAccessWindow::addMapsToCombo(const std::vector<std::string> &maps) {
     for (std::string map : maps) {
@@ -351,12 +374,11 @@ void GameAccessWindow::setAvailableElementsForJoin(
 }
 
 void GameAccessWindow::setJoinedToMatch(int clientId, std::string mName) {
-    if (clientId == this->getClientId()) {
-        pbtnUnirse->set_sensitive(false);
-        pbtnJugar->set_sensitive(true);
+    pbtnUnirse->set_sensitive(false);
+    pbtnJugar->set_sensitive(true);
+    pbtnSalir->set_sensitive(true);
 
-        matchName = mName;
-    }
+    matchName = mName;
 }
 
 void GameAccessWindow::setClientId(int cid) {
@@ -386,6 +408,58 @@ void GameAccessWindow::startMatch(std::string matchName, std::string map) {
     /*// Acá debiera levantarse nuevamente la ventana de acceso.
      * pWindow->show_all();
     pWindow->show_now();*/
+}
+
+bool GameAccessWindow::sendRequest(std::string& request){
+    bool success;
+    try {
+        TextMessage textMessage(request);
+        textMessage.sendTo(const_cast<Socket &>(*server));
+        plblServidorDesconectado->set_visible(false);
+        success = true;
+    } catch (...) {
+        plblServidorDesconectado->set_visible(true);
+        disableAllInputs();
+        success = false;
+    }
+    return success;
+}
+
+
+void GameAccessWindow::disableAllInputs() {
+    if (pBtnCrearPartida->is_sensitive()){
+        pBtnCrearPartida->set_sensitive(false);
+    }
+    if (pbtnJugar->is_sensitive()){
+        pbtnJugar->set_sensitive(false);
+    }
+    if (pbtnUnirse->is_sensitive()){
+        pbtnUnirse->set_sensitive(false);
+    }
+    if (pbtnSalir->is_sensitive()){
+        pbtnSalir->set_sensitive(false);
+    }
+    if (cmbMapsText->is_sensitive()){
+        cmbMapsText->set_sensitive(false);
+    }
+    if (cmbMatchesText->is_sensitive()){
+        cmbMatchesText->set_sensitive(false);
+    }
+    if (pchkAire->is_sensitive()){
+        pchkAire->set_sensitive(false);
+    }
+    if (pchkAgua->is_sensitive()){
+        pchkAgua->set_sensitive(false);
+    }
+    if (pchkFuego->is_sensitive()){
+        pchkFuego->set_sensitive(false);
+    }
+    if (pchkTierra->is_sensitive()){
+        pchkTierra->set_sensitive(false);
+    }
+    if (entryMatchName->is_sensitive()){
+        entryMatchName->set_sensitive(false);
+    }
 }
 
 void GameAccessWindow::initDispatcher(Glib::RefPtr<Gtk::Builder> &refPtr) {
@@ -448,11 +522,15 @@ void GameAccessWindow::updateUIData() {
             }
             case SERVER_NOTIFICATION_ENTER_EXISTING_MATCH: {
                 int clientId = MessageFactory::getClientId(message);
+                std::string theMatchName =
+                        MessageFactory::getMatchName(message);
                 std::list<std::string> elements = MessageFactory::getElements(
                         message);
 
                 if (getClientId() != clientId) {
                     setAvailableElementsForJoin(elements);
+                } else {
+                    setJoinedToMatch(clientId, theMatchName);
                 }
                 break;
             }
@@ -467,4 +545,3 @@ void GameAccessWindow::updateUIData() {
         }
     }
 }
-
