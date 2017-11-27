@@ -90,7 +90,7 @@ void GamePlayWindow::renderTimeMessages(SDL_Rect &camera) {
         std::string message("Puede lanzar hechizo nuevamete en: ");
         message.append(std::to_string(t));
         message.append(" seg");
-        renderText(camera, message, 1, 100);
+        renderText(camera, message, 0, 0, 1, 100, 0);
     }
 
     if ((t = (SDL_GetTicks() - timeOfLastTowerPutted)) <
@@ -100,13 +100,13 @@ void GamePlayWindow::renderTimeMessages(SDL_Rect &camera) {
         std::string message("Puede poner torre nuevamente en: ");
         message.append(std::to_string(t));
         message.append(" seg");
-        renderText(camera, message, 1, 150);
+        renderText(camera, message, 0, 0, 1, 150, 0);
     }
 
     if ((SDL_GetTicks() - timeOfLastUpgradeMessage) <
         TIME_FOR_SHOW_TEMPORARY_MESSAGE) {
         if (!towerUpgradeInfoMessage.empty()) {
-            renderText(camera, towerUpgradeInfoMessage, 200);
+            renderText(camera, towerUpgradeInfoMessage, 0, 0, 200, 0, 0);
         }
     }
 }
@@ -347,8 +347,9 @@ bool GamePlayWindow::setTiles() {
 }
 
 void
-GamePlayWindow::renderText(SDL_Rect &camera, std::string text, int x, int y) {
-    SDL_Color textColor = {0xFF, 0xFF, 0, 0xFF}; // letra amarilla
+GamePlayWindow::renderText(SDL_Rect &camera, std::string &text, int x, int y,
+                           Uint8 r, Uint8 g, Uint8 b) {
+    SDL_Color textColor = {r, g, b, 0xFF}; // letra amarilla
     SDL_Color bgColor = {0, 0, 0, 0}; // fondo transparente
 
     TTF_SetFontStyle(font, TTF_STYLE_BOLD);
@@ -464,7 +465,7 @@ bool GamePlayWindow::isAValidPutTowerRequest(Point &point) {
            && isFirmTerrain(point);
 }
 
-void GamePlayWindow::doTowerInfoRequest() const {
+void GamePlayWindow::doTowerInfoRequest() {
     std::string request =
             MessageFactory::getTowerInfoRequest(clientId,
                                                 matchName,
@@ -472,7 +473,7 @@ void GamePlayWindow::doTowerInfoRequest() const {
     sendToServer(request);
 }
 
-void GamePlayWindow::doUpgradeRequest() const {
+void GamePlayWindow::doUpgradeRequest() {
     std::string request =
             MessageFactory::getUpgradeRequest(clientId,
                                               matchName,
@@ -482,7 +483,7 @@ void GamePlayWindow::doUpgradeRequest() const {
     sendToServer(request);
 }
 
-void GamePlayWindow::doPutTowerRequest(const Point &point) const {
+void GamePlayWindow::doPutTowerRequest(const Point &point) {
     std::string request =
             MessageFactory::getPutTowerRequest(matchName,
                                                typeOfTowerToPut,
@@ -492,7 +493,7 @@ void GamePlayWindow::doPutTowerRequest(const Point &point) const {
     sendToServer(request);
 }
 
-void GamePlayWindow::doCastSpellRequest(const Point &point) const {
+void GamePlayWindow::doCastSpellRequest(const Point &point) {
     std::string request =
             MessageFactory::getCastSpellRequest(matchName,
                                                 point.x,
@@ -500,9 +501,13 @@ void GamePlayWindow::doCastSpellRequest(const Point &point) const {
     sendToServer(request);
 }
 
-void GamePlayWindow::sendToServer(const std::string &request) const {
-    TextMessage toSend(request);
-    toSend.sendTo(reinterpret_cast<Socket &>(*server));
+void GamePlayWindow::sendToServer(const std::string &request) {
+    try {
+        TextMessage toSend(request);
+        toSend.sendTo(reinterpret_cast<Socket &>(*server));
+    } catch (...){
+        gameStatus = GAME_STATUS_DISCONECTED;
+    }
 }
 
 void GamePlayWindow::handleRightButtonClick(Point point) {
@@ -743,12 +748,26 @@ void GamePlayWindow::loadTowerInfo(Message message) {
 
 void GamePlayWindow::run() {
     //Start up SDL and create window
+
     if (!init()) {
         std::cerr << "Failed to initializde!" << std::endl;
     } else {
+        //Level camera
+        camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+
+        SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 0xFF);
+        SDL_RenderClear(gRenderer);
+        renderText(camera, (std::string &) "CARGANDO...", 0, 0,
+                   static_cast<Uint8>((SCREEN_WIDTH / 2) - 20),
+                   static_cast<Uint8>((SCREEN_HEIGHT / 2) - 20), 0);
         //Load media
         if (!loadMedia()) {
             std::cerr << "Failed to load media!" << std::endl;
+            SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 0xFF);
+            SDL_RenderClear(gRenderer);
+            renderText(camera, (std::string &) "NO SE PUDO CARGAR EL JUEGO...",
+                       0, 0, static_cast<Uint8>((SCREEN_WIDTH / 2) - 20),
+                       static_cast<Uint8>((SCREEN_HEIGHT / 2) - 20), 0);
         } else {
             //Main loop flag
             bool quit = false;
@@ -758,9 +777,6 @@ void GamePlayWindow::run() {
 
             //The dot that will be moving around on the screen
             Dot dot;
-
-            //Level camera
-            camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
 
             //While application is running
             while (!quit) {
@@ -824,16 +840,24 @@ void GamePlayWindow::animateAnimables() {
 }
 
 void GamePlayWindow::renderMessages() {
+    std::string message = "";
     if (gameStatus == GAME_STATUS_WON) {
-        renderText(camera, "Partida ganada...");
+        message = "FELICIDADES, PARTIDA GANADA :) ...";
+        renderText(camera, message, 0, 0, 0, 0, 0);
     } else if (gameStatus == GAME_STATUS_LOST) {
-        renderText(camera, "Partida perdida...");
+        message = "Partida perdida :( ...";
+        renderText(camera, message, 0, 0, 0, 0, 0);
+    } else if (gameStatus == GAME_STATUS_DISCONECTED) {
+        message = "Hemos perdido comunicación con el server :(..."
+                "lamentablemente tendrás que reiniciar el juego.";
+        renderText(camera, message, 0, 0, 0xFF, 0x00, 0x00);
     }
 
     renderTimeMessages(camera);
 
     if (!towerDamageDataMessage.empty()) {
-        renderText(camera, "Datos de la torre:", 1, 250);
+        message = "Datos de la torre:";
+        renderText(camera, message, 1, 250);
         renderText(camera, towerClassDataMessage, 1, 266);
         renderText(camera, towerExperiencePointsDataMessage, 1, 282);
         renderText(camera, towerDamageDataMessage, 1, 298);

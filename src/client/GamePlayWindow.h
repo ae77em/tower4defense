@@ -91,7 +91,9 @@ private:
 
     void handleServerNotifications(SDL_Rect rect);
 
-    void renderText(SDL_Rect &camera, std::string text, int x = 50, int y = 50);
+    void
+    renderText(SDL_Rect &camera, std::string &text, int x, int y,
+                   Uint8 r = 0xFF, Uint8 g = 0xFF, Uint8 b = 0x00);
 
     void handleLeftButtonClick(Point &point);
 
@@ -107,19 +109,19 @@ private:
 
     bool hasElement(const std::string &element) const;
 
-    void sendToServer(const std::string &request) const;
+    void sendToServer(const std::string &request);
 
     void setToMarkedTile(Point &point);
 
     void setToFirmTile(Point &point);
 
-    void doCastSpellRequest(const Point &point) const;
+    void doCastSpellRequest(const Point &point);
 
-    void doPutTowerRequest(const Point &point) const;
+    void doPutTowerRequest(const Point &point);
 
-    void doUpgradeRequest() const;
+    void doUpgradeRequest();
 
-    void doTowerInfoRequest() const;
+    void doTowerInfoRequest();
 
     void renderTimeMessages(SDL_Rect &camera);
 

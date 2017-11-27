@@ -32,8 +32,8 @@ Server::createGame(int clientId, std::string matchName, std::string mapName) {
     } else {
         message =
                 MessageFactory::getNewMatchErrorNotification(clientId,
-                                                        matchName,
-                                                        "La partida ya existe");
+                                                             matchName,
+                                                             "La partida ya existe");
     }
 
     notifyAll(message);
@@ -105,7 +105,7 @@ bool Server::createMatch(std::string nameMatch, std::string mapName) {
     // Si ya existe un juego con el mismo nombre
     if (matches.find(nameMatch) != matches.end()) return false;
 
-    matches.insert(std::pair<std::string, ServerMatch*>(
+    matches.insert(std::pair<std::string, ServerMatch *>(
             nameMatch,
             new ServerMatch(mutexPlayers, aMap)));
     return true;
@@ -150,53 +150,57 @@ void Server::run() {
 
                 createGame(clientId, nameMatch, mapName);
                 break;
-            } case CLIENT_REQUEST_ENTER_MATCH: {
+            }
+            case CLIENT_REQUEST_ENTER_MATCH: {
                 int clientId = request.getAsInt("clientId");
                 std::string nameMatch = request.getAsString("matchName");
                 std::list<std::string> elements =
                         request.getAsStringVector("elements");
 
-                    addPlayerToGame(clientId, nameMatch, elements);
-                    break;
-                }
-                case CLIENT_REQUEST_LEAVE_MATCH: {
-                    int clientId = request.getAsInt(CLIENT_ID_KEY);
-                    removePlayerFromMatch(clientId);
-                    std::string response =
-                            MessageFactory::getLeaveMatchNotification();
-                    notifyTo(clientId, response);
-                    break;
-                }
-                case CLIENT_REQUEST_GET_ALL_MAPS: {
-                    int clientId = request.getAsInt("clientId");
-                    std::vector<std::string> mapsNames = getAllMapsNames();
-                   std::string response = MessageFactory::getExistingMapsNotification(mapsNames);
-                    notifyTo(clientId, response);
-                    break;
-                }
-                case CLIENT_REQUEST_GET_ALL_MATCHES: {
-                    int clientId = request.getAsInt("clientId");
-                    std::vector<std::string> matchNames = getMatchesNames();
-                   std::string response = MessageFactory::getExistingMatchesNotification(
-                            matchNames);
-                    notifyTo(clientId, response);
-                    break;
-                }
-                case CLIENT_REQUEST_GET_UNAVAILABLE_ELEMENTS: {
-                    int clientId = request.getAsInt("clientId");
-                    std::string nameMatch = request.getAsString("matchName");
-                    sendUnavailableElementsToClient(clientId, nameMatch);
-                    break;
+                addPlayerToGame(clientId, nameMatch, elements);
+                break;
+            }
+            case CLIENT_REQUEST_LEAVE_MATCH: {
+                int clientId = request.getAsInt(CLIENT_ID_KEY);
+                removePlayerFromMatch(clientId);
+                std::string response =
+                        MessageFactory::getLeaveMatchNotification();
+                notifyTo(clientId, response);
+                break;
+            }
+            case CLIENT_REQUEST_GET_ALL_MAPS: {
+                int clientId = request.getAsInt("clientId");
+                std::vector<std::string> mapsNames = getAllMapsNames();
+                std::string response = MessageFactory::getExistingMapsNotification(
+                        mapsNames);
+                notifyTo(clientId, response);
+                break;
+            }
+            case CLIENT_REQUEST_GET_ALL_MATCHES: {
+                int clientId = request.getAsInt("clientId");
+                std::vector<std::string> matchNames = getMatchesNames();
+                std::string response = MessageFactory::getExistingMatchesNotification(
+                        matchNames);
+                notifyTo(clientId, response);
+                break;
+            }
+            case CLIENT_REQUEST_GET_UNAVAILABLE_ELEMENTS: {
+                int clientId = request.getAsInt("clientId");
+                std::string nameMatch = request.getAsString("matchName");
+                sendUnavailableElementsToClient(clientId, nameMatch);
+                break;
 
-               } case CLIENT_REQUEST_START_MATCH: {
-                    int clientId = request.getAsInt("clientId");
-                    std::string matchName = request.getAsString("matchName");
+            }
+            case CLIENT_REQUEST_START_MATCH: {
+                int clientId = request.getAsInt("clientId");
+                std::string matchName = request.getAsString("matchName");
 
                 startMatch(clientId, matchName);
                 break;
 
-            /* gaming requests: */
-            } case CLIENT_REQUEST_PUT_TOWER: {
+                /* gaming requests: */
+            }
+            case CLIENT_REQUEST_PUT_TOWER: {
                 std::string matchName = request.getAsString("matchName");
                 int towerType = request.getAsInt("towerType");
                 int x = request.getAsInt(XCOORD_KEY);
@@ -204,28 +208,32 @@ void Server::run() {
 
                 putTower(matchName, towerType, x, y);
                 break;
-            } case CLIENT_REQUEST_MARK_TILE: {
+            }
+            case CLIENT_REQUEST_MARK_TILE: {
                 std::string matchName = request.getAsString(MATCH_NAME_KEY);
                 int x = request.getAsInt(XCOORD_KEY);
                 int y = request.getAsInt(YCOORD_KEY);
 
                 markTile(matchName, x, y);
                 break;
-            } case CLIENT_REQUEST_CAST_SPELL: {
+            }
+            case CLIENT_REQUEST_CAST_SPELL: {
                 std::string matchName = request.getAsString(MATCH_NAME_KEY);
                 int x = request.getAsInt(XCOORD_KEY);
                 int y = request.getAsInt(YCOORD_KEY);
 
                 castSpell(matchName, x, y);
                 break;
-            } case CLIENT_REQUEST_TOWER_INFO: {
+            }
+            case CLIENT_REQUEST_TOWER_INFO: {
                 int clientId = request.getAsInt(CLIENT_ID_KEY);
                 std::string matchName = request.getAsString(MATCH_NAME_KEY);
                 int towerId = request.getAsInt("towerId");
 
                 towerInfo(clientId, matchName, towerId);
                 break;
-            } case CLIENT_REQUEST_UPGRADE_TOWER: {
+            }
+            case CLIENT_REQUEST_UPGRADE_TOWER: {
                 std::string matchName = request.getAsString(MATCH_NAME_KEY);
                 int clientId = request.getAsInt("clientId");
                 int towerId = request.getAsInt("towerId");
@@ -233,13 +241,15 @@ void Server::run() {
 
                 upgradeTower(matchName, clientId, towerId, upgradeType);
                 break;
-            } case SERVER_NOTIFICATION_END_CLIENT_CONNECTION: {
+            }
+            case SERVER_NOTIFICATION_END_CLIENT_CONNECTION: {
                 removeClient(request.getAsInt("clientId"));
                 break;
 
-            } default: {
+            }
+            default: {
                 std::string response = "No se reconoce codigo de operación "
-                    + std::to_string(op);
+                                       + std::to_string(op);
                 notifyTo(request.getAsInt("clientId"), response);
             }
         }
@@ -255,7 +265,8 @@ void Server::startMatch(int clientId, std::string matchName) {
         ServerPlayer *serverPlayer = players.at(clientId);
 
         std::string message =
-              MessageFactory::getMatchStartedNotification("El match ya inicio");
+                MessageFactory::getMatchStartedNotification(
+                        "El match ya inicio");
         serverPlayer->sendData(message);
     } else {
         serverGame->setPlaying(true);
@@ -297,9 +308,6 @@ std::vector<std::string> Server::getMatchesNames() {
 }
 
 void Server::notifyPlayerAdded(std::string message) {
-    std::cout << "Notificando a: " << players.size() << " jugadores"
-              << std::endl;
-
     for (std::pair<unsigned int, ServerPlayer *> player : players) {
         player.second->sendData(message);
     }
@@ -319,7 +327,7 @@ void Server::removeClient(int id) {
 
         sg->removePlayer(id);
 
-        if (sg->getAmountPlayers() == 0){
+        if (sg->getAmountPlayers() == 0) {
             std::cout << "Server: limpiando partida: "
                       << gameId
                       << "aguardo salida...espero que no sea eterna"
@@ -353,7 +361,7 @@ void Server::markTile(std::string matchName, int x, int y) {
     serverGame->markTile(x, y);
 }
 
-void Server::putTower(std::string matchName, int typeOfTower, int x, int y){
+void Server::putTower(std::string matchName, int typeOfTower, int x, int y) {
     ServerMatch *serverGame = matches.at(matchName);
     serverGame->putTower(typeOfTower, x, y);
 }
@@ -377,14 +385,14 @@ void Server::towerInfo(int clientId, std::string matchName, int towerId) {
 }
 
 void Server::loadMaps() {
-    DIR* dirp = opendir("resources/maps/");
+    DIR *dirp = opendir("resources/maps/");
     std::string mapFilename;
     std::string mapName;
     unsigned long nameLenght = 10;
     struct dirent *dp;
 
     while ((dp = readdir(dirp)) != NULL) {
-        if (std::string(dp->d_name).find(".json") != std::string::npos){
+        if (std::string(dp->d_name).find(".json") != std::string::npos) {
             mapFilename.assign("resources/maps/");
             mapFilename.append(dp->d_name);
 
@@ -395,7 +403,7 @@ void Server::loadMaps() {
             aMap.setName(mapName);
 
             std::pair<std::string, model::Map>
-                    mapPair(aMap.getName(),std::move(aMap));
+                    mapPair(aMap.getName(), std::move(aMap));
             maps.insert(mapPair);
         }
     }
@@ -407,7 +415,7 @@ std::vector<std::string> Server::getAllMapsNames() {
     std::vector<std::string> toReturn;
     std::string namePosta;
 
-    for (auto it=maps.begin(); it!=maps.end(); ++it){
+    for (auto it = maps.begin(); it != maps.end(); ++it) {
         toReturn.push_back(it->first);
     }
 
@@ -415,7 +423,6 @@ std::vector<std::string> Server::getAllMapsNames() {
 }
 
 void Server::removePlayerFromMatch(int id) {
-
     mutexPlayers.lock();
 
     ServerPlayer *sp = players.at(id);
@@ -426,9 +433,6 @@ void Server::removePlayerFromMatch(int id) {
 
     sg->enableElements(id);
     sg->removePlayer(id);
-
-    std::cout << "se saco jugador que estaba unido con id: " << id
-              << std::endl;
 
     mutexPlayers.unlock();
 }

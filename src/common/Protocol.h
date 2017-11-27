@@ -76,7 +76,8 @@ enum TowerType {
 enum GameStatus {
     GAME_STATUS_UNDECIDED = 0,
     GAME_STATUS_WON = 1,
-    GAME_STATUS_LOST = 2
+    GAME_STATUS_LOST = 2,
+    GAME_STATUS_DISCONECTED = 3
 };
 
 const int CARTESIAN_TILE_WIDTH = 80;
