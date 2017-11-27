@@ -54,11 +54,16 @@ void Server::addPlayerToGame(int clientId, std::string mName,
         serverPlayer->setElements(elements);
         serverGame->addPlayer(serverPlayer);
 
-        //si la partida tiene 4 jugadores, arranca
-        if (serverGame->isFull()) {
-            std::string message =
-                    MessageFactory::getAddPlayerAndRunMatchNotification(
-                    mName, clientId);
+        //si la partida cuanta con elementos disponibles, de lo contrario arranca
+        if (!serverGame->isElementsAvailables()) {
+            serverGame->setPlaying(true);
+            std::string mapName = serverGame->getMapName();
+
+            model::Map mapa = maps.at(mapName);
+            std::string serializedMap = mapa.serialize();
+
+            std::string message = MessageFactory::getStartMatchNotification(
+                    mName, serializedMap);
             serverGame->notifyAll(message);
 
             serverGame->startGame();
@@ -152,6 +157,14 @@ void Server::run() {
                         request.getAsStringVector("elements");
 
                     addPlayerToGame(clientId, nameMatch, elements);
+                    break;
+                }
+                case CLIENT_REQUEST_LEAVE_MATCH: {
+                    int clientId = request.getAsInt(CLIENT_ID_KEY);
+                    removePlayerFromMatch(clientId);
+                    std::string response =
+                            MessageFactory::getLeaveMatchNotification();
+                    notifyTo(clientId, response);
                     break;
                 }
                 case CLIENT_REQUEST_GET_ALL_MAPS: {
@@ -402,4 +415,23 @@ std::vector<std::string> Server::getAllMapsNames() {
     }
 
     return toReturn;
+}
+
+void Server::removePlayerFromMatch(int id) {
+
+    mutexPlayers.lock();
+
+    ServerPlayer *sp = players.at(id);
+
+    std::string gameId = sp->getGameId();
+
+    ServerMatch *sg = matches.at(gameId);
+
+    sg->enableElements(id);
+    sg->removePlayer(id);
+
+    std::cout << "se saco jugador que estaba unido con id: " << id
+              << std::endl;
+
+    mutexPlayers.unlock();
 }

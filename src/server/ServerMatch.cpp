@@ -45,8 +45,8 @@ bool ServerMatch::elementsAreAvailables(std::list<std::string> elements) {
     return true;
 }
 
-bool ServerMatch::isFull(){
-    return players.size() == MAX_PLAYERS;
+bool ServerMatch::isElementsAvailables(){
+    return ( getUnavailableElements().size() < MAX_ELEMENTS );
 }
 
 void ServerMatch::startGame() {

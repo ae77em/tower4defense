@@ -574,3 +574,20 @@ MessageFactory::getLeaveMatchRequest(int clientId, std::string matchName) {
     return toReturn;
 }
 
+std::string
+MessageFactory::getLeaveMatchNotification() {
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = CLIENT_REQUEST_LEAVE_MATCH;
+    /*root[CLIENT_ID_KEY] = clientId;
+    root[MATCH_NAME_KEY] = matchName;*/
+
+    message.setData(root);
+
+    toReturn = message.serialize();
+
+    return toReturn;
+}
+

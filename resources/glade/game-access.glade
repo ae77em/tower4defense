@@ -7,7 +7,7 @@
     <property name="title" translatable="yes">Tower4Defense</property>
     <property name="window_position">center</property>
     <property name="default_width">525</property>
-    <property name="default_height">310</property>
+    <property name="default_height">330</property>
     <property name="icon_name">applications-games</property>
     <child>
       <object class="GtkLayout" id="layout">
@@ -240,6 +240,22 @@
           <packing>
             <property name="x">377</property>
             <property name="y">212</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="lblServidorDesconectado">
+            <property name="width_request">484</property>
+            <property name="height_request">32</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">No se puede conectar al servidor de juego. Reinicie el programa, e intente nuevamente.</property>
+            <property name="angle">0.050000000000000003</property>
+            <attributes>
+              <attribute name="foreground" value="#efef29292929"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="x">12</property>
+            <property name="y">295</property>
           </packing>
         </child>
       </object>
