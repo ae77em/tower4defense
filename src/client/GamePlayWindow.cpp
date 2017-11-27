@@ -104,7 +104,7 @@ void GamePlayWindow::renderTimeMessages(SDL_Rect &camera) {
     }
 
     if ((SDL_GetTicks() - timeOfLastUpgradeMessage) <
-            TIME_FOR_SHOW_TEMPORARY_MESSAGE) {
+        TIME_FOR_SHOW_TEMPORARY_MESSAGE) {
         if (!towerUpgradeInfoMessage.empty()) {
             renderText(camera, towerUpgradeInfoMessage, 200);
         }
@@ -295,16 +295,16 @@ bool GamePlayWindow::setTiles() {
             if (tileSaved == '.' || tileSaved == 'E' || tileSaved == 'S') {
                 tileType = tileIdTranslator.at(map.getBackgroundStyle());
 
-                if (tileSaved == 'E'){
+                if (tileSaved == 'E') {
                     portals.push_back(new EnterPortal(i * CARTESIAN_TILE_WIDTH,
                                                       j * CARTESIAN_TILE_HEIGHT,
                                                       gRenderer,
                                                       &bluePortalTexture));
-                } else if (tileSaved == 'S'){
+                } else if (tileSaved == 'S') {
                     portals.push_back(new ExitPortal(i * CARTESIAN_TILE_WIDTH,
                                                      j * CARTESIAN_TILE_HEIGHT,
                                                      gRenderer,
-                                                      &redPortalTexture));
+                                                     &redPortalTexture));
                 }
             } else {
                 tileType = tileIdTranslator.at(tileSaved);
@@ -354,7 +354,7 @@ GamePlayWindow::renderText(SDL_Rect &camera, std::string text, int x, int y) {
     TTF_SetFontStyle(font, TTF_STYLE_BOLD);
 
     promptTextTexture.generateFromText(text, gRenderer, font, textColor,
-                                        bgColor);
+                                       bgColor);
 
     promptTextTexture.render(gRenderer, x, y);
 }
@@ -425,7 +425,7 @@ void GamePlayWindow::handleLeftButtonClick(Point &point) {
                             " únicamente en torres de fuego.";
                 }
             } else {
-                if (towers.at(towerSelected)->isWater()){
+                if (towers.at(towerSelected)->isWater()) {
                     typeOfUpgradeToDo = UPGRADE_SLOWDOWN;
                 } else {
                     timeOfLastUpgradeMessage = SDL_GetTicks();
@@ -434,7 +434,7 @@ void GamePlayWindow::handleLeftButtonClick(Point &point) {
                 }
             }
 
-            if (typeOfUpgradeToDo != -1){
+            if (typeOfUpgradeToDo != -1) {
                 doUpgradeRequest();
             }
         }
@@ -658,12 +658,14 @@ bool GamePlayWindow::isATowerPoint(Point &point) {
 
     if (point.isPositive()) {
         int tilePos = point.x * TILES_COLUMNS + point.y;
-        if (tileSet.at(tilePos).getType() == TILE_TOWER) {
-            for (unsigned i = 0; i < towers.size(); ++i) {
-                if (tileSet.at(tilePos).getTower() == towers[i]) {
-                    towerSelected = i;
-                    isATowerPoint = true;
-                    break;
+        if (tilePos < (int)tileSet.size()) {
+            if (tileSet.at(tilePos).getType() == TILE_TOWER) {
+                for (unsigned i = 0; i < towers.size(); ++i) {
+                    if (tileSet.at(tilePos).getTower() == towers[i]) {
+                        towerSelected = i;
+                        isATowerPoint = true;
+                        break;
+                    }
                 }
             }
         } else {
@@ -881,7 +883,7 @@ void GamePlayWindow::loadAnimables() {
         }
     }
 
-    for (unsigned i = 0; i < portals.size(); ++i){
+    for (unsigned i = 0; i < portals.size(); ++i) {
         Animable *portal = portals[i];
         animables.push(portal);
     }
