@@ -58,6 +58,8 @@ GamePlayWindow::GamePlayWindow(Socket *s,
     TILES_ROWS = map.dimensions().y;
     TILES_COLUMNS = map.dimensions().x;
     TOTAL_TILES = TILES_ROWS * TILES_COLUMNS;
+
+    towerSelected = -1;
 }
 
 GamePlayWindow::~GamePlayWindow() {
@@ -197,6 +199,9 @@ bool GamePlayWindow::loadMedia() {
 
     towerButtonsTexture
             .loadFromFile("images/sprites/towers-buttons.png", gRenderer);
+
+    prohibitedTexture
+            .loadFromFile("images/sprites/prohibited-sign.png", gRenderer);
 
     /* enemies */
     abmonibleTexture
@@ -348,10 +353,10 @@ GamePlayWindow::renderText(SDL_Rect &camera, std::string text, int x, int y) {
 
     TTF_SetFontStyle(font, TTF_STYLE_BOLD);
 
-    gPromptTextTexture.generateFromText(text, gRenderer, font, textColor,
+    promptTextTexture.generateFromText(text, gRenderer, font, textColor,
                                         bgColor);
 
-    gPromptTextTexture.render(gRenderer, x, y);
+    promptTextTexture.render(gRenderer, x, y);
 }
 
 void
@@ -804,6 +809,7 @@ void GamePlayWindow::run() {
                 animateAnimables();
 
                 towerButtonsTexture.render(gRenderer, 1, 1);
+                renderProhibited();
                 renderMessages();
 
                 //Update screen
@@ -994,4 +1000,24 @@ bool GamePlayWindow::pointIsInPaths(Point point,
     }
 
     return isInPaths;
+}
+
+void GamePlayWindow::renderProhibited() {
+    if (!hasElement(STR_AIR)) {
+        prohibitedTexture.render(gRenderer, 1, 1);
+    }
+
+    if (!hasElement(STR_FIRE)) {
+        prohibitedTexture.render(gRenderer, 41, 1);
+        prohibitedTexture.render(gRenderer, 281, 1);
+    }
+
+    if (!hasElement(STR_WATER)) {
+        prohibitedTexture.render(gRenderer, 81, 1);
+        prohibitedTexture.render(gRenderer, 321, 1);
+    }
+
+    if (!hasElement(STR_EARTH)) {
+        prohibitedTexture.render(gRenderer, 121, 1);
+    }
 }

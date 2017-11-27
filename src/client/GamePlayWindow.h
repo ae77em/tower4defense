@@ -158,8 +158,8 @@ private:
     std::vector<Tile> tileSet;
 
     Texture dotTexture;
-
-    Texture gPromptTextTexture;
+    Texture promptTextTexture;
+    Texture prohibitedTexture;
 
     SDL_Rect gTileClips[TOTAL_TILE_SPRITES];
 
@@ -251,6 +251,8 @@ private:
     };
 
     void animateAnimables();
+
+    void renderProhibited();
 };
 
 #endif //TP4_TOWERDEFENSE_GAME_H
