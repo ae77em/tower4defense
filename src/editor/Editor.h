@@ -53,7 +53,7 @@ class State {
 };
 
 class StateTile : public State {
-    char tile = '~';
+    char tile = 'x';
 
     public:
     virtual void handle(const SDL_Event &e, Editor &context);

@@ -12,11 +12,7 @@ void Editor::StateTile::handle(const SDL_Event &e, Editor &context) {
 
     // Change tool type
     if (e.type == SDL_KEYDOWN) {
-        if (e.key.keysym.sym == keys.water) tile = '~';
-        else if (e.key.keysym.sym == keys.earth) tile = '*';
-        else if (e.key.keysym.sym == keys.fire) tile = '!';
-        else if (e.key.keysym.sym == keys.air) tile = '@';
-        else if (e.key.keysym.sym == keys.portal_entry) tile = 'E';
+        if (e.key.keysym.sym == keys.portal_entry) tile = 'E';
         else if (e.key.keysym.sym == keys.portal_exit) tile = 'S';
         else if (e.key.keysym.sym == keys.firm_ground) tile = 'x';
 
