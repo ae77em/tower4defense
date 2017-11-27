@@ -57,6 +57,28 @@ public:
     void run();
 
     /*
+     * Notifica a la UI que es necesario cargar la información que le pasa
+     * como parámetro. A partir de ahí, la UI se encarga de modificarse.
+     */
+    void notify(std::string &dataToLoad);
+
+    /*
+     * Setea el id del cliente (socket) con el cual me estoy conectando al
+     * server.
+     * clientId: id del cliente entregado por el server.
+     */
+    void setClientId(int clientId);
+
+    /*
+     * Retorna el id del cliente (socket) con el cual me estoy conectando al
+     * server.
+     */
+    int getClientId();
+
+
+
+private:
+    /*
      * Agrega los mapas pasados como parámetro al combo de mapas.
      * maps: vector de strings con los nombres de los mapas.
      */
@@ -74,24 +96,6 @@ public:
      * match: nombre de la partida.
      */
     void addMatchToCombo(int clientId, const std::string &matchName);
-
-    /*
-     * Setea el id del cliente (socket) con el cual me estoy conectando al
-     * server.
-     * Corresponde al FD del cliente en el server.
-     * clientId: FD del cliente en el server.
-     */
-    void setClientId(int clientId);
-
-    /*
-     * Retorna el id del cliente (socket) con el cual me estoy conectando al
-     * server.
-     * Corresponde al FD del cliente en el server.
-     */
-    int getClientId();
-
-    /* Especifica si el cliente esta conectado */
-    bool isNotValidClientId();
 
     /* Habilita los checkboxes correspondientes a lo elementos disponibles, para
      * poder ser seleccionados.
@@ -131,11 +135,8 @@ public:
 
     void startMatch(std::string matchName, std::string map);
 
-    void notify(std::string &dtl);
-
     void updateUIData();
 
-private:
     void setCreateMatchButtonEnableStatus();
 
     bool mustCreateMatchBeEnabled();
@@ -155,12 +156,6 @@ private:
     bool hasValidValue(const std::string &match) const;
 
     void initDispatcher(Glib::RefPtr<Gtk::Builder> &refPtr);
-
-    void on_loadData();
-
-    void listen();
-
-
 };
 
 #endif //TP4_TOWERDEFENSE_GAMEACCESS_H

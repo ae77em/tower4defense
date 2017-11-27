@@ -367,14 +367,6 @@ int GameAccessWindow::getClientId() {
     return clientId;
 }
 
-bool GameAccessWindow::isNotValidClientId() {
-    /* clientId es el file descriptor del socket conectado al servidor
-     * En un cliente conectado, este es un entero pequeño no negativo.
-     * En un cliente recien construido, este es -1
-     */
-    return clientId == -1;
-}
-
 void GameAccessWindow::startMatch(std::string matchName, std::string map) {
     gameStarted = true;
     pWindow->hide();
