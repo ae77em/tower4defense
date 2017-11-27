@@ -22,6 +22,7 @@
 #include <string>
 #include <list>
 #include <vector>
+#include <algorithm>
 
 GameLoopWorker::GameLoopWorker(std::map<int, ServerPlayer *> &p,
                                std::list<GameAction *> &a,
@@ -68,6 +69,13 @@ void GameLoopWorker::run() {
             if (aHorde->itIsAlive()) {
                 enemies = aHorde->getEnemies();
 
+                // Eliminar enemigos muertos
+                // remove-erase idiom: remove mueve todos los elementos
+                // a eliminar al final, y erase los elimina
+                auto it = std::remove_if(enemies.begin(), enemies.end(),
+                        [](ActorEnemy *x) { return not x->itIsAlive(); });
+                enemies.erase(it, enemies.end());
+
                 for (auto enemy : enemies) {
                     if (enemy->itIsAlive()) {
                         enemy->advance();
@@ -76,7 +84,6 @@ void GameLoopWorker::run() {
                             notifyMatchLoose();
                         }
                     }
-                    //TODO: eliminar enemigos muertos
                 }
             }
         }
