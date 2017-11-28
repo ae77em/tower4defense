@@ -28,19 +28,19 @@ void StateHordeCreation::handle(const SDL_Event &e, Editor &context) {
             enemy = "";
             return;
         }
-        //FIXME: does not validate input
         context.unsafe_transition(new DataEntry(this,
                 [&](const std::string& data) {
                     horde_size = stol(data);
+                    if (horde_size < 1) throw std::runtime_error("");
                 },
                 "How many enemies should this horde have? "
         ));
     /* Ask delay in seconds */
     } else if (delay_seconds < 0) {
-        //FIXME: does not validate input
         context.unsafe_transition(new DataEntry(this,
                 [&](const std::string& data) {
                     delay_seconds = stol(data);
+                    if (delay_seconds < 0) throw std::runtime_error("");
                 },
                 "Seconds to wait after this horde: "
         ));
