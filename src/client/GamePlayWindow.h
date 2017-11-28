@@ -93,8 +93,8 @@ private:
 
     void
     renderText(std::string text,
-               int x,
-               int y,
+               int x = 50,
+               int y = 50,
                Uint8 r = 0xFF,
                Uint8 g = 0xFF,
                Uint8 b = 0x00);

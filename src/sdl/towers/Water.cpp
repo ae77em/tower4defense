@@ -45,6 +45,16 @@ void Water::setSprites() {
         idleSprites[i].y = idleStartY;
         idleSprites[i].w = IDLE_SPRITE_WIDTH;
         idleSprites[i].h = IDLE_SPRITE_HEIGHT;
+
+        idleShineSprites[i].x = idleShineStartX + (i * 18);
+        idleShineSprites[i].y = idleShineStartY;
+        idleShineSprites[i].w = 17;
+        idleShineSprites[i].h = 17;
+
+        idleShadowSprites[i].x = idleShadowStartX + (i * 40);
+        idleShadowSprites[i].y = idleShadowStartY;
+        idleShadowSprites[i].w = 39;
+        idleShadowSprites[i].h = 40;
     }
 
     // seteo los sprites para disparo...
@@ -84,6 +94,15 @@ void Water::renderIdle(SDL_Rect &camera) {
     double isoy = screenPoint.y - camera.y - yoffset;
 
     texture.renderSprite(renderer, isox, isoy, &idleSprites[frameToDraw]);
+
+    int shadowX = isox + ((IDLE_SPRITE_WIDTH / 2) - 20);
+    int shadowY = isoy - 30;
+    texture.renderSprite(renderer, shadowX, shadowY, &idleShadowSprites[frameToDraw]);
+
+    texture.renderSprite(renderer,
+                         shadowX + 12,
+                         shadowY + 12,
+                         &idleShineSprites[frameToDraw]);
 }
 
 void Water::renderShot(SDL_Rect &camera) {
