@@ -62,6 +62,8 @@ protected:
     Texture &texture;
     SDL_Renderer *renderer;
     SDL_Rect idleSprites[NUMBER_OF_IDLE_SPRITES];
+    SDL_Rect idleShineSprites[NUMBER_OF_IDLE_SPRITES];
+    SDL_Rect idleShadowSprites[NUMBER_OF_IDLE_SPRITES];
     SDL_Rect shotSprites[NUMBER_OF_SHOT_SPRITES];
 
     int idleSpriteWidth;
@@ -76,6 +78,11 @@ protected:
     // seteo los sprites para espera...
     int idleStartX = 1;
     int idleStartY = 17;
+    int idleShineStartX = 1;
+    int idleShineStartY = 175;
+    int idleShadowStartX = 1;
+    int idleShadowStartY = 134;
+
     int shotStartX = 1;
     int shotStartY = 209;
 

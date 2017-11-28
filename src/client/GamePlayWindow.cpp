@@ -881,13 +881,10 @@ void GamePlayWindow::renderMessages() {
     std::string message = "";
     if (gameStatus == GAME_STATUS_WON) {
         message = "FELICIDADES, PARTIDA GANADA :) ...";
-        int center = (SCREEN_WIDTH / 2) - 40 * 8;
-        int middle = (SCREEN_HEIGHT / 2) - 8;
-        renderText(message, center, middle - 18 * 3, 0xFF, 0x00, 0x00);
-        renderMessageInCenterOfScreen(message);
+        renderText(message);
     } else if (gameStatus == GAME_STATUS_LOST) {
         message = "Partida perdida :( ...";
-        renderMessageInCenterOfScreen(message);
+        renderText(message);
     } else if (gameStatus == GAME_STATUS_DISCONECTED) {
         message = "HEMOS PERDIDO COMUNICACIÓN CON EL SERVER :(..."
                 "Tendrás que reiniciar el juego.";
