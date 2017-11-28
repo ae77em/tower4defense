@@ -45,6 +45,11 @@ void Air::setSprites() {
         idleSprites[i].y = idleStartY;
         idleSprites[i].w = IDLE_SPRITE_WIDTH;
         idleSprites[i].h = IDLE_SPRITE_HEIGHT;
+
+        idleShineSprites[i].x = idleShineStartX + (i * 76);
+        idleShineSprites[i].y = idleShineStartY;
+        idleShineSprites[i].w = IDLE_SHINE_WIDTH;
+        idleShineSprites[i].h = IDLE_SHINE_HEIGHT;
     }
 
     // seteo los sprites para disparo...
@@ -83,7 +88,14 @@ void Air::renderIdle(SDL_Rect &camera) {
     double isox = screenPoint.x - camera.x - xoffset;
     double isoy = screenPoint.y - camera.y - yoffset;
 
-    texture.renderSprite(renderer, isox, isoy, &idleSprites[frameToDraw]);
+    texture.renderSprite(renderer,
+                         isox,
+                         isoy,
+                         &idleSprites[frameToDraw]);
+    texture.renderSprite(renderer,
+                         isox - ((IDLE_SHINE_WIDTH - IDLE_SPRITE_WIDTH) / 2),
+                         isoy - IDLE_SHINE_HEIGHT / 2,
+                         &idleShineSprites[frameToDraw]);
 }
 
 void Air::renderShot(SDL_Rect &camera) {

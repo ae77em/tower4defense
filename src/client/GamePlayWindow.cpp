@@ -928,7 +928,6 @@ void GamePlayWindow::loadAnimables() {
         Animable *portal = portals[i];
         animables.push(portal);
     }
-
 }
 
 void GamePlayWindow::renderLevel() {

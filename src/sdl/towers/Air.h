@@ -1,6 +1,10 @@
 #ifndef TP4_TOWERDEFENSE_AIR_H
 #define TP4_TOWERDEFENSE_AIR_H
 
+static const int IDLE_SHINE_WIDTH = 75;
+
+static const int IDLE_SHINE_HEIGHT = 71;
+
 #include <vector>
 #include "Texture.h"
 #include "Point.h"
@@ -68,6 +72,7 @@ protected:
     Texture &texture;
     SDL_Renderer *renderer;
     SDL_Rect idleSprites[NUMBER_OF_IDLE_SPRITES];
+    SDL_Rect idleShineSprites[NUMBER_OF_IDLE_SPRITES];
     SDL_Rect shotSprites[NUMBER_OF_SHOT_SPRITES];
 
     int idleSpriteWidth;
@@ -82,6 +87,8 @@ protected:
     // seteo los sprites para espera...
     int idleStartX = 2;
     int idleStartY = 568;
+    int idleShineStartX = 2;
+    int idleShineStartY = 686;
     int shotStartX = 2;
     int shotStartY = 18;
 
