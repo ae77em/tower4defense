@@ -48,7 +48,7 @@ std::string GameNotificationFactory::getStatusMatchNotification(
         currentTower = towers[i];
 
         aTower[TOWER_ID_KEY] = i;
-        aTower["isShooting"] = currentTower->itIsShooting();
+        aTower[IS_SHOOTING_KEY] = currentTower->itIsShooting();
 
         root["towers"].append(aTower);
     }

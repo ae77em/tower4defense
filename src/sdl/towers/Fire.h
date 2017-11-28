@@ -63,7 +63,7 @@ protected:
     Texture &texture;
     SDL_Renderer *renderer;
     SDL_Rect idleSprites[NUMBER_OF_IDLE_SPRITES];
-    SDL_Rect shotSprites[NUMBER_OF_SHOT_SPRITES];
+    SDL_Rect shineSprites[NUMBER_OF_IDLE_SPRITES];
 
     int idleSpriteWidth;
     int idleSpriteHeight;
@@ -77,13 +77,14 @@ protected:
     // seteo los sprites para espera...
     int idleStartX = 1;
     int idleStartY = 1;
-    int shotStartX = 1;
-    int shotStartY = 1;
+    int shineStartX = 1;
+    int shineStartY = 209;
 
     Point currentPoint;
     Circle collisionCircle;
 
     bool isShooting;
+
 };
 
 

@@ -518,29 +518,41 @@ void GamePlayWindow::handleServerNotifications() {
 
                     Point scenarioPoint = MessageFactory::getPoint(aMessage);
                     int dir = MessageFactory::getDirection(aMessage);
-                    int enemyId = request.getAsInt(ENEMY_ID_KEY);
-                    int hordeId = request.getAsInt(HORDE_ID_KEY);
-                    bool isAlive = request.getAsBool(IS_ALIVE_KEY);
-                    bool isVisible = request.getAsBool(IS_VISIBLE_KEY);
-                    double energyPercentaje =
-                            request.getAsDouble(ENERGY_PERCENTAJE_KEY);
+                    int enemyId;
+                    int towerId;
+                    if ((enemyId = request.getAsInt(ENEMY_ID_KEY)) != -1){
+                        int hordeId = request.getAsInt(HORDE_ID_KEY);
+                        bool isAlive = request.getAsBool(IS_ALIVE_KEY);
+                        bool isVisible = request.getAsBool(IS_VISIBLE_KEY);
+                        double energyPercentaje =
+                                request.getAsDouble(ENERGY_PERCENTAJE_KEY);
 
-                    try {
-                        DrawableHorde horde = hordes.at(hordeId);
-                        Enemy *enemy = horde.getEnemieAt(enemyId);
-                        enemy->setDirection(dir);
-                        /* El dato que me llega es la posición relativa al
-                         * escenario  de juego, no las coordenadas.
-                         * */
-                        enemy->setIsAlive(isAlive);
-                        enemy->setIsVisible(isVisible);
-                        enemy->moveTo(scenarioPoint.x, scenarioPoint.y);
-                        enemy->setEnergyPercentaje(energyPercentaje);
-                    } catch (...) {
-                        std::cerr << "No es posible mover el enemigo "
-                                  << std::to_string(enemyId);
-                        std::cerr << " de la horda "
-                                  << std::to_string(hordeId);
+                        try {
+                            DrawableHorde horde = hordes.at(hordeId);
+                            Enemy *enemy = horde.getEnemieAt(enemyId);
+                            enemy->setDirection(dir);
+                            /* El dato que me llega es la posición relativa al
+                             * escenario  de juego, no las coordenadas.
+                             * */
+                            enemy->setIsAlive(isAlive);
+                            enemy->setIsVisible(isVisible);
+                            enemy->moveTo(scenarioPoint.x, scenarioPoint.y);
+                            enemy->setEnergyPercentaje(energyPercentaje);
+                        } catch (...) {
+                            std::cerr << "No es posible mover el enemigo "
+                                      << std::to_string(enemyId);
+                            std::cerr << " de la horda "
+                                      << std::to_string(hordeId);
+                        }
+                    } else if ((towerId = request.getAsInt(TOWER_ID_KEY)) !=
+                            -1){
+                        bool isShooting = request.getAsBool(IS_SHOOTING_KEY);
+                        try {
+                            towers.at(towerId)->setIsShooting(isShooting);
+                        } catch (...){
+                            std::cerr << "No es posible hacer disparar a la "
+                                    "torre " << std::to_string(towerId);
+                        }
                     }
                 }
                 break;

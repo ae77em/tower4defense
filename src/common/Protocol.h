@@ -106,6 +106,7 @@ static std::string MATCH_NAME_KEY = "matchName";
 static std::string TOWER_ID_KEY = "towerId";
 static std::string IS_VISIBLE_KEY = "isVisible";
 static std::string IS_ALIVE_KEY = "isAlive";
+static std::string IS_SHOOTING_KEY = "isShooting";
 static std::string MATCH_STATUS_KEY = "matchStatus";
 static std::string ENERGY_PERCENTAJE_KEY = "energyPercentaje";
 

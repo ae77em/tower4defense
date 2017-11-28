@@ -74,6 +74,7 @@ protected:
     SDL_Rect idleSprites[NUMBER_OF_IDLE_SPRITES];
     SDL_Rect idleShineSprites[NUMBER_OF_IDLE_SPRITES];
     SDL_Rect shotSprites[NUMBER_OF_SHOT_SPRITES];
+    SDL_Rect shotShineSprites[NUMBER_OF_SHOT_SPRITES];
 
     int idleSpriteWidth;
     int idleSpriteHeight;
@@ -91,6 +92,8 @@ protected:
     int idleShineStartY = 686;
     int shotStartX = 2;
     int shotStartY = 18;
+    int shotShineStartX = 2;
+    int shotShineStartY = 136;
 
     Point currentPoint;
 

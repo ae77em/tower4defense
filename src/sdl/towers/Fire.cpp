@@ -45,23 +45,16 @@ void Fire::setSprites() {
         idleSprites[i].y = idleStartY;
         idleSprites[i].w = IDLE_SPRITE_WIDTH;
         idleSprites[i].h = IDLE_SPRITE_HEIGHT;
-    }
 
-    // seteo los sprites para disparo...
-    for (int i = 0; i < numberOfShotSprites; ++i) {
-        shotSprites[i].x = shotStartX + (i * shotSpriteWidth);
-        shotSprites[i].y = shotStartY;
-        shotSprites[i].w = shotSpriteWidth;
-        shotSprites[i].h = shotSpriteHeight;
+        shineSprites[i].x = shineStartX + (i * 23);
+        shineSprites[i].y = shineStartY;
+        shineSprites[i].w = 22;
+        shineSprites[i].h = 48;
     }
 }
 
 void Fire::animate(SDL_Rect &camera) {
-    if (isShooting) {
-        renderShot(camera);
-    } else {
-        renderIdle(camera);
-    }
+    renderIdle(camera);
 }
 
 void Fire::setIsShooting(bool isShooting) {
@@ -84,19 +77,10 @@ void Fire::renderIdle(SDL_Rect &camera) {
     double isoy = screenPoint.y - camera.y - yoffset;
 
     texture.renderSprite(renderer, isox, isoy, &idleSprites[frameToDraw]);
-}
-
-void Fire::renderShot(SDL_Rect &camera) {
-    int frameToDraw = (SDL_GetTicks() / 100) % NUMBER_OF_SHOT_SPRITES;
-
-    DecimalPoint screenPoint = SdlUtils::cartesianToIso(shotBox.x, shotBox.y);
-
-    int offset = idleBox.h - ISO_TILE_HEIGHT;
-
-    double isox = screenPoint.x - camera.x;
-    double isoy = screenPoint.y - camera.y - offset;
-
-    texture.renderSprite(renderer, isox, isoy, &shotSprites[frameToDraw]);
+    texture.renderSprite(renderer,
+                         isox + ((IDLE_SPRITE_WIDTH / 2) - 11),
+                         isoy - 36,
+                         &shineSprites[frameToDraw]);
 }
 
 Point Fire::getPoint() {

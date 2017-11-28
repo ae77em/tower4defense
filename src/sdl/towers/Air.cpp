@@ -58,6 +58,11 @@ void Air::setSprites() {
         shotSprites[i].y = shotStartY;
         shotSprites[i].w = shotSpriteWidth;
         shotSprites[i].h = shotSpriteHeight;
+
+        shotShineSprites[i].x = shotShineStartX + (i * 106);
+        shotShineSprites[i].y = shotShineStartY;
+        shotShineSprites[i].w = 105;
+        shotShineSprites[i].h = 115;
     }
 }
 
@@ -109,6 +114,11 @@ void Air::renderShot(SDL_Rect &camera) {
     double isoy = screenPoint.y - camera.y - offset;
 
     texture.renderSprite(renderer, isox, isoy, &shotSprites[frameToDraw]);
+
+    texture.renderSprite(renderer,
+                         isox - ((105 - SHOT_SPRITE_WIDTH) / 2),
+                         isoy - 115 / 2,
+                         &shotShineSprites[frameToDraw]);
 }
 
 Point Air::getPoint() {
