@@ -591,3 +591,17 @@ MessageFactory::getLeaveMatchNotification() {
     return toReturn;
 }
 
+std::string MessageFactory::getEndConectionNotification() {
+    std::string toReturn;
+    Json::Value root(Json::objectValue);
+    Message message;
+
+    root[OPERATION_KEY] = SERVER_NOTIFICATION_END_CONNECTION;
+
+    message.setData(root);
+
+    toReturn = message.serialize();
+
+    return toReturn;
+}
+

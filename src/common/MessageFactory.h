@@ -238,6 +238,8 @@ public:
     static std::string getLeaveMatchRequest(int clientId, std::string matchName);
 
     static std::string getLeaveMatchNotification();
+
+    static std::string getEndConectionNotification();
 };
 
 #endif //TP4_TOWERDEFENSE_MESSAGEFACTORY_H

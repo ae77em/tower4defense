@@ -89,7 +89,7 @@ public:
 private:
     void handleMouseEvents(SDL_Rect camera, SDL_Event e);
 
-    void handleServerNotifications(SDL_Rect rect);
+    void handleServerNotifications();
 
     void
     renderText(SDL_Rect &camera,
@@ -125,7 +125,7 @@ private:
 
     void doTowerInfoRequest();
 
-    void renderTimeMessages(SDL_Rect &camera);
+    void renderTimeMessages();
 
     void loadTowerInfo(Message message);
 

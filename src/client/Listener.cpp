@@ -18,13 +18,15 @@ Listener::~Listener() {}
 void Listener::run(){
     std::string dataFromServer;
     TextMessage textMessage("");
+    bool ended;
 
-    while (true) {
+    while (!ended) {
         try {
             dataFromServer = textMessage.receiveFrom(*server).getMessage();
         } catch (std::exception) {
-            std::cout << "se cierra el listener del cliente del juego" << std::endl;
-            return;
+            dataFromServer = MessageFactory::getEndConectionNotification();
+            buffer.setClientProcessEnded(true);
+            ended = true;
         }
 
         Message message;

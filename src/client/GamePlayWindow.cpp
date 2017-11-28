@@ -82,7 +82,7 @@ GamePlayWindow::~GamePlayWindow() {
     }
 }
 
-void GamePlayWindow::renderTimeMessages(SDL_Rect &camera) {
+void GamePlayWindow::renderTimeMessages() {
     int t;
     if ((t = (SDL_GetTicks() - timeOfLastSpell)) < TIME_FOR_ENABLE_ACTION) {
         t /= 1000;
@@ -523,7 +523,7 @@ void GamePlayWindow::handleRightButtonClick(Point point) {
     }
 }
 
-void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
+void GamePlayWindow::handleServerNotifications() {
     int transactionsCounter = 0;
     std::string notification;
 
@@ -556,7 +556,6 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
                     double energyPercentaje =
                             request.getAsDouble(ENERGY_PERCENTAJE_KEY);
 
-                    //FIXME: reducir el scope del try-catch
                     try {
                         DrawableHorde horde = hordes.at(hordeId);
                         Enemy *enemy = horde.getEnemieAt(enemyId);
@@ -628,6 +627,9 @@ void GamePlayWindow::handleServerNotifications(SDL_Rect camera) {
                 towerUpgradeInfoMessage = request.getAsString("info");
                 break;
             };
+            case SERVER_NOTIFICATION_END_CONNECTION:{
+                gameStatus = GAME_STATUS_DISCONECTED;
+            }
             default:
                 response = "no reconocida";
         }
@@ -788,7 +790,7 @@ void GamePlayWindow::run() {
                         handleMouseEvents(camera, e);
                     }
 
-                    handleServerNotifications(camera);
+                    handleServerNotifications();
 
                     // Move the camera
                     dot.move();
@@ -820,15 +822,13 @@ void GamePlayWindow::run() {
         //Free resources and close SDL
         close();
     }
-
-    server->shutdown(); // TODO ver si esto corresponde hacerlo acá...*/
 }
 
 void GamePlayWindow::renderMessageInCenterOfScreen(std::string message) {
     SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 0xFF);
     SDL_RenderClear(gRenderer);
     renderText(camera, message,
-                   (SCREEN_WIDTH / 2) - message.size() / 2,
+                   (SCREEN_WIDTH / 2) - (int)message.size() * 4,
                    (SCREEN_HEIGHT / 2) - 8,
                0xFF, 0x00, 0x00);
     SDL_RenderPresent(gRenderer);
@@ -872,17 +872,17 @@ void GamePlayWindow::renderMessages() {
     std::string message = "";
     if (gameStatus == GAME_STATUS_WON) {
         message = "FELICIDADES, PARTIDA GANADA :) ...";
-        renderText(camera, message, 0, 0, 0, 0, 0);
+        renderMessageInCenterOfScreen(message);
     } else if (gameStatus == GAME_STATUS_LOST) {
         message = "Partida perdida :( ...";
-        renderText(camera, message, 0, 0, 0, 0, 0);
+        renderMessageInCenterOfScreen(message);
     } else if (gameStatus == GAME_STATUS_DISCONECTED) {
-        message = "Hemos perdido comunicación con el server :(..."
-                "lamentablemente tendrás que reiniciar el juego.";
+        message = "HEMOS PERDIDO COMUNICACIÓN CON EL SERVER :(..."
+                "Tendrás que reiniciar el juego.";
         renderMessageInCenterOfScreen(message);
     }
 
-    renderTimeMessages(camera);
+    renderTimeMessages();
 
     if (!towerDamageDataMessage.empty()) {
         message = "Datos de la torre:";
