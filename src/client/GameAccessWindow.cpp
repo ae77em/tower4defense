@@ -487,8 +487,6 @@ void GameAccessWindow::updateUIData() {
 
         int op = MessageFactory::getOperation(message);
 
-        std::cout << "llego operación: " << std::to_string(op) << std::endl;
-
         switch (op) {
             case SERVER_NOTIFICATION_CLIENT_ID: {
                 int clientId = MessageFactory::getClientId(message);
