@@ -25,7 +25,13 @@ void DataEntry::handle(const SDL_Event &e, Editor &context) {
         /* ENTER: transition to previous state and use callback */
         } else if ((e.key.keysym.sym == SDLK_RETURN)
                 || (e.key.keysym.sym == SDLK_KP_ENTER)) {
-            callback(input);
+            try {
+                callback(input);
+            } catch (...) {
+                input.clear();
+                context.getScreen().setDialog("bad input");
+                return;
+            }
             context.transition(previous_state);
         }
 
