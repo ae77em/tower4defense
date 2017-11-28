@@ -87,15 +87,17 @@ public:
     bool init();
 
 private:
-    void handleMouseEvents(SDL_Rect camera, SDL_Event e);
+    void handleMouseEvents(SDL_Event e);
 
     void handleServerNotifications();
 
     void
-    renderText(SDL_Rect &camera,
-               std::string text,
-               int x, int y,
-               Uint8 r = 0xFF, Uint8 g = 0xFF, Uint8 b = 0x00);
+    renderText(std::string text,
+               int x,
+               int y,
+               Uint8 r = 0xFF,
+               Uint8 g = 0xFF,
+               Uint8 b = 0x00);
 
     void handleLeftButtonClick(Point &point);
 

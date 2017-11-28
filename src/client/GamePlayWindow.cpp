@@ -82,35 +82,6 @@ GamePlayWindow::~GamePlayWindow() {
     }
 }
 
-void GamePlayWindow::renderTimeMessages() {
-    int t;
-    if ((t = (SDL_GetTicks() - timeOfLastSpell)) < TIME_FOR_ENABLE_ACTION) {
-        t /= 1000;
-        t = 20 - t;
-        std::string message("Puede lanzar hechizo nuevamete en: ");
-        message.append(std::to_string(t));
-        message.append(" seg");
-        renderText(camera, message, 0, 0, 1, 100, 0);
-    }
-
-    if ((t = (SDL_GetTicks() - timeOfLastTowerPutted)) <
-        TIME_FOR_ENABLE_ACTION) {
-        t /= 1000;
-        t = 20 - t;
-        std::string message("Puede poner torre nuevamente en: ");
-        message.append(std::to_string(t));
-        message.append(" seg");
-        renderText(camera, message, 0, 0, 1, 150, 0);
-    }
-
-    if ((SDL_GetTicks() - timeOfLastUpgradeMessage) <
-        TIME_FOR_SHOW_TEMPORARY_MESSAGE) {
-        if (!towerUpgradeInfoMessage.empty()) {
-            renderText(camera, towerUpgradeInfoMessage, 0, 0, 200, 0, 0);
-        }
-    }
-}
-
 bool GamePlayWindow::init() {
     //Initialization flag
     bool success = true;
@@ -347,10 +318,8 @@ bool GamePlayWindow::setTiles() {
 }
 
 void
-GamePlayWindow::renderText(SDL_Rect &camera,
-                           std::string text,
-                           int x, int y,
-                           Uint8 r, Uint8 g, Uint8 b) {
+GamePlayWindow::renderText(std::string text, int x, int y, Uint8 r, Uint8 g,
+                           Uint8 b) {
     SDL_Color textColor = {r, g, b, 0xFF};
     SDL_Color bgColor = {0, 0, 0, 0}; // fondo transparente
 
@@ -363,7 +332,7 @@ GamePlayWindow::renderText(SDL_Rect &camera,
 }
 
 void
-GamePlayWindow::handleMouseEvents(SDL_Rect camera, SDL_Event e) {
+GamePlayWindow::handleMouseEvents(SDL_Event e) {
     if (e.type == SDL_MOUSEBUTTONDOWN) {
         Point point = SdlUtils::getMouseRelativePoint(camera);
 
@@ -787,7 +756,7 @@ void GamePlayWindow::run() {
                         // Change dot velocity
                         dot.handleEvent(e, gWindow);
 
-                        handleMouseEvents(camera, e);
+                        handleMouseEvents(e);
                     }
 
                     handleServerNotifications();
@@ -824,13 +793,41 @@ void GamePlayWindow::run() {
     }
 }
 
+
+void GamePlayWindow::renderTimeMessages() {
+    int t;
+    if ((t = (SDL_GetTicks() - timeOfLastSpell)) < TIME_FOR_ENABLE_ACTION) {
+        t /= 1000;
+        t = 20 - t;
+        std::string message("Puede lanzar hechizo nuevamete en: ");
+        message.append(std::to_string(t));
+        message.append(" seg");
+        renderText(message, 1, 100);
+    }
+
+    if ((t = (SDL_GetTicks() - timeOfLastTowerPutted)) <
+        TIME_FOR_ENABLE_ACTION) {
+        t /= 1000;
+        t = 20 - t;
+        std::string message("Puede poner torre nuevamente en: ");
+        message.append(std::to_string(t));
+        message.append(" seg");
+        renderText(message, 1, 150);
+    }
+
+    if ((SDL_GetTicks() - timeOfLastUpgradeMessage) <
+        TIME_FOR_SHOW_TEMPORARY_MESSAGE) {
+        if (!towerUpgradeInfoMessage.empty()) {
+            renderText(towerUpgradeInfoMessage, 200, 50);
+        }
+    }
+}
+
 void GamePlayWindow::renderMessageInCenterOfScreen(std::string message) {
     SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 0xFF);
     SDL_RenderClear(gRenderer);
-    renderText(camera, message,
-                   (SCREEN_WIDTH / 2) - (int)message.size() * 4,
-                   (SCREEN_HEIGHT / 2) - 8,
-               0xFF, 0x00, 0x00);
+    renderText(message, (SCREEN_WIDTH / 2) - (int) message.size() * 4,
+               (SCREEN_HEIGHT / 2) - 8, 0xFF, 0x00, 0x00);
     SDL_RenderPresent(gRenderer);
 }
 
@@ -848,14 +845,14 @@ void GamePlayWindow::renderSplashScreen(){
     line6 = R"(       \__\___/ \_/\_/ \___|_|      |_/\__,_|\___|_| \___|_| |_|___/\___|)";
     line7 = "                                 ";
     line8 = "                                 CARGANDO...";
-    renderText(camera, line1, center, middle - 18*3, 0xFF, 0x00, 0x00);
-    renderText(camera, line2, center, middle - 18*2, 0xFF, 0x00, 0x00);
-    renderText(camera, line3, center, middle - 18*1, 0xFF, 0x00, 0x00);
-    renderText(camera, line4, center, middle + 18*0, 0xFF, 0x00, 0x00);
-    renderText(camera, line5, center, middle + 18*1, 0xFF, 0x00, 0x00);
-    renderText(camera, line6, center, middle + 18*2, 0xFF, 0x00, 0x00);
-    renderText(camera, line7, center, middle + 18*3, 0xFF, 0x00, 0x00);
-    renderText(camera, line8, center, middle + 18*4, 0xFF, 0x00, 0x00);
+    renderText(line1, center, middle - 18 * 3, 0xFF, 0x00, 0x00);
+    renderText(line2, center, middle - 18 * 2, 0xFF, 0x00, 0x00);
+    renderText(line3, center, middle - 18 * 1, 0xFF, 0x00, 0x00);
+    renderText(line4, center, middle + 18 * 0, 0xFF, 0x00, 0x00);
+    renderText(line5, center, middle + 18 * 1, 0xFF, 0x00, 0x00);
+    renderText(line6, center, middle + 18 * 2, 0xFF, 0x00, 0x00);
+    renderText(line7, center, middle + 18 * 3, 0xFF, 0x00, 0x00);
+    renderText(line8, center, middle + 18 * 4, 0xFF, 0x00, 0x00);
     SDL_RenderPresent(gRenderer);
 }
 
@@ -872,6 +869,9 @@ void GamePlayWindow::renderMessages() {
     std::string message = "";
     if (gameStatus == GAME_STATUS_WON) {
         message = "FELICIDADES, PARTIDA GANADA :) ...";
+        int center = (SCREEN_WIDTH / 2) - 40 * 8;
+        int middle = (SCREEN_HEIGHT / 2) - 8;
+        renderText(message, center, middle - 18 * 3, 0xFF, 0x00, 0x00);
         renderMessageInCenterOfScreen(message);
     } else if (gameStatus == GAME_STATUS_LOST) {
         message = "Partida perdida :( ...";
@@ -886,13 +886,13 @@ void GamePlayWindow::renderMessages() {
 
     if (!towerDamageDataMessage.empty()) {
         message = "Datos de la torre:";
-        renderText(camera, message, 1, 250);
-        renderText(camera, towerClassDataMessage, 1, 266);
-        renderText(camera, towerExperiencePointsDataMessage, 1, 282);
-        renderText(camera, towerDamageDataMessage, 1, 298);
-        renderText(camera, towerRangeDataMessage, 1, 314);
-        renderText(camera, towerReachDataMessage, 1, 330);
-        renderText(camera, towerSlowdownDataMessage, 1, 346);
+        renderText(message, 1, 250);
+        renderText(towerClassDataMessage, 1, 266);
+        renderText(towerExperiencePointsDataMessage, 1, 282);
+        renderText(towerDamageDataMessage, 1, 298);
+        renderText(towerRangeDataMessage, 1, 314);
+        renderText(towerReachDataMessage, 1, 330);
+        renderText(towerSlowdownDataMessage, 1, 346);
     }
 }
 
