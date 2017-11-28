@@ -879,7 +879,7 @@ void GamePlayWindow::renderMessages() {
     } else if (gameStatus == GAME_STATUS_DISCONECTED) {
         message = "Hemos perdido comunicación con el server :(..."
                 "lamentablemente tendrás que reiniciar el juego.";
-        renderText(camera, message, 0, 0, 0xFF, 0x00, 0x00);
+        renderMessageInCenterOfScreen(message);
     }
 
     renderTimeMessages(camera);

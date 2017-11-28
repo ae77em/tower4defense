@@ -42,6 +42,8 @@ TextMessage TextMessage::receiveFrom(Socket &sock) {
 
     std::string s(message);
 
+    delete[] message;
+
     return TextMessage(s);
 }
 

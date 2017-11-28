@@ -92,7 +92,7 @@ void GameAccessWindow::setCreateMatchButtonEnableStatus() {
 
 bool GameAccessWindow::mustCreateMatchBeEnabled() {
     std::string map = cmbMapsText->get_active_text();
-    return (map.compare(STR_NONE) != 0) &&
+    return (!map.empty() && map.compare(STR_NONE) != 0) &&
            !(entryMatchName->get_text().empty());
 }
 

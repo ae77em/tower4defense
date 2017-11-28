@@ -10,13 +10,11 @@ Sender::~Sender(){}
 void Sender::shutdown() {}
 
 void Sender::run(){
-    //TODO: reducir el scope del try-catch
     try {
         std::string dataToSend;
 
         while (buffer.isProcessingYet()) {
             dataToSend = buffer.getNextData();
-            std::cout << "data que para enviar: " << dataToSend << std::endl;
             TextMessage message(dataToSend);
             message.sendTo(*server);
         }
