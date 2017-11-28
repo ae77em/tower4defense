@@ -13,13 +13,13 @@ Listener::Listener(const Listener &orig, std::mutex &aMutexPlayers)
         : mutexPlayers(aMutexPlayers) {}
 
 void Listener::shutdown() {
+    serverSocket.shutdown(); // corro esto acá por comentario de Ezequiel
+
     int size = threads.size();
     for (int i = 0; i < size; ++i) {
         threads[i]->join();
         delete threads[i];
     }
-
-    serverSocket.shutdown();
 }
 
 void Listener::run() {
